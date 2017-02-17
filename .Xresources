@@ -1,0 +1,71 @@
+/* xft settings */
+Xft.antialias: 1
+Xft.autohint:  0
+/* Xft.dpi:       110 */
+Xft.hinting:   0
+Xft.hintstyle: hintslight
+Xft.lcdfilter: lcddefault
+Xft.rgba:      rgb
+
+/* colors */
+#define bg   #32302f
+#define fg   #ebdbb2
+#define blk  #282828
+#define bblk #928374
+#define dred #cc241d
+#define red  #fb4934
+#define dgrn #98971a
+#define grn  #b8bb26
+#define dylw #d79921
+#define ylw  #fabd2f
+#define dblu #458588
+#define blu  #83a598
+#define dmag #b16286
+#define mag  #d3869b
+#define dcyn #689d6a
+#define cyn  #8ec07c
+#define dwht #a89984
+#define wht  #ebdbb2
+
+
+/* rofi */
+rofi.font:            Iosevka Term Medium 16
+rofi.terminal:        termite
+rofi.columns:         1
+rofi.eh:              1
+rofi.padding:         400
+rofi.fullscreen:      true
+rofi.bw:              0
+rofi.sidebar-mode:    false
+rofi.separator-style: none
+rofi.hide-scrollbar:  true
+rofi.color-enabled:   true
+rofi.line-margin:     5
+
+rofi.color-normal: bg, fg, bg, bg, ylw
+rofi.color-urgent: bg, fg, bg, bg, ylw
+rofi.color-active: bg, fg, bg, bg, ylw
+rofi.color-window: bg, bblk, bblk
+
+
+/* colors */
+*background:  bg
+*foreground:  fg
+*cursorColor: bblk
+
+*color0:      blk
+*color8:      bblk
+*color1:      dred
+*color9:      red
+*color2:      dgrn
+*color10:     grn
+*color3:      dylw
+*color11:     ylw
+*color4:      dblu
+*color12:     blu
+*color5:      dmag
+*color13:     mag
+*color6:      dcyn
+*color14:     cyn
+*color7:      dwht
+*color15:     wht

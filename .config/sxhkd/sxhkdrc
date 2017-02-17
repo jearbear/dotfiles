@@ -1,0 +1,150 @@
+#
+# bspwm hotkeys
+#
+
+alt + shift + r
+    pkill -USR1 -x sxhkd
+
+alt + shift + Escape
+	bspc quit
+
+alt + shift + q
+	bspc node -c
+
+alt + Escape
+    slock
+
+
+#
+# state/flags
+#
+
+alt + {a,d,s,f}
+	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
+
+
+#
+# focus/swap
+#
+
+alt + w
+	bspc query -N -n focused.automatic && bspc node -n last.!automatic || bspc node last.leaf -n focused
+
+alt + {_,shift + }{h,j,k,l}
+	bspc node -{f,s} {west,south,north,east}
+
+alt + {p,b,comma,period}
+	bspc node -f @{parent,brother,first,second}
+
+alt + {Tab,grave}
+	bspc {node,desktop} -f last
+
+alt + {_,shift + }{1-9,0}
+	bspc {desktop -f,node -d} '^{1-9,10}'
+
+
+#
+# preselect
+#
+
+alt + ctrl + {h,j,k,l}
+	bspc node -p {west,south,north,east}
+
+alt + ctrl + {1-9}
+	bspc node -o 0.{1-9}
+
+alt + ctrl + space
+	bspc node -p cancel
+
+alt + ctrl + shift + space
+	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
+
+
+#
+# resize tiled/floating
+#
+
+super + {h,j,k,l}
+	bspc node {@west -r -100,@south -r +100,@north -r -100,@east -r +100}
+
+super + shift + {h,j,k,l}
+	bspc node {@east -r -100,@north -r +100,@south -r -100,@west -r +100}
+
+
+#
+# random hotkeys
+#
+
+alt + space
+    rofi -show run
+
+alt + shift + space
+    rofi-pass
+
+alt + Return
+    termite
+
+alt + shift + Return
+    termite -e ranger --class=ranger
+
+
+#
+# screenshots
+#
+
+Print
+    commander scrot_desk
+
+alt + Print
+    commander scrot_win
+
+alt + ctrl + Print
+    commander scrot_sel
+
+
+#
+# media keys
+#
+
+XF86AudioMute
+    commander vol_toggle
+
+XF86AudioLowerVolume
+    commander vol_dec
+
+XF86AudioRaiseVolume
+    commander vol_inc
+
+XF86MonBrightnessUp
+    commander disp_inc
+
+XF86MonBrightnessDown
+    commander disp_dec
+
+XF86Display
+    commander disp_toggle
+
+
+#
+# media controls
+#
+
+alt + bracketleft
+    commander mus_prev
+
+alt + bracketright
+    commander mus_next
+
+alt + backslash
+    commander mus_toggle
+
+
+#
+# change languages
+#
+
+alt + shift + u
+    commander keyb_us
+
+alt + shift + i
+    commander keyb_intl
