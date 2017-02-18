@@ -33,7 +33,7 @@ indicate_hidden = yes
 # Possible values are "left", "center" and "right".
 alignment = center
 
-# The frequency with wich text that is longer than the notification
+# The frequency with which text that is longer than the notification
 # window allows bounces back and forth.
 # This option conflicts with "word_wrap".
 # Set to 0 to disable.
@@ -78,7 +78,7 @@ transparency = 0
 # Don't remove messages, if the user is idle (no mouse or keyboard input)
 # for longer than idle_threshold seconds.
 # Set to 0 to disable.
-idle_threshold = 120
+idle_threshold = 5
 
 # Which monitor should the notifications be displayed on.
 monitor = 0

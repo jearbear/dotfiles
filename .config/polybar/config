@@ -1,54 +1,66 @@
-[settings]
-; Limit the amount of events sent to lemonbar within a set timeframe:
-; - "Allow <throttle_limit> updates within <throttle_ms> of time"
-; Default values:
-;throttle_limit = 5
-;throttle_ms = 50
+[colors]
 
-[bar/bar]
+bg = #32302f
+altbg = #3c3836
+fg = #ebdbb2
+altfg = #504945
+hl = #d79921
+white = #ebdbb2
+
+
+[bar/main]
+
 monitor = eDP1
 bottom = true
 
 width = 100%
 height = 34
 
-background = #32302f
-foreground = #ebdbb2
-overline-color = #ebdbb2
+background = ${colors.bg}
+foreground = ${colors.fg}
+
+line-size = 2
+line-color = ${colors.hl}
 
 border-top-size = 2
-border-top-color = #504945
+border-top-color = ${colors.altfg}
 
-padding-left = 3
-padding-right = 3
-module-margin-left = 0
-module-margin-right = 0
+padding = 3
+module-margin = 0
 
 font-0 = IosevkaTerm:size=10:weight=medium;0
-font-1 = Ionicons:size=12:weight=medium;1
+; font-1 = Ionicons:size=12:weight=medium;1
 
 modules-left = bspwm
-modules-center = mpd
 modules-right = bat0 bat1 pad clock
 
+wm-name = bspwm
 wm-restack = bspwm
 
+
 [module/cpu]
+
 type = internal/cpu
 interval = 5
 ; label =  %percentage%
 label = %percentage%
 
+
 [module/ram]
+
 type = internal/memory
 interval = 5
 label = " + %percentage_used%"
 
+
 [module/mpd]
+
 type = internal/mpd
 format-online = <label-song>
 
+
 [module/bat0]
+
 type = internal/battery
 battery = BAT0
 adapter = AC
@@ -59,7 +71,9 @@ label-full = %percentage%
 label-charging = %percentage%
 label-discharging = %percentage%
 
+
 [module/bat1]
+
 type = internal/battery
 battery = BAT1
 adapter = AC
@@ -67,12 +81,15 @@ label-full = " + %percentage%"
 label-charging = " + %percentage%"
 label-discharging = " + %percentage%"
 
+
 [module/clock]
+
 type = internal/date
 date = %b %d %H:%M
 format = <label>
 
 [module/volume]
+
 type = internal/volume
 speaker_mixer = Speaker
 headphone_mixer = Headphone
@@ -81,7 +98,9 @@ headphone_control_numid = 19
 label-volume =  %percentage%
 label-muted =  %percentage%
 
+
 [module/bspwm]
+
 type = internal/bspwm
 
 label-focused = " %name% "
@@ -89,8 +108,14 @@ label-occupied = " %name% "
 label-urgent = " %name% "
 label-empty = " %name% "
 
-label-occupied-background = #3c3836
-label-focused-background = ${bar/bar.border-top-color}
-label-focused-underline = #d79921
+label-occupied-background = ${colors.altbg}
+label-focused-background = ${colors.altfg}
+label-focused-underline = ${colors.hl}
+
+
+[module/pad]
+
+type = custom/text
+content = "    "
 
 ; vim:ft=dosini
