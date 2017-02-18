@@ -1,6 +1,6 @@
 [user]
-	email = jerrytegno@gmail.com
-	name = Jerry Tegno
+    email = jerrytegno@gmail.com
+    name = Jerry Tegno
 
 [alias]
     tree = log --graph --decorate --pretty=oneline --abbrev-commit
