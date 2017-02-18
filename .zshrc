@@ -28,17 +28,6 @@ compinit
 # colors
 autoload -U colors && colors
 
-# useful aliases
-alias -g ls='ls --color=auto'
-alias calc='python -ic "from math import *; import cmath"'
-alias vim='nvim'
-alias com='commander'
-alias power='glances --hide-kernel-threads --process-short-name -1 -2 -4'
-alias recon='systemctl restart connman'
-alias feh='feh -.'
-
-alias dots='git --git-dir=$HOME/.dots/ --work-tree=$HOME'
-
 # bindings
 bindkey '^[[Z' reverse-menu-complete
 bindkey '^?' vi-backward-delete-char
@@ -57,5 +46,10 @@ bindkey '^xe' edit-command-line
 # prompt
 PROMPT='%1/%F{yellow} •• %f'
 
-# autojump
-source /etc/profile.d/autojump.zsh
+# aliases
+alias -g ls='ls --color=auto'
+alias calc='python -ic "from math import *; import cmath"'
+alias vim='nvim'
+alias power='glances --hide-kernel-threads --process-short-name -1 -2 -4'
+alias recon='systemctl restart connman'
+alias dots='git --git-dir=$HOME/.dots/ --work-tree=$HOME'

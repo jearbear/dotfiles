@@ -93,13 +93,13 @@ alt + shift + Return
 #
 
 Print
-    commander scrot_desk
+    scrot 'desk_%b-%d-%Y_%H:%M:%S.png' -q 100 -e 'convert $f $f && mkdir -p ~/downloads/scrots && mv $f ~/downloads/scrots/'; notify-send 'scrot' 'desktop captured'
 
 alt + Print
-    commander scrot_win
+    scrot -u 'win_%b-%d-%Y_%H:%M:%S.png' -q 100 -e 'convert $f $f && mkdir -p ~/downloads/scrots && mv $f ~/downloads/scrots/'; notify-send 'scrot' 'window captured'
 
 alt + ctrl + Print
-    commander scrot_sel
+    scrot -s 'desk_%b-%d-%Y_%H:%M:%S.png' -q 100 -e 'convert $f $f && mkdir -p ~/downloads/scrots && mv $f ~/downloads/scrots/'; notify-send 'scrot' 'selection captured'
 
 
 #
@@ -107,22 +107,22 @@ alt + ctrl + Print
 #
 
 XF86AudioMute
-    commander vol_toggle
+    ponymix toggle
 
 XF86AudioLowerVolume
-    commander vol_dec
+    ponymix decrease 5
 
 XF86AudioRaiseVolume
-    commander vol_inc
+    ponymix increase 5
 
 XF86MonBrightnessUp
-    commander disp_inc
+    xbacklight -inc 5
 
 XF86MonBrightnessDown
-    commander disp_dec
+    xbacklight -dec 5
 
-XF86Display
-    commander disp_toggle
+# XF86Display
+#     commander disp_toggle
 
 
 #
@@ -130,13 +130,13 @@ XF86Display
 #
 
 alt + bracketleft
-    commander mus_prev
+    playerctl previous
 
 alt + bracketright
-    commander mus_next
+    playerctl next
 
 alt + backslash
-    commander mus_toggle
+    playertcl play-pause
 
 
 #
@@ -144,7 +144,7 @@ alt + backslash
 #
 
 alt + shift + u
-    commander keyb_us
+    setxkbmap us basic
 
 alt + shift + i
-    commander keyb_intl
+    setxkbmap us intl

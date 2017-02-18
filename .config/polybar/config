@@ -1,12 +1,3 @@
-;=====================================================
-;
-;   To learn more about how to configure Lemonbuddy
-;   go to https://github.com/jaagr/lemonbuddy
-;
-;   The README contains alot of information
-;
-;=====================================================
-
 [settings]
 ; Limit the amount of events sent to lemonbar within a set timeframe:
 ; - "Allow <throttle_limit> updates within <throttle_ms> of time"
@@ -101,9 +92,5 @@ label-empty = " %name% "
 label-occupied-background = #3c3836
 label-focused-background = ${bar/bar.border-top-color}
 label-focused-underline = #d79921
-
-[module/pad]
-type = custom/text
-content = "   "
 
 ; vim:ft=dosini
