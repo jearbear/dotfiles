@@ -20,7 +20,6 @@ unsetopt beep
 zstyle ':completion:*' menu select
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z-_}={A-Za-z_-}'
-
 setopt completealiases completeinword
 autoload -Uz compinit promptinit
 compinit
@@ -28,7 +27,7 @@ compinit
 # colors
 autoload -U colors && colors
 
-# bindings
+# readline bindings
 bindkey '^[[Z' reverse-menu-complete
 bindkey '^?' vi-backward-delete-char
 bindkey '^W' vi-backward-kill-word
@@ -41,15 +40,20 @@ bindkey "^F" vi-forward-word
 # edit command in $EDITOR
 autoload -U edit-command-line
 zle -N edit-command-line
-bindkey '^xe' edit-command-line
+bindkey '^o' edit-command-line
 
 # prompt
-PROMPT='%1/%F{yellow} •• %f'
+PROMPT='%1/%F{yellow} » %f'
 
 # aliases
-alias -g ls='ls --color=auto'
-alias calc='python -ic "from math import *; import cmath"'
+alias ls='ls --color=auto'
+alias sizes='du -d 1 -h . | sort -rh'
+
+alias vi='nvim'
 alias vim='nvim'
+alias calc='python -ic "from math import *; import cmath"'
 alias power='glances --hide-kernel-threads --process-short-name -1 -2 -4'
+
 alias recon='systemctl restart connman'
+
 alias dots='git --git-dir=$HOME/.dots/ --work-tree=$HOME'
