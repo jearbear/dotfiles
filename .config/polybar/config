@@ -32,7 +32,7 @@ font-0 = IosevkaTerm:size=10:weight=medium;0
 ; font-1 = Ionicons:size=12:weight=medium;1
 
 modules-left = bspwm
-modules-right = bat0 bat1 pad clock
+modules-right = vpn pad bat0 bat1 pad clock
 
 wm-name = bspwm
 wm-restack = bspwm
@@ -112,6 +112,13 @@ label-occupied-background = ${colors.altbg}
 label-focused-background = ${colors.altfg}
 label-focused-underline = ${colors.hl}
 
+
+[module/vpn]
+
+type = custom/script
+exec = pgrep openvpn
+interval = 5
+label = « vpn »
 
 [module/pad]
 
