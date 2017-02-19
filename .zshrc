@@ -51,7 +51,7 @@ alias sizes='du -d 1 -h . | sort -rh'
 
 alias vi='nvim'
 alias vim='nvim'
-alias calc='python -ic "from math import *; import cmath"'
+alias calc='qalc -i -t'
 alias power='glances --hide-kernel-threads --process-short-name -1 -2 -4'
 
 alias recon='systemctl restart connman'

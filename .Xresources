@@ -7,6 +7,7 @@ Xft.hintstyle: hintslight
 Xft.lcdfilter: lcddefault
 Xft.rgba:      rgb
 
+
 /* colors */
 #define bg   #32302f
 #define fg   #ebdbb2
@@ -29,23 +30,27 @@ Xft.rgba:      rgb
 
 
 /* rofi */
-rofi.font:            Iosevka Term Medium 16
-rofi.terminal:        termite
+rofi.bw:              2
+rofi.color-enabled:   true
 rofi.columns:         1
 rofi.eh:              1
-rofi.padding:         400
-rofi.fullscreen:      true
-rofi.bw:              0
-rofi.sidebar-mode:    false
-rofi.separator-style: none
+rofi.font:            Iosevka Term Medium 12
+rofi.fullscreen:      no
 rofi.hide-scrollbar:  true
-rofi.color-enabled:   true
 rofi.line-margin:     5
+rofi.lines:           3
+rofi.location:        6
+rofi.padding:         30
+rofi.separator-style: none
+rofi.sidebar-mode:    false
+rofi.terminal:        termite
+rofi.width:           1926
+rofi.yoffset:         3
 
 rofi.color-normal: bg, fg, bg, bg, ylw
 rofi.color-urgent: bg, fg, bg, bg, ylw
 rofi.color-active: bg, fg, bg, bg, ylw
-rofi.color-window: bg, bblk, bblk
+rofi.color-window: bg, #504945, #504945
 
 
 /* colors */
