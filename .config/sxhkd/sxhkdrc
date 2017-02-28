@@ -139,7 +139,7 @@ alt + bracketright
     playerctl next
 
 alt + backslash
-    playertcl play-pause
+    playerctl play-pause
 
 
 #

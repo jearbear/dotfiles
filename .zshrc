@@ -53,9 +53,13 @@ alias vi='nvim'
 alias vim='nvim'
 alias calc='qalc -i -t'
 alias power='glances --hide-kernel-threads --process-short-name -1 -2 -4'
+alias pics='sxiv -rt .'
 
 alias recon='systemctl restart connman'
 alias vpn='sudo openvpn --client --config /etc/openvpn/client/France.conf'
 alias kvpn='sudo pkill openvpn'
 
 alias dots='git --git-dir=$HOME/.dots/ --work-tree=$HOME'
+
+# fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

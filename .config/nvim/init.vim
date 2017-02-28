@@ -38,12 +38,11 @@ Plug 'wellle/targets.vim'
 Plug 'lifepillar/vim-mucomplete'
 
 " Plug 'mhinz/vim-sayonara'
-" Plug 'junegunn/goyo.vim'
+Plug 'junegunn/goyo.vim'
 Plug 'rust-lang/rust.vim'
 Plug 'racer-rust/vim-racer'
 
-" Plug 'vim-pandoc/vim-pandoc-syntax'
-" Plug 'vim-pandoc/vim-pandoc'
+Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 
 call plug#end()
@@ -71,6 +70,7 @@ set wrap linebreak
 set breakindent showbreak=..
 
 set cole=2 cocu="n"
+set nofoldenable
 
 set incsearch nohlsearch
 set ignorecase smartcase
@@ -103,8 +103,6 @@ set spelllang=en
 
 set backupdir=~/.config/nvim/backup//
 set directory=~/.config/nvim/swp//
-
-let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 
 "
 " VIM SETTINGS
@@ -171,7 +169,7 @@ xmap ga <Plug>(EasyAlign)
 " vim grepper
 nnoremap \ :Grepper<CR>
 nmap gs <Plug>(GrepperOperator)
-xmap gs <Plug>(GrepperOperator)
+map gs <Plug>(GrepperOperator)
 
 " neomake
 nnoremap <Leader>m :Neomake<CR>:silent !ctags -R .<CR>
@@ -181,19 +179,12 @@ let g:neomake_warning_sign = {'text': '!', 'texthl': 'NeomakeWarningSign'}
 let g:neomake_message_sign = {'text': '>', 'texthl': 'NeomakeMessageSign'}
 let g:neomake_info_sign = {'text': 'i', 'texthl': 'NeomakeInfoSign'}
 
-" vim sneak
-let g:sneak#streak = 1
-
 " jedi
 let g:jedi#auto_initialization = 0
 autocmd FileType python setlocal omnifunc=jedi#completions
 
 " targets
 let g:targets_seekRanges = 'cr cb cB lc ac Ac lr rr ll lb ar ab lB Ar aB Ab AB rb rB al Al'
-
-" vimwiki
-let g:vimwiki_list = [{'path': '~/wiki/',
-            \ 'syntax': 'markdown', 'ext': '.md'}]
 
 " rust racer
 let g:racer_experimental_completer = 1
