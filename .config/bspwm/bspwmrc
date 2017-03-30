@@ -21,7 +21,7 @@ bspc config pointer_modifier      mod1
 bspc config borderless_monocle  true
 bspc config gapless_monocle     true
 bspc config paddingless_monocle false
-bspc config single_monocle      false
+bspc config single_monocle      true
 
 # monitor settings
 bspc monitor -d i ii iii iv v

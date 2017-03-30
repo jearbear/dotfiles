@@ -55,9 +55,10 @@ alias calc='qalc -i -t'
 alias power='glances --hide-kernel-threads --process-short-name -1 -2 -4'
 alias pics='sxiv -rt .'
 
+alias con='connmanctl'
 alias recon='systemctl restart connman'
-alias vpn='sudo openvpn --client --config /etc/openvpn/client/France.conf'
-alias kvpn='sudo pkill openvpn'
+alias vpn='openvpn --client --config /etc/openvpn/client/US_Silicon_Valley.conf'
+alias kvpn='pkill openvpn'
 
 alias dots='git --git-dir=$HOME/.dots/ --work-tree=$HOME'
 

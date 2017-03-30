@@ -9,41 +9,40 @@ let maplocalleader = " "
 "
 call plug#begin('~/.config/nvim/plugged')
 
+" themes
+Plug 'joshdick/onedark.vim'
 Plug 'morhetz/gruvbox'
 Plug 'rakr/vim-one'
-Plug 'joshdick/onedark.vim'
 
+" mappings
+Plug 'junegunn/vim-easy-align'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-unimpaired'
-
-Plug 'junegunn/vim-easy-align'
 Plug 'tpope/vim-surround'
+Plug 'tpope/vim-unimpaired'
+Plug 'wellle/targets.vim'
 
-Plug 'tpope/vim-fugitive'
-" Plug 'mhinz/vim-signify'
+" code wrangling
 Plug 'editorconfig/editorconfig-vim'
 Plug 'justinmk/vim-dirvish'
+Plug 'lifepillar/vim-mucomplete'
 Plug 'mhinz/vim-grepper'
+Plug 'neomake/neomake'
 Plug 'romainl/vim-qf'
+Plug 'tpope/vim-fugitive'
 
+" language support
+Plug 'cespare/vim-toml'
 Plug 'davidhalter/jedi-vim'
+Plug 'godlygeek/tabular'
+Plug 'lervag/vimtex'
+Plug 'mustache/vim-mustache-handlebars'
 Plug 'neovimhaskell/haskell-vim'
 Plug 'pangloss/vim-javascript'
-Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
-Plug 'lervag/vimtex'
-
-Plug 'neomake/neomake'
-Plug 'wellle/targets.vim'
-Plug 'lifepillar/vim-mucomplete'
-
-" Plug 'mhinz/vim-sayonara'
-Plug 'junegunn/goyo.vim'
-Plug 'rust-lang/rust.vim'
-Plug 'racer-rust/vim-racer'
-
-Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
+Plug 'racer-rust/vim-racer'
+Plug 'rust-lang/rust.vim'
+Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
 
 call plug#end()
 
@@ -53,10 +52,9 @@ call plug#end()
 set background=dark
 set termguicolors
 
-" gruvbox
+let g:gruvbox_contrast_dark = 'soft'
 let g:gruvbox_invert_selection = 0
 let g:gruvbox_italic = 1
-let g:gruvbox_contrast_dark = 'soft'
 
 colorscheme gruvbox
 
@@ -77,9 +75,9 @@ set ignorecase smartcase
 
 set dictionary+=/usr/share/dict/words
 
-set wildmenu wildignorecase
-set wildignore+=*.o,tags,.git
 set suffixes+=,,
+set wildignore+=*.o,tags,.git
+set wildmenu wildignorecase
 set wildmode=full,full
 
 set shortmess+=c
@@ -148,7 +146,7 @@ nmap <Leader>V :source ~/.config/nvim/init.vim<CR>
 "
 
 " qf
-nmap <C-f> <Plug>QfSwitch
+nmap <C-f> <Plug>(qf_switch)
 let g:qf_mapping_ack_style = 1
 
 " dirvish
@@ -168,8 +166,12 @@ xmap ga <Plug>(EasyAlign)
 
 " vim grepper
 nnoremap \ :Grepper<CR>
-nmap gs <Plug>(GrepperOperator)
 map gs <Plug>(GrepperOperator)
+nmap gs <Plug>(GrepperOperator)
+let g:grepper = {}
+let g:grepper.simple_prompt = 1
+let g:grepper.tools = ['rg', 'git', 'grep']
+let g:grepper.tools = ['git', 'grep']
 
 " neomake
 nnoremap <Leader>m :Neomake<CR>:silent !ctags -R .<CR>
@@ -188,3 +190,5 @@ let g:targets_seekRanges = 'cr cb cB lc ac Ac lr rr ll lb ar ab lB Ar aB Ab AB r
 
 " rust racer
 let g:racer_experimental_completer = 1
+autocmd FileType rust nmap gd <Plug>(rust-def)
+autocmd FileType rust nmap <Leader>gd <Plug>(rust-doc)
