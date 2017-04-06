@@ -1,6 +1,35 @@
+[alias]
+    force-push = git push --force-with-lease
+    stash-all = stash save --include-untracked
+    tree = log --graph --pretty=format:'%C(auto)%h%d %s %C(yellow):: %C(reset)%an %C(yellow):: %C(reset)%ad' --decorate
+    uncommit = reset --soft HEAD^
+
+[commit]
+    gpgSign = true
+
+[core]
+    pager = diff-so-fancy | less --tabs=4 -RFX
+
+[log]
+    date = relative
+
+[merge]
+    conflictstyle = diff3
+    ff = only
+
+[pull]
+    ff = only
+
+[push]
+    default = simple
+
+[rebase]
+    autostash = true
+
+[stash]
+    showPatch = true
+
 [user]
     email = jerrytegno@gmail.com
     name = Jerry Tegno
 
-[alias]
-    tree = log --graph --decorate --pretty=oneline --abbrev-commit
