@@ -48,6 +48,7 @@ PROMPT='%1/%F{yellow} » %f'
 # aliases
 alias ls='ls --color=auto'
 alias sizes='du -d 1 -h . | sort -rh'
+alias copy='xclip -selection clipboard'
 
 alias vi='nvim'
 alias vim='nvim'
