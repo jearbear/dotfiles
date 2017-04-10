@@ -24,12 +24,15 @@ Plug 'wellle/targets.vim'
 
 " code wrangling
 Plug 'editorconfig/editorconfig-vim'
-Plug 'justinmk/vim-dirvish'
 Plug 'lifepillar/vim-mucomplete'
-Plug 'mhinz/vim-grepper'
 Plug 'neomake/neomake'
 Plug 'romainl/vim-qf'
 Plug 'tpope/vim-fugitive'
+
+" navigation
+Plug 'justinmk/vim-dirvish'
+Plug 'mhinz/vim-grepper'
+Plug 'ctrlpvim/ctrlp.vim'
 
 " language support
 Plug 'cespare/vim-toml'
@@ -76,7 +79,7 @@ set ignorecase smartcase
 set dictionary+=/usr/share/dict/words
 
 set suffixes+=,,
-set wildignore+=*.o,tags,.git
+set wildignore+=*/.git/*,*/tmp/*,*/target/*,*.swp,tags
 set wildmenu wildignorecase
 set wildmode=full,full
 
@@ -113,9 +116,9 @@ nnoremap <Leader>. :tabn<CR>
 
 set path=.,**
 set wildcharm=<C-z>
-nnoremap <Leader>f :find *
-nnoremap <Leader>t :tabfind *
-nnoremap <Leader>l :buffer <C-z><S-Tab>
+" nnoremap <Leader>f :find *
+" nnoremap <Leader>t :tabfind *
+" nnoremap <Leader>l :buffer <C-z><S-Tab>
 nnoremap <Backspace> <C-^>
 nnoremap Q :bd<CR>
 
@@ -157,6 +160,25 @@ let g:EditorConfig_core_mode = 'python_external'
 let g:EditorConfig_exclude_patterns = ['fugitive://.*']
 let g:EditorConfig_max_line_indicator = 'none'
 
+" ctrlp
+" let g:ctrlp_map = '
+nnoremap <Leader>f :CtrlP<CR>
+nnoremap <Leader>l :CtrlPBuffer<CR>
+let g:ctrlp_user_command = 'rg %s --files --color=never'
+let g:ctrlp_use_caching = 0
+let g:ctrlp_buffer_func = {
+      \ 'enter': 'Hide_status',
+      \ 'exit': 'Show_status',
+      \ }
+
+func! Hide_status()
+  set laststatus=0
+endfunc
+
+func! Show_status()
+  set laststatus=2
+endfunc
+
 " fugitive
 nnoremap <Leader>gs :Gstatus<CR>
 
@@ -171,7 +193,6 @@ nmap gs <Plug>(GrepperOperator)
 let g:grepper = {}
 let g:grepper.simple_prompt = 1
 let g:grepper.tools = ['rg', 'git', 'grep']
-let g:grepper.tools = ['git', 'grep']
 
 " neomake
 nnoremap <Leader>m :Neomake<CR>:silent !ctags -R .<CR>

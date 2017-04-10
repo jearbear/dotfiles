@@ -64,7 +64,7 @@ ignore_newline = no
 # the top and down respectevly.
 # The width can be negative.  In this case the actual width is the
 # screen width minus the width defined in within the geometry option.
-geometry = "250x50-10+10"
+geometry = "250x50-10-46"
 
 # Shrink window if it's smaller than the width.  Will be ignored if
 # width is 0.
@@ -148,7 +148,7 @@ icon_position = off
 icon_folders = /usr/share/icons/gnome/16x16/status/:/usr/share/icons/gnome/16x16/devices/
 
 [frame]
-width = 3
+width = 2
 color = "#504945"
 
 [shortcuts]

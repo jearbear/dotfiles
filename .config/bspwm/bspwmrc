@@ -2,7 +2,7 @@
 
 # display settings
 bspc config border_width   2
-bspc config window_gap     30
+bspc config window_gap     10
 bspc config split_ratio    0.50
 bspc config bottom_padding 37
 
