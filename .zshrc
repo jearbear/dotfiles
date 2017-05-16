@@ -53,13 +53,15 @@ alias copy='xclip -selection clipboard'
 alias vi='nvim'
 alias vim='nvim'
 alias calc='qalc -i -t'
-alias power='glances --hide-kernel-threads --process-short-name -1 -2 -4'
+alias load='glances --hide-kernel-threads --process-short-name -2 -4 --disable-bg --time 1'
+alias power='sudo powertop'
 alias pics='sxiv -rt .'
+alias t='tmux new-session -A -s main'
 
 alias con='connmanctl'
 alias recon='systemctl restart connman'
-alias vpn='openvpn --client --config /etc/openvpn/client/US_Silicon_Valley.conf'
-alias kvpn='pkill openvpn'
+alias vpn='sudo openvpn --client --config /etc/openvpn/client/US_Silicon_Valley.conf'
+alias svpn='sudo openconnect su-vpn.stanford.edu'
 
 alias dots='git --git-dir=$HOME/.dots/ --work-tree=$HOME'
 

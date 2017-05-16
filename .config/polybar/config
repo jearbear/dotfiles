@@ -32,7 +32,7 @@ font-0 = IosevkaTerm:size=10:weight=medium;0
 ; font-1 = Ionicons:size=12:weight=medium;1
 
 modules-left = bspwm
-modules-right = vpn pad bat0 bat1 pad clock
+modules-right = svpn vpn pad bat0 bat1 pad clock
 
 wm-name = bspwm
 wm-restack = bspwm
@@ -111,6 +111,14 @@ label-empty = " %name% "
 label-occupied-background = ${colors.altbg}
 label-focused-background = ${colors.altfg}
 label-focused-underline = ${colors.hl}
+
+
+[module/svpn]
+
+type = custom/script
+exec = pgrep openconnect
+interval = 5
+label = « stanford vpn »
 
 
 [module/vpn]

@@ -11,15 +11,13 @@ alt + shift + Escape
 alt + shift + q
 	bspc node -c
 
-alt + Escape
-    slock
 
 
 #
 # state/flags
 #
 
-alt + {a,d,s,f}
+alt + {a,shift + s,s,f}
 	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
 
 
@@ -33,8 +31,9 @@ alt + w
 alt + {_,shift + }{h,j,k,l}
 	bspc node -{f,s} {west,south,north,east}
 
-alt + {p,b,comma,period}
-	bspc node -f @{parent,brother,first,second}
+alt + {apostrophe}
+	bspc node -f @{parent}
+	# bspc node -f @{parent,brother,first,second}
 
 alt + {Tab,grave}
 	bspc {node,desktop} -f last
@@ -47,16 +46,16 @@ alt + {_,shift + }{1-9,0}
 # preselect
 #
 
-alt + ctrl + {h,j,k,l}
+alt + {y,u,i,o}
 	bspc node -p {west,south,north,east}
 
-alt + ctrl + {1-9}
-	bspc node -o 0.{1-9}
+# alt + ctrl + {1-9}
+# 	bspc node -o 0.{1-9}
 
-alt + ctrl + space
-	bspc node -p cancel
+# alt + ctrl + space
+# 	bspc node -p cancel
 
-alt + ctrl + shift + space
+~Escape
 	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
 
 
@@ -64,25 +63,22 @@ alt + ctrl + shift + space
 # resize tiled/floating
 #
 
-super + {h,j,k,l}
+alt + {n,m,comma,period}
 	bspc node {@west -r -100,@south -r +100,@north -r -100,@east -r +100}
 
-super + shift + {h,j,k,l}
-	bspc node {@east -r -100,@north -r +100,@south -r -100,@west -r +100}
+# alt + shift + {n,m,comma,period}
+# 	bspc node {@east -r -100,@north -r +100,@south -r -100,@west -r +100}
 
 
 #
 # random hotkeys
 #
 
-alt + space
+alt + d
     rofi -modi "run" -show run
 
-alt + shift + space
+alt + slash
     rofi-pass
-
-alt + shift + equal
-    rofi -modi "calc:qalc -t +u8" -show calc
 
 alt + Return
     termite
@@ -101,7 +97,7 @@ Print
 alt + Print
     scrot -u 'win_%b-%d-%Y_%H:%M:%S.png' -q 100 -e 'convert $f $f && mkdir -p ~/downloads/scrots && mv $f ~/downloads/scrots/'; notify-send 'scrot' 'window captured'
 
-alt + ctrl + Print
+alt + shift + Print
     scrot -s 'sel_%b-%d-%Y_%H:%M:%S.png' -q 100 -e 'convert $f $f && mkdir -p ~/downloads/scrots && mv $f ~/downloads/scrots/'; notify-send 'scrot' 'selection captured'
 
 

@@ -177,17 +177,17 @@ context = ctrl+shift+period
 # Otherwise the "#" and following would be interpreted as a comment.
 foreground = "#ebdbb2"
 background = "#32302f"
-timeout = 3
+timeout = 10
 
 [urgency_normal]
 foreground = "#ebdbb2"
 background = "#32302f"
-timeout = 3
+timeout = 10
 
 [urgency_critical]
 foreground = "#ebdbb2"
 background = "#32302f"
-timeout = 3
+timeout = 10
 
 
 # Every section that isn't one of the above is interpreted as a rules to

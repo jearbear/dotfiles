@@ -7,10 +7,6 @@ end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true
 
-[*.{c,html,rb,scss,xml,md}]
-max_line_length = 80
-indent_size = 2
-
 [*.tex]
 max_line_length = 100
 
