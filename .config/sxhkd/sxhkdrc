@@ -123,13 +123,7 @@ XF86MonBrightnessDown
 # XF86Display
 #     commander disp_toggle
 
-XF86AudioPlay
-    playerctl play
-
-XF86AudioPause
-    playerctl pause
-
-alt + backslash
+{XF86AudioPlay, XF86AudioPause, alt + backslash}
     playerctl play-pause
 
 {XF86AudioPrev, alt + bracketleft}
