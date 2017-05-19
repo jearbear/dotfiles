@@ -26,7 +26,6 @@ Plug 'justinmk/vim-sneak'
 
 " code wrangling
 Plug 'editorconfig/editorconfig-vim'
-Plug 'ludovicchabant/vim-gutentags'
 Plug 'w0rp/ale'
 Plug 'romainl/vim-qf'
 Plug 'tpope/vim-fugitive'
@@ -131,7 +130,7 @@ nnoremap <Leader>f :find *
 
 " buffer navigation
 nnoremap <Backspace> <C-^>
-nnoremap <Leader>l :buffer <C-z>
+nnoremap <Leader>l :buffer <C-z><S-Tab>
 nnoremap Q :bd<CR>
 
 " tab navigation
@@ -160,14 +159,16 @@ cnoremap <C-n> <Down>
 " brace completion
 inoremap {<CR> {<CR>}<Esc>O
 inoremap {; {<CR>};<Esc>O
+inoremap {, {<CR>},<Esc>O
 inoremap {); {<CR>});<Esc>O
+inoremap {)<CR> {<CR>})<Esc>O
 
 " edit/save vimrc
 nmap <Leader>v :e ~/.config/nvim/init.vim<CR>
 nmap <Leader>V :source ~/.config/nvim/init.vim<CR>
 
 " generate tags
-nnoremap <Leader>t :silent !ctags -R .<CR>
+nnoremap <Leader>t :silent !ctags -R --exclude=@.ctagsignore<CR>
 
 
 "

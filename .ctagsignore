@@ -1,0 +1,6 @@
+__pycache__
+venv
+target
+*.css
+*.html
+*.min.js

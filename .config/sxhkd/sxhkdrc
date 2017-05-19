@@ -123,19 +123,20 @@ XF86MonBrightnessDown
 # XF86Display
 #     commander disp_toggle
 
+XF86AudioPlay
+    playerctl play
 
-#
-# media controls
-#
-
-alt + bracketleft
-    playerctl previous
-
-alt + bracketright
-    playerctl next
+XF86AudioPause
+    playerctl pause
 
 alt + backslash
     playerctl play-pause
+
+{XF86AudioPrev, alt + bracketleft}
+    playerctl previous
+
+{XF86AudioNext, alt + bracketright}
+    playerctl next
 
 
 #
