@@ -81,10 +81,10 @@ alt + slash
     rofi-pass
 
 alt + Return
-    termite
+    alacritty
 
 alt + shift + Return
-    termite -e ranger --class=ranger
+    alacritty -e ranger
 
 
 #
@@ -131,6 +131,15 @@ XF86MonBrightnessDown
 
 {XF86AudioNext, alt + bracketright}
     playerctl next
+
+alt + shift + backslash
+    ponymix set-profile headset_head_unit && ponymix set-profile a2dp_sink
+
+alt + shift + bracketleft
+    echo 'disconnect' | bluetoothctl
+
+alt + shift + bracketright
+    echo 'connect 00:16:94:1C:2A:7E' | bluetoothctl
 
 
 #

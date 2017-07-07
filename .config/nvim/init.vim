@@ -23,6 +23,7 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'wellle/targets.vim'
 Plug 'justinmk/vim-sneak'
+Plug 'tpope/vim-speeddating'
 
 " code wrangling
 Plug 'editorconfig/editorconfig-vim'
@@ -31,7 +32,6 @@ Plug 'romainl/vim-qf'
 Plug 'tpope/vim-fugitive'
 
 " completion
-Plug 'KeyboardFire/vim-minisnip'
 Plug 'lifepillar/vim-mucomplete'
 Plug 'mattn/emmet-vim'
 
@@ -50,6 +50,9 @@ Plug 'racer-rust/vim-racer'
 Plug 'rust-lang/rust.vim'
 Plug 'tweekmonster/braceless.vim'
 
+" testing
+Plug 'jceb/vim-orgmode'
+
 call plug#end()
 
 
@@ -67,14 +70,16 @@ colorscheme gruvbox
 
 set hidden
 
-set tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+set shiftwidth=2 softtabstop=2 expandtab
 
 set number
+set cursorline
+set scrolloff=999
 
 set wrap linebreak
 set breakindent showbreak=..
 
-set cole=2 cocu=n
+set cole=2 cocu="nc"
 set nofoldenable
 
 set inccommand=nosplit
@@ -85,7 +90,7 @@ set dictionary+=/usr/share/dict/words
 
 " prefer files with suffixes
 set suffixes+=,,
-set wildignore+=*.pyc,*.swp,tags
+set wildignore+=*.pyc,*.swp,*.lock,tags
 set wildignore+=*/.git/*,*/tmp/*,*/target/*,*/venv/*
 set wildmenu wildignorecase
 set wildmode=full,full
@@ -207,6 +212,7 @@ let g:ale_sign_error = '!!'
 let g:ale_sign_warning = '!!'
 let g:ale_set_highlights = 0
 let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_enter = 0
 let g:ale_set_loclist = 0
 let g:ale_set_quickfix = 1
 
@@ -242,3 +248,11 @@ imap <left> <plug>(MUcompleteCycBwd)
 
 " vim-sneak
 let g:sneak#use_ic_scs = 1
+
+" testing
+let g:UltiSnipsExpandTrigger="<C-j>"
+let g:UltiSnipsJumpForwardTrigger="<C-j>"
+let g:UltiSnipsJumpBackwardTrigger="<C-k>"
+
+" vim-orgmode
+let g:org_indent = 1

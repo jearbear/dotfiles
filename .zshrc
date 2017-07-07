@@ -62,8 +62,14 @@ alias con='connmanctl'
 alias recon='systemctl restart connman'
 alias vpn='sudo openvpn --client --config /etc/openvpn/client/US_Silicon_Valley.conf'
 alias svpn='sudo openconnect su-vpn.stanford.edu'
+alias pn='ping www.google.com -c 1'
+alias hotspot='sudo create_ap wlp3s0 wlp3s0 thinkpad'
 
 alias dots='git --git-dir=$HOME/.dots/ --work-tree=$HOME'
+
+alias blueon='sudo systemctl start bluetooth'
+alias blueoff='sudo systemctl stop bluetooth'
+alias bluesync='ponymix set-profile headset_head_unit && ponymix set-profile a2dp_sink'
 
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

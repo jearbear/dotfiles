@@ -1,6 +1,5 @@
 [options]
-font = Iosevka Term Medium 11
-# font = M+ 1mn medium 10
+font = Iosevka Term Medium 10.5
 
 [colors]
 background = #32302f

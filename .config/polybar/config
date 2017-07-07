@@ -32,7 +32,7 @@ font-0 = IosevkaTerm:size=10:weight=medium;0
 ; font-1 = Ionicons:size=12:weight=medium;1
 
 modules-left = bspwm
-modules-right = svpn vpn pad bat0 bat1 pad clock
+modules-right = svpn pad vpn pad bt pad bat0 bat1 pad clock
 
 wm-name = bspwm
 wm-restack = bspwm
@@ -113,20 +113,19 @@ label-focused-background = ${colors.altfg}
 label-focused-underline = ${colors.hl}
 
 
-[module/svpn]
-
-type = custom/script
-exec = pgrep openconnect
-interval = 5
-label = « stanford vpn »
-
-
 [module/vpn]
 
 type = custom/script
 exec = pgrep openvpn
-interval = 5
-label = « vpn »
+interval = 1
+label = vpn
+
+[module/bt]
+
+type = custom/script
+exec = pgrep bluetooth
+interval = 1
+label = bt
 
 [module/pad]
 
