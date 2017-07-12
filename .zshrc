@@ -52,7 +52,6 @@ alias copy='xclip -selection clipboard'
 
 alias vi='nvim'
 alias vim='nvim'
-alias calc='qalc -i -t'
 alias load='glances --hide-kernel-threads --process-short-name -2 -4 --disable-bg --time 1'
 alias power='sudo powertop'
 alias pics='sxiv -rt .'
@@ -63,7 +62,7 @@ alias recon='systemctl restart connman'
 alias vpn='sudo openvpn --client --config /etc/openvpn/client/US_Silicon_Valley.conf'
 alias svpn='sudo openconnect su-vpn.stanford.edu'
 alias pn='ping www.google.com -c 1'
-alias hotspot='sudo create_ap wlp3s0 wlp3s0 thinkpad'
+alias hotspot='sudo create_ap --daemon wlp3s0 wlp3s0 thinkpad'
 
 alias dots='git --git-dir=$HOME/.dots/ --work-tree=$HOME'
 
