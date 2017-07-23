@@ -1,0 +1,14 @@
+alwaystrust: true
+askformore: false
+autoimport: true
+autopull: true
+autopush: true
+cliptimeout: 45
+debug: false
+loadkeys: true
+nocolor: false
+noconfirm: false
+path: /home/jerry/.password-store
+persistkeys: true
+safecontent: false
+version: ""

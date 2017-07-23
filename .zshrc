@@ -72,3 +72,6 @@ alias bluesync='ponymix set-profile headset_head_unit && ponymix set-profile a2d
 
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# gopass
+source <(gopass completion zsh)
