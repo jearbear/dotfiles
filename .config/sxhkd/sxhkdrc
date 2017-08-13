@@ -115,10 +115,10 @@ XF86AudioRaiseVolume
     ponymix increase 5
 
 XF86MonBrightnessUp
-    xbacklight -inc 5
+    light -A 10
 
 XF86MonBrightnessDown
-    xbacklight -dec 5
+    light -U 10
 
 # XF86Display
 #     commander disp_toggle
@@ -151,3 +151,14 @@ alt + shift + u
 
 alt + shift + i
     setxkbmap us intl
+
+
+#
+# binary bindings
+#
+
+alt + shift + m
+    stream
+
+alt + shift + b
+    buku_run

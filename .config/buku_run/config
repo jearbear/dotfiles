@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+_rofi () {
+    rofi -dmenu -i -no-levenshtein-sort "$@"
+}
+
+# keybindings
+switch_view="Alt+Tab"
+new_bookmark="Alt+n"
+actions="Alt+a"
+
+# colors
+help_color="#83a598"

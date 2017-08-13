@@ -10,7 +10,7 @@ white = #ebdbb2
 
 [bar/main]
 
-monitor = eDP1
+monitor = eDP-1
 bottom = true
 
 width = 100%
