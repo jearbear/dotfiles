@@ -11,47 +11,51 @@ let maplocalleader = " "
 call plug#begin('~/.config/nvim/plugged')
 
 " themes
-Plug 'joshdick/onedark.vim'
 Plug 'morhetz/gruvbox'
 Plug 'rakr/vim-one'
 
 " mappings
 Plug 'junegunn/vim-easy-align'
+Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
+Plug 'tweekmonster/braceless.vim'
 Plug 'wellle/targets.vim'
-Plug 'justinmk/vim-sneak'
-Plug 'tpope/vim-speeddating'
 
 " code wrangling
-Plug 'editorconfig/editorconfig-vim'
-Plug 'w0rp/ale'
 Plug 'romainl/vim-qf'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-sleuth'
+Plug 'w0rp/ale'
 
 " completion
 Plug 'lifepillar/vim-mucomplete'
-Plug 'mattn/emmet-vim'
+Plug 'racer-rust/vim-racer'
 
 " navigation
 Plug 'justinmk/vim-dirvish'
+Plug 'ludovicchabant/vim-gutentags'
 Plug 'mhinz/vim-grepper'
 
 " language support
 Plug 'cespare/vim-toml'
-Plug 'godlygeek/tabular'
+Plug 'fatih/vim-go'
 Plug 'lervag/vimtex'
 Plug 'neovimhaskell/haskell-vim'
 Plug 'pangloss/vim-javascript'
 Plug 'plasticboy/vim-markdown'
-Plug 'racer-rust/vim-racer'
 Plug 'rust-lang/rust.vim'
-Plug 'tweekmonster/braceless.vim'
+Plug 'vim-ruby/vim-ruby'
 
-" testing
-Plug 'jceb/vim-orgmode'
+" misc
+Plug 'godlygeek/tabular'
+
+" fzf
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 
 call plug#end()
 
@@ -70,6 +74,7 @@ colorscheme gruvbox
 
 set hidden
 
+" set tabstop=4
 set shiftwidth=2 softtabstop=2 expandtab
 
 set number
@@ -88,10 +93,12 @@ set ignorecase smartcase
 
 set dictionary+=/usr/share/dict/words
 
+set autowrite
+
 " prefer files with suffixes
 set suffixes+=,,
 set wildignore+=*.pyc,*.swp,*.lock,tags
-set wildignore+=*/.git/*,*/tmp/*,*/target/*,*/venv/*
+set wildignore+=*/.git/*,*/tmp/*,*/target/*,*/venv/*,*/vendor/*
 set wildmenu wildignorecase
 set wildmode=full,full
 
@@ -129,28 +136,30 @@ map 0 ^
 inoremap <C-c> <nop>
 
 " file navigation
-set path=.,**
-set wildcharm=<C-z>
-nnoremap <Leader>f :find *
+nnoremap <Leader>f :GFiles<CR>
+nnoremap <Leader>F :Files<CR>
 
 " buffer navigation
 nnoremap <Backspace> <C-^>
-nnoremap <Leader>l :buffer <C-z><S-Tab>
+nnoremap <Leader>l :Buffers<CR>
+
+nnoremap <Leader>[ :bprevious<CR>
+nnoremap <Leader>] :bnext<CR>
 nnoremap Q :bd<CR>
 
 " tab navigation
-nnoremap <Leader>, :tabp<CR>
-nnoremap <Leader>. :tabn<CR>
+nnoremap <Leader>} :tabp<CR>
+nnoremap <Leader>{ :tabn<CR>
 
 " tag jumping/previewing
-nnoremap <Leader>j :tjump /
-nnoremap <Leader>k :ptjump /
+nnoremap <Leader>j :Tags<CR>
+nnoremap <Leader>k :BTags<CR>
 
 " faster commenting
 nmap <Leader>/ gcc
 vmap <Leader>/ gc
 
-" chance and replace
+" variable renaming
 nnoremap <Leader>r *``cgn
 nnoremap <Leader>gr g*``cgn
 
@@ -169,11 +178,8 @@ inoremap {); {<CR>});<Esc>O
 inoremap {)<CR> {<CR>})<Esc>O
 
 " edit/save vimrc
-nmap <Leader>v :e ~/.config/nvim/init.vim<CR>
-nmap <Leader>V :source ~/.config/nvim/init.vim<CR>
-
-" generate tags
-nnoremap <Leader>t :silent !ctags -R --exclude=@.ctagsignore<CR>
+nmap <Leader>ve :e ~/.config/nvim/init.vim<CR>
+nmap <Leader>vs :source ~/.config/nvim/init.vim<CR>
 
 
 "
@@ -181,16 +187,11 @@ nnoremap <Leader>t :silent !ctags -R --exclude=@.ctagsignore<CR>
 "
 " vim-qf
 let g:qf_mapping_ack_style = 1
-nmap <C-q> <Plug>(qf_qf_switch)
-nmap <C-l> <Plug>(qf_qf_toggle)
+nmap <C-q> <Plug>(qf_qf_toggle)
+nmap <C-l> <Plug>(qf_loc_toggle)
 
 " vim-dirvish
 let g:dirvish_relative_paths = 1
-
-" editorconfig-vim
-let g:EditorConfig_core_mode = 'python_external'
-let g:EditorConfig_exclude_patterns = ['fugitive://.*']
-let g:EditorConfig_max_line_indicator = 'none'
 
 " vim-fugitive
 nnoremap <Leader>gs :Gstatus<CR>
@@ -201,6 +202,7 @@ xmap ga <Plug>(EasyAlign)
 
 " vim-grepper
 nnoremap \ :Grepper<CR>
+nnoremap <bar> :Grepper-buffer<CR>
 map gs <Plug>(GrepperOperator)
 nmap gs <Plug>(GrepperOperator)
 let g:grepper = {}
@@ -211,10 +213,10 @@ let g:grepper.tools = ['rg', 'git', 'grep']
 let g:ale_sign_error = '!!'
 let g:ale_sign_warning = '!!'
 let g:ale_set_highlights = 0
-let g:ale_lint_on_text_changed = 'always'
-let g:ale_lint_on_enter = 1
-let g:ale_set_loclist = 0
-let g:ale_set_quickfix = 1
+let g:ale_lint_on_enter = 0
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_open_list = 0
+let g:ale_list_window_size = 5
 
 hi link ALEErrorSign GruvboxRedSign
 hi link ALEWarningSign GruvboxYellowSign
@@ -227,18 +229,9 @@ let g:targets_seekRanges = 'cr cb cB lc ac Ac lr rr ll lb ar ab lB Ar aB Ab AB r
 
 " racer
 let g:racer_experimental_completer = 1
-autocmd FileType rust nmap gd <Plug>(rust-def)
-autocmd FileType rust nmap <Leader>gd <Plug>(rust-doc)
 
-" braceless.vim
-autocmd FileType python BracelessEnable +indent
-
-" emmet-vim
-let g:user_emmet_leader_key = '<C-f>'
-
-" vim-minisnip
-let g:minisnip_dir = '~/.config/nvim/minisnip'
-let g:minisnip_trigger = '<C-j>'
+" rust.vim
+let g:rustfmt_autosave = 1
 
 " vim-mucomplete
 inoremap <silent> <plug>(MUcompleteFwdKey) <right>
@@ -249,10 +242,53 @@ imap <left> <plug>(MUcompleteCycBwd)
 " vim-sneak
 let g:sneak#use_ic_scs = 1
 
-" testing
-let g:UltiSnipsExpandTrigger="<C-j>"
-let g:UltiSnipsJumpForwardTrigger="<C-j>"
-let g:UltiSnipsJumpBackwardTrigger="<C-k>"
+" vim-gutentags
+let g:gutentags_cache_dir = '~/.gutentags'
 
-" vim-orgmode
-let g:org_indent = 1
+" fzf.vim
+let g:fzf_layout = { 'down': 10 }
+let g:fzf_history_dir = '~/.fzf-history'
+let g:fzf_action = {
+      \ 'ctrl-p': 'pedit',
+      \ 'ctrl-t': 'tab split',
+      \ 'ctrl-s': 'split',
+      \ 'ctrl-v': 'vsplit',
+      \ }
+let g:fzf_colors = {
+      \ 'fg':      ['fg', 'Comment'],
+      \ 'bg':      ['bg', 'Normal'],
+      \ 'hl':      ['fg', 'Type'],
+      \ 'fg+':     ['fg', 'Normal'],
+      \ 'bg+':     ['bg', 'Normal'],
+      \ 'hl+':     ['fg', 'Type'],
+      \ 'info':    ['fg', 'Constant'],
+      \ 'prompt':  ['fg', 'Type'],
+      \ 'pointer': ['fg', 'Constant'],
+      \ 'marker':  ['fg', 'Constant'],
+      \ 'spinner': ['fg', 'Constant'],
+      \ 'header':  ['fg', 'PmenuSel'],
+      \ }
+
+function! s:fzf_statusline()
+  setlocal statusline=%#StatusLine#\ »\ fzf
+endfunction
+autocmd! User FzfStatusLine call <SID>fzf_statusline()
+
+
+" 
+" LANGUAGE SETTINGS
+"
+" go
+autocmd FileType go nnoremap <buffer> <Leader>r :GoRename<CR>
+autocmd FileType go nnoremap <buffer> <Leader>m :make<CR>
+autocmd FileType go nnoremap <buffer> <Leader>d :il func<CR>:
+
+" python
+autocmd FileType python BracelessEnable +indent
+
+" ruby
+autocmd FileType ruby nnoremap <buffer> <Leader>d :il def<CR>:
+
+" rust
+autocmd FileType rust nmap gd <Plug>(rust-def)
+autocmd FileType rust nmap <Leader>gd <Plug>(rust-doc)
