@@ -64,7 +64,7 @@ alias svpn='sudo openconnect su-vpn.stanford.edu'
 alias pn='ping www.google.com -c 1'
 alias hotspot='sudo create_ap --daemon wlp3s0 wlp3s0 thinkpad'
 
-alias dots='git --git-dir=$HOME/.dots/ --work-tree=$HOME'
+alias dots='yadm'
 
 alias blueon='sudo systemctl start bluetooth'
 alias blueoff='sudo systemctl stop bluetooth'

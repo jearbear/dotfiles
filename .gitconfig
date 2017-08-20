@@ -1,11 +1,19 @@
 [alias]
+    b = branch
+    co = checkout
+    diffh = diff HEAD~
     force-push = git push --force-with-lease
+    recommit = commit --amend
+    s = status
     stash-all = stash save --include-untracked
-    tree = log --graph --pretty=format:'%C(auto)%h%d %s %C(yellow):: %C(reset)%an %C(yellow):: %C(reset)%ad' --decorate
+    t = log --graph --pretty=format:'%C(auto)%h%d %s %C(yellow):: %C(reset)%an %C(yellow):: %C(reset)%ad' --decorate
     uncommit = reset --soft HEAD^
 
 [commit]
     gpgSign = true
+
+[color]
+    ui = true
 
 [core]
     pager = diff-so-fancy | less --tabs=4 -RFX
@@ -33,3 +41,15 @@
     email = jerrytegno@gmail.com
     name = Jerry Tegno
 
+[color "diff-highlight"]
+    oldNormal = red
+    oldHighlight = red bold reverse
+    newNormal = green
+    newHighlight = green bold reverse
+
+[color "diff"]
+    meta = white
+    frag = magenta bold
+    old = red
+    new = green
+    whitespace = red reverse
