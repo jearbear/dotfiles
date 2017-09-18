@@ -27,13 +27,17 @@ Plug 'wellle/targets.vim'
 
 " code wrangling
 Plug 'romainl/vim-qf'
-Plug 'tpope/vim-fugitive'
+" Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-sleuth'
 Plug 'w0rp/ale'
 
 " completion
-Plug 'lifepillar/vim-mucomplete'
 Plug 'racer-rust/vim-racer'
+Plug 'tpope/vim-endwise'
+Plug 'jiangmiao/auto-pairs'
+" Plug 'lifepillar/vim-mucomplete'
+" Plug 'roxma/nvim-completion-manager'
+Plug 'maralla/completor.vim'
 
 " navigation
 Plug 'justinmk/vim-dirvish'
@@ -47,6 +51,7 @@ Plug 'lervag/vimtex'
 Plug 'neovimhaskell/haskell-vim'
 Plug 'pangloss/vim-javascript'
 Plug 'plasticboy/vim-markdown'
+Plug 'rodjek/vim-puppet'
 Plug 'rust-lang/rust.vim'
 Plug 'vim-ruby/vim-ruby'
 
@@ -56,6 +61,12 @@ Plug 'godlygeek/tabular'
 " fzf
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+
+" trying out
+Plug 'airblade/vim-gitgutter'
+Plug 'vimwiki/vimwiki'
+Plug 'mhinz/vim-startify'
+Plug 'lambdalisue/gina.vim'
 
 call plug#end()
 
@@ -74,18 +85,18 @@ colorscheme gruvbox
 
 set hidden
 
-" set tabstop=4
-set shiftwidth=2 softtabstop=2 expandtab
+set shiftwidth=4 softtabstop=4 expandtab
 
 set number
-set cursorline
-set scrolloff=999
+set lazyredraw
+" set cursorline
+" set scrolloff=999
 
 set wrap linebreak
 set breakindent showbreak=..
 
-set cole=2 cocu="nc"
 set nofoldenable
+set conceallevel=2 concealcursor="nc"
 
 set inccommand=nosplit
 set incsearch nohlsearch
@@ -117,7 +128,8 @@ set statusline=\ \                 " padding
 set statusline+=%f                 " filename
 set statusline+=\ %2*%M%*          " modified flag
 set statusline+=%=                 " center divide
-set statusline+=%{fugitive#head()} " vcs info
+" set statusline+=%{fugitive#head()} " vcs info
+set statusline+=%{gina#component#repo#preset()} " vcs info
 set statusline+=\ \                " padding
 
 set spelllang=en
@@ -131,9 +143,6 @@ set directory=~/.config/nvim/swp//
 "
 map Y y$
 map 0 ^
-
-" break a habit
-inoremap <C-c> <nop>
 
 " file navigation
 nnoremap <Leader>f :GFiles<CR>
@@ -171,11 +180,11 @@ cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
 
 " brace completion
-inoremap {<CR> {<CR>}<Esc>O
-inoremap {; {<CR>};<Esc>O
-inoremap {, {<CR>},<Esc>O
-inoremap {); {<CR>});<Esc>O
-inoremap {)<CR> {<CR>})<Esc>O
+" inoremap {<CR> {<CR>}<Esc>O
+" inoremap {; {<CR>};<Esc>O
+" inoremap {, {<CR>},<Esc>O
+" inoremap {); {<CR>});<Esc>O
+" inoremap {)<CR> {<CR>})<Esc>O
 
 " edit/save vimrc
 nmap <Leader>ve :e ~/.config/nvim/init.vim<CR>
@@ -194,7 +203,10 @@ nmap <C-l> <Plug>(qf_loc_toggle)
 let g:dirvish_relative_paths = 1
 
 " vim-fugitive
-nnoremap <Leader>gs :Gstatus<CR>
+" nnoremap <Leader>gs :Gstatus<CR>
+nnoremap <Leader>gs :Gina status<CR>
+nnoremap <Leader>gc :Gina commit<CR>
+nnoremap <Leader>gp :Gina push<CR>
 
 " vim-easy-align
 nmap ga <Plug>(EasyAlign)
@@ -234,16 +246,26 @@ let g:racer_experimental_completer = 1
 let g:rustfmt_autosave = 1
 
 " vim-mucomplete
-inoremap <silent> <plug>(MUcompleteFwdKey) <right>
-imap <right> <plug>(MUcompleteCycFwd)
-inoremap <silent> <plug>(MUcompleteBwdKey) <left>
-imap <left> <plug>(MUcompleteCycBwd)
+" inoremap <silent> <plug>(MUcompleteFwdKey) <right>
+" imap <right> <plug>(MUcompleteCycFwd)
+" inoremap <silent> <plug>(MUcompleteBwdKey) <left>
+" imap <left> <plug>(MUcompleteCycBwd)
+
+" autopairs
+let g:AutoPairsShortcutToggle = ''
+let g:AutoPairsShortcutFastWrap = ''
+let g:AutoPairsShortcutJump = ''
+let g:AutoPairsShortcutBackInsert = ''
+
+" completor.vim
+let g:completor_gocode_binary = '~/go/bin/gocode'
 
 " vim-sneak
 let g:sneak#use_ic_scs = 1
 
 " vim-gutentags
 let g:gutentags_cache_dir = '~/.gutentags'
+let g:gutentags_generate_on_empty_buffer = 1
 
 " fzf.vim
 let g:fzf_layout = { 'down': 10 }
@@ -269,7 +291,7 @@ let g:fzf_colors = {
       \ 'header':  ['fg', 'PmenuSel'],
       \ }
 
-function! s:fzf_statusline()
+function! s:fzf_statusline() abort
   setlocal statusline=%#StatusLine#\ »\ fzf
 endfunction
 autocmd! User FzfStatusLine call <SID>fzf_statusline()
@@ -278,17 +300,21 @@ autocmd! User FzfStatusLine call <SID>fzf_statusline()
 " 
 " LANGUAGE SETTINGS
 "
-" go
-autocmd FileType go nnoremap <buffer> <Leader>r :GoRename<CR>
-autocmd FileType go nnoremap <buffer> <Leader>m :make<CR>
-autocmd FileType go nnoremap <buffer> <Leader>d :il func<CR>:
+augroup Go
+    autocmd FileType go nnoremap <buffer> <Leader>r :GoRename<CR>
+    autocmd FileType go nnoremap <buffer> <Leader>m :make<CR>
+    autocmd FileType go nnoremap <buffer> <Leader>d :il func<CR>:
+augroup END
 
-" python
-autocmd FileType python BracelessEnable +indent
+augroup Python
+    autocmd FileType python BracelessEnable +indent
+augroup END
 
-" ruby
-autocmd FileType ruby nnoremap <buffer> <Leader>d :il def<CR>:
+augroup Ruby
+    autocmd FileType ruby nnoremap <buffer> <Leader>d :il def<CR>:
+augroup END
 
-" rust
-autocmd FileType rust nmap gd <Plug>(rust-def)
-autocmd FileType rust nmap <Leader>gd <Plug>(rust-doc)
+augroup Rust
+    autocmd FileType rust nmap gd <Plug>(rust-def)
+    autocmd FileType rust nmap <Leader>gd <Plug>(rust-doc)
+augroup END
