@@ -1,0 +1,54 @@
+[alias]
+    b = branch
+    s = status
+    t = log --graph --pretty=format:'%C(auto)%h%d %s %C(yellow):: %C(reset)%an %C(yellow):: %C(reset)%ad' --decorate
+    co = checkout
+    diffh = diff HEAD~
+    fpush = git push --force-with-lease
+    recommit = commit --amend --no-edit
+    stash-all = stash save --include-untracked
+    uncommit = reset --soft HEAD^
+
+[commit]
+    gpgSign = true
+
+[color]
+    ui = true
+
+[color "diff-highlight"]
+    oldNormal = red
+    oldHighlight = red bold reverse
+    newNormal = green
+    newHighlight = green bold reverse
+
+[color "diff"]
+    meta = white
+    frag = magenta bold
+    old = red
+    new = green
+    whitespace = red reverse
+
+[log]
+    date = relative
+
+[merge]
+    conflictstyle = diff3
+    ff = only
+
+[pager]
+    diff = diff-so-fancy | less --tabs=4 -RFX
+
+[pull]
+    ff = only
+
+[push]
+    default = current
+
+[rebase]
+    autostash = true
+
+[stash]
+    showPatch = true
+
+[include]
+    path = .gitconfig.local

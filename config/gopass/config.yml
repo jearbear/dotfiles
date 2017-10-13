@@ -1,0 +1,11 @@
+root:
+  askformore: false
+  autoimport: true
+  autosync: true
+  cliptimeout: 45
+  noconfirm: false
+  nopager: false
+  path: /home/jerry/.password-store
+  safecontent: false
+mounts: {}
+version: 1.4.0-git+HEAD

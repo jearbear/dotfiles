@@ -1,1 +1,0 @@
-chromium --app=http://netflix.com --force-device-scale-factor=1.25

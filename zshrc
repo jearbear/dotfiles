@@ -48,30 +48,21 @@ PROMPT='%1/%F{yellow} » %f'
 # aliases
 alias ls='ls --color=auto'
 alias sizes='du -d 1 -h . | sort -rh'
-alias copy='xclip -selection clipboard'
 
 alias vi='nvim'
 alias vim='nvim'
-alias load='glances --hide-kernel-threads --process-short-name -2 -4 --disable-bg --time 1'
-alias power='sudo powertop'
-alias pics='sxiv -rt .'
 alias t='tmux new-session -A -s main'
-
-alias con='connmanctl'
-alias recon='systemctl restart connman'
-alias vpn='sudo openvpn --client --config /etc/openvpn/client/US_Silicon_Valley.conf'
-alias svpn='sudo openconnect su-vpn.stanford.edu'
 alias pn='ping www.google.com -c 1'
-alias hotspot='sudo create_ap --daemon wlp3s0 wlp3s0 thinkpad'
 
 alias dots='yadm'
 
-alias blueon='sudo systemctl start bluetooth'
-alias blueoff='sudo systemctl stop bluetooth'
-alias bluesync='ponymix set-profile headset_head_unit && ponymix set-profile a2dp_sink'
+alias s='sudo'
 
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # gopass
 source <(gopass completion zsh)
+
+# system-specific
+[ -f ~/.zshrc.local ] && source ~/.zshrc.local
