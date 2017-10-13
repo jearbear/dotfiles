@@ -12,7 +12,6 @@ call plug#begin('~/.config/nvim/plugged')
 
 " themes
 Plug 'morhetz/gruvbox'
-Plug 'rakr/vim-one'
 
 " mappings
 Plug 'junegunn/vim-easy-align'
@@ -25,21 +24,23 @@ Plug 'tpope/vim-unimpaired'
 Plug 'tweekmonster/braceless.vim'
 Plug 'wellle/targets.vim'
 
-" code wrangling
+" project management
+Plug 'airblade/vim-gitgutter'
+Plug 'lambdalisue/gina.vim'
 Plug 'romainl/vim-qf'
-" Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-sleuth'
 Plug 'w0rp/ale'
+Plug 'tpope/vim-eunuch'
 
 " completion
+Plug 'jiangmiao/auto-pairs'
+Plug 'lifepillar/vim-mucomplete'
 Plug 'racer-rust/vim-racer'
 Plug 'tpope/vim-endwise'
-Plug 'jiangmiao/auto-pairs'
-" Plug 'lifepillar/vim-mucomplete'
-" Plug 'roxma/nvim-completion-manager'
-Plug 'maralla/completor.vim'
 
-" navigation
+" code navigation
+
+" project navigation
 Plug 'justinmk/vim-dirvish'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'mhinz/vim-grepper'
@@ -63,10 +64,8 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
 " trying out
-Plug 'airblade/vim-gitgutter'
 Plug 'vimwiki/vimwiki'
 Plug 'mhinz/vim-startify'
-Plug 'lambdalisue/gina.vim'
 
 call plug#end()
 
@@ -115,7 +114,7 @@ set wildmode=full,full
 
 " no completion messages
 set shortmess+=c
-set completeopt=menu,menuone,preview
+set completeopt=menu,menuone,preview,noselect
 autocmd CompleteDone * pclose
 
 hi StatusLine   guibg=#928374 guifg=#3c3836
@@ -124,13 +123,12 @@ hi WildMenu     guibg=#3c3836
 hi User1        guibg=#3c3836 guifg=#665c54
 hi User2        guibg=#3c3836 guifg=#83a598
 
-set statusline=\ \                 " padding
-set statusline+=%f                 " filename
-set statusline+=\ %2*%M%*          " modified flag
-set statusline+=%=                 " center divide
-" set statusline+=%{fugitive#head()} " vcs info
+set statusline=\ \                              " padding
+set statusline+=%f                              " filename
+set statusline+=\ %2*%M%*                       " modified flag
+set statusline+=%=                              " center divide
 set statusline+=%{gina#component#repo#preset()} " vcs info
-set statusline+=\ \                " padding
+set statusline+=\ \                             " padding
 
 set spelllang=en
 
@@ -202,11 +200,12 @@ nmap <C-l> <Plug>(qf_loc_toggle)
 " vim-dirvish
 let g:dirvish_relative_paths = 1
 
-" vim-fugitive
-" nnoremap <Leader>gs :Gstatus<CR>
+" vim-gina
 nnoremap <Leader>gs :Gina status<CR>
 nnoremap <Leader>gc :Gina commit<CR>
 nnoremap <Leader>gp :Gina push<CR>
+nnoremap <Leader>gb :Gina blame :<CR>
+nnoremap <Leader>gd :Gina diff :<CR>
 
 " vim-easy-align
 nmap ga <Plug>(EasyAlign)
@@ -245,20 +244,11 @@ let g:racer_experimental_completer = 1
 " rust.vim
 let g:rustfmt_autosave = 1
 
-" vim-mucomplete
-" inoremap <silent> <plug>(MUcompleteFwdKey) <right>
-" imap <right> <plug>(MUcompleteCycFwd)
-" inoremap <silent> <plug>(MUcompleteBwdKey) <left>
-" imap <left> <plug>(MUcompleteCycBwd)
-
 " autopairs
 let g:AutoPairsShortcutToggle = ''
 let g:AutoPairsShortcutFastWrap = ''
 let g:AutoPairsShortcutJump = ''
 let g:AutoPairsShortcutBackInsert = ''
-
-" completor.vim
-let g:completor_gocode_binary = '~/go/bin/gocode'
 
 " vim-sneak
 let g:sneak#use_ic_scs = 1
@@ -301,7 +291,7 @@ autocmd! User FzfStatusLine call <SID>fzf_statusline()
 " LANGUAGE SETTINGS
 "
 augroup Go
-    autocmd FileType go nnoremap <buffer> <Leader>r :GoRename<CR>
+    " autocmd FileType go nnoremap <buffer> <Leader>r :GoRename<CR>
     autocmd FileType go nnoremap <buffer> <Leader>m :make<CR>
     autocmd FileType go nnoremap <buffer> <Leader>d :il func<CR>:
 augroup END
