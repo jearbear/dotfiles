@@ -71,10 +71,21 @@ alt + {n,m,comma,period}
 
 
 #
+# visuals
+#
+
+alt + shift + {minus,plus}
+    bspc config window_gap $(($(bspc config window_gap) {-,+} 2))
+
+# alt + shift + zero
+#     bspc config window_gap 0
+
+
+#
 # random hotkeys
 #
 
-alt + d
+alt + space
     rofi -modi "run" -show run
 
 alt + slash
