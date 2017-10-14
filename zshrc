@@ -53,8 +53,6 @@ alias vim='nvim'
 alias t='tmux new-session -A -s main'
 alias pn='ping www.google.com -c 1'
 
-alias dots='yadm'
-
 alias s='sudo'
 
 # fzf
