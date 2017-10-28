@@ -2,7 +2,6 @@
 compton -b --config /dev/null --backend glx --vsync opengl-swc --glx-no-stencil --opacity-rule="75:class_g='Bspwm' && class_i='presel_feedback'" -f -D 1 -I 0.05 -O 0.05
 xsetroot -cursor_name left_ptr
 xrdb ~/.Xresources
-~/.bin/display.sh
 nitrogen --restore
 redshift &
 

@@ -38,14 +38,14 @@ rofi.font:            Iosevka Term Medium 12
 rofi.fullscreen:      no
 rofi.hide-scrollbar:  true
 rofi.line-margin:     5
-rofi.lines:           3
+rofi.lines:           4
 rofi.location:        6
-rofi.padding:         30
+rofi.padding:         20
 rofi.separator-style: none
 rofi.sidebar-mode:    false
-rofi.terminal:        termite
-rofi.width:           1926
-rofi.yoffset:         3
+rofi.terminal:        alacritty
+rofi.width:           30
+rofi.yoffset:         -60
 
 rofi.color-normal: bg, fg, bg, bg, ylw
 rofi.color-urgent: bg, fg, bg, bg, ylw

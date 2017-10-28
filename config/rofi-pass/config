@@ -6,7 +6,7 @@
 # latest git. for rofi-pass this means that "-i" will not work with
 # 0.15.7.
 _rofi () {
-    rofi "$@"
+    rofi -i -no-auto-select "$@"
 }
 
 # fields to be used

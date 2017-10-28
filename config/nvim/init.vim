@@ -15,7 +15,6 @@ Plug 'morhetz/gruvbox'
 
 " mappings
 Plug 'junegunn/vim-easy-align'
-Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-speeddating'
@@ -33,12 +32,13 @@ Plug 'w0rp/ale'
 Plug 'tpope/vim-eunuch'
 
 " completion
-Plug 'jiangmiao/auto-pairs'
 Plug 'lifepillar/vim-mucomplete'
 Plug 'racer-rust/vim-racer'
 Plug 'tpope/vim-endwise'
 
 " code navigation
+Plug 'justinmk/vim-sneak'
+Plug 'mbbill/undotree'
 
 " project navigation
 Plug 'justinmk/vim-dirvish'
@@ -65,7 +65,7 @@ Plug 'junegunn/fzf.vim'
 
 " trying out
 Plug 'vimwiki/vimwiki'
-Plug 'mhinz/vim-startify'
+" Plug 'mhinz/vim-startify'
 
 call plug#end()
 
@@ -114,8 +114,9 @@ set wildmode=full,full
 
 " no completion messages
 set shortmess+=c
-set completeopt=menu,menuone,preview,noselect
-autocmd CompleteDone * pclose
+set completeopt=menu,menuone
+" set completeopt=menu,menuone,preview
+" autocmd CompleteDone * pclose
 
 hi StatusLine   guibg=#928374 guifg=#3c3836
 hi StatusLineNC guibg=#665c54 guifg=#3c3836
@@ -176,6 +177,14 @@ xnoremap . :norm.<CR>
 " sensible command line navigation
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
+
+" center search results
+nnoremap n nzz
+nnoremap N Nzz
+nnoremap * *zz
+nnoremap # #zz
+nnoremap g* g*zz
+nnoremap g# g#zz
 
 " brace completion
 " inoremap {<CR> {<CR>}<Esc>O
@@ -243,12 +252,6 @@ let g:racer_experimental_completer = 1
 
 " rust.vim
 let g:rustfmt_autosave = 1
-
-" autopairs
-let g:AutoPairsShortcutToggle = ''
-let g:AutoPairsShortcutFastWrap = ''
-let g:AutoPairsShortcutJump = ''
-let g:AutoPairsShortcutBackInsert = ''
 
 " vim-sneak
 let g:sneak#use_ic_scs = 1
