@@ -14,3 +14,8 @@ A helper script is in the works to avoid the possibility of shooting yourself in
 - make a helper program to manage linking and unlinking these files
 - common `bin` scripts I use
 - generalize to support 4K resolution
+
+
+### scrot
+
+![setup on my T440s](https://i.imgur.com/BCUvE3U.png)
