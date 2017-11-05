@@ -4,7 +4,9 @@ You'll need to clone this repo to some directory that is **not** `$HOME`, I like
 
 I use a _very_ small helper script, `dotit` to link files to their respective locations. Hopefully I'll expand its capabilities in the future, but for now it just links files:
 
-`dotit add $FILE`
+- add file: `dotit add $FILE`
+- add files in directory: `for x in $DIR/*; do dotit add $x; done`
+- list installed files: `dotit list`
 
 
 ### todo

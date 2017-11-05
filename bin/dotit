@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 subcommand=$1; shift
 
@@ -20,9 +20,18 @@ case $subcommand in
         ln -sf $PWD/$dotfile $HOME/.$dotfile
         ;;
 
+    list)
+        for dotfile in $(find * -type f); do
+            if [ "$(greadlink -f $HOME/.$dotfile)" == "$PWD/$dotfile" ]; then
+                echo $dotfile
+            fi
+        done
+        ;;
+
     *)
         echo "Usage:"
         echo "    dotit help                 Display this help message."
         echo "    dotit add <dotfile>        Link <dotfile> to home directory."
+        echo "    dotit list                 List all installed linked dotfiles in the current directory."
         ;;
 esac
