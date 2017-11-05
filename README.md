@@ -2,16 +2,14 @@
 
 You'll need to clone this repo to some directory that is **not** `$HOME`, I like to use `.dotfiles`. The files are structured in the same manner as they would sit in your `$HOME` directory without the typical `.` prefix, just to make them slightly easier to navigate. I've somewhat tested these with both OSX and Arch Linux, but only some of these dotfiles are relevant in OSX.
 
-**link file** - `ln -s $FILE .$FILE`
+I use a _very_ small helper script, `dotit` to link files to their respective locations. Hopefully I'll expand its capabilities in the future, but for now it just links files:
 
-**link file, overwriting existing** - `ln -sf $FILE .$FILE`
-
-A helper script is in the works to avoid the possibility of shooting yourself in the foot with these commands as I have already done.
+`dotit add $FILE`
 
 
 ### todo
 
-- make a helper program to manage linking and unlinking these files
+- expand capabilities of `dotit`
 - common `bin` scripts I use
 - generalize to support 4K resolution
 

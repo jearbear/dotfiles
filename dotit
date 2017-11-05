@@ -1,0 +1,28 @@
+#!/bin/sh
+
+subcommand=$1; shift
+
+case $subcommand in
+    add)
+        dotfile=$1
+
+        if [ -z $dotfile ]; then
+            echo "Error: must provide a dotfile to link."
+            exit 1
+        fi
+
+        if [ ! -e $dotfile ]; then
+            echo "Error: dotfile \"$dotfile\" doesn't exist."
+            exit 1
+        fi
+
+        echo "Linking: $PWD/$dotfile -> $HOME/.$dotfile"
+        ln -sf $PWD/$dotfile $HOME/.$dotfile
+        ;;
+
+    *)
+        echo "Usage:"
+        echo "    dotit help                 Display this help message."
+        echo "    dotit add <dotfile>        Link <dotfile> to home directory."
+        ;;
+esac
