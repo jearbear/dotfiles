@@ -18,5 +18,4 @@ dunst &
 pulseaudio --start
 
 # start wm
-sxhkd &
 exec bspwm
