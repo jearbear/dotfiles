@@ -25,7 +25,8 @@ Plug 'wellle/targets.vim'
 
 " project management
 Plug 'airblade/vim-gitgutter'
-Plug 'lambdalisue/gina.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-rhubarb'
 Plug 'romainl/vim-qf'
 Plug 'tpope/vim-sleuth'
 Plug 'w0rp/ale'
@@ -63,10 +64,6 @@ Plug 'godlygeek/tabular'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
-" trying out
-Plug 'vimwiki/vimwiki'
-" Plug 'mhinz/vim-startify'
-
 call plug#end()
 
 
@@ -87,7 +84,7 @@ set hidden
 set shiftwidth=4 softtabstop=4 expandtab
 
 set number
-set lazyredraw
+" set lazyredraw
 " set cursorline
 " set scrolloff=999
 
@@ -115,8 +112,6 @@ set wildmode=full,full
 " no completion messages
 set shortmess+=c
 set completeopt=menu,menuone
-" set completeopt=menu,menuone,preview
-" autocmd CompleteDone * pclose
 
 hi StatusLine   guibg=#928374 guifg=#3c3836
 hi StatusLineNC guibg=#665c54 guifg=#3c3836
@@ -124,12 +119,12 @@ hi WildMenu     guibg=#3c3836
 hi User1        guibg=#3c3836 guifg=#665c54
 hi User2        guibg=#3c3836 guifg=#83a598
 
-set statusline=\ \                              " padding
-set statusline+=%f                              " filename
-set statusline+=\ %2*%M%*                       " modified flag
-set statusline+=%=                              " center divide
-set statusline+=%{gina#component#repo#preset()} " vcs info
-set statusline+=\ \                             " padding
+set statusline=\ \                   " padding
+set statusline+=%f                   " filename
+set statusline+=\ %2*%M%*            " modified flag
+set statusline+=%=                   " center divide
+set statusline+=%{fugitive#head(10)} " vcs info
+set statusline+=\ \                  " padding
 
 set spelllang=en
 
@@ -187,11 +182,9 @@ nnoremap g* g*zz
 nnoremap g# g#zz
 
 " brace completion
-" inoremap {<CR> {<CR>}<Esc>O
-" inoremap {; {<CR>};<Esc>O
-" inoremap {, {<CR>},<Esc>O
-" inoremap {); {<CR>});<Esc>O
-" inoremap {)<CR> {<CR>})<Esc>O
+inoremap {<CR> {<CR>}<Esc>O
+inoremap {; {<CR>};<Esc>O
+inoremap {, {<CR>},<Esc>O
 
 " edit/save vimrc
 nmap <Leader>ve :e ~/.config/nvim/init.vim<CR>
@@ -209,12 +202,12 @@ nmap <C-l> <Plug>(qf_loc_toggle)
 " vim-dirvish
 let g:dirvish_relative_paths = 1
 
-" vim-gina
-nnoremap <Leader>gs :Gina status<CR>
-nnoremap <Leader>gc :Gina commit<CR>
-nnoremap <Leader>gp :Gina push<CR>
-nnoremap <Leader>gb :Gina blame :<CR>
-nnoremap <Leader>gd :Gina diff :<CR>
+" vim-fugitive
+nnoremap <Leader>gs :Gstatus<CR>
+nnoremap <Leader>gl :Glog<CR>
+nnoremap <Leader>gp :Gpush<CR>
+nnoremap <Leader>gb :Gblame<CR>
+nnoremap <Leader>gd :Gdiff<CR>
 
 " vim-easy-align
 nmap ga <Plug>(EasyAlign)
@@ -293,21 +286,17 @@ autocmd! User FzfStatusLine call <SID>fzf_statusline()
 " 
 " LANGUAGE SETTINGS
 "
-augroup Go
-    " autocmd FileType go nnoremap <buffer> <Leader>r :GoRename<CR>
-    autocmd FileType go nnoremap <buffer> <Leader>m :make<CR>
-    autocmd FileType go nnoremap <buffer> <Leader>d :il func<CR>:
-augroup END
-
 augroup Python
     autocmd FileType python BracelessEnable +indent
-augroup END
-
-augroup Ruby
-    autocmd FileType ruby nnoremap <buffer> <Leader>d :il def<CR>:
 augroup END
 
 augroup Rust
     autocmd FileType rust nmap gd <Plug>(rust-def)
     autocmd FileType rust nmap <Leader>gd <Plug>(rust-doc)
 augroup END
+
+
+"
+" SOURCE LOCAL SETTINGS
+"
+runtime local.vim
