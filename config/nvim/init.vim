@@ -118,6 +118,11 @@ hi WildMenu     guibg=#3c3836
 hi User1        guibg=#3c3836 guifg=#665c54
 hi User2        guibg=#3c3836 guifg=#83a598
 
+hi DiffAdd guifg=NONE guibg=#4D4B2D gui=NONE
+hi DiffChange guifg=NONE guibg=#5A4C2F gui=NONE
+hi DiffDelete guifg=#823930 guibg=#5A3430 gui=NONE
+hi DiffText guifg=#fabd2f guibg=#65532E gui=NONE
+
 set statusline=\ \                   " padding
 set statusline+=%f                   " filename
 set statusline+=\ %2*%M%*            " modified flag
@@ -207,6 +212,8 @@ nnoremap <Leader>gl :Glog<CR>
 nnoremap <Leader>gp :Gpush<CR>
 nnoremap <Leader>gb :Gblame<CR>
 nnoremap <Leader>gd :Gdiff<CR>
+nnoremap <Leader>gh :Gbrowse<CR>
+nnoremap <Leader>gc :Gbrowse!<CR>
 
 " vim-easy-align
 nmap ga <Plug>(EasyAlign)

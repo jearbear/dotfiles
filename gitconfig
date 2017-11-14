@@ -3,8 +3,10 @@
     s = status
     t = log --graph --pretty=format:'%C(auto)%h%d %s %C(yellow):: %C(reset)%an %C(yellow):: %C(reset)%ad' --decorate
     co = checkout
+
+    bdel = branch -D
     diffh = diff HEAD~
-    fpush = git push --force-with-lease
+    fpush = push --force-with-lease
     recommit = commit --amend --no-edit
     stash-all = stash save --include-untracked
     uncommit = reset --soft HEAD^
