@@ -33,7 +33,7 @@ Plug 'w0rp/ale'
 Plug 'tpope/vim-eunuch'
 
 " completion
-Plug 'lifepillar/vim-mucomplete'
+Plug 'ajh17/VimCompletesMe'
 Plug 'racer-rust/vim-racer'
 Plug 'tpope/vim-endwise'
 
@@ -84,9 +84,8 @@ set hidden
 set shiftwidth=4 softtabstop=4 expandtab
 
 set number
-" set lazyredraw
-" set cursorline
-" set scrolloff=999
+set cursorline
+set scrolloff=999
 
 set wrap linebreak
 set breakindent showbreak=..
