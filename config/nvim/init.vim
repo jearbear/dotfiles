@@ -143,8 +143,8 @@ map Y y$
 map 0 ^
 
 " file navigation
-nnoremap <Leader>f :GFiles<CR>
-nnoremap <Leader>F :Files<CR>
+nnoremap <Leader>f :Files<CR>
+nnoremap <Leader>F :GFiles<CR>
 
 " buffer navigation
 nnoremap <Backspace> <C-^>
@@ -178,12 +178,12 @@ cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
 
 " center search results
-nnoremap n nzz
-nnoremap N Nzz
-nnoremap * *zz
-nnoremap # #zz
-nnoremap g* g*zz
-nnoremap g# g#zz
+" nnoremap n nzz
+" nnoremap N Nzz
+" nnoremap * *zz
+" nnoremap # #zz
+" nnoremap g* g*zz
+" nnoremap g# g#zz
 
 " brace completion
 inoremap {<CR> {<CR>}<Esc>O
@@ -200,8 +200,10 @@ nmap <Leader>vs :source ~/.config/nvim/init.vim<CR>
 "
 " vim-qf
 let g:qf_mapping_ack_style = 1
-nmap <C-q> <Plug>(qf_qf_toggle)
-nmap <C-l> <Plug>(qf_loc_toggle)
+nmap <Leader>qw <Plug>qf_qf_switch
+nmap <Leader>qq <Plug>qf_qf_toggle
+nmap <Leader>qp <Plug>qf_qf_previous
+nmap <Leader>qn <Plug>qf_qf_next
 
 " vim-dirvish
 let g:dirvish_relative_paths = 1
@@ -213,7 +215,9 @@ nnoremap <Leader>gp :Gpush<CR>
 nnoremap <Leader>gb :Gblame<CR>
 nnoremap <Leader>gd :Gdiff<CR>
 nnoremap <Leader>gh :Gbrowse<CR>
+xnoremap <Leader>gh :Gbrowse<CR>
 nnoremap <Leader>gc :Gbrowse!<CR>
+xnoremap <Leader>gc :Gbrowse!<CR>
 
 " vim-easy-align
 nmap ga <Plug>(EasyAlign)
@@ -224,24 +228,24 @@ nnoremap \ :Grepper<CR>
 nnoremap <bar> :Grepper-buffer<CR>
 map gs <Plug>(GrepperOperator)
 nmap gs <Plug>(GrepperOperator)
+
 let g:grepper = {}
 let g:grepper.simple_prompt = 1
+let g:grepper.switch = 0
 let g:grepper.tools = ['rg', 'git', 'grep']
 
 " ale
 let g:ale_sign_error = '!!'
 let g:ale_sign_warning = '!!'
 let g:ale_set_highlights = 0
+let g:ale_set_quickfix = 1
 let g:ale_lint_on_enter = 0
 let g:ale_lint_on_text_changed = 'never'
-let g:ale_open_list = 0
-let g:ale_list_window_size = 5
+
+let g:ale_linters = {'go': []}
 
 hi link ALEErrorSign GruvboxRedSign
 hi link ALEWarningSign GruvboxYellowSign
-
-nmap <silent> <C-k> <Plug>(ale_previous_wrap)
-nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
 " targets.vim
 let g:targets_seekRanges = 'cr cb cB lc ac Ac lr rr ll lb ar ab lB Ar aB Ab AB rb rB al Al'
@@ -251,6 +255,10 @@ let g:racer_experimental_completer = 1
 
 " rust.vim
 let g:rustfmt_autosave = 1
+
+" vim-go
+let g:go_fmt_command = "goimports"
+let g:go_list_type = "quickfix"
 
 " vim-sneak
 let g:sneak#use_ic_scs = 1

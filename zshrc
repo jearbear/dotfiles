@@ -47,6 +47,8 @@ PROMPT='%1/%F{yellow} » %f'
 
 # aliases
 alias sizes='du -d 1 -h . | sort -rh'
+alias first='head -n 1'
+alias reload='source ~/.zshrc && source ~/.zshenv'
 
 alias vi='nvim'
 alias vim='nvim'
