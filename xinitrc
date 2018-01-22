@@ -1,5 +1,6 @@
 # misc display settings
-compton -b --config /dev/null --backend glx --vsync opengl-swc --glx-no-stencil --opacity-rule="75:class_g='Bspwm' && class_i='presel_feedback'" -f -D 1 -I 0.05 -O 0.05
+# compton -b --config /dev/null --backend glx --vsync opengl --opacity-rule="75:class_g='Bspwm' && class_i='presel_feedback'"
+compton -b --config /dev/null --backend glx --opacity-rule="85:class_g='Bspwm' && class_i='presel_feedback'"
 xsetroot -cursor_name left_ptr
 xrdb ~/.Xresources
 nitrogen --restore
