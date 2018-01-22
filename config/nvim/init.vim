@@ -64,6 +64,12 @@ Plug 'godlygeek/tabular'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
+" testbed
+Plug 'mattn/emmet-vim'
+Plug 'joereynolds/vim-minisnip'
+Plug 'ElmCast/elm-vim'
+
+
 call plug#end()
 
 
@@ -189,6 +195,7 @@ cnoremap <C-n> <Down>
 inoremap {<CR> {<CR>}<Esc>O
 inoremap {; {<CR>};<Esc>O
 inoremap {, {<CR>},<Esc>O
+inoremap [<CR> [<CR>]<Esc>O
 
 " edit/save vimrc
 nmap <Leader>ve :e ~/.config/nvim/init.vim<CR>
@@ -256,6 +263,13 @@ let g:racer_experimental_completer = 1
 " rust.vim
 let g:rustfmt_autosave = 1
 
+" vim-completes-me
+" let g:vcm_default_maps = 0
+
+" minisnip
+let g:minisnip_dir = '~/.config/nvim/minisnip'
+let g:minisnip_trigger = '<C-j>'
+
 " vim-go
 let g:go_fmt_command = "goimports"
 let g:go_list_type = "quickfix"
@@ -296,6 +310,9 @@ function! s:fzf_statusline() abort
 endfunction
 autocmd! User FzfStatusLine call <SID>fzf_statusline()
 
+" elm.vim
+let g:elm_format_autosave = 1
+
 
 " 
 " LANGUAGE SETTINGS
@@ -309,6 +326,9 @@ augroup Rust
     autocmd FileType rust nmap <Leader>gd <Plug>(rust-doc)
 augroup END
 
+augroup Tera
+    au BufRead,BufNewFile *.tera set filetype=htmldjango
+augroup END
 
 "
 " SOURCE LOCAL SETTINGS
