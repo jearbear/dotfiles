@@ -254,6 +254,9 @@ let g:ale_linters = {'go': []}
 hi link ALEErrorSign GruvboxRedSign
 hi link ALEWarningSign GruvboxYellowSign
 
+nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+nmap <silent> <C-j> <Plug>(ale_next_wrap)
+
 " targets.vim
 let g:targets_seekRanges = 'cr cb cB lc ac Ac lr rr ll lb ar ab lB Ar aB Ab AB rb rB al Al'
 
@@ -310,8 +313,9 @@ function! s:fzf_statusline() abort
 endfunction
 autocmd! User FzfStatusLine call <SID>fzf_statusline()
 
-" elm.vim
+" elm-vim
 let g:elm_format_autosave = 1
+let g:elm_setup_keybindings = 0
 
 
 " 

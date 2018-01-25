@@ -13,6 +13,7 @@ export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
 export PATH="$PATH:$HOME/.bin"
 export PATH="$PATH:$HOME/.cargo/bin"
 export PATH="$PATH:$HOME/go/bin"
+export PATH="$PATH:$HOME/.npm-packages/bin"
 
 # system-specific
 [ -f ~/.zshenv.local ] && source ~/.zshenv.local
