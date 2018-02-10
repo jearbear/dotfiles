@@ -42,8 +42,20 @@ autoload -U edit-command-line
 zle -N edit-command-line
 bindkey '^o' edit-command-line
 
+# version control info
+autoload -Uz vcs_info
+zstyle ':vcs_info:*' enable git
+precmd() {
+    vcs_info
+}
+zstyle ':vcs_info:git*' formats "- %b -"
+setopt prompt_subst
+
+
 # prompt
-PROMPT='%1/%F{yellow} » %f'
+# PROMPT='%1/%F{yellow} » %f'
+PROMPT='%1/%F{yellow} ● %f'
+RPROMPT='%F{yellow}${vcs_info_msg_0_}'
 
 # aliases
 alias sizes='du -d 1 -h . | sort -rh'
