@@ -1,4 +1,19 @@
-bindkey -e
+# vim readline keybindings
+bindkey -v
+bindkey '^o' vi-cmd-mode
+
+# preserve some emacs bindings that don't conflict
+bindkey '^a' beginning-of-line
+bindkey '^e' end-of-line
+bindkey '^b' backward-word
+bindkey '^f' forward-word
+bindkey '^h' backward-delete-char
+bindkey '^w' backward-kill-word
+bindkey '^k' kill-line
+bindkey '^u' kill-whole-line
+
+# preserve the ability to shift-tab complete
+bindkey '^[[Z' reverse-menu-complete
 
 # history
 HISTFILE=~/.histfile
@@ -27,20 +42,10 @@ compinit
 # colors
 autoload -U colors && colors
 
-# readline bindings
-bindkey '^[[Z' reverse-menu-complete
-bindkey '^?' vi-backward-delete-char
-bindkey '^W' vi-backward-kill-word
-bindkey '^R' history-incremental-search-backward
-bindkey "^P" history-beginning-search-backward
-bindkey "^N" history-beginning-search-forward
-bindkey "^B" vi-backward-word
-bindkey "^F" vi-forward-word
-
 # edit command in $EDITOR
 autoload -U edit-command-line
 zle -N edit-command-line
-bindkey '^o' edit-command-line
+bindkey '^v' edit-command-line
 
 # version control info
 autoload -Uz vcs_info
@@ -51,11 +56,19 @@ precmd() {
 zstyle ':vcs_info:git*' formats "- %b -"
 setopt prompt_subst
 
+# vim/insert mode info
+function zle-line-init zle-keymap-select {
+    INSERT_MODE='%F{yellow}●%f'
+    VIM_MODE='%F{green}●%f'
+    CMD_MODE="${${KEYMAP/vicmd/${VIM_MODE}}/(main|viins)/${INSERT_MODE}}"
+    zle reset-prompt
+}
+zle -N zle-line-init
+zle -N zle-keymap-select
 
 # prompt
-# PROMPT='%1/%F{yellow} » %f'
-PROMPT='%1/%F{yellow} ● %f'
-RPROMPT='%F{yellow}${vcs_info_msg_0_}'
+PROMPT='%1/ ${CMD_MODE} '
+RPROMPT='%F{yellow}${vcs_info_msg_0_}%f'
 
 # aliases
 alias sizes='du -d 1 -h . | sort -rh'
@@ -67,13 +80,11 @@ alias vim='nvim'
 alias t='tmux new-session -A -s main'
 alias pn='ping www.google.com -c 1'
 
-alias s='sudo'
-
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # gopass
 source <(gopass completion zsh)
 
-# system-specific
+# source local configs
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
