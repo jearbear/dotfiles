@@ -58,8 +58,8 @@ setopt prompt_subst
 
 # vim/insert mode info
 function zle-line-init zle-keymap-select {
-    INSERT_MODE='%F{yellow}●%f'
-    VIM_MODE='%F{green}●%f'
+    INSERT_MODE=''
+    VIM_MODE='%F{magenta}'
     CMD_MODE="${${KEYMAP/vicmd/${VIM_MODE}}/(main|viins)/${INSERT_MODE}}"
     zle reset-prompt
 }
@@ -67,7 +67,7 @@ zle -N zle-line-init
 zle -N zle-keymap-select
 
 # prompt
-PROMPT='%1/ ${CMD_MODE} '
+PROMPT='%1/ %F{yellow}●%f ${CMD_MODE}'
 RPROMPT='%F{yellow}${vcs_info_msg_0_}%f'
 
 # aliases
