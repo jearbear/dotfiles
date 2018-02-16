@@ -33,7 +33,7 @@ Plug 'w0rp/ale'
 Plug 'tpope/vim-eunuch'
 
 " completion
-Plug 'ajh17/VimCompletesMe'
+" Plug 'ajh17/VimCompletesMe'
 Plug 'racer-rust/vim-racer'
 Plug 'tpope/vim-endwise'
 
@@ -47,6 +47,7 @@ Plug 'ludovicchabant/vim-gutentags'
 Plug 'mhinz/vim-grepper'
 
 " language support
+Plug 'ElmCast/elm-vim'
 Plug 'cespare/vim-toml'
 Plug 'fatih/vim-go'
 Plug 'lervag/vimtex'
@@ -67,7 +68,6 @@ Plug 'junegunn/fzf.vim'
 " testbed
 Plug 'mattn/emmet-vim'
 Plug 'joereynolds/vim-minisnip'
-Plug 'ElmCast/elm-vim'
 
 
 call plug#end()
@@ -105,8 +105,6 @@ set ignorecase smartcase
 
 set dictionary+=/usr/share/dict/words
 
-set autowrite
-
 " prefer files with suffixes
 set suffixes+=,,
 set wildignore+=*.pyc,*.swp,*.lock,tags
@@ -140,6 +138,12 @@ set spelllang=en
 
 set backupdir=~/.config/nvim/backup//
 set directory=~/.config/nvim/swp//
+
+" autoread file on enter
+set noswapfile
+set autoread
+set autowrite
+autocmd! FocusGained,BufEnter * checktime
 
 
 "
