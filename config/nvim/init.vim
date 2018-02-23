@@ -33,7 +33,6 @@ Plug 'w0rp/ale'
 Plug 'tpope/vim-eunuch'
 
 " completion
-" Plug 'ajh17/VimCompletesMe'
 Plug 'racer-rust/vim-racer'
 Plug 'tpope/vim-endwise'
 
@@ -67,7 +66,6 @@ Plug 'junegunn/fzf.vim'
 
 " testbed
 Plug 'mattn/emmet-vim'
-Plug 'joereynolds/vim-minisnip'
 
 
 call plug#end()
@@ -107,8 +105,8 @@ set dictionary+=/usr/share/dict/words
 
 " prefer files with suffixes
 set suffixes+=,,
-set wildignore+=*.pyc,*.swp,*.lock,tags
-set wildignore+=*/.git/*,*/tmp/*,*/target/*,*/venv/*,*/vendor/*
+set wildignore+=*.pyc,*.swp,*.lock,*.min.js,*.min.css,tags
+set wildignore+=*/.git/*,*/tmp/*,*/target/*,*/venv/*,*/vendor/*,*/elm-stuff/*
 set wildmenu wildignorecase
 set wildmode=full,full
 
@@ -136,6 +134,7 @@ set statusline+=\ \                  " padding
 
 set spelllang=en
 
+set undofile
 set backupdir=~/.config/nvim/backup//
 set directory=~/.config/nvim/swp//
 
@@ -153,8 +152,8 @@ map Y y$
 map 0 ^
 
 " file navigation
-nnoremap <Leader>f :Files<CR>
-nnoremap <Leader>F :GFiles<CR>
+nnoremap <Leader>f :GFiles<CR>
+nnoremap <Leader>F :Files<CR>
 
 " buffer navigation
 nnoremap <Backspace> <C-^>
@@ -186,6 +185,13 @@ xnoremap . :norm.<CR>
 " sensible command line navigation
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
+
+" quickly indent/format
+nnoremap g= gg=G``
+
+" quickly substitute with selection
+nnoremap gs :%s//g<Left><Left>
+xnoremap gs y:%s/<C-r>"//g<Left><Left>
 
 " center search results
 " nnoremap n nzz
@@ -236,9 +242,8 @@ xmap ga <Plug>(EasyAlign)
 
 " vim-grepper
 nnoremap \ :Grepper<CR>
-nnoremap <bar> :Grepper-buffer<CR>
-map gs <Plug>(GrepperOperator)
-nmap gs <Plug>(GrepperOperator)
+xmap <bar> <Plug>(GrepperOperator)
+nmap <bar> <Plug>(GrepperOperator)
 
 let g:grepper = {}
 let g:grepper.simple_prompt = 1
@@ -269,13 +274,6 @@ let g:racer_experimental_completer = 1
 
 " rust.vim
 let g:rustfmt_autosave = 1
-
-" vim-completes-me
-" let g:vcm_default_maps = 0
-
-" minisnip
-let g:minisnip_dir = '~/.config/nvim/minisnip'
-let g:minisnip_trigger = '<C-j>'
 
 " vim-go
 let g:go_fmt_command = "goimports"

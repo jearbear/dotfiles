@@ -11,6 +11,8 @@ bindkey '^h' backward-delete-char
 bindkey '^w' backward-kill-word
 bindkey '^k' kill-line
 bindkey '^u' kill-whole-line
+bindkey "^p" history-beginning-search-backward
+bindkey "^n" history-beginning-search-forward
 
 # preserve the ability to shift-tab complete
 bindkey '^[[Z' reverse-menu-complete
