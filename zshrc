@@ -82,11 +82,10 @@ alias vim='nvim'
 alias t='tmux new-session -A -s main'
 alias pn='ping www.google.com -c 1'
 
+alias s='sudo'
+
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# gopass
-# source <(gopass completion zsh)
 
 # source local configs
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local

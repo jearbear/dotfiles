@@ -315,7 +315,16 @@ autocmd! User FzfStatusLine call <SID>fzf_statusline()
 let g:elm_setup_keybindings = 0
 
 " haskell-vim
-let g:haskell_indent_disable = 1
+" let g:haskell_indent_disable = 1
+" let g:haskell_vim_indent_if = 4
+" let g:haskell_vim_indent_case = 4
+" let g:haskell_vim_indent_let = 4
+" " let g:haskell_vim_indent_where = 
+" " let g:haskell_vim_indent_before_where = 
+" " let g:haskell_vim_indent_after_bare_where = 
+" let g:haskell_vim_indent_do = 4
+" let g:haskell_vim_indent_in = 0
+" let g:haskell_vim_indent_guard = 
 
 " vim-signify
 let g:signify_vcs_list = ['git']
@@ -327,6 +336,12 @@ let g:signify_vcs_list = ['git']
 augroup Golang
   autocmd FileType go set foldenable
   autocmd FileType go set foldmethod=syntax
+augroup END
+
+augroup Haskell
+  autocmd FileType haskell hi link haskellSeparator GruvboxFg4
+  autocmd FileType haskell hi link haskellDelimiter GruvboxOrange
+  autocmd FileType haskell hi link haskellPragma GruvboxRedBold
 augroup END
 
 augroup Python

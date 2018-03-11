@@ -3,8 +3,11 @@
 #
 
 alt + shift + r
-    pkill -USR1 -x sxhkd
+	pkill -USR1 -x sxhkd
 
+alt + Escape
+	systemctl suspend
+    
 alt + shift + Escape
 	bspc quit
 
@@ -33,7 +36,6 @@ alt + {_,shift + }{h,j,k,l}
 
 alt + {apostrophe}
 	bspc node -f @{parent}
-	# bspc node -f @{parent,brother,first,second}
 
 alt + {Tab,grave}
 	bspc {node,desktop} -f last
@@ -66,8 +68,8 @@ alt + {y,u,i,o}
 alt + {n,m,comma,period}
 	bspc node {@west -r -100,@south -r +100,@north -r -100,@east -r +100}
 
-# alt + shift + {n,m,comma,period}
-# 	bspc node {@east -r -100,@north -r +100,@south -r -100,@west -r +100}
+alt + shift + {n,m,comma,period}
+	bspc node {@east -r -100,@north -r +100,@south -r -100,@west -r +100}
 
 
 #
@@ -103,13 +105,13 @@ alt + shift + Return
 #
 
 Print
-    scrot 'desk_%b-%d-%Y_%H:%M:%S.png' -q 100 -e 'convert $f $f && mkdir -p ~/downloads/scrots && mv $f ~/downloads/scrots/'; notify-send 'scrot' 'desktop captured'
+    scrot 'desk_%b-%d-%Y_%H:%M:%S.png' -q 100 -e 'mkdir -p ~/downloads/scrots && mv $f ~/downloads/scrots/'; notify-send 'scrot' 'desktop captured'
 
 alt + Print
-    scrot -u 'win_%b-%d-%Y_%H:%M:%S.png' -q 100 -e 'convert $f $f && mkdir -p ~/downloads/scrots && mv $f ~/downloads/scrots/'; notify-send 'scrot' 'window captured'
+    scrot -u 'win_%b-%d-%Y_%H:%M:%S.png' -q 100 -e 'mkdir -p ~/downloads/scrots && mv $f ~/downloads/scrots/'; notify-send 'scrot' 'window captured'
 
 alt + shift + Print
-    scrot -s 'sel_%b-%d-%Y_%H:%M:%S.png' -q 100 -e 'convert $f $f && mkdir -p ~/downloads/scrots && mv $f ~/downloads/scrots/'; notify-send 'scrot' 'selection captured'
+    scrot -s 'sel_%b-%d-%Y_%H:%M:%S.png' -q 100 -e 'mkdir -p ~/downloads/scrots && mv $f ~/downloads/scrots/'; notify-send 'scrot' 'selection captured'
 
 
 #
@@ -143,16 +145,6 @@ XF86MonBrightnessDown
 {XF86AudioNext, alt + bracketright}
     playerctl next
 
-alt + shift + backslash
-    ponymix set-profile headset_head_unit && ponymix set-profile a2dp_sink
-
-alt + shift + bracketleft
-    echo 'disconnect' | bluetoothctl
-
-alt + shift + bracketright
-    echo 'connect 00:16:94:1C:2A:7E' | bluetoothctl
-
-
 #
 # change languages
 #
@@ -168,8 +160,8 @@ alt + shift + i
 # binary bindings
 #
 
-alt + shift + m
+alt + shift + backslash
     stream
 
-alt + shift + b
-    buku_run
+# alt + shift + b
+#     buku_run

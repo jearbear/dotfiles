@@ -1,11 +1,15 @@
 /* xft settings */
 Xft.antialias: 1
 Xft.autohint:  0
-/* Xft.dpi:       110 */
+Xft.dpi:       157
 Xft.hinting:   0
 Xft.hintstyle: hintslight
 Xft.lcdfilter: lcddefault
 Xft.rgba:      rgb
+
+
+/* cursor */
+Xcursor.theme: xcursor-vanilla-dmz
 
 
 /* colors */
@@ -30,11 +34,12 @@ Xft.rgba:      rgb
 
 
 /* rofi */
-rofi.bw:              2
+rofi.bw:              4
 rofi.color-enabled:   true
 rofi.columns:         1
 rofi.eh:              1
-rofi.font:            Iosevka Term Medium 12
+/* rofi.font:            Iosevka Term Medium 18 */
+rofi.font:            Input Medium 18
 rofi.fullscreen:      no
 rofi.hide-scrollbar:  true
 rofi.line-margin:     5
