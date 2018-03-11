@@ -278,6 +278,7 @@ let g:rustfmt_autosave = 1
 " vim-go
 let g:go_fmt_command = "goimports"
 let g:go_list_type = "quickfix"
+let g:go_fold_enable = ['import']
 
 " vim-sneak
 let g:sneak#use_ic_scs = 1
@@ -323,6 +324,11 @@ let g:elm_setup_keybindings = 0
 " 
 " LANGUAGE SETTINGS
 "
+augroup Golang
+  autocmd FileType go set foldenable
+  autocmd FileType go set foldmethod=syntax
+augroup END
+
 augroup Python
     autocmd FileType python BracelessEnable +indent
 augroup END
