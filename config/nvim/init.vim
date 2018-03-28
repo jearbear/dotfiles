@@ -286,6 +286,7 @@ let g:sneak#use_ic_scs = 1
 " vim-gutentags
 let g:gutentags_cache_dir = '~/.gutentags'
 let g:gutentags_generate_on_empty_buffer = 1
+let g:gutentags_project_root = ['tags']
 
 " fzf.vim
 let g:fzf_layout = { 'down': 10 }

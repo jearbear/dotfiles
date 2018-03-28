@@ -86,7 +86,7 @@ alias pn='ping www.google.com -c 1'
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # gopass
-source <(gopass completion zsh)
+# source <(gopass completion zsh)
 
 # source local configs
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
