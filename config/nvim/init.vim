@@ -24,20 +24,19 @@ Plug 'tweekmonster/braceless.vim'
 Plug 'wellle/targets.vim'
 
 " project management
-Plug 'airblade/vim-gitgutter'
+Plug 'mhinz/vim-signify'
+Plug 'romainl/vim-qf'
+Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
-Plug 'romainl/vim-qf'
 Plug 'tpope/vim-sleuth'
 Plug 'w0rp/ale'
-Plug 'tpope/vim-eunuch'
 
 " completion
 Plug 'racer-rust/vim-racer'
 Plug 'tpope/vim-endwise'
 
 " code navigation
-Plug 'justinmk/vim-sneak'
 Plug 'mbbill/undotree'
 
 " project navigation
@@ -63,10 +62,6 @@ Plug 'godlygeek/tabular'
 " fzf
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-
-" testbed
-Plug 'mattn/emmet-vim'
-
 
 call plug#end()
 
@@ -103,8 +98,9 @@ set ignorecase smartcase
 
 set dictionary+=/usr/share/dict/words
 
-" prefer files with suffixes
+" prefer files with suffixes (deprioritize binaries)
 set suffixes+=,,
+
 set wildignore+=*.pyc,*.swp,*.lock,*.min.js,*.min.css,tags
 set wildignore+=*/.git/*,*/tmp/*,*/target/*,*/venv/*,*/vendor/*,*/elm-stuff/*
 set wildmenu wildignorecase
@@ -138,12 +134,11 @@ set undofile
 set backupdir=~/.config/nvim/backup//
 set directory=~/.config/nvim/swp//
 
-" autoread file on enter
-set noswapfile
-set autoread
-set autowrite
+" autoread file on enter      
+set noswapfile      
+set autoread        
+set autowrite       
 autocmd! FocusGained,BufEnter * checktime
-
 
 "
 " VIM SETTINGS
@@ -186,11 +181,11 @@ xnoremap . :norm.<CR>
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
 
-" quickly indent/format
-nnoremap g= gg=G``
-
-" quickly substitute with selection
-nnoremap gs :%s//g<Left><Left>
+" quickly indent/format     
+nnoremap g= gg=G``      
+        
+" quickly substitute with selection     
+nnoremap gs :%s//g<Left><Left>      
 xnoremap gs y:%s/<C-r>"//g<Left><Left>
 
 " center search results
@@ -260,6 +255,12 @@ let g:ale_lint_on_text_changed = 'never'
 
 let g:ale_linters = {'go': []}
 
+let g:ale_fixers = {
+      \ 'haskell': 'hfmt',
+      \ 'rust': 'rustfmt',
+      \ }
+let g:ale_fix_on_save = 1
+
 hi link ALEErrorSign GruvboxRedSign
 hi link ALEWarningSign GruvboxYellowSign
 
@@ -272,21 +273,14 @@ let g:targets_seekRanges = 'cr cb cB lc ac Ac lr rr ll lb ar ab lB Ar aB Ab AB r
 " racer
 let g:racer_experimental_completer = 1
 
-" rust.vim
-let g:rustfmt_autosave = 1
-
 " vim-go
-let g:go_fmt_command = "goimports"
-let g:go_list_type = "quickfix"
+let g:go_fmt_command = 'goimports'
+let g:go_list_type = 'quickfix'
 let g:go_fold_enable = ['import']
-
-" vim-sneak
-let g:sneak#use_ic_scs = 1
 
 " vim-gutentags
 let g:gutentags_cache_dir = '~/.gutentags'
 let g:gutentags_generate_on_empty_buffer = 1
-let g:gutentags_project_root = ['tags']
 
 " fzf.vim
 let g:fzf_layout = { 'down': 10 }
@@ -318,8 +312,13 @@ endfunction
 autocmd! User FzfStatusLine call <SID>fzf_statusline()
 
 " elm-vim
-let g:elm_format_autosave = 1
 let g:elm_setup_keybindings = 0
+
+" haskell-vim
+let g:haskell_indent_disable = 1
+
+" vim-signify
+let g:signify_vcs_list = ['git']
 
 
 " 
