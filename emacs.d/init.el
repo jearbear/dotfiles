@@ -7,10 +7,17 @@
 (toggle-scroll-bar -1)
 (tool-bar-mode -1)
 
+;; UI tweaks
+(global-hl-line-mode 1)
+
 ;; set default font
-(add-to-list 'default-frame-alist '(font . "-*-Input-normal-normal-ultracondensed-*-11-*-*-*-m-0-iso10646-1"))
+(add-to-list 'default-frame-alist '(font . "-*-Input-normal-normal-ultracondensed-*-20-*-*-*-m-0-iso10646-1"))
 (if (eq system-type 'darwin)
-  (add-to-list 'default-frame-alist '(font . "-*-Input-normal-normal-ultracondensed-*-15-*-*-*-m-0-iso10646-1")))
+    (add-to-list 'default-frame-alist '(font . "-*-Input-normal-normal-ultracondensed-*-15-*-*-*-m-0-iso10646-1")))
+
+;; pipe backup files elsewhere
+(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+(setq backup-by-copying t)
 
 ;; setup use-package
 (require 'package)
@@ -31,7 +38,6 @@
 ;; themes
 (use-package solarized-theme :ensure t)
 (use-package challenger-deep-theme :ensure t)
-;; (use-package gruvbox-theme :ensure t)
 
 (load-theme 'solarized-light t)
 
@@ -65,6 +71,26 @@
 
 ;; projectile
 (use-package projectile :ensure t)
+
+;; ivy
+(use-package ivy
+  :ensure t
+  :config (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t
+	ivy-count-format "%d/%d ")
+  (global-set-key (kbd "C-s") 'swiper))
+
+;; flycheck
+(use-package flycheck
+  :ensure t
+  :config (global-flycheck-mode 1))
+
+(use-package counsel-projectile
+  :ensure t
+  :config (counsel-projectile-mode 1))
+
+;; smooth-scrolling
+;; (use-package smooth-scrolling :ensure t)
 
 ;; better scrolling defaults
 (setq scroll-margin 5

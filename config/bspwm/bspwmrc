@@ -35,6 +35,7 @@ bspc config presel_feedback_color '#504945'
 
 # rules
 bspc rule -a Zathura state=tiled
+bspc rule -a Emacs state=tiled
 
 # autostart
 sxhkd &
