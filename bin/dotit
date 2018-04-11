@@ -1,37 +1,60 @@
 #!/bin/bash
+set -euo pipefail
 
-subcommand=$1; shift
+usage() {
+    cat <<EOF
 
-case $subcommand in
-    add)
-        dotfile=$1
+Dotfile management made less toilesome.
 
-        if [ -z $dotfile ]; then
-            echo "Error: must provide a dotfile to link."
-            exit 1
-        fi
+Usage:
+    dotit help                 Display this help message.
+    dotit add <dotfile>        Link <dotfile> to home directory.
+    dotit list                 List all installed linked dotfiles in the current directory.
 
-        if [ ! -e $dotfile ]; then
-            echo "Error: dotfile \"$dotfile\" doesn't exist."
-            exit 1
-        fi
+EOF
+}
 
-        echo "Linking: $PWD/$dotfile -> $HOME/.$dotfile"
-        ln -sf $PWD/$dotfile $HOME/.$dotfile
-        ;;
+while [[ $# -gt 0 ]]; do
+    subcommand=$1
+    shift
 
-    list)
-        for dotfile in $(find * -type f); do
-            if [ "$(greadlink -f $HOME/.$dotfile)" == "$PWD/$dotfile" ]; then
-                echo $dotfile
+    case $subcommand in
+        add)
+            dotfile=$1
+
+            if [ -z "$dotfile" ]; then
+                echo "Error: must provide a dotfile to link."
+                exit 1
             fi
-        done
-        ;;
 
-    *)
-        echo "Usage:"
-        echo "    dotit help                 Display this help message."
-        echo "    dotit add <dotfile>        Link <dotfile> to home directory."
-        echo "    dotit list                 List all installed linked dotfiles in the current directory."
-        ;;
+            if [ ! -e "$dotfile" ]; then
+                echo "Error: dotfile \"$dotfile\" doesn't exist."
+                exit 1
+            fi
+
+            echo "Linking: $PWD/$dotfile -> $HOME/.$dotfile"
+            ln -sf "$PWD/$dotfile" "$HOME/.$dotfile"
+
+            shift
+            ;;
+
+        list)
+            find -- * -type f | while read -r dotfile; do
+		if [ "$(greadlink -f "$HOME/.$dotfile")" == "$PWD/$dotfile" ]; then
+                    echo "- $dotfile"
+		fi
+            done
+
+	    shift
+            ;;
+
+	*)
+            usage
+            exit
+
+	    shift
+            ;;
 esac
+done
+
+usage

@@ -2,13 +2,15 @@
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 
 ;; disable chrome
-(menu-bar-mode -1)
+(unless (eq system-type 'darwin)
+  (menu-bar-mode -1))
 (toggle-scroll-bar -1)
 (tool-bar-mode -1)
 
 ;; set default font
-(custom-set-faces
- '(default ((t (:family "Input" :foundry "FBI " :slant normal :weight normal :height 101 :width extra-condensed)))))
+(add-to-list 'default-frame-alist '(font . "-*-Input-normal-normal-ultracondensed-*-11-*-*-*-m-0-iso10646-1"))
+(if (eq system-type 'darwin)
+  (add-to-list 'default-frame-alist '(font . "-*-Input-normal-normal-ultracondensed-*-15-*-*-*-m-0-iso10646-1")))
 
 ;; setup use-package
 (require 'package)
@@ -26,10 +28,18 @@
   (package-install 'use-package))
 (require 'use-package)
 
-;; challenger deep theme
-(use-package challenger-deep-theme
+;; themes
+(use-package solarized-theme :ensure t)
+(use-package challenger-deep-theme :ensure t)
+;; (use-package gruvbox-theme :ensure t)
+
+(load-theme 'solarized-light t)
+
+;; exec-path-from-shell
+(use-package exec-path-from-shell
   :ensure t
-  :config (load-theme 'challenger-deep t))
+  :config (when (memq window-system '(mac ns x))
+	    (exec-path-from-shell-initialize)))
 
 ;; elm-mode
 (use-package elm-mode
@@ -41,8 +51,24 @@
   :ensure t
   :config (setq rust-format-on-save t))
 
+;; go-mode
+(use-package go-mode :ensure t)
+
 ;; toml-mode
 (use-package toml-mode :ensure t)
+
+;; scala-mode
+(use-package scala-mode :ensure t)
+
+;; magit
+(use-package magit :ensure t)
+
+;; projectile
+(use-package projectile :ensure t)
+
+;; better scrolling defaults
+(setq scroll-margin 5
+      scroll-preserve-screen-position 1)
 
 ;; load custom file
 (load custom-file :noerror)
