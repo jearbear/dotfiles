@@ -9,6 +9,7 @@
 
 ;; UI tweaks
 (global-hl-line-mode 1)
+(setq inhibit-startup-screen t)
 
 ;; set default font
 (add-to-list 'default-frame-alist '(font . "-*-Input-normal-normal-ultracondensed-*-20-*-*-*-m-0-iso10646-1"))
