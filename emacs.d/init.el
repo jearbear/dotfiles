@@ -20,6 +20,7 @@
 ;; UI tweaks
 (global-hl-line-mode 1)
 (setq inhibit-startup-screen t)
+(setq vc-follow-symlinks t)
 
 ;; set default font
 (add-to-list 'default-frame-alist '(font . "-*-Input-normal-normal-ultracondensed-*-20-*-*-*-m-0-iso10646-1"))
@@ -47,10 +48,11 @@
 (require 'use-package)
 
 ;; themes
-(use-package solarized-theme :ensure t)
-(use-package challenger-deep-theme :ensure t)
+;; (use-package solarized-theme :ensure t)
+;; (use-package challenger-deep-theme :ensure t)
+(use-package doom-themes :ensure t)
 
-(load-theme 'solarized-light t)
+(load-theme 'doom-one t)
 
 ;; exec-path-from-shell
 (use-package exec-path-from-shell
@@ -96,10 +98,6 @@
   (setq ivy-use-virtual-buffers t
 	ivy-count-format "%d/%d ")
   (global-set-key (kbd "C-s") 'swiper))
-
-;; (use-package counsel-projectile
-;;   :ensure t
-;;   :config (counsel-projectile-mode 1))
 
 ;; flycheck
 (use-package flycheck
