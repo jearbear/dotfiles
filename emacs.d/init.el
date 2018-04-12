@@ -1,3 +1,13 @@
+;;; init.el ---  Init file for Emacs
+
+;;; Commentary:
+
+;; All you should need to get Emacs up and running is this file.  It
+;; will install the use-package package if necesarry and then all
+;; package dependencies.
+
+;;; Code:
+
 ;; redirect custom options to another file
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 
@@ -45,8 +55,9 @@
 ;; exec-path-from-shell
 (use-package exec-path-from-shell
   :ensure t
-  :config (when (memq window-system '(mac ns x))
-	    (exec-path-from-shell-initialize)))
+  :config
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize)))
 
 ;; elm-mode
 (use-package elm-mode
@@ -71,24 +82,29 @@
 (use-package magit :ensure t)
 
 ;; projectile
-(use-package projectile :ensure t)
-
-;; ivy
-(use-package ivy
+(use-package projectile
   :ensure t
-  :config (ivy-mode 1)
+  :config
+  (global-set-key (kbd "C-c p p") 'projectile-switch-project)
+  (global-set-key (kbd "C-c p f") 'projectile-find-file))
+
+;; ivy, counsel, swiper
+(use-package counsel
+  :ensure t
+  :config
+  (ivy-mode 1)
   (setq ivy-use-virtual-buffers t
 	ivy-count-format "%d/%d ")
   (global-set-key (kbd "C-s") 'swiper))
+
+;; (use-package counsel-projectile
+;;   :ensure t
+;;   :config (counsel-projectile-mode 1))
 
 ;; flycheck
 (use-package flycheck
   :ensure t
   :config (global-flycheck-mode 1))
-
-(use-package counsel-projectile
-  :ensure t
-  :config (counsel-projectile-mode 1))
 
 ;; smooth-scrolling
 ;; (use-package smooth-scrolling :ensure t)
@@ -99,3 +115,5 @@
 
 ;; load custom file
 (load custom-file :noerror)
+
+;;; init.el ends here
