@@ -31,7 +31,7 @@
 (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
 (setq backup-by-copying t)
 
-;; setup use-package
+;; setup package lists
 (require 'package)
 
 (setq package-enable-at-startup nil)
@@ -52,7 +52,6 @@
 ;; (use-package solarized-theme :ensure t)
 ;; (use-package challenger-deep-theme :ensure t)
 (use-package doom-themes :ensure t)
-
 (load-theme 'doom-one t)
 
 ;; exec-path-from-shell
