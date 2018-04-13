@@ -8,8 +8,8 @@
 
 ;;; Code:
 
-;; redirect custom options to another file
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+;; redirect custom options to an unused tmp file
+(setq custom-file (make-temp-file "custom.el"))
 
 ;; disable chrome
 (unless (eq system-type 'darwin)
@@ -39,6 +39,7 @@
                          ("gnu"       . "http://elpa.gnu.org/packages/")
                          ("melpa"     . "https://melpa.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")))
+
 (package-initialize)
 
 ;; ensure use-package is installed and loaded
@@ -85,7 +86,15 @@
   :ensure t
   :config
   (global-set-key (kbd "C-x g") 'magit-status)
-  (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup))
+  (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
+  (setq vc-handled-backends nil)) ; disable build in VC management
+
+;; git-link
+(use-package git-link
+  :ensure t
+  :config
+  (add-to-list 'git-link-remote-alist '("git\\.corp\\.stripe\\.com" git-link-github))
+  (add-to-list 'git-link-commit-remote-alist '("git\\.corp\\.stripe\\.com" git-link-commit-github)))
 
 ;; projectile
 (use-package projectile
@@ -114,8 +123,5 @@
 ;; better scrolling defaults
 (setq scroll-margin 5
       scroll-preserve-screen-position 1)
-
-;; load custom file
-(load custom-file :noerror)
 
 ;;; init.el ends here
