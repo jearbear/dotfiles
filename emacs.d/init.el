@@ -72,7 +72,11 @@
   :config (setq rust-format-on-save t))
 
 ;; go-mode
-(use-package go-mode :ensure t)
+(use-package go-mode
+  :ensure t
+  :config
+  (setq gofmt-command "goimports")
+  (add-hook 'before-save-hook 'gofmt-before-save))
 
 ;; toml-mode
 (use-package toml-mode :ensure t)
