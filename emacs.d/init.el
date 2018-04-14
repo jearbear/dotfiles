@@ -21,6 +21,7 @@
 (global-hl-line-mode 1)
 (setq inhibit-startup-screen t)
 (setq vc-follow-symlinks t)
+(setq find-file-visit-truename t)
 
 ;; set default font
 (add-to-list 'default-frame-alist '(font . "-*-Input-normal-normal-ultracondensed-*-20-*-*-*-m-0-iso10646-1"))
@@ -81,6 +82,9 @@
 ;; toml-mode
 (use-package toml-mode :ensure t)
 
+;; yaml-mode
+(use-package yaml-mode :ensure t)
+
 ;; scala-mode
 (use-package scala-mode :ensure t)
 
@@ -99,13 +103,6 @@
   (add-to-list 'git-link-remote-alist '("git\\.corp\\.stripe\\.com" git-link-github))
   (add-to-list 'git-link-commit-remote-alist '("git\\.corp\\.stripe\\.com" git-link-commit-github)))
 
-;; projectile
-(use-package projectile
-  :ensure t
-  :config
-  (global-set-key (kbd "C-c p p") 'projectile-switch-project)
-  (global-set-key (kbd "C-c p f") 'projectile-find-file))
-
 ;; ivy, counsel, swiper
 (use-package counsel
   :ensure t
@@ -113,7 +110,17 @@
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t
 	ivy-count-format "%d/%d ")
-  (global-set-key (kbd "C-s") 'swiper))
+  (global-set-key (kbd "C-s") 'swiper)
+  (global-set-key (kbd "C-x f") 'counsel-git))
+
+;; projectile
+(use-package projectile :ensure t)
+
+;; counsel-projectile
+(use-package counsel-projectile
+  :ensure t
+  :config
+  (counsel-projectile-mode 1))
 
 ;; flycheck
 (use-package flycheck
