@@ -1,18 +1,9 @@
 # vim readline keybindings
-bindkey -v
-bindkey '^o' vi-cmd-mode
+bindkey -e
 
-# preserve some emacs bindings that don't conflict
-bindkey '^a' beginning-of-line
-bindkey '^e' end-of-line
-bindkey '^b' backward-word
-bindkey '^f' forward-word
-bindkey '^h' backward-delete-char
-bindkey '^w' backward-kill-word
-bindkey '^k' kill-line
-bindkey '^u' kill-whole-line
-bindkey "^p" history-beginning-search-backward
-bindkey "^n" history-beginning-search-forward
+# bash-like navigation
+autoload -U select-word-style
+select-word-style bash
 
 # preserve the ability to shift-tab complete
 bindkey '^[[Z' reverse-menu-complete
@@ -58,23 +49,12 @@ precmd() {
 zstyle ':vcs_info:git*' formats "- %b -"
 setopt prompt_subst
 
-# vim/insert mode info
-function zle-line-init zle-keymap-select {
-    INSERT_MODE=''
-    VIM_MODE='%F{magenta}'
-    CMD_MODE="${${KEYMAP/vicmd/${VIM_MODE}}/(main|viins)/${INSERT_MODE}}"
-    zle reset-prompt
-}
-zle -N zle-line-init
-zle -N zle-keymap-select
-
 # prompt
-PROMPT='%1/ %F{yellow}●%f ${CMD_MODE}'
+PROMPT='%1/ %F{yellow}-%f '
 RPROMPT='%F{yellow}${vcs_info_msg_0_}%f'
 
 # aliases
 alias sizes='du -d 1 -h . | sort -rh'
-alias first='head -n 1'
 alias reload='source ~/.zshrc && source ~/.zshenv'
 
 alias vi='nvim'
