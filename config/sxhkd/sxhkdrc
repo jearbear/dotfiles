@@ -2,7 +2,7 @@
 # bspwm hotkeys
 #
 
-alt + shift + r
+super + shift + r
 	pkill -USR1 -x sxhkd
 
 super + Escape
