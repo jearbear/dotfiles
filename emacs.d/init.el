@@ -50,10 +50,12 @@
 (require 'use-package)
 
 ;; themes
-;; (use-package solarized-theme :ensure t)
-;; (use-package challenger-deep-theme :ensure t)
-(use-package doom-themes :ensure t)
-(load-theme 'doom-one t)
+;; (use-package solarized-theme :ensure t :config (load-theme 'solarized-theme t))
+;; (use-package base16-theme :ensure t :config (load-theme 'base16-eighties t))
+;; (use-package challenger-deep-theme :ensure t :config (load-theme 'challenger-deep t))
+;; (use-package gruvbox :ensure t :config (load-theme 'gruvbox-dark-soft t))
+(use-package doom-themes :ensure t :config (load-theme 'doom-tomorrow-night t))
+;; (use-package zenburn-theme :ensure t :config (load-theme 'zenburn t))
 
 ;; exec-path-from-shell
 (use-package exec-path-from-shell
@@ -93,7 +95,7 @@
   :ensure t
   :config
   (global-set-key (kbd "C-x g") 'magit-status)
-  (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
+  (global-set-key (kbd "C-x C-g") 'magit-dispatch-popup)
   (setq vc-handled-backends nil)) ; disable build in VC management
 
 ;; git-link
@@ -125,10 +127,23 @@
 ;; flycheck
 (use-package flycheck
   :ensure t
-  :config (global-flycheck-mode 1))
+  :config
+  (global-flycheck-mode 1))
 
-;; smooth-scrolling
-;; (use-package smooth-scrolling :ensure t)
+;; avy
+(use-package avy :ensure t)
+
+;; ace-window
+(use-package ace-window :ensure t)
+
+;; company-mode
+(use-package company
+  :ensure t
+  :config
+  (company-mode 1))
+
+;; evil --- must resist for now
+;; (use-package evil :ensure t :config (evil-mode 1))
 
 ;; better scrolling defaults
 (setq scroll-margin 5
