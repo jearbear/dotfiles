@@ -5,13 +5,13 @@
 alt + shift + r
 	pkill -USR1 -x sxhkd
 
-alt + Escape
+super + Escape
 	systemctl suspend
     
-alt + shift + Escape
+super + shift + Escape
 	bspc quit
 
-alt + shift + q
+super + shift + q
 	bspc node -c
 
 
@@ -20,7 +20,7 @@ alt + shift + q
 # state/flags
 #
 
-alt + {a,shift + s,s,f}
+super + {a,shift + s,s,f}
 	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
 
 
@@ -28,19 +28,19 @@ alt + {a,shift + s,s,f}
 # focus/swap
 #
 
-alt + w
+super + w
 	bspc query -N -n focused.automatic && bspc node -n last.!automatic || bspc node last.leaf -n focused
 
-alt + {_,shift + }{h,j,k,l}
+super + {_,shift + }{h,j,k,l}
 	bspc node -{f,s} {west,south,north,east}
 
-alt + {apostrophe}
+super + {apostrophe}
 	bspc node -f @{parent}
 
-alt + {Tab,grave}
+super + {Tab,grave}
 	bspc {node,desktop} -f last
 
-alt + {_,shift + }{1-9,0}
+super + {_,shift + }{1-9,0}
 	bspc {desktop -f,node -d} '^{1-9,10}'
 
 
@@ -48,13 +48,13 @@ alt + {_,shift + }{1-9,0}
 # preselect
 #
 
-alt + {y,u,i,o}
+super + {y,u,i,o}
 	bspc node -p {west,south,north,east}
 
-# alt + ctrl + {1-9}
+# super + ctrl + {1-9}
 # 	bspc node -o 0.{1-9}
 
-# alt + ctrl + space
+# super + ctrl + space
 # 	bspc node -p cancel
 
 ~Escape
@@ -65,10 +65,10 @@ alt + {y,u,i,o}
 # resize tiled/floating
 #
 
-alt + {n,m,comma,period}
+super + {n,m,comma,period}
 	bspc node {@west -r -100,@south -r +100,@north -r -100,@east -r +100}
 
-alt + shift + {n,m,comma,period}
+super + shift + {n,m,comma,period}
 	bspc node {@east -r -100,@north -r +100,@south -r -100,@west -r +100}
 
 
@@ -76,10 +76,10 @@ alt + shift + {n,m,comma,period}
 # visuals
 #
 
-alt + shift + {minus,plus}
+super + shift + {minus,plus}
     bspc config window_gap $(($(bspc config window_gap) {-,+} 2))
 
-# alt + shift + zero
+# super + shift + zero
 #     bspc config window_gap 0
 
 
@@ -87,16 +87,16 @@ alt + shift + {minus,plus}
 # random hotkeys
 #
 
-alt + space
+super + space
     rofi -modi "run" -show run
 
-alt + slash
+super + slash
     rofi-pass
 
-alt + Return
+super + Return
     alacritty
 
-alt + shift + Return
+super + shift + Return
     alacritty -e ranger
 
 
@@ -107,10 +107,10 @@ alt + shift + Return
 Print
     scrot 'desk_%b-%d-%Y_%H:%M:%S.png' -q 100 -e 'mkdir -p ~/downloads/scrots && mv $f ~/downloads/scrots/'; notify-send 'scrot' 'desktop captured'
 
-alt + Print
+super + Print
     scrot -u 'win_%b-%d-%Y_%H:%M:%S.png' -q 100 -e 'mkdir -p ~/downloads/scrots && mv $f ~/downloads/scrots/'; notify-send 'scrot' 'window captured'
 
-alt + shift + Print
+super + shift + Print
     scrot -s 'sel_%b-%d-%Y_%H:%M:%S.png' -q 100 -e 'mkdir -p ~/downloads/scrots && mv $f ~/downloads/scrots/'; notify-send 'scrot' 'selection captured'
 
 
@@ -136,23 +136,23 @@ XF86MonBrightnessDown
 # XF86Display
 #     commander disp_toggle
 
-{XF86AudioPlay, XF86AudioPause, alt + backslash}
+{XF86AudioPlay, XF86AudioPause, super + backslash}
     playerctl play-pause
 
-{XF86AudioPrev, alt + bracketleft}
+{XF86AudioPrev, super + bracketleft}
     playerctl previous
 
-{XF86AudioNext, alt + bracketright}
+{XF86AudioNext, super + bracketright}
     playerctl next
 
 #
 # change languages
 #
 
-alt + shift + u
+super + shift + u
     setxkbmap us basic
 
-alt + shift + i
+super + shift + i
     setxkbmap us intl
 
 
@@ -160,8 +160,5 @@ alt + shift + i
 # binary bindings
 #
 
-alt + shift + backslash
+super + shift + backslash
     stream
-
-# alt + shift + b
-#     buku_run
