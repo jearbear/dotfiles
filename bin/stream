@@ -1,2 +1,4 @@
-HEIGHT=$(xrandr | grep '*' | awk '{print $1}' | sed 's/.*x\(.*\).*/\1/')
+#!/bin/bash
+
+HEIGHT=$(xrandr | grep '\*' | awk '{prin t $1}' | sed 's/.*x\(.*\).*/\1/')
 mpv "$(xclip -o -selection clipboard)" --ytdl-format="bestvideo[height<=$HEIGHT]+bestaudio/best[height<=$HEIGHT]"

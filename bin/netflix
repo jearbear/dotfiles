@@ -1,1 +1,3 @@
+#!/bin/bash
+
 chromium --app=https://www.netflix.com
