@@ -51,12 +51,14 @@
 (require 'use-package)
 
 ;; themes
-;; (use-package solarized-theme :ensure t :config (load-theme 'solarized-theme t))
-(use-package base16-theme :ensure t :config (load-theme 'base16-gruvbox-dark-soft t))
+(use-package solarized-theme :ensure t :config (load-theme 'solarized-light t))
+;; (use-package base16-theme :ensure t :config (load-theme 'base16-gruvbox-dark-soft t))
 ;; (use-package challenger-deep-theme :ensure t :config (load-theme 'challenger-deep t))
 ;; (use-package gruvbox :ensure t :config (load-theme 'gruvbox-dark-soft t))
-;; (use-package doom-themes :ensure t :config (load-theme 'doom-vibrant t))
+;; (use-package doom-themes :ensure t :config (load-theme 'doom-spacegrey t))
 ;; (use-package zenburn-theme :ensure t :config (load-theme 'zenburn t))
+;; (use-package color-theme-sanityinc-tomorrow :ensure t :config (load-theme 'color-theme-sanityinc-tomorrow-night t))
+;; (use-package kaolin-themes :ensure t :config (load-theme 'kaolin-dark t))
 
 ;; exec-path-from-shell
 (use-package exec-path-from-shell
