@@ -5,6 +5,10 @@ bindkey -e
 autoload -U select-word-style
 select-word-style bash
 
+# navigate command history with prefix
+bindkey "^p" history-beginning-search-backward
+bindkey "^n" history-beginning-search-forward
+
 # preserve the ability to shift-tab complete
 bindkey '^[[Z' reverse-menu-complete
 

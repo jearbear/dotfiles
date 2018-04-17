@@ -22,6 +22,7 @@
 (setq inhibit-startup-screen t)
 (setq vc-follow-symlinks t)
 (setq find-file-visit-truename t)
+(setq ring-bell-function 'ignore)
 
 ;; set default font
 (add-to-list 'default-frame-alist '(font . "-*-Input-normal-normal-ultracondensed-*-20-*-*-*-m-0-iso10646-1"))
@@ -51,10 +52,10 @@
 
 ;; themes
 ;; (use-package solarized-theme :ensure t :config (load-theme 'solarized-theme t))
-;; (use-package base16-theme :ensure t :config (load-theme 'base16-eighties t))
+(use-package base16-theme :ensure t :config (load-theme 'base16-gruvbox-dark-soft t))
 ;; (use-package challenger-deep-theme :ensure t :config (load-theme 'challenger-deep t))
 ;; (use-package gruvbox :ensure t :config (load-theme 'gruvbox-dark-soft t))
-(use-package doom-themes :ensure t :config (load-theme 'doom-tomorrow-night t))
+;; (use-package doom-themes :ensure t :config (load-theme 'doom-vibrant t))
 ;; (use-package zenburn-theme :ensure t :config (load-theme 'zenburn t))
 
 ;; exec-path-from-shell
@@ -89,6 +90,13 @@
 
 ;; scala-mode
 (use-package scala-mode :ensure t)
+
+;; haskell-mode
+(use-package haskell-mode
+  :ensure t)
+
+;; json-mode
+(use-package json-mode :ensure t)
 
 ;; magit
 (use-package magit
