@@ -155,8 +155,14 @@
 ;; evil --- must resist for now
 ;; (use-package evil :ensure t :config (evil-mode 1))
 
+;; smooth-scrolling
+(use-package smooth-scrolling
+  :ensure t
+  :config
+  (smooth-scrolling-mode 1))
+
 ;; better scrolling defaults
-(setq scroll-margin 5
+(setq scroll-margin 10
       scroll-preserve-screen-position 1)
 
 ;;; init.el ends here
