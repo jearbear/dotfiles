@@ -21,6 +21,9 @@
 (toggle-scroll-bar -1)
 (tool-bar-mode -1)
 
+;; show line numbers
+(global-display-line-numbers-mode 1)
+
 ;; UI tweaks
 (global-hl-line-mode 1)
 (setq inhibit-startup-screen t
