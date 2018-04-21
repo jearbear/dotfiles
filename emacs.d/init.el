@@ -58,8 +58,7 @@
 (setq package-enable-at-startup nil)
 (setq package-archives '(("org"       . "http://orgmode.org/elpa/")
                          ("gnu"       . "http://elpa.gnu.org/packages/")
-                         ("melpa"     . "https://melpa.org/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")))
+                         ("melpa"     . "https://melpa.org/packages/")))
 
 (package-initialize)
 
@@ -67,7 +66,7 @@
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
-(require 'use-package)
+(eval-when-compile (require 'use-package))
 
 ;; install packages declared by default
 (setq use-package-always-ensure t)
@@ -148,7 +147,8 @@
 	ivy-count-format "%d/%d ")
   ;; (global-set-key (kbd "C-s") 'swiper)
   (global-set-key (kbd "C-c f") 'counsel-git)
-  (global-set-key (kbd "C-c b") 'counsel-ibuffer))
+  (global-set-key (kbd "C-c b") 'counsel-ibuffer)
+  (global-set-key (kbd "C-\\") 'counsel-rg))
 
 ;; projectile
 (use-package projectile)
@@ -162,6 +162,11 @@
 (use-package flycheck
   :config
   (global-flycheck-mode 1))
+
+;; dumb-jump
+(use-package dumb-jump
+  :config
+  (setq dumb-jump-force-searcher 'rg))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
