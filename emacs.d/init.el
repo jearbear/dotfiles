@@ -142,8 +142,7 @@
   :config
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t
-	ivy-count-format "%d/%d "
-	ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
+	ivy-count-format "%d/%d ")
   ;; (global-set-key (kbd "C-s") 'swiper)
   (global-set-key (kbd "C-c f") 'counsel-git)
   (global-set-key (kbd "C-c b") 'counsel-ibuffer))
