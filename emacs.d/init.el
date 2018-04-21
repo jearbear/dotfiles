@@ -28,6 +28,9 @@
       find-file-visit-truename t
       ring-bell-function 'ignore)
 
+;; enable auto-pairs
+(electric-pair-mode 1)
+
 ;; set default font
 (add-to-list 'default-frame-alist '(font . "-*-Input-normal-normal-ultracondensed-*-20-*-*-*-m-0-iso10646-1"))
 (if (eq system-type 'darwin)
@@ -177,8 +180,19 @@
   (setq gofmt-command "goimports")
   (add-hook 'before-save-hook 'gofmt-before-save))
 
+;; company-go
+;; company-mode go completion
+(use-package company-go
+  :config
+  (add-hook 'go-mode-hook (lambda ()
+                            (set (make-local-variable 'company-backends) '(company-go))
+                            (company-mode))))
+
 ;; toml-mode
 (use-package toml-mode)
+
+;; terraform-mode
+(use-package terraform-mode)
 
 ;; yaml-mode
 (use-package yaml-mode)
