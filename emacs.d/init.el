@@ -23,10 +23,10 @@
 
 ;; UI tweaks
 (global-hl-line-mode 1)
-(setq inhibit-startup-screen t)
-(setq vc-follow-symlinks t)
-(setq find-file-visit-truename t)
-(setq ring-bell-function 'ignore)
+(setq inhibit-startup-screen t
+      vc-follow-symlinks t
+      find-file-visit-truename t
+      ring-bell-function 'ignore)
 
 ;; set default font
 (add-to-list 'default-frame-alist '(font . "-*-Input-normal-normal-ultracondensed-*-20-*-*-*-m-0-iso10646-1"))
@@ -67,11 +67,10 @@
 (setq use-package-always-ensure t)
 
 ;; auto-package-update
-;; automatically update declared packages
 (use-package auto-package-update
   :config
   (setq auto-package-update-delete-old-versions t
-	auto-package-update-hide-results t)
+	auto-package-update-hide-results nil)
   (auto-package-update-maybe))
 
 
@@ -125,8 +124,8 @@
 ;; magit
 (use-package magit
   :config
-  (global-set-key (kbd "C-x g") 'magit-status)
-  (global-set-key (kbd "C-x C-g") 'magit-dispatch-popup)
+  (global-set-key (kbd "C-c g") 'magit-status)
+  (global-set-key (kbd "C-c C-g") 'magit-dispatch-popup)
   (setq vc-handled-backends nil)) ; disable built in VC management
 
 ;; git-link
@@ -140,9 +139,11 @@
   :config
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t
-	ivy-count-format "%d/%d ")
-  (global-set-key (kbd "C-s") 'swiper)
-  (global-set-key (kbd "C-x f") 'counsel-git))
+	ivy-count-format "%d/%d "
+	ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
+  ;; (global-set-key (kbd "C-s") 'swiper)
+  (global-set-key (kbd "C-c f") 'counsel-git)
+  (global-set-key (kbd "C-c b") 'counsel-ibuffer))
 
 ;; projectile
 (use-package projectile)
