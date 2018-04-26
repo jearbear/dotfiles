@@ -105,11 +105,25 @@
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
 
+;; hydra
+(use-package hydra
+  :config
+  (defhydra hydra-windows (global-map "C-x o")
+  "cycle selected window"
+  ("o" (other-window 1) "forward")
+  ("O" (other-window -1) "back")))
+
 ;; avy
 (use-package avy)
 
 ;; ace-window
 (use-package ace-window)
+
+;; eyebrowse
+(use-package eyebrowse
+  :config
+  (eyebrowse-mode)
+  (eyebrowse-setup-opinionated-keys))
 
 ;; company-mode
 (use-package company

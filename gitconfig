@@ -30,6 +30,9 @@
     new = green
     whitespace = red reverse
 
+[help]
+    autocorrect = 1
+
 [log]
     date = relative
 
