@@ -34,6 +34,10 @@
 ;; enable auto-pairs
 (electric-pair-mode 1)
 
+;; easier window switching
+;; (global-set-key (kbd "M-[") (lambda () (interactive) (other-window 1)))
+;; (global-set-key (kbd "M-]") (lambda () (interactive) (other-window -1)))
+
 ;; set default font
 (add-to-list 'default-frame-alist '(font . "-*-Input-normal-normal-ultracondensed-*-20-*-*-*-m-0-iso10646-1"))
 (if (eq system-type 'darwin)
@@ -106,18 +110,15 @@
     (exec-path-from-shell-initialize)))
 
 ;; hydra
-(use-package hydra
-  :config
-  (defhydra hydra-windows (global-map "C-x o")
-  "cycle selected window"
-  ("o" (other-window 1) "forward")
-  ("O" (other-window -1) "back")))
+(use-package hydra)
 
 ;; avy
 (use-package avy)
 
 ;; ace-window
-(use-package ace-window)
+(use-package ace-window
+  :config
+  (global-set-key (kbd "M-o") 'ace-window))
 
 ;; eyebrowse
 (use-package eyebrowse
@@ -134,6 +135,12 @@
 (use-package smooth-scrolling
   :config
   (smooth-scrolling-mode 1))
+
+;; scroll down by half a page
+(use-package view
+  :config
+  (global-set-key (kbd "C-v") 'View-scroll-half-page-forward)
+  (global-set-key (kbd "M-v") 'View-scroll-half-page-backward))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
