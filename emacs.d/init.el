@@ -43,9 +43,8 @@
 (if (eq system-type 'darwin)
     (add-to-list 'default-frame-alist '(font . "-*-Input-normal-normal-ultracondensed-*-15-*-*-*-m-0-iso10646-1")))
 
-;; pipe backup files elsewhere
-(setq backup-directory-alist '(("." . "~/.emacs.d/backups"))
-      backup-by-copying t)
+(setq backup-directory-alist `((".*" . ,temporary-file-directory))
+      auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 
 ;; better scrolling defaults
 (setq scroll-margin 10
@@ -150,9 +149,9 @@
 ;; magit
 (use-package magit
   :config
-  (global-set-key (kbd "C-c g") 'magit-status)
-  (global-set-key (kbd "C-c C-g") 'magit-dispatch-popup)
-  (setq vc-handled-backends nil)) ; disable built in VC management
+  (global-set-key (kbd "C-c C-g") 'magit-status)
+  (global-set-key (kbd "C-c g") 'magit-dispatch-popup))
+  ;; (setq vc-handled-backends nil)) ; disable built in VC management
 
 ;; git-link
 (use-package git-link
@@ -166,7 +165,6 @@
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t
 	ivy-count-format "%d/%d ")
-  ;; (global-set-key (kbd "C-s") 'swiper)
   (global-set-key (kbd "C-c f") 'counsel-git)
   (global-set-key (kbd "C-c b") 'counsel-ibuffer)
   (global-set-key (kbd "C-\\") 'counsel-rg))
