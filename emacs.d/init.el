@@ -229,7 +229,15 @@
 (use-package scala-mode)
 
 ;; haskell-mode
-(use-package haskell-mode)
+(use-package haskell-mode
+  :config
+  (setq haskell-stylish-on-save t))
+
+;; hindent
+(use-package hindent
+  :config
+  (add-hook 'haskell-mode-hook #'hindent-mode)
+  (setq hindent-reformat-buffer-on-save t))
 
 ;; json-mode
 (use-package json-mode)
