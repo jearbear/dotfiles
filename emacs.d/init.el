@@ -165,8 +165,8 @@
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t
 	ivy-count-format "%d/%d ")
-  (global-set-key (kbd "C-c f") 'counsel-git)
-  (global-set-key (kbd "C-c b") 'counsel-ibuffer)
+  (global-set-key (kbd "C-c C-f") 'counsel-git)
+  (global-set-key (kbd "C-c C-b") 'counsel-ibuffer)
   (global-set-key (kbd "C-\\") 'counsel-rg))
 
 ;; projectile
