@@ -34,10 +34,6 @@
 ;; enable auto-pairs
 (electric-pair-mode 1)
 
-;; easier window switching
-;; (global-set-key (kbd "M-[") (lambda () (interactive) (other-window 1)))
-;; (global-set-key (kbd "M-]") (lambda () (interactive) (other-window -1)))
-
 ;; set default font
 (add-to-list 'default-frame-alist '(font . "-*-Input-normal-normal-ultracondensed-*-20-*-*-*-m-0-iso10646-1"))
 (if (eq system-type 'darwin)
@@ -151,7 +147,6 @@
   :config
   (global-set-key (kbd "C-c C-g") 'magit-status)
   (global-set-key (kbd "C-c g") 'magit-dispatch-popup))
-  ;; (setq vc-handled-backends nil)) ; disable built in VC management
 
 ;; git-link
 (use-package git-link
@@ -165,17 +160,17 @@
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t
 	ivy-count-format "%d/%d ")
-  (global-set-key (kbd "C-c C-f") 'counsel-git)
-  (global-set-key (kbd "C-c C-b") 'counsel-ibuffer)
-  (global-set-key (kbd "C-\\") 'counsel-rg))
+  (bind-keys* ("C-c C-p" . counsel-git)
+	      ("C-c C-l" . counsel-ibuffer)
+	      ("C-\\" . counsel-rg)))
 
 ;; projectile
-(use-package projectile)
+;; (use-package projectile)
 
 ;; counsel-projectile
-(use-package counsel-projectile
-  :config
-  (counsel-projectile-mode 1))
+;; (use-package counsel-projectile
+  ;; :config
+  ;; (counsel-projectile-mode 1))
 
 ;; flycheck
 (use-package flycheck
