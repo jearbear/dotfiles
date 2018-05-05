@@ -12,6 +12,9 @@ bindkey "^n" history-beginning-search-forward
 # preserve the ability to shift-tab complete
 bindkey '^[[Z' reverse-menu-complete
 
+# more emacs-like bindings
+bindkey '^H' backward-kill-word
+
 # history
 HISTFILE=~/.histfile
 HISTSIZE=100000
