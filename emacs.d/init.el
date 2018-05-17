@@ -34,6 +34,9 @@
 ;; enable auto-pairs
 (electric-pair-mode 1)
 
+;; only care about git
+(setq vc-handled-backends '(Git))
+
 ;; set default font
 (add-to-list 'default-frame-alist '(font . "-*-Input-normal-normal-ultracondensed-*-20-*-*-*-m-0-iso10646-1"))
 (if (eq system-type 'darwin)
@@ -126,11 +129,6 @@
   :config
   (company-mode 1))
 
-;; smooth-scrolling
-(use-package smooth-scrolling
-  :config
-  (smooth-scrolling-mode 1))
-
 ;; scroll down by half a page
 (use-package view
   :config
@@ -159,10 +157,19 @@
   :config
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t
-	ivy-count-format "%d/%d ")
+	ivy-count-format "%d/%d "
+	ivy-display-style nil)
   (bind-keys* ("C-c C-p" . counsel-git)
-	      ("C-c C-l" . counsel-ibuffer)
+	      ("C-c C-l" . ivy-switch-buffer)
 	      ("C-\\" . counsel-rg)))
+
+;; ivy-rich
+(use-package ivy-rich
+  :config
+  (ivy-set-display-transformer 'ivy-switch-buffer 'ivy-rich-switch-buffer-transformer)
+  (setq ivy-virtual-abbreviate 'full
+	ivy-rich-switch-buffer-align-virtual-buffer t
+	ivy-rich-path-style 'abbrev))
 
 ;; projectile
 ;; (use-package projectile)
