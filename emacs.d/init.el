@@ -38,7 +38,7 @@
 (setq vc-handled-backends '(Git))
 
 ;; set default font
-(add-to-list 'default-frame-alist '(font . "-*-Input-normal-normal-ultracondensed-*-20-*-*-*-m-0-iso10646-1"))
+(add-to-list 'default-frame-alist '(font . "-*-Input-normal-normal-ultracondensed-*-25-*-*-*-m-0-iso10646-1"))
 (if (eq system-type 'darwin)
     (add-to-list 'default-frame-alist '(font . "-*-Input-normal-normal-ultracondensed-*-15-*-*-*-m-0-iso10646-1")))
 
@@ -107,16 +107,25 @@
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
 
+;; evil
+(use-package evil
+  :config
+  (evil-mode 1)
+  (evil-global-set-key 'normal (kbd "SPC f") 'counsel-git)
+  (evil-global-set-key 'normal (kbd "SPC l") 'ivy-switch-buffer)
+  (evil-global-set-key 'normal (kbd "\\") 'counsel-rg)
+  (evil-global-set-key 'normal (kbd "SPC /") 'comment-line)
+  (evil-global-set-key 'visual (kbd "SPC /") 'comment-line)
+  (evil-global-set-key 'normal (kbd "SPC g") 'magit-status))
+
+;; evil-magit
+(use-package evil-magit)
+
 ;; hydra
-(use-package hydra)
+;; (use-package hydra)
 
 ;; avy
 (use-package avy)
-
-;; ace-window
-(use-package ace-window
-  :config
-  (global-set-key (kbd "M-o") 'ace-window))
 
 ;; eyebrowse
 (use-package eyebrowse
@@ -129,22 +138,13 @@
   :config
   (company-mode 1))
 
-;; scroll down by half a page
-(use-package view
-  :config
-  (global-set-key (kbd "C-v") 'View-scroll-half-page-forward)
-  (global-set-key (kbd "M-v") 'View-scroll-half-page-backward))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Project management packages:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; magit
-(use-package magit
-  :config
-  (global-set-key (kbd "C-c C-g") 'magit-status)
-  (global-set-key (kbd "C-c g") 'magit-dispatch-popup))
+(use-package magit)
 
 ;; git-link
 (use-package git-link
@@ -158,10 +158,7 @@
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t
 	ivy-count-format "%d/%d "
-	ivy-display-style nil)
-  (bind-keys* ("C-c C-p" . counsel-git)
-	      ("C-c C-l" . ivy-switch-buffer)
-	      ("C-\\" . counsel-rg)))
+	ivy-display-style nil))
 
 ;; ivy-rich
 (use-package ivy-rich
@@ -170,14 +167,6 @@
   (setq ivy-virtual-abbreviate 'full
 	ivy-rich-switch-buffer-align-virtual-buffer t
 	ivy-rich-path-style 'abbrev))
-
-;; projectile
-;; (use-package projectile)
-
-;; counsel-projectile
-;; (use-package counsel-projectile
-  ;; :config
-  ;; (counsel-projectile-mode 1))
 
 ;; flycheck
 (use-package flycheck
