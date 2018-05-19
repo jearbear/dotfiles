@@ -109,23 +109,40 @@
 
 ;; evil
 (use-package evil
+  :init
+  (setq evil-want-integration nil)
   :config
   (evil-mode 1)
+  (evil-global-set-key 'normal (kbd "\C-u" ) 'evil-scroll-up)
   (evil-global-set-key 'normal (kbd "SPC f") 'counsel-git)
   (evil-global-set-key 'normal (kbd "SPC l") 'ivy-switch-buffer)
   (evil-global-set-key 'normal (kbd "\\") 'counsel-rg)
-  (evil-global-set-key 'normal (kbd "SPC /") 'comment-line)
-  (evil-global-set-key 'visual (kbd "SPC /") 'comment-line)
   (evil-global-set-key 'normal (kbd "SPC g") 'magit-status))
+
+(use-package evil-collection
+  :after evil
+  :ensure t
+  :config
+  (evil-collection-init))
 
 ;; evil-magit
 (use-package evil-magit)
 
-;; hydra
-;; (use-package hydra)
+;; evil-surround
+(use-package evil-surround
+  :ensure t
+  :config
+  (global-evil-surround-mode 1))
+
+;; evil-commentary
+(use-package evil-commentary
+  :config
+  (evil-commentary-mode)
+  (evil-global-set-key 'normal (kbd "SPC /") 'evil-commentary-line)
+  (evil-global-set-key 'visual (kbd "SPC /") 'evil-commentary))
 
 ;; avy
-(use-package avy)
+;; (use-package avy)
 
 ;; eyebrowse
 (use-package eyebrowse
@@ -161,12 +178,12 @@
 	ivy-display-style nil))
 
 ;; ivy-rich
-(use-package ivy-rich
-  :config
-  (ivy-set-display-transformer 'ivy-switch-buffer 'ivy-rich-switch-buffer-transformer)
-  (setq ivy-virtual-abbreviate 'full
-	ivy-rich-switch-buffer-align-virtual-buffer t
-	ivy-rich-path-style 'abbrev))
+;; (use-package ivy-rich
+;;   :config
+;;   (ivy-set-display-transformer 'ivy-switch-buffer 'ivy-rich-switch-buffer-transformer)
+;;   (setq ivy-virtual-abbreviate 'full
+;; 	ivy-rich-switch-buffer-align-virtual-buffer t
+;; 	ivy-rich-path-style 'abbrev))
 
 ;; flycheck
 (use-package flycheck
