@@ -266,7 +266,6 @@ let g:go_fold_enable = ['import']
 
 " vim-gutentags
 let g:gutentags_cache_dir = '~/.gutentags'
-let g:gutentags_generate_on_empty_buffer = 1
 
 " fzf.vim
 let g:fzf_layout = { 'down': 10 }
