@@ -20,6 +20,7 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'wellle/targets.vim'
+Plug 'AndrewRadev/splitjoin.vim'
 
 " version control
 Plug 'mhinz/vim-signify'
@@ -83,7 +84,7 @@ set shiftwidth=4 softtabstop=4 expandtab
 set number
 set cursorline
 set scrolloff=5
-set scrolljump=-33
+set scrolljump=-50
 
 set wrap linebreak
 set breakindent showbreak=..
