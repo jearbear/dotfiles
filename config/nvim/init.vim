@@ -17,27 +17,25 @@ Plug 'morhetz/gruvbox'
 Plug 'junegunn/vim-easy-align'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
-Plug 'tweekmonster/braceless.vim'
 Plug 'wellle/targets.vim'
 
-" project management
+" version control
 Plug 'mhinz/vim-signify'
-Plug 'romainl/vim-qf'
-Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
+
+" project management
+Plug 'romainl/vim-qf'
+Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-sleuth'
 Plug 'w0rp/ale'
 
 " completion
 Plug 'racer-rust/vim-racer'
 Plug 'tpope/vim-endwise'
-
-" code navigation
-Plug 'mbbill/undotree'
+Plug 'rstacruz/vim-closer'
 
 " project navigation
 Plug 'justinmk/vim-dirvish'
@@ -84,7 +82,8 @@ set shiftwidth=4 softtabstop=4 expandtab
 
 set number
 set cursorline
-set scrolloff=999
+set scrolloff=5
+set scrolljump=-33
 
 set wrap linebreak
 set breakindent showbreak=..
@@ -130,11 +129,11 @@ set statusline+=\ \                  " padding
 
 set spelllang=en
 
-set undofile
+" set undofile
 set backupdir=~/.config/nvim/backup//
 set directory=~/.config/nvim/swp//
 
-" autoread file on enter      
+" auto read/write file on enter/jump
 set noswapfile      
 set autoread        
 set autowrite       
@@ -183,24 +182,10 @@ cnoremap <C-n> <Down>
 
 " quickly indent/format     
 nnoremap g= gg=G``      
-        
+
 " quickly substitute with selection     
 nnoremap gs :%s//g<Left><Left>      
 xnoremap gs y:%s/<C-r>"//g<Left><Left>
-
-" center search results
-" nnoremap n nzz
-" nnoremap N Nzz
-" nnoremap * *zz
-" nnoremap # #zz
-" nnoremap g* g*zz
-" nnoremap g# g#zz
-
-" brace completion
-inoremap {<CR> {<CR>}<Esc>O
-inoremap {; {<CR>};<Esc>O
-inoremap {, {<CR>},<Esc>O
-inoremap [<CR> [<CR>]<Esc>O
 
 " edit/save vimrc
 nmap <Leader>ve :e ~/.config/nvim/init.vim<CR>
@@ -256,9 +241,9 @@ let g:ale_lint_on_text_changed = 'never'
 let g:ale_linters = {'go': []}
 
 let g:ale_fixers = {
-      \ 'haskell': 'hfmt',
-      \ 'rust': 'rustfmt',
-      \ }
+            \ 'haskell': 'hfmt',
+            \ 'rust': 'rustfmt',
+            \ }
 let g:ale_fix_on_save = 1
 
 hi link ALEErrorSign GruvboxRedSign
@@ -286,28 +271,28 @@ let g:gutentags_generate_on_empty_buffer = 1
 let g:fzf_layout = { 'down': 10 }
 let g:fzf_history_dir = '~/.fzf-history'
 let g:fzf_action = {
-      \ 'ctrl-p': 'pedit',
-      \ 'ctrl-t': 'tab split',
-      \ 'ctrl-s': 'split',
-      \ 'ctrl-v': 'vsplit',
-      \ }
+            \ 'ctrl-p': 'pedit',
+            \ 'ctrl-t': 'tab split',
+            \ 'ctrl-s': 'split',
+            \ 'ctrl-v': 'vsplit',
+            \ }
 let g:fzf_colors = {
-      \ 'fg':      ['fg', 'Comment'],
-      \ 'bg':      ['bg', 'Normal'],
-      \ 'hl':      ['fg', 'Type'],
-      \ 'fg+':     ['fg', 'Normal'],
-      \ 'bg+':     ['bg', 'Normal'],
-      \ 'hl+':     ['fg', 'Type'],
-      \ 'info':    ['fg', 'Constant'],
-      \ 'prompt':  ['fg', 'Type'],
-      \ 'pointer': ['fg', 'Constant'],
-      \ 'marker':  ['fg', 'Constant'],
-      \ 'spinner': ['fg', 'Constant'],
-      \ 'header':  ['fg', 'PmenuSel'],
-      \ }
+            \ 'fg':      ['fg', 'Comment'],
+            \ 'bg':      ['bg', 'Normal'],
+            \ 'hl':      ['fg', 'Type'],
+            \ 'fg+':     ['fg', 'Normal'],
+            \ 'bg+':     ['bg', 'Normal'],
+            \ 'hl+':     ['fg', 'Type'],
+            \ 'info':    ['fg', 'Constant'],
+            \ 'prompt':  ['fg', 'Type'],
+            \ 'pointer': ['fg', 'Constant'],
+            \ 'marker':  ['fg', 'Constant'],
+            \ 'spinner': ['fg', 'Constant'],
+            \ 'header':  ['fg', 'PmenuSel'],
+            \ }
 
 function! s:fzf_statusline() abort
-  setlocal statusline=%#StatusLine#\ »\ fzf
+    setlocal statusline=%#StatusLine#\ »\ fzf
 endfunction
 autocmd! User FzfStatusLine call <SID>fzf_statusline()
 
@@ -334,18 +319,14 @@ let g:signify_vcs_list = ['git']
 " LANGUAGE SETTINGS
 "
 augroup Golang
-  autocmd FileType go set foldenable
-  autocmd FileType go set foldmethod=syntax
+    autocmd FileType go set foldenable
+    autocmd FileType go set foldmethod=syntax
 augroup END
 
 augroup Haskell
-  autocmd FileType haskell hi link haskellSeparator GruvboxFg4
-  autocmd FileType haskell hi link haskellDelimiter GruvboxOrange
-  autocmd FileType haskell hi link haskellPragma GruvboxRedBold
-augroup END
-
-augroup Python
-    autocmd FileType python BracelessEnable +indent
+    autocmd FileType haskell hi link haskellSeparator GruvboxFg4
+    autocmd FileType haskell hi link haskellDelimiter GruvboxOrange
+    autocmd FileType haskell hi link haskellPragma GruvboxRedBold
 augroup END
 
 augroup Rust
