@@ -83,7 +83,6 @@ set shiftwidth=4 softtabstop=4 expandtab
 
 set number
 set cursorline
-set scrolloff=5
 set scrolljump=-50
 
 set wrap linebreak
@@ -130,14 +129,11 @@ set statusline+=\ \                  " padding
 
 set spelllang=en
 
-" set undofile
 set backupdir=~/.config/nvim/backup//
 set directory=~/.config/nvim/swp//
 
 " auto read/write file on enter/jump
-set noswapfile      
-set autoread        
-set autowrite       
+set noswapfile autoread autowrite       
 autocmd! FocusGained,BufEnter * checktime
 
 "
@@ -181,9 +177,6 @@ xnoremap . :norm.<CR>
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
 
-" quickly indent/format     
-nnoremap g= gg=G``      
-
 " quickly substitute with selection     
 nnoremap gs :%s//g<Left><Left>      
 xnoremap gs y:%s/<C-r>"//g<Left><Left>
@@ -198,10 +191,10 @@ nmap <Leader>vs :source ~/.config/nvim/init.vim<CR>
 "
 " vim-qf
 let g:qf_mapping_ack_style = 1
-nmap <Leader>qw <Plug>qf_qf_switch
-nmap <Leader>qq <Plug>qf_qf_toggle
-nmap <Leader>qp <Plug>qf_qf_previous
-nmap <Leader>qn <Plug>qf_qf_next
+nmap <Leader>qw <Plug>(qf_qf_switch)
+nmap <Leader>qq <Plug>(qf_qf_toggle)
+nmap [q <Plug>(qf_qf_previous)
+nmap ]q <Plug>(qf_qf_next)
 
 " vim-dirvish
 let g:dirvish_relative_paths = 1
@@ -300,15 +293,7 @@ autocmd! User FzfStatusLine call <SID>fzf_statusline()
 let g:elm_setup_keybindings = 0
 
 " haskell-vim
-let g:haskell_vim_indent_if = 4
-let g:haskell_vim_indent_case = 4
-let g:haskell_vim_indent_let = 4
-let g:haskell_vim_indent_where = 2
-let g:haskell_vim_indent_before_where = 2
-let g:haskell_vim_indent_after_bare_where = 2
-let g:haskell_vim_indent_do = 4
-let g:haskell_vim_indent_in = 0
-" let g:haskell_vim_indent_guard = 
+let g:haskell_indent_disable = 1
 
 " vim-signify
 let g:signify_vcs_list = ['git']
@@ -318,8 +303,7 @@ let g:signify_vcs_list = ['git']
 " LANGUAGE SETTINGS
 "
 augroup Golang
-    autocmd FileType go set foldenable
-    autocmd FileType go set foldmethod=syntax
+    autocmd FileType go setlocal foldenable foldmethod=syntax
 augroup END
 
 augroup Haskell
@@ -333,10 +317,10 @@ augroup Rust
     autocmd FileType rust nmap <Leader>gd <Plug>(rust-doc)
 augroup END
 
-augroup Tera
-    au BufRead,BufNewFile *.tera set filetype=htmldjango
+augroup Ruby
+    autocmd FileType ruby nnoremap <Leader>gd yiw:Grepper -jump -noquickfix -query '(?:class\s\|(?:def\s(?:self.)?))<C-r>"'<CR>
+    autocmd FileType ruby xnoremap <Leader>gd y:Grepper -jump -noquickfix -query '(?:class\s\|(?:def\s(?:self.)?))<C-r>"'<CR>
 augroup END
-
 
 "
 " SOURCE LOCAL SETTINGS
