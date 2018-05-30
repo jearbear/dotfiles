@@ -177,14 +177,6 @@
 	ivy-count-format "%d/%d "
 	ivy-display-style nil))
 
-;; ivy-rich
-;; (use-package ivy-rich
-;;   :config
-;;   (ivy-set-display-transformer 'ivy-switch-buffer 'ivy-rich-switch-buffer-transformer)
-;;   (setq ivy-virtual-abbreviate 'full
-;; 	ivy-rich-switch-buffer-align-virtual-buffer t
-;; 	ivy-rich-path-style 'abbrev))
-
 ;; flycheck
 (use-package flycheck
   :config

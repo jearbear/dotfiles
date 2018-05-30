@@ -38,7 +38,7 @@
 
 [merge]
     conflictstyle = diff3
-    ff = only
+    ; ff = only
 
 [pager]
     diff = diff-so-fancy | less --tabs=4 -RFX

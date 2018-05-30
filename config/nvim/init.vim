@@ -297,6 +297,7 @@ let g:haskell_indent_disable = 1
 
 " vim-signify
 let g:signify_vcs_list = ['git']
+let g:signify_realtime = 1
 
 
 " 
