@@ -1,0 +1,20 @@
+#!/bin/bash
+set -euo pipefail
+
+# Get the path to the .git directory
+dir="$(git rev-parse --git-dir)"
+
+# Ensure that the extra files are cleaned up
+trap 'rm -f "$dir/$$.tags"' EXIT
+
+# We use ripper-tags for ruby projects, and universal-ctags for everything
+# else. This is a naive method based on the existance of certain marker files.
+if [ -e 'Gemfile' ]; then
+    ripper-tags --exclude='@.git/ctagsignore' --tag-relative -f "$dir/$$.tags" -R
+elif [ -e 'Gopkg.toml' ]; then
+    ctags --exclude='@.git/ctagsignore' --languages='go' -f "$dir/$$.tags" -R .
+else
+    ctags --exclude='@.git/ctagsignore' -f "$dir/$$.tags" -R .
+fi
+
+mv "$dir/$$.tags" "$dir/tags"

@@ -23,7 +23,7 @@ Plug 'wellle/targets.vim'
 Plug 'AndrewRadev/splitjoin.vim'
 
 " version control
-Plug 'mhinz/vim-signify'
+" Plug 'mhinz/vim-signify'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
 
@@ -40,7 +40,6 @@ Plug 'rstacruz/vim-closer'
 
 " project navigation
 Plug 'justinmk/vim-dirvish'
-Plug 'ludovicchabant/vim-gutentags'
 Plug 'mhinz/vim-grepper'
 
 " language support
@@ -81,7 +80,6 @@ set hidden
 
 set shiftwidth=4 softtabstop=4 expandtab
 
-set number
 set cursorline
 set scrolljump=-50
 
@@ -101,7 +99,7 @@ set dictionary+=/usr/share/dict/words
 set suffixes+=,,
 
 set wildignore+=*.pyc,*.swp,*.lock,*.min.js,*.min.css,tags
-set wildignore+=*/.git/*,*/tmp/*,*/target/*,*/venv/*,*/vendor/*,*/elm-stuff/*
+set wildignore+=*/tmp/*,*/target/*,*/venv/*,*/vendor/*,*/elm-stuff/*
 set wildmenu wildignorecase
 set wildmode=full,full
 
@@ -257,9 +255,6 @@ let g:go_fmt_command = 'goimports'
 let g:go_list_type = 'quickfix'
 let g:go_fold_enable = ['import']
 
-" vim-gutentags
-let g:gutentags_cache_dir = '~/.gutentags'
-
 " fzf.vim
 let g:fzf_layout = { 'down': 10 }
 let g:fzf_history_dir = '~/.fzf-history'
@@ -296,8 +291,8 @@ let g:elm_setup_keybindings = 0
 let g:haskell_indent_disable = 1
 
 " vim-signify
-let g:signify_vcs_list = ['git']
-let g:signify_realtime = 1
+" let g:signify_vcs_list = ['git']
+" let g:signify_realtime = 1
 
 
 " 
@@ -313,15 +308,6 @@ augroup Haskell
     autocmd FileType haskell hi link haskellPragma GruvboxRedBold
 augroup END
 
-augroup Rust
-    autocmd FileType rust nmap gd <Plug>(rust-def)
-    autocmd FileType rust nmap <Leader>gd <Plug>(rust-doc)
-augroup END
-
-augroup Ruby
-    autocmd FileType ruby nnoremap <Leader>gd yiw:Grepper -jump -noquickfix -query '(?:class\s\|(?:def\s(?:self.)?))<C-r>"'<CR>
-    autocmd FileType ruby xnoremap <Leader>gd y:Grepper -jump -noquickfix -query '(?:class\s\|(?:def\s(?:self.)?))<C-r>"'<CR>
-augroup END
 
 "
 " SOURCE LOCAL SETTINGS

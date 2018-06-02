@@ -1,0 +1,2 @@
+#!/bin/sh
+gen-tags >/dev/null 2>&1 &
