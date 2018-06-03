@@ -4,6 +4,8 @@
     ba = branch -a
     bm = branch -m
 
+    unstage = reset HEAD
+
     s = status
     t = log --graph --pretty=format:'%C(auto)%h%d %s %C(yellow):: %C(reset)%an %C(yellow):: %C(reset)%ad' --decorate
 
