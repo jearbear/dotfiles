@@ -227,7 +227,6 @@ let g:ale_sign_error = '!!'
 let g:ale_sign_warning = '!!'
 let g:ale_set_highlights = 0
 let g:ale_set_quickfix = 1
-let g:ale_lint_on_enter = 0
 let g:ale_lint_on_text_changed = 'never'
 
 let g:ale_linters = {'go': []}
@@ -286,9 +285,6 @@ autocmd! User FzfStatusLine call <SID>fzf_statusline()
 
 " elm-vim
 let g:elm_setup_keybindings = 0
-
-" haskell-vim
-let g:haskell_indent_disable = 1
 
 " vim-signify
 " let g:signify_vcs_list = ['git']
