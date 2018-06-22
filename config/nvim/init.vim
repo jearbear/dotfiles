@@ -141,8 +141,8 @@ map Y y$
 map 0 ^
 
 " file navigation
-nnoremap <Leader>f :GFiles<CR>
-nnoremap <Leader>F :Files<CR>
+nnoremap <Leader>f :Files<CR>
+nnoremap <Leader>F :GFiles<CR>
 
 " buffer navigation
 nnoremap <Backspace> <C-^>
@@ -175,9 +175,9 @@ xnoremap . :norm.<CR>
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
 
-" quickly substitute with selection     
+" quickly substitute
 nnoremap gs :%s//g<Left><Left>      
-xnoremap gs y:%s/<C-r>"//g<Left><Left>
+xnoremap gs :s//g<Left><Left>
 
 " edit/save vimrc
 nmap <Leader>ve :e ~/.config/nvim/init.vim<CR>
