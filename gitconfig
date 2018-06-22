@@ -3,16 +3,17 @@
     bd = branch -d
     ba = branch -a
     bm = branch -m
+    bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
 
     unstage = reset HEAD
 
     s = status
+    ls = log --oneline
     t = log --graph --pretty=format:'%C(auto)%h%d %s %C(yellow):: %C(reset)%an %C(yellow):: %C(reset)%ad' --decorate
 
     co = checkout
 
-    com = commit
-    recommit = commit --amend --no-edit
+    recommit = commit -a --amend --no-edit
     uncommit = reset --soft HEAD^
 
     d = diff
