@@ -199,14 +199,12 @@ let g:dirvish_relative_paths = 1
 
 " vim-fugitive
 nnoremap <Leader>gs :Gstatus<CR>
-nnoremap <Leader>gl :Glog<CR>
-nnoremap <Leader>gp :Gpush<CR>
 nnoremap <Leader>gb :Gblame<CR>
 nnoremap <Leader>gd :Gdiff<CR>
 nnoremap <Leader>gh :Gbrowse<CR>
 xnoremap <Leader>gh :Gbrowse<CR>
-nnoremap <Leader>gc :Gbrowse!<CR>
-xnoremap <Leader>gc :Gbrowse!<CR>
+nnoremap <Leader>gl :Gbrowse!<CR>
+xnoremap <Leader>gl :Gbrowse!<CR>
 
 " vim-easy-align
 nmap ga <Plug>(EasyAlign)
@@ -226,7 +224,6 @@ let g:grepper.tools = ['rg', 'git', 'grep']
 let g:ale_sign_error = '!!'
 let g:ale_sign_warning = '!!'
 let g:ale_set_highlights = 0
-let g:ale_set_quickfix = 1
 let g:ale_lint_on_text_changed = 'never'
 
 let g:ale_linters = {'go': []}
