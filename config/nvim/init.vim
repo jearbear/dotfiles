@@ -56,6 +56,7 @@ Plug 'vim-ruby/vim-ruby'
 
 " misc
 Plug 'godlygeek/tabular'
+Plug 'mtth/scratch.vim'
 
 " fzf
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -176,8 +177,7 @@ cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
 
 " quickly substitute
-nnoremap gs :%s//g<Left><Left>      
-xnoremap gs :s//g<Left><Left>
+xnoremap g/ :s//g<Left><Left>
 
 " edit/save vimrc
 nmap <Leader>ve :e ~/.config/nvim/init.vim<CR>
