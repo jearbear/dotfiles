@@ -23,7 +23,7 @@ Plug 'wellle/targets.vim'
 Plug 'AndrewRadev/splitjoin.vim'
 
 " version control
-" Plug 'mhinz/vim-signify'
+Plug 'mhinz/vim-signify'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
 
@@ -83,6 +83,9 @@ set shiftwidth=4 softtabstop=4 expandtab
 
 set cursorline
 set scrolljump=-50
+
+" more useful <C-G> with line number
+set noruler
 
 set wrap linebreak
 set breakindent showbreak=..
@@ -284,8 +287,8 @@ autocmd! User FzfStatusLine call <SID>fzf_statusline()
 let g:elm_setup_keybindings = 0
 
 " vim-signify
-" let g:signify_vcs_list = ['git']
-" let g:signify_realtime = 1
+let g:signify_vcs_list = ['git']
+let g:signify_disable_by_default = 1
 
 
 " 
