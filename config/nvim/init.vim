@@ -56,7 +56,7 @@ Plug 'vim-ruby/vim-ruby'
 
 " misc
 Plug 'godlygeek/tabular'
-Plug 'mtth/scratch.vim'
+" Plug 'mtth/scratch.vim'
 
 " fzf
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -185,6 +185,9 @@ xnoremap g/ :s//g<Left><Left>
 " edit/save vimrc
 nmap <Leader>ve :e ~/.config/nvim/init.vim<CR>
 nmap <Leader>vs :source ~/.config/nvim/init.vim<CR>
+
+" open scratch md buffer
+nnoremap <Leader>sm :new\|setl buftype=nofile bufhidden=wipe nobuflisted ft=markdown<CR>
 
 
 "
