@@ -119,22 +119,19 @@ alt + shift + Print
 #
 
 XF86AudioMute
-    ponymix toggle
+    pamixer -t
 
 XF86AudioLowerVolume
-    ponymix decrease 5
+    pamixer -d 5
 
 XF86AudioRaiseVolume
-    ponymix increase 5
+    pamixer -i 5
 
 XF86MonBrightnessUp
     light -A 10
 
 XF86MonBrightnessDown
     light -U 10
-
-# XF86Display
-#     commander disp_toggle
 
 {XF86AudioPlay, XF86AudioPause, alt + backslash}
     playerctl play-pause

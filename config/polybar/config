@@ -28,7 +28,7 @@ border-top-color = ${colors.altfg}
 padding = 3
 module-margin = 0
 
-font-0 = Input:size=18:weight=medium;0
+font-0 = Input:size=16:weight=bold;0
 
 modules-left = bspwm
 modules-right = cpu pad volume pad clock
@@ -60,7 +60,7 @@ format = <label>
 
 [module/volume]
 
-type = internal/volume
+type = internal/alsa
 speaker_mixer = Speaker
 headphone_mixer = Headphone
 headphone_control_numid = 19
