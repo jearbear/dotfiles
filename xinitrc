@@ -13,8 +13,5 @@ xbanish &
 devmon &
 dunst &
 
-# audio
-pulseaudio --start
-
 # start wm
 exec bspwm
