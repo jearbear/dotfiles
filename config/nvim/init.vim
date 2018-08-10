@@ -144,7 +144,7 @@ map Y y$
 map 0 ^
 
 " file navigation
-nnoremap <Leader>f :Files<CR>
+nnoremap <Leader>f :GFilesPWD<CR>
 nnoremap <Leader>F :GFiles<CR>
 
 " buffer navigation
@@ -285,6 +285,8 @@ function! s:fzf_statusline() abort
     setlocal statusline=%#StatusLine#\ »\ fzf
 endfunction
 autocmd! User FzfStatusLine call <SID>fzf_statusline()
+
+command GFilesPWD call fzf#run(fzf#wrap({'source': 'git ls-files'}))
 
 " elm-vim
 let g:elm_setup_keybindings = 0
