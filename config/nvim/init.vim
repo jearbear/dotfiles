@@ -56,7 +56,6 @@ Plug 'vim-ruby/vim-ruby'
 
 " misc
 Plug 'godlygeek/tabular'
-" Plug 'mtth/scratch.vim'
 
 " fzf
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -222,6 +221,7 @@ xmap <bar> <Plug>(GrepperOperator)
 nmap <bar> <Plug>(GrepperOperator)
 
 let g:grepper = {}
+let g:grepper.jump = 1
 let g:grepper.simple_prompt = 1
 let g:grepper.switch = 0
 let g:grepper.tools = ['rg', 'git', 'grep']
