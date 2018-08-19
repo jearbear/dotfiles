@@ -41,6 +41,7 @@ Plug 'rstacruz/vim-closer'
 " project navigation
 Plug 'justinmk/vim-dirvish'
 Plug 'mhinz/vim-grepper'
+Plug 'ludovicchabant/vim-gutentags'
 
 " language support
 Plug 'ElmCast/elm-vim'
@@ -102,7 +103,7 @@ set dictionary+=/usr/share/dict/words
 set suffixes+=,,
 
 set wildignore+=*.pyc,*.swp,*.lock,*.min.js,*.min.css,tags
-set wildignore+=*/tmp/*,*/target/*,*/venv/*,*/vendor/*,*/elm-stuff/*
+set wildignore+=*/tmp/*,*/target/*,*/venv/*,*/vendor/*,*/elm-stuff/*,*/bazel*/*,*/build/*
 set wildmenu wildignorecase
 set wildmode=full,full
 
@@ -174,9 +175,13 @@ nnoremap <Leader>gr g*``cgn
 " repeat macro on selection
 xnoremap . :norm.<CR>
 
-" sensible command line navigation
+" emacs-like command mode navigation
+cnoremap <C-a> <Home>
+cnoremap <C-e> <End>
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
+cnoremap <C-b> <Left>
+cnoremap <C-f> <Right>
 
 " quickly substitute
 xnoremap g/ :s//g<Left><Left>
@@ -223,6 +228,7 @@ nmap <bar> <Plug>(GrepperOperator)
 let g:grepper = {}
 let g:grepper.jump = 1
 let g:grepper.simple_prompt = 1
+let g:grepper.prompt_quote = 2
 let g:grepper.switch = 0
 let g:grepper.tools = ['rg', 'git', 'grep']
 
@@ -256,6 +262,10 @@ let g:racer_experimental_completer = 1
 let g:go_fmt_command = 'goimports'
 let g:go_list_type = 'quickfix'
 let g:go_fold_enable = ['import']
+
+" vim-gutentags
+let g:gutentags_cache_dir = '~/.gutentags'
+let g:gutentags_generate_on_empty_buffer = 1
 
 " fzf.vim
 let g:fzf_layout = { 'down': 10 }

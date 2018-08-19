@@ -3,7 +3,6 @@
     bd = branch -d
     ba = branch -a
     bm = branch -m
-    bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
 
     unstage = reset HEAD
 
