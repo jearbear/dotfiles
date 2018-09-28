@@ -145,8 +145,7 @@ map Y y$
 map 0 ^
 
 " file navigation
-nnoremap <Leader>f :GFilesPWD<CR>
-nnoremap <Leader>F :GFiles<CR>
+nnoremap <Leader>f :Files<CR>
 
 " buffer navigation
 nnoremap <Backspace> <C-^>
@@ -296,7 +295,15 @@ function! s:fzf_statusline() abort
 endfunction
 autocmd! User FzfStatusLine call <SID>fzf_statusline()
 
-command GFilesPWD call fzf#run(fzf#wrap({'source': 'git ls-files'}))
+" get the shortened cwd
+function! s:shortpath()
+  let short = pathshorten(fnamemodify(getcwd(), ':~:.'))
+  let slash = '/'
+  return empty(short) ? '~'.slash : short . (short =~ escape(slash, '\').'$' ? '' : slash)
+endfunction
+
+" faster implementation of Files/GFiles that works outside of git repos
+command! Files call fzf#run(fzf#wrap({'source': 'git ls-files || fd -t file', 'options': ['--prompt', s:shortpath()]}))
 
 " elm-vim
 let g:elm_setup_keybindings = 0

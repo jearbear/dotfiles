@@ -1,28 +1,25 @@
 [alias]
     b = branch
-    bd = branch -d
-    ba = branch -a
-    bm = branch -m
-
-    unstage = reset HEAD
 
     s = status
-    ls = log --oneline
-    t = log --graph --pretty=format:'%C(auto)%h%d %s %C(yellow):: %C(reset)%an %C(yellow):: %C(reset)%ad' --decorate
+
+    l = log --oneline
+    tree = log --graph --pretty=format:'%C(auto)%h%d %s %C(yellow):: %C(reset)%an %C(yellow):: %C(reset)%ad' --decorate
 
     co = checkout
+    com = checkout master
+    cob = !git co $(git b | fzf)
 
+    unstage = reset HEAD
     recommit = commit -a --amend --no-edit
     uncommit = reset --soft HEAD^
 
     d = diff
-    dh = diff HEAD
-    dH = diff HEAD~
-    ds = diff --stat
+    dh = diff HEAD~
+
+    pr = pull --rebase
 
     fpush = push --force-with-lease
-
-    stash-all = stash save --include-untracked
 
 [commit]
     gpgSign = true
