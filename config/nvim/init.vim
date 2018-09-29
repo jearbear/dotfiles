@@ -237,7 +237,7 @@ let g:ale_sign_warning = '!!'
 let g:ale_set_highlights = 0
 let g:ale_lint_on_text_changed = 'never'
 
-let g:ale_linters = {'go': []}
+let g:ale_linters = {'go': ['gometalinter']}
 
 let g:ale_fixers = {
             \ 'haskell': 'hfmt',
