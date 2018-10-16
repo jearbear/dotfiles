@@ -71,6 +71,9 @@ alias pn='ping www.google.com -c 1'
 
 alias s='sudo'
 
+alias pass='gopass -c $(gopass ls -f | fzf)'
+alias pgen='gopass generate --xkcdsep "" -e'
+
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 

@@ -8,11 +8,13 @@
 
     co = checkout
     com = checkout master
-    cob = !git co $(git b | fzf)
+    cob = !git co $(git b | rg -v '^\\*' | fzf)
 
     unstage = reset HEAD
     recommit = commit -a --amend --no-edit
     uncommit = reset --soft HEAD^
+
+    squash = !git reset --soft \"${1:-HEAD~2}\" && git commit && :
 
     d = diff
     dh = diff HEAD~
