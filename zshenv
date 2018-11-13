@@ -13,7 +13,6 @@ export PATH="$HOME/.bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.npm-packages/bin:$PATH"
-export PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
 export PATH="$HOME/go/bin:$PATH"
 
 # system-specific

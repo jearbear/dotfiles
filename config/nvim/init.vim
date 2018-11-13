@@ -54,6 +54,7 @@ Plug 'plasticboy/vim-markdown'
 Plug 'rodjek/vim-puppet'
 Plug 'rust-lang/rust.vim'
 Plug 'vim-ruby/vim-ruby'
+Plug 'jamessan/vim-gnupg'
 
 " misc
 Plug 'godlygeek/tabular'
@@ -72,6 +73,7 @@ set background=dark
 set termguicolors
 
 let g:gruvbox_contrast_dark = 'soft'
+let g:gruvbox_contrast_light = 'soft'
 let g:gruvbox_invert_selection = 0
 let g:gruvbox_italic = 1
 
@@ -86,6 +88,8 @@ set scrolljump=-50
 
 " more useful <C-G> with line number
 set noruler
+
+set nojoinspaces
 
 set wrap linebreak
 set breakindent showbreak=..
@@ -138,6 +142,7 @@ set directory=~/.config/nvim/swp//
 set noswapfile autoread autowrite       
 autocmd! FocusGained,BufEnter * checktime
 
+
 "
 " VIM SETTINGS
 "
@@ -189,9 +194,6 @@ xnoremap g/ :s//g<Left><Left>
 nmap <Leader>ve :e ~/.config/nvim/init.vim<CR>
 nmap <Leader>vs :source ~/.config/nvim/init.vim<CR>
 
-" open scratch md buffer
-nnoremap <Leader>sm :new\|setl buftype=nofile bufhidden=wipe nobuflisted ft=markdown<CR>
-
 
 "
 " PLUGIN SETTINGS
@@ -210,9 +212,9 @@ let g:dirvish_relative_paths = 1
 nnoremap <Leader>gs :Gstatus<CR>
 nnoremap <Leader>gb :Gblame<CR>
 nnoremap <Leader>gd :Gdiff<CR>
-nnoremap <Leader>gh :Gbrowse<CR>
+nnoremap <Leader>gh :.Gbrowse<CR>
 xnoremap <Leader>gh :Gbrowse<CR>
-nnoremap <Leader>gl :Gbrowse!<CR>
+nnoremap <Leader>gl :.Gbrowse!<CR>
 xnoremap <Leader>gl :Gbrowse!<CR>
 
 " vim-easy-align
@@ -225,10 +227,9 @@ xmap <bar> <Plug>(GrepperOperator)
 nmap <bar> <Plug>(GrepperOperator)
 
 let g:grepper = {}
-let g:grepper.jump = 1
 let g:grepper.simple_prompt = 1
 let g:grepper.prompt_quote = 2
-let g:grepper.switch = 0
+let g:grepper.switch = 1
 let g:grepper.tools = ['rg', 'git', 'grep']
 
 " ale
