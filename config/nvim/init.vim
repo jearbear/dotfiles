@@ -168,6 +168,9 @@ nnoremap <Leader>{ :tabn<CR>
 nnoremap <Leader>j :Tags<CR>
 nnoremap <Leader>k :BTags<CR>
 
+" mark navigation
+nnoremap <Leader>m :Marks<CR>
+
 " faster commenting
 nmap <Leader>/ gcc
 vmap <Leader>/ gc

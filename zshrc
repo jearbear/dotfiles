@@ -64,6 +64,8 @@ RPROMPT='%F{yellow}${vcs_info_msg_0_}%f'
 alias sizes='du -d 1 -h . | sort -rh'
 alias reload='source ~/.zshrc && source ~/.zshenv'
 
+alias n='DISABLE_FILE_OPEN_ON_NAV=1 nnn -l -c 6'
+
 alias vi='nvim'
 alias vim='nvim'
 alias t='tmux new-session -A -s main'
