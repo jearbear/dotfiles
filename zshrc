@@ -76,8 +76,13 @@ alias s='sudo'
 alias pass='gopass -c $(gopass ls -f | fzf)'
 alias pgen='gopass generate --xkcdsep "" -e'
 
+alias ob='ocp-browser --no-stdlib --open Core'
+
 # fzf
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -r ~/.fzf.zsh ] && . ~/.fzf.zsh
+
+# opam
+[ -r ~/.opam/opam-init/init.zsh ] && . ~/.opam/opam-init/init.zsh
 
 # source local configs
-[ -f ~/.zshrc.local ] && source ~/.zshrc.local
+[ -r ~/.zshrc.local ] && . ~/.zshrc.local

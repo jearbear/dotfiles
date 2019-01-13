@@ -49,9 +49,16 @@
 [log]
     date = relative
 
+[diff]
+    algorithm = patience
+    indentheuristic = true
+
 [merge]
     conflictstyle = diff3
-    ; ff = only
+    tool = fugitive
+
+[mergetool "fugitive"]
+    cmd = nvim -f -c "Gdiff" "$MERGED"
 
 [pager]
     diff = diff-so-fancy | less --tabs=4 -RFX

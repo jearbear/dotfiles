@@ -55,6 +55,7 @@ Plug 'rodjek/vim-puppet'
 Plug 'rust-lang/rust.vim'
 Plug 'vim-ruby/vim-ruby'
 Plug 'jamessan/vim-gnupg'
+Plug 'rgrinberg/vim-ocaml'
 
 " misc
 Plug 'godlygeek/tabular'
@@ -246,6 +247,7 @@ let g:ale_linters = {'go': ['gometalinter']}
 let g:ale_fixers = {
             \ 'haskell': 'hfmt',
             \ 'rust': 'rustfmt',
+            \ 'ocaml': 'ocamlformat',
             \ }
 let g:ale_fix_on_save = 1
 
@@ -301,9 +303,9 @@ autocmd! User FzfStatusLine call <SID>fzf_statusline()
 
 " get the shortened cwd
 function! s:shortpath()
-  let short = pathshorten(fnamemodify(getcwd(), ':~:.'))
-  let slash = '/'
-  return empty(short) ? '~'.slash : short . (short =~ escape(slash, '\').'$' ? '' : slash)
+    let short = pathshorten(fnamemodify(getcwd(), ':~:.'))
+    let slash = '/'
+    return empty(short) ? '~'.slash : short . (short =~ escape(slash, '\').'$' ? '' : slash)
 endfunction
 
 " faster implementation of Files/GFiles that works outside of git repos
@@ -328,6 +330,15 @@ augroup Haskell
     autocmd FileType haskell hi link haskellSeparator GruvboxFg4
     autocmd FileType haskell hi link haskellDelimiter GruvboxOrange
     autocmd FileType haskell hi link haskellPragma GruvboxRedBold
+augroup END
+
+augroup Ocaml
+    " ocp-indent must be before merlin for some reason
+    setlocal runtimepath^=~/.opam/default/share/merlin/vim
+    setlocal runtimepath^=~/.opam/default/share/ocp-indent/vim
+
+    autocmd Filetype ocaml let no_ocaml_maps=1 " disable vim-ocaml mappings
+    autocmd Filetype ocaml nnoremap <C-]> :MerlinLocate<CR>
 augroup END
 
 
