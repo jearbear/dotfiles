@@ -3,8 +3,8 @@
 
     s = status
 
-    l = log --oneline
-    tree = log --graph --pretty=format:'%C(auto)%h%d %s %C(yellow):: %C(reset)%an %C(yellow):: %C(reset)%ad' --decorate
+    l = !git log --oneline $(git branch -a --format='%(refname:short)' | tr '\n' ' ')
+    t = l --graph
 
     co = checkout
     com = checkout master
