@@ -262,6 +262,7 @@ let g:grepper.simple_prompt = 1
 let g:grepper.prompt_quote = 2
 let g:grepper.switch = 1
 let g:grepper.tools = ['rg', 'git', 'grep']
+let g:grepper.stop = 1000
 
 " ale
 let g:ale_sign_error = '!!'
@@ -277,6 +278,8 @@ let g:ale_fixers = {
             \ 'ocaml': 'ocamlformat',
             \ }
 let g:ale_fix_on_save = 1
+
+let g:ale_rust_cargo_use_clippy = 1
 
 hi link ALEErrorSign GruvboxRedSign
 hi link ALEWarningSign GruvboxYellowSign
@@ -343,29 +346,34 @@ let g:elm_setup_keybindings = 0
 
 " vim-signify
 let g:signify_vcs_list = ['git']
-let g:signify_disable_by_default = 1
 
 
 " 
 " LANGUAGE SETTINGS
 "
 augroup Golang
+    autocmd!
+
     autocmd FileType go setlocal foldenable foldmethod=syntax
 augroup END
 
 augroup Haskell
+    autocmd!
+
     autocmd FileType haskell hi link haskellSeparator GruvboxFg4
     autocmd FileType haskell hi link haskellDelimiter GruvboxOrange
     autocmd FileType haskell hi link haskellPragma GruvboxRedBold
 augroup END
 
 augroup Ocaml
+    autocmd!
+
     " ocp-indent must be before merlin for some reason
-    setlocal runtimepath^=~/.opam/default/share/merlin/vim
-    setlocal runtimepath^=~/.opam/default/share/ocp-indent/vim
+    autocmd Filetype ocaml setlocal runtimepath^=~/.opam/default/share/merlin/vim
+    autocmd Filetype ocaml setlocal runtimepath^=~/.opam/default/share/ocp-indent/vim
 
     autocmd Filetype ocaml let no_ocaml_maps=1 " disable vim-ocaml mappings
-    autocmd Filetype ocaml nnoremap <C-]> :MerlinLocate<CR>
+    autocmd Filetype ocaml nnoremap <buffer> <C-]> :MerlinLocate<CR>
 augroup END
 
 

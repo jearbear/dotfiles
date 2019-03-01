@@ -3,23 +3,28 @@
 
     s = status
 
-    l = !git log --oneline $(git branch -a --format='%(refname:short)' | tr '\n' ' ')
-    t = l --graph
+    l = log --oneline --graph master..
+    t = log --format='%C(auto)%h%d %s%n' --graph --since='1 month ago' --branches --author='Jerry'
+    tall = log --format='%C(auto)%h%d %s' --graph --since='1 month ago' --branches
 
     co = checkout
     com = checkout master
     cob = !git co $(git b | rg -v '^\\*' | fzf)
 
-    unstage = reset HEAD
-    recommit = commit -a --amend --no-edit
+    unstage = reset -q HEAD --
+    recommit = commit --amend --no-edit
     uncommit = reset --soft HEAD^
 
+    fix = !git commit --fixup \"${1:-HEAD}\" && :
+
     squash = !git reset --soft \"${1:-HEAD~2}\" && git commit && :
+    squash-branch = !git squash $(git base)
 
     d = diff
     dh = diff HEAD~
+    diff-branch = !git diff $(git base)
 
-    pr = pull --rebase
+    base = merge-base HEAD master
 
     fpush = push --force-with-lease
 
