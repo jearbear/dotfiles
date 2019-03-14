@@ -24,8 +24,7 @@ Plug 'AndrewRadev/splitjoin.vim'
 
 " version control
 Plug 'mhinz/vim-signify'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-rhubarb'
+Plug 'lambdalisue/gina.vim'
 
 " project management
 Plug 'romainl/vim-qf'
@@ -131,7 +130,7 @@ set statusline=\ \                   " padding
 set statusline+=%f                   " filename
 set statusline+=\ %2*%M%*            " modified flag
 set statusline+=%=                   " center divide
-set statusline+=%{fugitive#head(10)} " vcs info
+set statusline+=%{gina#component#repo#branch()} " vcs info
 set statusline+=\ \                  " padding
 
 set spelllang=en
@@ -192,6 +191,7 @@ cnoremap <C-b> <Left>
 cnoremap <C-f> <Right>
 
 " quickly substitute
+nnoremap g/ :%s//g<Left><Left>
 xnoremap g/ :s//g<Left><Left>
 
 " edit/save vimrc
@@ -239,14 +239,15 @@ nmap ]q <Plug>(qf_qf_next)
 " vim-dirvish
 let g:dirvish_relative_paths = 1
 
-" vim-fugitive
-nnoremap <Leader>gs :Gstatus<CR>
-nnoremap <Leader>gb :Gblame<CR>
-nnoremap <Leader>gd :Gdiff<CR>
-nnoremap <Leader>gh :.Gbrowse<CR>
-xnoremap <Leader>gh :Gbrowse<CR>
-nnoremap <Leader>gl :.Gbrowse!<CR>
-xnoremap <Leader>gl :Gbrowse!<CR>
+" gina.vim
+nnoremap <Leader>gs :Gina status<CR>
+nnoremap <Leader>gd :Gina compare :<CR>
+nnoremap <Leader>gh :.Gina browse :<CR>
+xnoremap <Leader>gh :Gina browse :<CR>
+nnoremap <Leader>gl "+:.Gina browse : --yank<CR>
+xnoremap <Leader>gl "+:Gina browse : --yank<CR>
+
+let g:gina#component#repo#commit_length = 10
 
 " vim-easy-align
 nmap ga <Plug>(EasyAlign)
@@ -254,8 +255,8 @@ xmap ga <Plug>(EasyAlign)
 
 " vim-grepper
 nnoremap \ :Grepper<CR>
-xmap <bar> <Plug>(GrepperOperator)
-nmap <bar> <Plug>(GrepperOperator)
+nmap gs <Plug>(GrepperOperator)
+xmap gs <Plug>(GrepperOperator)
 
 let g:grepper = {}
 let g:grepper.simple_prompt = 1
@@ -271,6 +272,7 @@ let g:ale_set_highlights = 0
 let g:ale_lint_on_text_changed = 'never'
 
 let g:ale_linters = {'go': ['gometalinter']}
+let g:ale_go_metalinter_options = '--fast'
 
 let g:ale_fixers = {
             \ 'haskell': 'hfmt',
