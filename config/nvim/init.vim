@@ -242,10 +242,11 @@ let g:dirvish_relative_paths = 1
 " gina.vim
 nnoremap <Leader>gs :Gina status<CR>
 nnoremap <Leader>gd :Gina compare :<CR>
-nnoremap <Leader>gh :.Gina browse :<CR>
-xnoremap <Leader>gh :Gina browse :<CR>
-nnoremap <Leader>gl "+:.Gina browse : --yank<CR>
-xnoremap <Leader>gl "+:Gina browse : --yank<CR>
+nnoremap <Leader>gb :.Gina browse : --scheme=blame<CR>
+nnoremap <Leader>gh :.Gina browse : --exact<CR>
+xnoremap <Leader>gh :Gina browse : --exact<CR>
+nnoremap <Leader>gl "+:.Gina browse : --yank --exact<CR>
+xnoremap <Leader>gl "+:Gina browse : --yank --exact<CR>
 
 let g:gina#component#repo#commit_length = 10
 
