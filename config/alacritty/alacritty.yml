@@ -288,7 +288,7 @@ background_opacity: 1.0
 # All available `mods` and `action` values are documented in the key binding
 # section.
 mouse_bindings:
-  - { mouse: Middle, action: PasteSelection }
+  - { mouse: Middle, action: None }
 
 mouse:
   # Click settings

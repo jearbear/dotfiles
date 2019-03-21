@@ -382,11 +382,15 @@ augroup Ocaml
 augroup END
 
 augroup Rust
+    autocmd!
+
     autocmd Filetype rust nmap <C-]> <Plug>(rust-def)
     autocmd Filetype rust nmap K <Plug>(rust-doc)
 augroup END
 
 augroup Tera
+    autocmd!
+
     autocmd BufRead *.tera set ft=jinja.html
 augroup END
 
