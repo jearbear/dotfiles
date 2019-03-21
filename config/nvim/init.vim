@@ -55,6 +55,8 @@ Plug 'rust-lang/rust.vim'
 Plug 'vim-ruby/vim-ruby'
 Plug 'jamessan/vim-gnupg'
 Plug 'rgrinberg/vim-ocaml'
+Plug 'Glench/Vim-Jinja2-Syntax'
+Plug 'tpope/vim-ragtag'
 
 " misc
 Plug 'godlygeek/tabular'
@@ -379,6 +381,14 @@ augroup Ocaml
     autocmd Filetype ocaml nnoremap <buffer> <C-]> :MerlinLocate<CR>
 augroup END
 
+augroup Rust
+    autocmd Filetype rust nmap <C-]> <Plug>(rust-def)
+    autocmd Filetype rust nmap K <Plug>(rust-doc)
+augroup END
+
+augroup Tera
+    autocmd BufRead *.tera set ft=jinja.html
+augroup END
 
 "
 " SOURCE LOCAL SETTINGS
