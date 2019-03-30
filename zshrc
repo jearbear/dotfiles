@@ -73,8 +73,8 @@ alias pn='ping www.google.com -c 1'
 
 alias s='sudo'
 
-alias pass='gopass -c $(gopass ls -f | fzf)'
-alias pgen='gopass generate --xkcdsep "" -e'
+alias pass='gopass -c'
+alias pgen='yes "" | gopass generate'
 
 alias ob='ocp-browser --no-stdlib --open Core'
 

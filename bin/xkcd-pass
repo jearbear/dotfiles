@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+< /usr/share/dict/words \
+    rg '^[a-z]{4,7}$' \
+    | shuf -n 3 \
+    | sed -e 's/./\u&/' \
+    | tr -d '\n' \
+    | sed -e "$(echo 's/o/0/ s/i/1/ s/l/1/ s/s/5/ s/a/4/ s/e/3/' | sed -e 's/ /; t; /g')"
