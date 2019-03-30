@@ -1,9 +1,33 @@
 #!/usr/bin/env bash
 set -euo pipefail
+shopt -s expand_aliases
 
-< /usr/share/dict/words \
-    rg '^[a-z]{4,7}$' \
-    | shuf -n 3 \
-    | sed -e 's/./\u&/' \
-    | tr -d '\n' \
-    | sed -e "$(echo 's/o/0/ s/i/1/ s/l/1/ s/s/5/ s/a/4/ s/e/3/' | sed -e 's/ /; t; /g')"
+alias shuf='shuf --random-source=/dev/urandom'
+
+# Randomly choose which order to try substitutions in.
+num_sub_command=$(
+    echo 's/o/0/ s/i/1/ s/l/1/ s/s/5/ s/a/4/ s/e/3/' \
+    | tr ' ' '\n' \
+    | shuf \
+    | tr '\n' ' ' \
+    | sed -e 's/ /; t; /g' \
+)
+
+# Given the EFF's wordlist do the following:
+# - Select 4
+# - Titlecase each word
+# - Join the words with a space
+# - Perform the first possible character -> number substition
+# - Shuffle the words and remove the space
+#
+# Assuming the EFF's 7776 long list, this should produce
+# at least 51 bits of entropy. The number substition is done
+# mainly to satisfy sites that require it.
+< ~/.word_list.txt              \
+    shuf -n 4                   \
+    | sed -e 's/./\u&/'         \
+    | tr '\n' ' '               \
+    | sed -e "$num_sub_command" \
+    | tr ' ' '\n'               \
+    | shuf                      \
+    | tr -d '\n'

@@ -13,4 +13,3 @@ root:
   usesymbols: false
   notifications: true
 mounts: {}
-version: 1.7.0
