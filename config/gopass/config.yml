@@ -1,0 +1,16 @@
+root:
+  askformore: false
+  autoclip: true
+  autoimport: true
+  autosync: true
+  cliptimeout: 60
+  editrecipients: false
+  nocolor: false
+  noconfirm: false
+  nopager: false
+  path: gpgcli-gitcli-fs+file:///home/jerry/.password-store
+  safecontent: true
+  usesymbols: false
+  notifications: true
+mounts: {}
+version: 1.7.0
