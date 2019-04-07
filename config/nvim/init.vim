@@ -21,6 +21,7 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'wellle/targets.vim'
 Plug 'AndrewRadev/splitjoin.vim'
+Plug 'jpalardy/vim-slime'
 
 " version control
 Plug 'mhinz/vim-signify'
@@ -46,9 +47,9 @@ Plug 'ludovicchabant/vim-gutentags'
 Plug 'ElmCast/elm-vim'
 Plug 'cespare/vim-toml'
 Plug 'fatih/vim-go'
-Plug 'lervag/vimtex'
 Plug 'neovimhaskell/haskell-vim'
 Plug 'pangloss/vim-javascript'
+Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'rodjek/vim-puppet'
 Plug 'rust-lang/rust.vim'
@@ -57,9 +58,6 @@ Plug 'jamessan/vim-gnupg'
 Plug 'rgrinberg/vim-ocaml'
 Plug 'Glench/Vim-Jinja2-Syntax'
 Plug 'tpope/vim-ragtag'
-
-" misc
-Plug 'godlygeek/tabular'
 
 " fzf
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -238,13 +236,10 @@ nmap <Leader>qq <Plug>(qf_qf_toggle)
 nmap [q <Plug>(qf_qf_previous)
 nmap ]q <Plug>(qf_qf_next)
 
-" vim-dirvish
-let g:dirvish_relative_paths = 1
-
 " gina.vim
 nnoremap <Leader>gs :Gina status<CR>
 nnoremap <Leader>gd :Gina compare :<CR>
-nnoremap <Leader>gb :.Gina browse : --scheme=blame<CR>
+nnoremap <Leader>gb :.Gina browse : --scheme=blame --exact<CR>
 nnoremap <Leader>gh :.Gina browse : --exact<CR>
 xnoremap <Leader>gh :Gina browse : --exact<CR>
 nnoremap <Leader>gl "+:.Gina browse : --yank --exact<CR>
@@ -274,8 +269,8 @@ let g:ale_sign_warning = '!!'
 let g:ale_set_highlights = 0
 let g:ale_lint_on_text_changed = 'never'
 
-let g:ale_linters = {'go': ['gometalinter']}
-let g:ale_go_metalinter_options = '--fast'
+" let g:ale_linters = {'go': ['gometalinter']}
+" let g:ale_go_metalinter_options = '--fast'
 
 let g:ale_fixers = {
             \ 'haskell': 'hfmt',
@@ -294,6 +289,9 @@ nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
 " targets.vim
 let g:targets_seekRanges = 'cr cb cB lc ac Ac lr rr ll lb ar ab lB Ar aB Ab AB rb rB al Al'
+
+" vim-slime
+let g:slime_target = "tmux"
 
 " racer
 let g:racer_experimental_completer = 1
@@ -393,6 +391,7 @@ augroup Tera
 
     autocmd BufRead *.tera set ft=jinja.html
 augroup END
+
 
 "
 " SOURCE LOCAL SETTINGS
