@@ -59,6 +59,13 @@ Plug 'rgrinberg/vim-ocaml'
 Plug 'Glench/Vim-Jinja2-Syntax'
 Plug 'tpope/vim-ragtag'
 
+" clojure support
+Plug 'tpope/vim-fireplace'
+Plug 'guns/vim-sexp'
+Plug 'tpope/vim-sexp-mappings-for-regular-people'
+Plug 'eraserhd/parinfer-rust', { 'do': 'cargo build --release' }
+Plug 'venantius/vim-cljfmt'
+
 " fzf
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
