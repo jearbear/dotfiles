@@ -58,7 +58,6 @@ Plug 'jamessan/vim-gnupg'
 Plug 'rgrinberg/vim-ocaml'
 Plug 'Glench/Vim-Jinja2-Syntax'
 Plug 'tpope/vim-ragtag'
-Plug 'wlangstroth/vim-racket'
 
 " clojure support
 Plug 'tpope/vim-fireplace'
