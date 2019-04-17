@@ -1,0 +1,3 @@
+# Disable middle mouse click to paste
+"echo -n | xsel -n -i; pkill xbindkeys; xdotool click 2; xbindkeys"
+    b:2 + Release

@@ -8,6 +8,7 @@ redshift -m randr &
 setxkbmap -option ctrl:nocaps &
 xset r rate 500 30 &
 xbanish &
+xbindkeys &
 
 # daemons
 devmon &
