@@ -159,3 +159,19 @@ alt + shift + i
 
 alt + shift + backslash
     stream
+
+
+#
+# disable middle click to paste
+#
+~button2
+    echo -n | xsel -n -i
+
+~control + c
+    echo -n | xsel -n -i
+
+~control + shift + c
+    echo -n | xsel -n -i
+
+~control + x
+    echo -n | xsel -n -i
