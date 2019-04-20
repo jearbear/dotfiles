@@ -49,8 +49,6 @@ Plug 'cespare/vim-toml'
 Plug 'fatih/vim-go'
 Plug 'neovimhaskell/haskell-vim'
 Plug 'pangloss/vim-javascript'
-Plug 'godlygeek/tabular'
-Plug 'plasticboy/vim-markdown'
 Plug 'rodjek/vim-puppet'
 Plug 'rust-lang/rust.vim'
 Plug 'vim-ruby/vim-ruby'
@@ -59,12 +57,16 @@ Plug 'rgrinberg/vim-ocaml'
 Plug 'Glench/Vim-Jinja2-Syntax'
 Plug 'tpope/vim-ragtag'
 
-" clojure support
-Plug 'tpope/vim-fireplace'
+" lisp support
 Plug 'guns/vim-sexp'
 Plug 'tpope/vim-sexp-mappings-for-regular-people'
 Plug 'eraserhd/parinfer-rust', { 'do': 'cargo build --release' }
-Plug 'venantius/vim-cljfmt'
+
+" notational velocity
+Plug 'godlygeek/tabular'
+Plug 'plasticboy/vim-markdown'
+Plug 'Alok/notational-fzf-vim'
+Plug 'junegunn/goyo.vim'
 
 " fzf
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -148,6 +150,9 @@ set directory=~/.config/nvim/swp//
 " auto read/write file on enter/jump
 set noswapfile autoread autowrite       
 autocmd! FocusGained,BufEnter * checktime
+
+" default to bash filetype for ft=sh
+let g:is_bash = 1
 
 
 "
@@ -246,13 +251,14 @@ nmap ]q <Plug>(qf_qf_next)
 " gina.vim
 nnoremap <Leader>gs :Gina status<CR>
 nnoremap <Leader>gd :Gina compare :<CR>
-nnoremap <Leader>gb :.Gina browse : --scheme=blame --exact<CR>
+nnoremap <Leader>gb :Gina blame --width=35 :<CR>
 nnoremap <Leader>gh :.Gina browse : --exact<CR>
 xnoremap <Leader>gh :Gina browse : --exact<CR>
 nnoremap <Leader>gl "+:.Gina browse : --yank --exact<CR>
 xnoremap <Leader>gl "+:Gina browse : --yank --exact<CR>
 
 let g:gina#component#repo#commit_length = 10
+let g:gina#command#blame#formatter#format = "%au%=on %ti %ma%in"
 
 " vim-easy-align
 nmap ga <Plug>(EasyAlign)
@@ -357,6 +363,12 @@ let g:elm_setup_keybindings = 0
 " vim-signify
 let g:signify_vcs_list = ['git']
 
+" notational-fzf-vim
+nnoremap <Leader>\ :NV<CR>
+let g:nv_search_paths = ['~/Notes/']
+let g:nv_use_short_pathnames = 1
+let g:nv_create_note_window = 'edit'
+
 
 " 
 " LANGUAGE SETTINGS
@@ -397,6 +409,12 @@ augroup Tera
     autocmd!
 
     autocmd BufRead *.tera set ft=jinja.html
+augroup END
+
+augroup Markdown
+    autocmd!
+
+    autocmd Filetype markdown nnoremap <Leader>t :TableFormat<CR>
 augroup END
 
 

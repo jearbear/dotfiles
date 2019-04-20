@@ -25,6 +25,7 @@
     diff-branch = !git diff $(git base)
 
     base = merge-base HEAD master
+    head = rev-parse HEAD
 
     fpush = push --force-with-lease
 
