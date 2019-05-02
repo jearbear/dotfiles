@@ -1,21 +1,9 @@
 ### installation
 
-You'll need to clone this repo to some directory that is **not** `$HOME`, I like to use `.dotfiles`. The files are structured in the same manner as they would sit in your `$HOME` directory without the typical `.` prefix, just to make them slightly easier to navigate. I've somewhat tested these with both OSX and Arch Linux, but only some of these dotfiles are relevant in OSX.
+You'll need to clone this repo to some directory that is **not** `$HOME`, I like to use `.dotfiles`. The files are structured in the same manner as they would sit in your `$HOME` directory without the typical `.` prefix, just to make them slightly easier to navigate. These have only been really tested with Arch Linux, though there may be some macOS stuff here and there for work.
 
-I use a _very_ small helper script, `dotit` to link files to their respective locations. Hopefully I'll expand its capabilities in the future, but for now it just links files:
-
-- add file: `dotit add $FILE`
-- add files in directory: `for x in $DIR/*; do dotit add $x; done`
-- list installed files: `dotit list`
-
-
-### todo
-
-- expand capabilities of `dotit`
-- common `bin` scripts I use
-- generalize to support 4K resolution
-
+To manage my dotfiles I use a small tool I wrote called [dots](https://github.com/jearbear/dots). It handles linking files from `.dotfiles` to their target in the `$HOME` directory and a few other things. Tools like [yadm](https://github.com/TheLocehiliosan/yadm) or [rcm](https://github.com/thoughtbot/rcm) should work just fine though!
 
 ### scrot
 
-![setup on my T440s](https://i.imgur.com/BCUvE3U.png)
+![setup on my desktop](https://i.imgur.com/nHtwtqV.png)
