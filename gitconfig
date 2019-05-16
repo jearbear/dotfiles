@@ -9,7 +9,7 @@
 
     co = checkout
     com = checkout master
-    cob = !git co $(git b | rg -v '^\\*' | fzf)
+    cob = !git co "$(git b | rg -v '^\\*' | awk '{$1=$1};1' | fzf)"
 
     unstage = reset -q HEAD --
     recommit = commit --amend --no-edit

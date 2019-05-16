@@ -57,7 +57,7 @@ zstyle ':vcs_info:git*' formats "- %b -"
 setopt prompt_subst
 
 # prompt
-PROMPT='%1/ %F{yellow}-%f '
+PROMPT='%1/ %F{yellow}%(1j.[%j] .)-%f '
 RPROMPT='%F{yellow}${vcs_info_msg_0_}%f'
 
 # aliases
@@ -68,7 +68,7 @@ alias n='DISABLE_FILE_OPEN_ON_NAV=1 nnn -l -c 6'
 
 alias vi='nvim'
 alias vim='nvim'
-alias t='TERM=tmux-256color tmux new-session -A -s main'
+alias t='tmux new-session -A -s main'
 alias pn='ping www.google.com -c 1'
 
 alias s='sudo'

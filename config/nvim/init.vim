@@ -130,17 +130,17 @@ hi WildMenu     guibg=#3c3836
 hi User1        guibg=#3c3836 guifg=#665c54
 hi User2        guibg=#3c3836 guifg=#83a598
 
-hi DiffAdd guifg=NONE guibg=#4D4B2D gui=NONE
-hi DiffChange guifg=NONE guibg=#5A4C2F gui=NONE
+hi DiffAdd    guifg=NONE    guibg=#4D4B2D gui=NONE
+hi DiffChange guifg=NONE    guibg=#5A4C2F gui=NONE
 hi DiffDelete guifg=#823930 guibg=#5A3430 gui=NONE
-hi DiffText guifg=#fabd2f guibg=#65532E gui=NONE
+hi DiffText   guifg=#fabd2f guibg=#65532E gui=NONE
 
-set statusline=\ \                   " padding
-set statusline+=%f                   " filename
-set statusline+=\ %2*%M%*            " modified flag
-set statusline+=%=                   " center divide
+set statusline=\ \                              " padding
+set statusline+=%f                              " filename
+set statusline+=\ %2*%M%*                       " modified flag
+set statusline+=%=                              " center divide
 set statusline+=%{gina#component#repo#branch()} " vcs info
-set statusline+=\ \                  " padding
+set statusline+=\ \                             " padding
 
 set spelllang=en
 
@@ -301,7 +301,7 @@ nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
 " targets.vim
-let g:targets_seekRanges = 'cr cb cB lc ac Ac lr rr ll lb ar ab lB Ar aB Ab AB rb rB al Al'
+let g:targets_seekRanges = 'cc cr cb cB lc ac Ac lr lb ar ab lB Ar aB Ab AB rr ll'
 
 " vim-slime
 let g:slime_target = "tmux"
@@ -315,7 +315,6 @@ let g:go_list_type = 'quickfix'
 let g:go_fold_enable = ['import']
 
 " vim-gutentags
-let g:gutentags_cache_dir = '~/.gutentags'
 let g:gutentags_generate_on_empty_buffer = 1
 
 " fzf.vim
@@ -365,7 +364,7 @@ let g:signify_vcs_list = ['git']
 
 " notational-fzf-vim
 nnoremap <Leader>\ :NV<CR>
-let g:nv_search_paths = ['~/Notes/']
+let g:nv_search_paths = ['~/sync/notes']
 let g:nv_use_short_pathnames = 1
 let g:nv_create_note_window = 'edit'
 
