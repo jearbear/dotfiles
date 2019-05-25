@@ -9,7 +9,8 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 export GOPASS_EXTERNAL_PWGEN="xkcd-pass"
 
-export RUSTC_WRAPPER='sccache'
+export RUSTC_WRAPPER="sccache"
+export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
 
 export PATH="$HOME/.bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"

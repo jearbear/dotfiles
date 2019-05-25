@@ -10,7 +10,7 @@ white = #ebdbb2
 
 [bar/main]
 
-monitor = DP-0
+monitor = DP-1
 bottom = true
 
 width = 100%
@@ -31,7 +31,7 @@ module-margin = 0
 font-0 = Input:size=16:weight=bold;0
 
 modules-left = bspwm
-modules-right = cpu pad volume pad clock
+modules-right = cpu pad memory pad volume pad clock
 
 wm-name = bspwm
 wm-restack = bspwm
@@ -44,11 +44,11 @@ interval = 3
 label = %{F#fabd2f}cpu%{F-} %percentage%
 
 
-[module/ram]
+[module/memory]
 
 type = internal/memory
-interval = 5
-label = " + %percentage_used%"
+interval = 3
+label = %{F#fabd2f}ram%{F-} %percentage_used%
 
 
 [module/clock]
@@ -58,15 +58,15 @@ date = %I:%M %p
 date-alt = %b %d - %I:%M %p
 format = <label>
 
+
 [module/volume]
 
 type = internal/alsa
-speaker_mixer = Speaker
-headphone_mixer = Headphone
-headphone_control_numid = 19
+master-soundcard = hw:1
+master-mixer = IEC958
 
-label-volume = %{F#fabd2f}vol%{F-} %percentage%
-label-muted = %{F#fabd2f}mut%{F-} %percentage%
+label-volume = %{F#fabd2f}vol
+label-muted = %{F#fabd2f}mut
 
 
 [module/bspwm]

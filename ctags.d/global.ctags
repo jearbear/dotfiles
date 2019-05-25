@@ -1,0 +1,12 @@
+--exclude=__pycache__
+--exclude=bazel*
+--exclude=elm-stuff
+--exclude=target
+--exclude=third_party
+--exclude=vendor
+--exclude=venv
+
+--exclude=*.css
+--exclude=*.html
+--exclude=*.json
+--exclude=*.min.js

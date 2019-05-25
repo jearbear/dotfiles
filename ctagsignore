@@ -1,8 +1,0 @@
-elm-stuff
-__pycache__
-venv
-vendor
-target
-*.css
-*.html
-*.min.js

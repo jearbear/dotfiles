@@ -61,6 +61,7 @@ Plug 'tpope/vim-ragtag'
 Plug 'guns/vim-sexp'
 Plug 'tpope/vim-sexp-mappings-for-regular-people'
 Plug 'eraserhd/parinfer-rust', { 'do': 'cargo build --release' }
+Plug 'wlangstroth/vim-racket'
 
 " notational velocity
 Plug 'godlygeek/tabular'
@@ -414,6 +415,12 @@ augroup Markdown
     autocmd!
 
     autocmd Filetype markdown nnoremap <Leader>t :TableFormat<CR>
+augroup END
+
+augroup Racket
+    autocmd!
+
+    autocmd BufRead,BufNewFile *.rkt,*.rktl set ft=racket
 augroup END
 
 
