@@ -21,7 +21,6 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'wellle/targets.vim'
 Plug 'AndrewRadev/splitjoin.vim'
-Plug 'jpalardy/vim-slime'
 
 " version control
 Plug 'mhinz/vim-signify'
@@ -56,12 +55,6 @@ Plug 'jamessan/vim-gnupg'
 Plug 'rgrinberg/vim-ocaml'
 Plug 'Glench/Vim-Jinja2-Syntax'
 Plug 'tpope/vim-ragtag'
-
-" lisp support
-Plug 'guns/vim-sexp'
-Plug 'tpope/vim-sexp-mappings-for-regular-people'
-Plug 'eraserhd/parinfer-rust', { 'do': 'cargo build --release' }
-Plug 'wlangstroth/vim-racket'
 
 " notational velocity
 Plug 'godlygeek/tabular'
@@ -191,6 +184,9 @@ vmap <Leader>/ gc
 " variable renaming
 nnoremap <Leader>r *``cgn
 nnoremap <Leader>gr g*``cgn
+
+" gv for pasted text
+nnoremap gp `[v`]
 
 " repeat macro on selection
 xnoremap . :norm.<CR>

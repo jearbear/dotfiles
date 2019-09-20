@@ -81,8 +81,31 @@ alias ob='ocp-browser --no-stdlib --open Core'
 # fzf
 [ -r ~/.fzf.zsh ] && . ~/.fzf.zsh
 
+# fzf + git integrations
+bindkey -r '^G'
+
+__is_in_git_repo() {
+    git rev-parse HEAD > /dev/null 2>&1
+}
+
+__git-pick-commit() {
+    __is_in_git_repo || return
+    LBUFFER="${LBUFFER}$(git pick-commit) "
+    zle reset-prompt
+}
+zle -N __git-pick-commit
+bindkey '^G^P' __git-pick-commit
+
+__git-pick-branch() {
+    __is_in_git_repo || return
+    LBUFFER="${LBUFFER}$(git pick-branch) "
+    zle reset-prompt
+}
+zle -N __git-pick-branch
+bindkey '^G^L' __git-pick-branch
+
 # opam
-[ -r ~/.opam/opam-init/init.zsh ] && . ~/.opam/opam-init/init.zsh
+# [ -r ~/.opam/opam-init/init.zsh ] && . ~/.opam/opam-init/init.zsh
 
 # source local configs
 [ -r ~/.zshrc.local ] && . ~/.zshrc.local

@@ -1,33 +1,43 @@
 [alias]
     b = branch
-
     s = status
-
     l = log --oneline --graph master..
-    t = log --format='%C(auto)%h%d %s%n' --graph --since='1 month ago' --branches --author='Jerry'
-    tall = log --format='%C(auto)%h%d %s' --graph --since='1 month ago' --branches
+
+    ls = log --oneline --graph --since='1 month ago'
+
+    ri = !git rebase --interactive $(git pick-branch)
+    rim = rebase --interactive master
 
     co = checkout
     com = checkout master
-    cob = !git co "$(git b | rg -v '^\\*' | awk '{$1=$1};1' | fzf)"
+    compt = checkout master-passing-tests
+    cob = !git co $(git pick-branch)
 
     unstage = reset -q HEAD --
     recommit = commit --amend --no-edit
     uncommit = reset --soft HEAD^
 
-    fix = !git commit --fixup \"${1:-HEAD}\" && :
+    rev = !git revert $(git pick-commit)
+    fix = !git commit -a --fixup $(git pick-commit)
 
-    squash = !git reset --soft \"${1:-HEAD~2}\" && git commit && :
+    squash = !git reset --soft $(git pick-commit) && git commit && :
     squash-branch = !git squash $(git base)
 
     d = diff
-    dh = diff HEAD~
-    diff-branch = !git diff $(git base)
+    ds = diff HEAD
+    db = !git diff $(git base)
 
     base = merge-base HEAD master
     head = rev-parse HEAD
 
     fpush = push --force-with-lease
+
+    pick-commit = !"git log --oneline master..HEAD --color=always | fzf --reverse --ansi --preview='git show --color=always {1} --stat' --preview-window='70%' | cut -f 1 -d ' ' | tr -d '\n'"
+    pick-branch = !"git branch | rg -v '^\\*' | awk '{$1=$1};1' | fzf --reverse --preview='git log --oneline master..{} --color=always' --preview-window='70%' | tr -d '\n'"
+
+    get-branch = !git fetch origin ${1?}:${1?} && git checkout ${1?} && :
+    diff-branch = !git diff --color=always \"${1?}\"..$(git merge-base \"${1?}\" master) && :
+    stat-branch = !git diff --stat --color=always \"${1?}\"..$(git merge-base \"${1?}\" master) && :
 
 [commit]
     gpgSign = true
@@ -78,6 +88,7 @@
 
 [rebase]
     autostash = true
+    autosquash = true
 
 [stash]
     showPatch = true
