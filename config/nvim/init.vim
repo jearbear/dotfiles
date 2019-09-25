@@ -30,7 +30,7 @@ Plug 'lambdalisue/gina.vim'
 Plug 'romainl/vim-qf'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-sleuth'
-Plug 'w0rp/ale'
+Plug 'dense-analysis/ale'
 
 " completion
 Plug 'racer-rust/vim-racer'
@@ -60,7 +60,6 @@ Plug 'tpope/vim-ragtag'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'Alok/notational-fzf-vim'
-Plug 'junegunn/goyo.vim'
 
 " fzf
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -244,6 +243,8 @@ nmap <Leader>qw <Plug>(qf_qf_switch)
 nmap <Leader>qq <Plug>(qf_qf_toggle)
 nmap [q <Plug>(qf_qf_previous)
 nmap ]q <Plug>(qf_qf_next)
+autocmd Filetype qf nnoremap <buffer> dd 0:Reject<CR>
+autocmd Filetype qf nnoremap <buffer> <Backspace> <Nop>
 
 " gina.vim
 nnoremap <Leader>gs :Gina status<CR>
@@ -274,18 +275,16 @@ let g:grepper.tools = ['rg', 'git', 'grep']
 let g:grepper.stop = 1000
 
 " ale
+let g:ale_lint_on_insert_leave = 0
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_set_highlights = 0
 let g:ale_sign_error = '!!'
 let g:ale_sign_warning = '!!'
-let g:ale_set_highlights = 0
-let g:ale_lint_on_text_changed = 'never'
-
-" let g:ale_linters = {'go': ['gometalinter']}
-" let g:ale_go_metalinter_options = '--fast'
 
 let g:ale_fixers = {
             \ 'haskell': 'hfmt',
-            \ 'rust': 'rustfmt',
             \ 'ocaml': 'ocamlformat',
+            \ 'rust': 'rustfmt',
             \ }
 let g:ale_fix_on_save = 1
 

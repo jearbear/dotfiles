@@ -4,6 +4,7 @@
     l = log --oneline --graph master..
 
     ls = log --oneline --graph --since='1 month ago'
+    lsa = log --oneline --graph
 
     ri = !git rebase --interactive $(git pick-branch)
     rim = rebase --interactive master
