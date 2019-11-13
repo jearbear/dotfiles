@@ -1,6 +1,7 @@
 --exclude=__pycache__
---exclude=bazel*
 --exclude=elm-stuff
+--exclude=node_modules
+--exclude=static
 --exclude=target
 --exclude=third_party
 --exclude=vendor
@@ -10,3 +11,4 @@
 --exclude=*.html
 --exclude=*.json
 --exclude=*.min.js
+--exclude=*.sql
