@@ -9,16 +9,13 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 export GOPASS_EXTERNAL_PWGEN="xkcd-pass"
 
+export PATH="$HOME/.bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="$HOME/.npm-packages/bin:$PATH"
+
 export RUSTC_WRAPPER="sccache"
 export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
-
-typeset -U path
-path=($HOME/.bin: $path)
-path=($HOME/.local/bin: $path)
-path=($HOME/.cargo/bin: $path)
-path=($HOME/.cabal/bin: $path)
-path=($HOME/.npm-packages/bin: $path)
-path=($HOME/go/bin: $path)
 
 # # system-specific
 [ -f ~/.zshenv.local ] && source ~/.zshenv.local

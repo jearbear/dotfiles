@@ -33,7 +33,7 @@ Plug 'tpope/vim-sleuth'
 Plug 'dense-analysis/ale'
 
 " completion
-Plug 'racer-rust/vim-racer'
+Plug 'racer-rust/vim-racer', { 'for': 'rust' }
 Plug 'tpope/vim-endwise'
 Plug 'rstacruz/vim-closer'
 
@@ -43,23 +43,20 @@ Plug 'mhinz/vim-grepper'
 Plug 'ludovicchabant/vim-gutentags'
 
 " language support
-Plug 'ElmCast/elm-vim'
-Plug 'cespare/vim-toml'
-Plug 'fatih/vim-go'
-Plug 'neovimhaskell/haskell-vim'
-Plug 'pangloss/vim-javascript'
-Plug 'rodjek/vim-puppet'
-Plug 'rust-lang/rust.vim'
-Plug 'vim-ruby/vim-ruby'
-Plug 'jamessan/vim-gnupg'
-Plug 'rgrinberg/vim-ocaml'
-Plug 'Glench/Vim-Jinja2-Syntax'
-Plug 'tpope/vim-ragtag'
+Plug 'ElmCast/elm-vim', { 'for': 'elm' }
+Plug 'cespare/vim-toml', { 'for': 'toml' }
+Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoInstallBinaries' }
+Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
+Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
+Plug 'rodjek/vim-puppet', { 'for': 'puppet' }
+Plug 'rust-lang/rust.vim', { 'for': 'rust' }
+Plug 'rgrinberg/vim-ocaml', { 'for': 'ocaml' }
+Plug 'tpope/vim-ragtag', { 'for': 'html' }
+Plug 'vim-ruby/vim-ruby', { 'for': 'ruby' }
 
-" notational velocity
-Plug 'godlygeek/tabular'
-Plug 'plasticboy/vim-markdown'
-Plug 'Alok/notational-fzf-vim'
+" note taking
+Plug 'godlygeek/tabular', { 'for': 'markdown' }
+Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
 
 " fzf
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -187,6 +184,9 @@ nnoremap <Leader>gr g*``cgn
 " gv for pasted text
 nnoremap gp `[v`]
 
+" replace selected text without yanking it
+vnoremap <Leader>p "_dP
+
 " repeat macro on selection
 xnoremap . :norm.<CR>
 
@@ -207,7 +207,7 @@ nmap <Leader>ve :e ~/.config/nvim/init.vim<CR>
 nmap <Leader>vs :source ~/.config/nvim/init.vim<CR>
 
 " nicer tabline
-function! Tabline()
+function! Tabline()"{{{
     let s = ''
     for i in range(tabpagenr('$'))
         let tab = i + 1
@@ -230,7 +230,7 @@ function! Tabline()
     let s .= '%#TabLineFill#'
 
     return s
-endfunction
+endfunction"}}}
 set tabline=%!Tabline()
 
 
@@ -343,11 +343,11 @@ endfunction
 autocmd! User FzfStatusLine call <SID>fzf_statusline()
 
 " get the shortened cwd
-function! s:shortpath()
+function! s:shortpath()"{{{
     let short = pathshorten(fnamemodify(getcwd(), ':~:.'))
     let slash = '/'
     return empty(short) ? '~'.slash : short . (short =~ escape(slash, '\').'$' ? '' : slash)
-endfunction
+endfunction"}}}
 
 " faster implementation of Files/GFiles that works outside of git repos
 command! Files call fzf#run(fzf#wrap({'source': 'git ls-files || fd -t file', 'options': ['--prompt', s:shortpath()]}))
@@ -357,12 +357,6 @@ let g:elm_setup_keybindings = 0
 
 " vim-signify
 let g:signify_vcs_list = ['git']
-
-" notational-fzf-vim
-nnoremap <Leader>\ :NV<CR>
-let g:nv_search_paths = ['~/sync/notes']
-let g:nv_use_short_pathnames = 1
-let g:nv_create_note_window = 'edit'
 
 
 " 
@@ -406,16 +400,16 @@ augroup Tera
     autocmd BufRead *.tera set ft=jinja.html
 augroup END
 
-augroup Markdown
-    autocmd!
-
-    autocmd Filetype markdown nnoremap <Leader>t :TableFormat<CR>
-augroup END
-
 augroup Racket
     autocmd!
 
     autocmd BufRead,BufNewFile *.rkt,*.rktl set ft=racket
+augroup END
+
+augroup Vim
+    autocmd!
+
+    autocmd Filetype vim setlocal foldenable foldmethod=marker
 augroup END
 
 

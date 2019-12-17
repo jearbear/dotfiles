@@ -1,9 +1,0 @@
-bin
-bazel-bin
-bazel-genfiles
-bazel-gocode
-bazel-out
-bazel-stripe
-bazel-testlogs
-vendor
-target

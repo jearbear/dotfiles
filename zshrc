@@ -61,7 +61,6 @@ PROMPT='%1/ %F{yellow}%(1j.[%j] .)-%f '
 RPROMPT='%F{yellow}${vcs_info_msg_0_}%f'
 
 # aliases
-alias sizes='du -d 1 -h . | sort -rh'
 alias reload='source ~/.zshrc && source ~/.zshenv'
 
 alias n='DISABLE_FILE_OPEN_ON_NAV=1 nnn -l -c 6'
@@ -72,11 +71,6 @@ alias t='tmux new-session -A -s main'
 alias pn='ping www.google.com -c 1'
 
 alias s='sudo'
-
-alias pass='gopass -c'
-alias pgen='yes "" | gopass generate'
-
-alias ob='ocp-browser --no-stdlib --open Core'
 
 # fzf
 [ -r ~/.fzf.zsh ] && . ~/.fzf.zsh
@@ -103,9 +97,6 @@ __git-pick-branch() {
 }
 zle -N __git-pick-branch
 bindkey '^G^L' __git-pick-branch
-
-# opam
-# [ -r ~/.opam/opam-init/init.zsh ] && . ~/.opam/opam-init/init.zsh
 
 # source local configs
 [ -r ~/.zshrc.local ] && . ~/.zshrc.local
