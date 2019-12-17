@@ -46,11 +46,9 @@ Plug 'ludovicchabant/vim-gutentags'
 Plug 'ElmCast/elm-vim', { 'for': 'elm' }
 Plug 'cespare/vim-toml', { 'for': 'toml' }
 Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoInstallBinaries' }
-Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
 Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
 Plug 'rodjek/vim-puppet', { 'for': 'puppet' }
 Plug 'rust-lang/rust.vim', { 'for': 'rust' }
-Plug 'rgrinberg/vim-ocaml', { 'for': 'ocaml' }
 Plug 'tpope/vim-ragtag', { 'for': 'html' }
 Plug 'vim-ruby/vim-ruby', { 'for': 'ruby' }
 
@@ -282,8 +280,6 @@ let g:ale_sign_error = '!!'
 let g:ale_sign_warning = '!!'
 
 let g:ale_fixers = {
-            \ 'haskell': 'hfmt',
-            \ 'ocaml': 'ocamlformat',
             \ 'rust': 'rustfmt',
             \ }
 let g:ale_fix_on_save = 1
@@ -368,42 +364,11 @@ augroup Golang
     autocmd FileType go setlocal foldenable foldmethod=syntax
 augroup END
 
-augroup Haskell
-    autocmd!
-
-    autocmd FileType haskell hi link haskellSeparator GruvboxFg4
-    autocmd FileType haskell hi link haskellDelimiter GruvboxOrange
-    autocmd FileType haskell hi link haskellPragma GruvboxRedBold
-augroup END
-
-augroup Ocaml
-    autocmd!
-
-    " ocp-indent must be before merlin for some reason
-    autocmd Filetype ocaml setlocal runtimepath^=~/.opam/default/share/merlin/vim
-    autocmd Filetype ocaml setlocal runtimepath^=~/.opam/default/share/ocp-indent/vim
-
-    autocmd Filetype ocaml let no_ocaml_maps=1 " disable vim-ocaml mappings
-    autocmd Filetype ocaml nnoremap <buffer> <C-]> :MerlinLocate<CR>
-augroup END
-
 augroup Rust
     autocmd!
 
     autocmd Filetype rust nmap <C-]> <Plug>(rust-def)
     autocmd Filetype rust nmap K <Plug>(rust-doc)
-augroup END
-
-augroup Tera
-    autocmd!
-
-    autocmd BufRead *.tera set ft=jinja.html
-augroup END
-
-augroup Racket
-    autocmd!
-
-    autocmd BufRead,BufNewFile *.rkt,*.rktl set ft=racket
 augroup END
 
 augroup Vim
