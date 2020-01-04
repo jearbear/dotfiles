@@ -41,7 +41,7 @@
     stow = !"if [[ $(git log -1 --format=%B) == \"stowed\" ]]; then git commit -a --amend --no-edit; else git commit -a -m stowed; fi"
     unstow = !"if [[ $(git log -1 --format=%B) == \"stowed\" ]]; then git reset @^; else echo \"Nothing to unstow\"; fi"
 
-    squash = !git reset --soft $(git pick-commit) && git commit && :
+    squash = !git reset --soft ${1:-$(git pick-commit)} && git commit && :
     squash-branch = !git squash $(git base)
 
     pick-commit = !"git log --oneline master..HEAD --color=always | fzf --reverse --ansi --preview='git show --color=always {1} --stat' --preview-window='70%' | cut -f 1 -d ' ' | tr -d '\\n'"

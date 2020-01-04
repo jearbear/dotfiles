@@ -112,7 +112,7 @@ set wildmode=full,full
 set shortmess+=c
 set completeopt=menu,menuone
 
-hi StatusLine   guibg=#928374 guifg=#3c3836
+hi StatusLine   guibg=#928374 guifg=#3c3836"{{{
 hi StatusLineNC guibg=#665c54 guifg=#3c3836
 hi WildMenu     guibg=#3c3836
 hi User1        guibg=#3c3836 guifg=#665c54
@@ -121,7 +121,7 @@ hi User2        guibg=#3c3836 guifg=#83a598
 hi DiffAdd    guifg=NONE    guibg=#4D4B2D gui=NONE
 hi DiffChange guifg=NONE    guibg=#5A4C2F gui=NONE
 hi DiffDelete guifg=#823930 guibg=#5A3430 gui=NONE
-hi DiffText   guifg=#fabd2f guibg=#65532E gui=NONE
+hi DiffText   guifg=#fabd2f guibg=#65532E gui=NONE"}}}
 
 set statusline=\ \                              " padding
 set statusline+=%f                              " filename
@@ -134,6 +134,9 @@ set spelllang=en
 
 set backupdir=~/.config/nvim/backup//
 set directory=~/.config/nvim/swp//
+
+" allow jumping to filename:linenum
+set isfname-=:
 
 " auto read/write file on enter/jump
 set noswapfile autoread autowrite       
@@ -151,6 +154,7 @@ map 0 ^
 
 " file navigation
 nnoremap <Leader>f :Files<CR>
+nnoremap <Leader>gf :GFiles?<CR>
 
 " buffer navigation
 nnoremap <Backspace> <C-^>
@@ -307,7 +311,7 @@ let g:go_list_type = 'quickfix'
 let g:go_fold_enable = ['import']
 
 " vim-gutentags
-let g:gutentags_generate_on_empty_buffer = 1
+let g:gutentags_generate_on_new = 0
 
 " fzf.vim
 let g:fzf_layout = { 'down': 10 }
@@ -318,6 +322,7 @@ let g:fzf_action = {
             \ 'ctrl-s': 'split',
             \ 'ctrl-v': 'vsplit',
             \ }
+" have fzf match vim colorscheme{{{
 let g:fzf_colors = {
             \ 'fg':      ['fg', 'Comment'],
             \ 'bg':      ['bg', 'Normal'],
@@ -331,7 +336,7 @@ let g:fzf_colors = {
             \ 'marker':  ['fg', 'Constant'],
             \ 'spinner': ['fg', 'Constant'],
             \ 'header':  ['fg', 'PmenuSel'],
-            \ }
+            \ }"}}}
 
 function! s:fzf_statusline() abort
     setlocal statusline=%#StatusLine#\ »\ fzf
