@@ -317,7 +317,6 @@ let g:gutentags_generate_on_new = 0
 let g:fzf_layout = { 'down': 10 }
 let g:fzf_history_dir = '~/.fzf-history'
 let g:fzf_action = {
-            \ 'ctrl-p': 'pedit',
             \ 'ctrl-t': 'tab split',
             \ 'ctrl-s': 'split',
             \ 'ctrl-v': 'vsplit',
