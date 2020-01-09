@@ -252,6 +252,7 @@ autocmd Filetype qf nnoremap <buffer> <Backspace> <Nop>
 nnoremap <Leader>gs :Gina status<CR>
 nnoremap <Leader>gd :Gina compare :<CR>
 nnoremap <Leader>gb :Gina blame --width=35 :<CR>
+nnoremap <Leader>gb :.Gina browse : --exact --scheme=blame<CR>
 nnoremap <Leader>gh :.Gina browse : --exact<CR>
 xnoremap <Leader>gh :Gina browse : --exact<CR>
 nnoremap <Leader>gl "+:.Gina browse : --yank --exact<CR>
