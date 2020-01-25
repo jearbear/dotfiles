@@ -20,4 +20,4 @@
 --regex-ruby=/(^|[:;])[ \t]*([A-Z][[:alnum:]_]+) *=/\2/c,class,constant/
 --regex-ruby=/(^|;)[ \t]*(has_many|belongs_to|has_one|has_and_belongs_to_many)\(? *:([[:alnum:]_]+)/\3/f,function,association/
 --regex-ruby=/(^|;)[ \t]*(named_)?scope\(? *:([[:alnum:]_]+)/\3/f,function,named_scope/
---regex-ruby=/(^|;)[ \t]*(private|protected|public)(_class_method)?\(? def *(self.)?([[:alnum:]_]+[!?]?)/\5/f,inline scoped method,inline scoped methods (Ruby 2.1+)/
+--regex-ruby=/(^|;)[ \t]*(private|protected|public)(_class_method)?\(? def *(self.)?([[:alnum:]_]+[!?]?)/\5/f,inline-scoped-method,inline-scoped-methods/

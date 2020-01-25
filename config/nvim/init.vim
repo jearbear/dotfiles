@@ -11,7 +11,7 @@ let maplocalleader = " "
 call plug#begin('~/.config/nvim/plugged')
 
 " themes
-Plug 'morhetz/gruvbox'
+Plug 'rakr/vim-one'
 
 " mappings
 Plug 'junegunn/vim-easy-align'
@@ -66,15 +66,12 @@ call plug#end()
 "
 " VISUAL SETTINGS
 "
-set background=dark
+set background=light
 set termguicolors
 
-let g:gruvbox_contrast_dark = 'soft'
-let g:gruvbox_contrast_light = 'soft'
-let g:gruvbox_invert_selection = 0
-let g:gruvbox_italic = 1
+let g:one_allow_italics = 1
 
-colorscheme gruvbox
+colorscheme one
 
 set hidden
 
@@ -112,20 +109,12 @@ set wildmode=full,full
 set shortmess+=c
 set completeopt=menu,menuone
 
-hi StatusLine   guibg=#928374 guifg=#3c3836"{{{
-hi StatusLineNC guibg=#665c54 guifg=#3c3836
-hi WildMenu     guibg=#3c3836
-hi User1        guibg=#3c3836 guifg=#665c54
-hi User2        guibg=#3c3836 guifg=#83a598
-
-hi DiffAdd    guifg=NONE    guibg=#4D4B2D gui=NONE
-hi DiffChange guifg=NONE    guibg=#5A4C2F gui=NONE
-hi DiffDelete guifg=#823930 guibg=#5A3430 gui=NONE
-hi DiffText   guifg=#fabd2f guibg=#65532E gui=NONE"}}}
+hi StatusLine   gui=bold guibg=#ececec
+hi StatusLineNC gui=NONE guifg=DarkGray guibg=#ececec
 
 set statusline=\ \                              " padding
 set statusline+=%f                              " filename
-set statusline+=\ %2*%M%*                       " modified flag
+set statusline+=\ %M%*                          " modified flag
 set statusline+=%=                              " center divide
 set statusline+=%{gina#component#repo#branch()} " vcs info
 set statusline+=\ \                             " padding
@@ -291,9 +280,6 @@ let g:ale_fix_on_save = 1
 
 let g:ale_rust_cargo_use_clippy = 1
 
-hi link ALEErrorSign GruvboxRedSign
-hi link ALEWarningSign GruvboxYellowSign
-
 nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
@@ -322,21 +308,6 @@ let g:fzf_action = {
             \ 'ctrl-s': 'split',
             \ 'ctrl-v': 'vsplit',
             \ }
-" have fzf match vim colorscheme{{{
-let g:fzf_colors = {
-            \ 'fg':      ['fg', 'Comment'],
-            \ 'bg':      ['bg', 'Normal'],
-            \ 'hl':      ['fg', 'Type'],
-            \ 'fg+':     ['fg', 'Normal'],
-            \ 'bg+':     ['bg', 'Normal'],
-            \ 'hl+':     ['fg', 'Type'],
-            \ 'info':    ['fg', 'Constant'],
-            \ 'prompt':  ['fg', 'Type'],
-            \ 'pointer': ['fg', 'Constant'],
-            \ 'marker':  ['fg', 'Constant'],
-            \ 'spinner': ['fg', 'Constant'],
-            \ 'header':  ['fg', 'PmenuSel'],
-            \ }"}}}
 
 function! s:fzf_statusline() abort
     setlocal statusline=%#StatusLine#\ »\ fzf

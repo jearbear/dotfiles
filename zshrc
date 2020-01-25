@@ -57,8 +57,8 @@ zstyle ':vcs_info:git*' formats "- %b -"
 setopt prompt_subst
 
 # prompt
-PROMPT='%1/ %F{yellow}%(1j.[%j] .)-%f '
-RPROMPT='%F{yellow}${vcs_info_msg_0_}%f'
+PROMPT='%1/ %F{white}%(1j.[%j] .)-%f '
+RPROMPT='%F{white}${vcs_info_msg_0_}%f'
 
 # aliases
 alias reload='source ~/.zshrc && source ~/.zshenv'
