@@ -16,8 +16,7 @@ Plug 'rakr/vim-one'
 " mappings
 Plug 'junegunn/vim-easy-align'
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-surround'
+Plug 'machakann/vim-sandwich'
 Plug 'tpope/vim-unimpaired'
 Plug 'wellle/targets.vim'
 Plug 'AndrewRadev/splitjoin.vim'
@@ -329,6 +328,9 @@ let g:elm_setup_keybindings = 0
 
 " vim-signify
 let g:signify_vcs_list = ['git']
+
+" vim-sandwich
+runtime macros/sandwich/keymap/surround.vim
 
 
 " 

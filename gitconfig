@@ -1,4 +1,5 @@
 [alias]
+    c = clone --single-branch
     b = branch
     s = status
 
