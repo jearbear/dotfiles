@@ -53,7 +53,7 @@
     pick-branches-wo-master = !"git branch | rg -v '^\\*' | rg -v 'master' | awk '{$1=$1};1' | fzf --multi --reverse --preview='git log --oneline master..{} --color=always' --preview-window='70%' | tr '\\n' ' '"
 
 [commit]
-    gpgSign = true
+    gpgSign = false
     verbose = true
 
 [color]

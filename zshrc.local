@@ -2,19 +2,10 @@
 alias ls='ls --color=auto'
 alias copy='xclip -selection clipboard'
 
-alias load='glances --hide-kernel-threads --process-short-name -2 -4 --disable-bg --time 1'
-alias power='sudo powertop'
-alias pics='sxiv -rt .'
+alias sv='doas sv'
+alias xi='doas xbps-install'
+alias xq='doas xbps-query -Rs'
+alias xr='doas xbps-remove -R'
 
-alias con='connmanctl'
-alias recon='systemctl restart connman'
-alias vpn='sudo openvpn --client --config /etc/openvpn/client/US_Silicon_Valley.conf'
-
-alias blueon='sudo systemctl start bluetooth'
-alias blueoff='sudo systemctl stop bluetooth'
-alias bluesync='ponymix set-profile headset_head_unit && ponymix set-profile a2dp_sink'
-
-alias xi='sudo xbps-install -S'
-alias xs='xbps-query -Rs'
-alias xq='xbps-query'
-alias xr='sudo xbps-remove -R'
+alias reboot='doas reboot'
+alias shutdown='doas shutdown -h now'
