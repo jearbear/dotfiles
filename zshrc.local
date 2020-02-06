@@ -2,6 +2,8 @@
 alias ls='ls --color=auto'
 alias copy='xclip -selection clipboard'
 
+alias usv='SVDIR=/home/jerry/service \sv'
+
 alias sv='doas sv'
 alias xi='doas xbps-install'
 alias xq='doas xbps-query -Rs'
