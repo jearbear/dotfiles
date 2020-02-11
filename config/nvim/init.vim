@@ -16,7 +16,8 @@ Plug 'rakr/vim-one'
 " mappings
 Plug 'junegunn/vim-easy-align'
 Plug 'tpope/vim-commentary'
-Plug 'machakann/vim-sandwich'
+Plug 'tpope/vim-repeat'    
+Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'wellle/targets.vim'
 Plug 'AndrewRadev/splitjoin.vim'
@@ -283,10 +284,14 @@ nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
 " targets.vim
-let g:targets_seekRanges = 'cc cr cb cB lc ac Ac lr lb ar ab lB Ar aB Ab AB rr ll'
-
-" vim-slime
-let g:slime_target = "tmux"
+" ranges on the cursor
+let g:targets_seekRanges = 'cc cr cb cB lc ac Ac'
+" ranges ahead the cursor that are fully contained on the same line
+let g:targets_seekRanges .= ' rr'
+" ranges around the cursor
+let g:targets_seekRanges .= ' lr lb ar ab lB Ar aB Ab AB'
+" ranges behind the cursor that are fully contained on the same line
+let g:targets_seekRanges .= ' ll'
 
 " racer
 let g:racer_experimental_completer = 1
@@ -328,9 +333,6 @@ let g:elm_setup_keybindings = 0
 
 " vim-signify
 let g:signify_vcs_list = ['git']
-
-" vim-sandwich
-runtime macros/sandwich/keymap/surround.vim
 
 
 " 

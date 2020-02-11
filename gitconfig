@@ -111,3 +111,6 @@
 
 [core]
     excludesfile = ~/.gitignore
+
+[url "git@github.com:"]
+    insteadOf = gh:
