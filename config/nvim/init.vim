@@ -286,11 +286,13 @@ nmap <silent> <C-j> <Plug>(ale_next_wrap)
 " targets.vim
 " ranges on the cursor
 let g:targets_seekRanges = 'cc cr cb cB lc ac Ac'
-" ranges ahead the cursor that are fully contained on the same line
+" range around the cursor, fully contained on the same line
+let g:targets_seekRanges .= ' lr'
+" range ahead of the cursor, fully contained on the same line
 let g:targets_seekRanges .= ' rr'
-" ranges around the cursor
-let g:targets_seekRanges .= ' lr lb ar ab lB Ar aB Ab AB'
-" ranges behind the cursor that are fully contained on the same line
+" ranges around the cursor, multiline
+let g:targets_seekRanges .= ' lb ar ab lB Ar aB Ab AB'
+" ranges behind the cursor, fully contained on the same line
 let g:targets_seekRanges .= ' ll'
 
 " racer
