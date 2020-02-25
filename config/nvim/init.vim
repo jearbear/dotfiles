@@ -262,7 +262,7 @@ xmap gs <Plug>(GrepperOperator)
 let g:grepper = {}
 let g:grepper.simple_prompt = 1
 let g:grepper.prompt_quote = 2
-let g:grepper.switch = 1
+let g:grepper.switch = 0
 let g:grepper.tools = ['rg', 'git', 'grep']
 let g:grepper.stop = 1000
 
