@@ -26,6 +26,7 @@
     ri = !git rebase --interactive $(git pick-branch)
     rim = rebase --interactive master
     rib = !git rebase --interactive $(git base)
+    rom = !git fetch origin master:master && git rebase master
 
     co = checkout
     com = checkout master
