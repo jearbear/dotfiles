@@ -72,6 +72,11 @@ alias pn='ping www.google.com -c 1'
 
 alias s='sudo'
 
+# 1Password
+op-pass() {
+    op get item "$1" | jq '.details.fields[] | select(.designation=="password").value'
+}
+
 # fzf
 [ -r ~/.fzf.zsh ] && . ~/.fzf.zsh
 

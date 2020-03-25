@@ -2,12 +2,10 @@
 alias ls='ls --color=auto'
 alias copy='xclip -selection clipboard'
 
-alias usv='SVDIR=/home/jerry/service \sv'
+alias sc='sudo systemctl'
+alias scu='systemctl --user'
 
-alias sv='doas sv'
-alias xi='doas xbps-install'
-alias xq='doas xbps-query -Rs'
-alias xr='doas xbps-remove -R'
+alias pac='sudo pacman'
 
-alias reboot='doas reboot'
-alias shutdown='doas shutdown -h now'
+alias reboot='sudo reboot'
+alias shutdown='sudo shutdown -h now'

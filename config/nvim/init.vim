@@ -121,6 +121,8 @@ set statusline+=\ \                             " padding
 
 set spelllang=en
 
+silent !mkdir ~/.config/nvim/backup// > /dev/null 2>&1"{{{
+silent !mkdir ~/.config/nvim/swp// > /dev/null 2>&1"}}}
 set backupdir=~/.config/nvim/backup//
 set directory=~/.config/nvim/swp//
 

@@ -16,5 +16,5 @@ export PATH="$HOME/.npm-packages/bin:$PATH"
 
 export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
 
-# # system-specific
+# system-specific
 [ -f ~/.zshenv.local ] && source ~/.zshenv.local
