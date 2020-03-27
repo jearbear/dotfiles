@@ -16,7 +16,7 @@ Plug 'rakr/vim-one'
 " mappings
 Plug 'junegunn/vim-easy-align'
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-repeat'    
+Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'wellle/targets.vim'
@@ -130,7 +130,7 @@ set directory=~/.config/nvim/swp//
 set isfname-=:
 
 " auto read/write file on enter/jump
-set noswapfile autoread autowrite       
+set noswapfile autoread autowrite
 autocmd! FocusGained,BufEnter * checktime
 
 " default to bash filetype for ft=sh
@@ -340,13 +340,19 @@ let g:elm_setup_keybindings = 0
 let g:signify_vcs_list = ['git']
 
 
-" 
+"
 " LANGUAGE SETTINGS
 "
 augroup Golang
     autocmd!
 
     autocmd FileType go setlocal foldenable foldmethod=syntax
+augroup END
+
+augroup JSON
+    autocmd!
+
+    autocmd Filetype json nmap <Leader>fp :%!python -m json.tool<CR>
 augroup END
 
 augroup Rust
