@@ -145,6 +145,7 @@ map 0 ^
 
 " file navigation
 nnoremap <Leader>f :Files<CR>
+nnoremap <Leader>F :GFiles<CR>
 nnoremap <Leader>gf :GFiles?<CR>
 
 " buffer navigation
@@ -331,7 +332,7 @@ function! s:shortpath()"{{{
 endfunction"}}}
 
 " faster implementation of Files/GFiles that works outside of git repos
-command! Files call fzf#run(fzf#wrap({'source': 'git ls-files || fd -t file', 'options': ['--prompt', s:shortpath()]}))
+command! Files call fzf#run(fzf#wrap({'source': 'git ls-files | uniq || fd -t file', 'options': ['--prompt', s:shortpath()]}))
 
 " elm-vim
 let g:elm_setup_keybindings = 0
@@ -339,6 +340,8 @@ let g:elm_setup_keybindings = 0
 " vim-signify
 let g:signify_vcs_list = ['git']
 
+" vim-ruby
+let ruby_foldable_groups = 'def class module do case'
 
 "
 " LANGUAGE SETTINGS

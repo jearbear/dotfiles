@@ -72,6 +72,8 @@ alias pn='ping www.google.com -c 1'
 
 alias s='sudo'
 
+alias rgo='rg --no-heading --no-filename --no-line-number --only-matching'
+
 # 1Password
 op-pass() {
     op get item "$1" | jq '.details.fields[] | select(.designation=="password").value'
