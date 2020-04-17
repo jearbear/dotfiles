@@ -14,47 +14,46 @@ call plug#begin('~/.config/nvim/plugged')
 Plug 'rakr/vim-one'
 
 " mappings
+Plug 'AndrewRadev/splitjoin.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'wellle/targets.vim'
-Plug 'AndrewRadev/splitjoin.vim'
 
 " version control
-Plug 'mhinz/vim-signify'
 Plug 'lambdalisue/gina.vim'
+Plug 'mhinz/vim-signify'
 
 " project management
+Plug 'dense-analysis/ale'
 Plug 'romainl/vim-qf'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-sleuth'
-Plug 'dense-analysis/ale'
 
 " completion
 Plug 'racer-rust/vim-racer', { 'for': 'rust' }
-Plug 'tpope/vim-endwise'
 Plug 'rstacruz/vim-closer'
+Plug 'tpope/vim-endwise'
 
 " project navigation
 Plug 'justinmk/vim-dirvish'
-Plug 'mhinz/vim-grepper'
 Plug 'ludovicchabant/vim-gutentags'
+Plug 'mhinz/vim-grepper'
 
 " language support
 Plug 'ElmCast/elm-vim', { 'for': 'elm' }
 Plug 'cespare/vim-toml', { 'for': 'toml' }
 Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoInstallBinaries' }
+Plug 'godlygeek/tabular', { 'for': 'markdown' }
 Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
+Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
 Plug 'rodjek/vim-puppet', { 'for': 'puppet' }
 Plug 'rust-lang/rust.vim', { 'for': 'rust' }
 Plug 'tpope/vim-ragtag', { 'for': 'html' }
 Plug 'vim-ruby/vim-ruby', { 'for': 'ruby' }
-
-" note taking
-Plug 'godlygeek/tabular', { 'for': 'markdown' }
-Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
+Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
 
 " fzf
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -325,14 +324,16 @@ endfunction
 autocmd! User FzfStatusLine call <SID>fzf_statusline()
 
 " get the shortened cwd
-function! s:shortpath()"{{{
+function! FZFPath()"{{{
     let short = pathshorten(fnamemodify(getcwd(), ':~:.'))
     let slash = '/'
     return empty(short) ? '~'.slash : short . (short =~ escape(slash, '\').'$' ? '' : slash)
 endfunction"}}}
 
 " faster implementation of Files/GFiles that works outside of git repos
-command! Files call fzf#run(fzf#wrap({'source': 'git ls-files | uniq || fd -t file', 'options': ['--prompt', s:shortpath()]}))
+command! Files call fzf#run(fzf#wrap({'source': 'git ls-files | uniq || fd -t file', 'options': ['--prompt', FZFPath()]}))
+
+nnoremap <bar> :Rg<CR>
 
 " elm-vim
 let g:elm_setup_keybindings = 0

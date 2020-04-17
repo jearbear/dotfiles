@@ -4,7 +4,7 @@
 --exclude=*.min.js
 --exclude=*.sql
 --exclude=__pycache__
---exclude=bazel
+--exclude=bazel*
 --exclude=build
 --exclude=elm-stuff
 --exclude=migrations
