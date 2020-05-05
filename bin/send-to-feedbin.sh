@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
 
 username=$(bw get username Feedbin --session $BW_SESSION)
