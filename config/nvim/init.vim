@@ -36,9 +36,8 @@ Plug 'tpope/vim-endwise'
 
 " project navigation
 Plug 'justinmk/vim-dirvish'
-" Plug 'ludovicchabant/vim-gutentags'
+Plug 'ludovicchabant/vim-gutentags'
 Plug 'mhinz/vim-grepper'
-Plug 'pechorin/any-jump.vim'
 
 " language support
 Plug 'ElmCast/elm-vim', { 'for': 'elm' }
@@ -168,88 +167,86 @@ let g:is_bash = 1
 " }}}
 
 " MAPPINGS {{{
-map Y y$
-map 0 ^
+map <silent> Y y$
+map <silent> 0 ^
 
 " file navigation
-nnoremap <Leader>f :Files<CR>
-nnoremap <Leader>F :GFiles<CR>
+nnoremap <silent> <Leader>f :Files<CR>
+nnoremap <silent> <Leader>F :GFiles<CR>
 
 " buffer navigation
-nnoremap <Backspace> <C-^>
-nnoremap <Leader>l :Buffers<CR>
-nnoremap <Leader>[ :bprevious<CR>
-nnoremap <Leader>] :bnext<CR>
-nnoremap Q :bprevious <Bar> bdelete #<CR>
+nnoremap <silent> <Backspace> <C-^>
+nnoremap <silent> <Leader>l :Buffers<CR>
+nnoremap <silent> <Leader>[ :bprevious<CR>
+nnoremap <silent> <Leader>] :bnext<CR>
+nnoremap <silent> Q :bprevious <Bar> bdelete #<CR>
 
 " tab navigation
-nnoremap <Leader>{ :tabp<CR>
-nnoremap <Leader>} :tabn<CR>
+nnoremap <silent> <Leader>{ :tabp<CR>
+nnoremap <silent> <Leader>} :tabn<CR>
 
 " tag jumping/previewing
-" nnoremap <Leader>j :Tags<CR>
-nnoremap <Leader>j :AnyJump<CR>
-xnoremap <leader>j :AnyJumpVisual<CR>
-nnoremap <Leader>k :BTags<CR>
+nnoremap <silent> <Leader>j :Tags<CR>
+nnoremap <silent> <Leader>k :BTags<CR>
 
 " faster commenting
-nmap <Leader>/ gcc
-vmap <Leader>/ gc
+nmap <silent> <Leader>/ gcc
+vmap <silent> <Leader>/ gc
 
 " faster renaming
-nnoremap <Leader>r *``cgn
-nnoremap <Leader>gr g*``cgn
-nnoremap <Leader>s :s/<C-r><C-w>/
-xnoremap <Leader>s :s/
+nnoremap <silent> <Leader>r *``cgn
+nnoremap <silent> <Leader>gr g*``cgn
+nnoremap <silent> <Leader>s :s/<C-r><C-w>/
+xnoremap <silent> <Leader>s :s/
 
 " gv for pasted text
-nnoremap gp `[v`]
+nnoremap <silent> gp `[v`]
 
 " replace selected text without yanking it
-vnoremap <Leader>p "_dP
+vnoremap <silent> <Leader>p "_dP
 
 " repeat macro on selection
-xnoremap . :norm.<CR>
+xnoremap <silent> . :norm.<CR>
 
 " emacs-like command mode navigation
-cnoremap <C-a> <Home>
-cnoremap <C-e> <End>
-cnoremap <C-p> <Up>
-cnoremap <C-n> <Down>
-cnoremap <C-b> <Left>
-cnoremap <C-f> <Right>
+cnoremap <silent> C-a> <Home>
+cnoremap <silent> <C-e> <End>
+cnoremap <silent> <C-p> <Up>
+cnoremap <silent> <C-n> <Down>
+cnoremap <silent> <C-b> <Left>
+cnoremap <silent> <C-f> <Right>
 
 " edit/save vimrc
-nmap <Leader>ve :e ~/.config/nvim/init.vim<CR>
-nmap <Leader>vs :source ~/.config/nvim/init.vim<CR>
+nmap <silent> <Leader>ve :e ~/.config/nvim/init.vim<CR>
+nmap <silent> <Leader>vs :source ~/.config/nvim/init.vim<CR>
 " }}}
 
 " PLUGIN SETTINGS {{{
 " vim-qf {{{
 let g:qf_mapping_ack_style = 1
 
-nmap <Leader>qq <Plug>(qf_qf_toggle)
-nmap [q <Plug>(qf_qf_previous)
-nmap ]q <Plug>(qf_qf_next)
+nmap <silent> <Leader>qq <Plug>(qf_qf_toggle)
+nmap <silent> [q :cprev<CR>
+nmap <silent> ]q :cnext<CR>
 
 augroup Qf
-    autocmd Filetype qf nnoremap <buffer> dd 0:Reject<CR>
-    autocmd Filetype qf nnoremap <buffer> <Backspace> <Nop>
+    autocmd Filetype qf nnoremap <silent> <buffer> dd 0:Reject<CR>
+    autocmd Filetype qf nnoremap <silent> <buffer> <Backspace> <Nop>
 augroup END
 " }}}
 
 " gina.vim {{{
-nnoremap <Leader>gs :Gina status<CR>
-nnoremap <Leader>gb :.Gina browse : --exact --scheme=blame<CR>
-nnoremap <Leader>gh :.Gina browse : --exact<CR>
-xnoremap <Leader>gh :Gina browse : --exact<CR>
-nnoremap <Leader>gl "+:.Gina browse : --yank --exact<CR>
-xnoremap <Leader>gl "+:Gina browse : --yank --exact<CR>
+nnoremap <silent> <Leader>gs :Gina status<CR>
+nnoremap <silent> <Leader>gb :.Gina browse : --exact --scheme=blame<CR>
+nnoremap <silent> <Leader>gh :.Gina browse : --exact<CR>
+xnoremap <silent> <Leader>gh :Gina browse : --exact<CR>
+nnoremap <silent> <Leader>gl "+:.Gina browse : --yank --exact<CR>
+xnoremap <silent> <Leader>gl "+:Gina browse : --yank --exact<CR>
 " }}}
 
 " vim-easy-align {{{
-nmap ga <Plug>(EasyAlign)
-xmap ga <Plug>(EasyAlign)
+nmap <silent> ga <Plug>(EasyAlign)
+xmap <silent> ga <Plug>(EasyAlign)
 " }}}
 
 " vim-grepper {{{
@@ -259,9 +256,9 @@ let g:grepper.switch = 0
 let g:grepper.tools = ['rg', 'git']
 let g:grepper.stop = 1000
 
-nnoremap \ :Grepper<CR>
-nmap gs <Plug>(GrepperOperator)
-xmap gs <Plug>(GrepperOperator)
+nnoremap <silent> \ :Grepper<CR>
+nmap <silent> gs <Plug>(GrepperOperator)
+xmap <silent> gs <Plug>(GrepperOperator)
 " }}}
 
 " ale {{{
@@ -315,7 +312,7 @@ let g:go_fold_enable = ['import']
 " }}}
 
 " vim-gutentags {{{
-" let g:gutentags_generate_on_new = 0
+let g:gutentags_generate_on_new = 0
 " }}}
 
 " fzf.vim {{{
@@ -346,8 +343,8 @@ endfunction
 " faster implementation of Files/GFiles that works outside of git repos
 command! Files call fzf#run(fzf#wrap({'source': 'git ls-files | uniq || fd -t file', 'options': ['--prompt', FZFPath()]}))
 
-nnoremap <Leader>\ :Lines<CR>
-nnoremap <bar> :Rg<CR>
+nnoremap <silent> <Leader>\ :Lines<CR>
+nnoremap <silent> <bar> :Rg<CR>
 " }}}
 
 " elm-vim {{{
@@ -360,12 +357,6 @@ let g:signify_vcs_list = ['git']
 
 " vim-ruby {{{
 let ruby_foldable_groups = 'def class module do case'
-" }}}
-
-" any-jump {{{
-let g:any_jump_disable_default_keybindings = 1
-let g:any_jump_references_enabled = 0
-let g:any_jump_references_only_for_current_filetype = 1
 " }}}
 " }}}
 
