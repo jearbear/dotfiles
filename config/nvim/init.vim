@@ -273,6 +273,7 @@ let g:ale_linters = {
             \ }
 let g:ale_fixers = {
             \ '*': ['remove_trailing_lines', 'trim_whitespace'],
+            \ 'haskell': [{_ -> { 'command': 'ormolu --mode inplace %t', 'read_temporary_file': 1 }}],
             \ 'rust': 'rustfmt',
             \ }
 let g:ale_fix_on_save = 1
