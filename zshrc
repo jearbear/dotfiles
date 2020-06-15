@@ -61,23 +61,17 @@ PROMPT='%1/ %F{magenta}%(1j.[%j] .)-%f '
 RPROMPT='%F{white}${vcs_info_msg_0_}%f'
 
 # aliases
+alias pn='ping www.google.com -c 1'
 alias reload='source ~/.zshrc && source ~/.zshenv'
-
-alias n='DISABLE_FILE_OPEN_ON_NAV=1 nnn -l -c 6'
-
+alias rgo='rg --no-heading --no-filename --no-line-number --only-matching'
+alias s='sudo'
+alias t='tmux new-session -A -s main'
 alias vi='nvim'
 alias vim='nvim'
-alias t='tmux new-session -A -s main'
-alias pn='ping www.google.com -c 1'
+alias vs='nvim -S Session.vim'
 
-alias s='sudo'
-
-alias rgo='rg --no-heading --no-filename --no-line-number --only-matching'
-
-# 1Password
-op-pass() {
-    op get item "$1" | jq '.details.fields[] | select(.designation=="password").value'
-}
+# directory shortcuts
+hash -d dots=$HOME/.dotfiles
 
 # fzf
 [ -r ~/.fzf.zsh ] && . ~/.fzf.zsh
@@ -103,7 +97,7 @@ __git-pick-branch() {
     zle reset-prompt
 }
 zle -N __git-pick-branch
-bindkey '^G^L' __git-pick-branch
+bindkey '^G^B' __git-pick-branch
 
 # source local configs
 [ -r ~/.zshrc.local ] && . ~/.zshrc.local

@@ -1,4 +1,5 @@
+*.vim
+.stack-work/
 tags
 tags.lock
 tags.temp
-.stack-work/
