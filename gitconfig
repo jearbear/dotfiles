@@ -11,7 +11,8 @@
     base = merge-base HEAD master
     head = rev-parse HEAD
 
-    new = !git co -b jerry-${1:-\"testing-$(rand)\"} ${2:-HEAD} && :
+    new = !git co -b jerry-${1?} ${2:-HEAD} && :
+    rand = !git co -b jerry-rand-$(rand) ${1:-HEAD} && :
     test = !git commit -am \"${1:-testing}\" && git push && :
     retest = !git recommit -a && git push -f
 
@@ -30,7 +31,6 @@
 
     co = checkout
     com = checkout master
-    compt = checkout master-passing-tests
     cob = !git co $(git pick-branch)
 
     get = !git fetch origin ${1?}:${1?} && git checkout ${1?} && :
@@ -86,9 +86,6 @@
 [merge]
     conflictstyle = diff3
     tool = fugitive
-
-[mergetool "fugitive"]
-    cmd = nvim -f -c "Gdiff" "$MERGED"
 
 [pager]
     diff = diff-so-fancy | less --tabs=4 -RFX

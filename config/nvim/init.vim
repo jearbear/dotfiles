@@ -158,12 +158,19 @@ set isfname-=:
 
 " auto read/write file on enter/jump
 set noswapfile autoread autowrite
-augroup AutoReadWrite
-    autocmd! FocusGained,BufEnter * checktime
+augroup AUTORW
+    autocmd!
+    autocmd FocusGained,BufEnter * checktime
 augroup END
 
 " default to bash filetype for ft=sh
 let g:is_bash = 1
+
+" automatically create parent directories as needed
+augroup MKDIR
+    autocmd!
+    autocmd BufWritePre,FileWritePre * silent! call mkdir(expand('<afile>:p:h'), 'p')
+augroup END
 " }}}
 
 " MAPPINGS {{{
@@ -200,7 +207,18 @@ nnoremap <silent> <Leader>s :s/<C-r><C-w>/
 xnoremap <silent> <Leader>s :s/
 
 " session management
-nnoremap <silent> <Leader>vs :mksession!<CR>
+nnoremap <silent> <Leader>vs :SaveSession<CR>
+function! s:SaveSession() abort
+    let branch = gina#component#repo#branch()
+    if branch ==# ''
+        mksession!
+    else
+        let _ = system('mkdir -p .git/sessions')
+        execute 'mksession! .git/sessions/' . branch . '.vim'
+    endif
+endfunction
+command! SaveSession call s:SaveSession()
+
 
 " gv for pasted text
 nnoremap <silent> gp `[v`]
@@ -333,11 +351,11 @@ let g:fzf_action = {
             \ }
 
 " helper methods {{{
-function! s:fzf_statusline() abort
+function! s:FzfStatusLine() abort
     setlocal statusline=%#StatusLine#\ »\ fzf
 endfunction
 augroup FZF
-    autocmd! User FzfStatusLine call <SID>fzf_statusline()
+    autocmd! User FzfStatusLine call <SID>FzfStatusLine()
 augroup END
 " }}}
 
@@ -367,6 +385,11 @@ augroup END
 augroup GOLANG
     autocmd!
     autocmd FileType go setlocal foldenable foldmethod=syntax
+augroup END
+
+augroup HASKELL
+    autocmd!
+    autocmd Filetype haskell setlocal shiftwidth=2 softtabstop=2
 augroup END
 
 augroup JSON

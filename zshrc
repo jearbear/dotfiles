@@ -68,7 +68,18 @@ alias s='sudo'
 alias t='tmux new-session -A -s main'
 alias vi='nvim'
 alias vim='nvim'
-alias vs='nvim -S Session.vim'
+
+# quickly load the relevant vim session
+alias vs='__vs'
+function __vs() {
+    if [ -d '.git' ] && [ -f ".git/sessions/$(git bname).vim" ]; then
+        nvim -S ".git/sessions/$(git bname).vim"
+    elif [ -f 'Session.vim' ]; then
+        nvim -S 'Session.vim'
+    else
+        nvim
+    fi;
+}
 
 # directory shortcuts
 hash -d dots=$HOME/.dotfiles
