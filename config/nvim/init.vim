@@ -209,12 +209,16 @@ xnoremap <silent> <Leader>s :s/
 " session management
 nnoremap <silent> <Leader>vs :SaveSession<CR>
 function! s:SaveSession() abort
-    let branch = gina#component#repo#branch()
-    if branch ==# ''
-        mksession!
+    if getcwd() =~ '/' . gina#component#repo#name() . '$'
+        let branch = gina#component#repo#branch()
+        if branch ==# ''
+            mksession!
+        else
+            let _ = system('mkdir -p .git/sessions')
+            execute 'mksession! .git/sessions/' . branch . '.vim'
+        endif
     else
-        let _ = system('mkdir -p .git/sessions')
-        execute 'mksession! .git/sessions/' . branch . '.vim'
+        echo 'SaveSession only works in the root .git directory'
     endif
 endfunction
 command! SaveSession call s:SaveSession()
