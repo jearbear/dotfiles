@@ -7,7 +7,7 @@ let maplocalleader = ' '
 call plug#begin('~/.config/nvim/plugged')
 
 " themes
-Plug 'rakr/vim-one'
+Plug 'chriskempson/base16-vim'
 
 " mappings
 Plug 'AndrewRadev/splitjoin.vim'
@@ -40,6 +40,7 @@ Plug 'mhinz/vim-grepper'
 
 " language support
 Plug 'ElmCast/elm-vim', { 'for': 'elm' }
+Plug 'MaxMEllon/vim-jsx-pretty', { 'for': 'javascript' }
 Plug 'cespare/vim-toml', { 'for': 'toml' }
 Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoInstallBinaries' }
 Plug 'godlygeek/tabular', { 'for': 'markdown' }
@@ -59,12 +60,10 @@ call plug#end()
 " }}}
 
 " COLOR SCHEME {{{
-set background=light
-set termguicolors
-
-let g:one_allow_italics = 1
-
-colorscheme one
+if filereadable(expand('~/.vimrc_background'))
+  let base16colorspace=256
+  source ~/.vimrc_background
+endif
 " }}}
 
 " VISUAL SETTINGS {{{
@@ -102,8 +101,8 @@ set wildmode=full,full
 set shortmess+=c
 set completeopt=menu,menuone
 
-hi StatusLine   gui=bold guifg=#838383 guibg=#ececec
-hi StatusLineNC gui=NONE guifg=DarkGray guibg=#ececec
+hi StatusLine cterm=bold   gui=bold
+hi Comment    cterm=italic gui=italic
 
 set statusline=\ \                              " padding
 set statusline+=%f                              " filename
