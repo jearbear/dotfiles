@@ -14,6 +14,7 @@ Plug 'AndrewRadev/splitjoin.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'wellle/targets.vim'
@@ -29,7 +30,8 @@ Plug 'romainl/vim-qf'
 Plug 'tpope/vim-eunuch'
 
 " completion
-Plug 'racer-rust/vim-racer', { 'for': 'rust' }
+Plug 'lifepillar/vim-mucomplete'
+" Plug 'racer-rust/vim-racer', { 'for': 'rust' }
 Plug 'rstacruz/vim-closer'
 Plug 'tpope/vim-endwise'
 
@@ -44,7 +46,7 @@ Plug 'MaxMEllon/vim-jsx-pretty', { 'for': 'javascript' }
 Plug 'cespare/vim-toml', { 'for': 'toml' }
 Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoInstallBinaries' }
 Plug 'godlygeek/tabular', { 'for': 'markdown' }
-Plug 'neovimhaskell/haskell-vim'
+Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
 Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
 Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
 Plug 'rodjek/vim-puppet', { 'for': 'puppet' }
@@ -61,7 +63,8 @@ call plug#end()
 
 " COLOR SCHEME {{{
 if filereadable(expand('~/.vimrc_background'))
-    let base16colorspace=256
+    set termguicolors
+    " let base16colorspace=256
     source ~/.vimrc_background
 endif
 " }}}
@@ -106,9 +109,12 @@ hi Comment    cterm=italic gui=italic
 
 set statusline=\ \                              " padding
 set statusline+=%f                              " filename
-set statusline+=\ %M%*                          " modified flag
+" set statusline+=\ %y%*                          " filetype
+set statusline+=\ %m%*                          " modified flag
 set statusline+=%=                              " center divide
 set statusline+=%{gina#component#repo#branch()} " vcs info
+set statusline+=\ \                             " padding
+set statusline+=\ \                             " padding
 set statusline+=\ \                             " padding
 set statusline+=%l/%L
 set statusline+=\ \                             " padding
@@ -186,6 +192,7 @@ nnoremap <silent> <Leader>[ :bprevious<CR>
 nnoremap <silent> <Leader>] :bnext<CR>
 nnoremap <silent> Q :bprevious <Bar> bdelete #<CR>
 nnoremap <silent> <Leader>; :BLines<CR>
+nnoremap <silent> <Leader>: :Lines<CR>
 
 " tab navigation
 nnoremap <silent> <Leader>{ :tabp<CR>
@@ -222,6 +229,8 @@ function! s:SaveSession() abort
 endfunction
 command! SaveSession call s:SaveSession()
 
+" search the beginning of a line only
+nnoremap <silent> ? /^\s*\zs
 
 " gv for pasted text
 nnoremap <silent> gp `[v`]
@@ -232,13 +241,10 @@ vnoremap <silent> <Leader>p "_dP
 " repeat macro on selection
 xnoremap <silent> . :norm.<CR>
 
-" emacs-like command mode navigation
-cnoremap <C-a> <Home>
-cnoremap <C-e> <End>
+" additional readline (emacs) mappings that vim-rsi doesn't cover
+inoremap <C-k> <C-o>C
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
-cnoremap <C-b> <Left>
-cnoremap <C-f> <Right>
 
 " this is never intentional
 cnoremap w' w
@@ -256,7 +262,7 @@ nmap <silent> <Leader>qq <Plug>(qf_qf_toggle)
 nmap <silent> [q :cprev<CR>
 nmap <silent> ]q :cnext<CR>
 
-augroup Qf
+augroup QF
     autocmd Filetype qf nnoremap <silent> <buffer> dd 0:Reject<CR>
     autocmd Filetype qf nnoremap <silent> <buffer> <Backspace> <Nop>
 augroup END
@@ -308,25 +314,23 @@ let g:ale_fix_on_save = 1
 
 let g:ale_rust_cargo_use_clippy = 1
 
+augroup LSP
+    autocmd!
+    autocmd Filetype rust nmap <silent> <buffer> <Leader>d <Plug>(ale_go_to_definition)
+    autocmd Filetype rust nmap <silent> <buffer> <Leader>h <Plug>(ale_hover)
+    autocmd Filetype rust setlocal omnifunc=ale#completion#OmniFunc
+augroup END
+
 nmap <silent> <C-k> <Plug>(ale_previous)
 nmap <silent> <C-j> <Plug>(ale_next)
 " }}}
 
 " targets.vim {{{
-" ranges on the cursor
-let g:targets_seekRanges = 'cc cr cb cB lc ac Ac'
-" range around the cursor, fully contained on the same line
-let g:targets_seekRanges .= ' lr'
-" range ahead of the cursor, fully contained on the same line
-let g:targets_seekRanges .= ' rr'
-" ranges around the cursor, multiline
-let g:targets_seekRanges .= ' lb ar ab lB Ar aB Ab AB'
-" ranges behind the cursor, fully contained on the same line
-let g:targets_seekRanges .= ' ll'
-" }}}
-
-" racer {{{
-let g:racer_experimental_completer = 1
+let g:targets_seekRanges = 'cc cr cb cB lc ac Ac'      " ranges on the cursor
+let g:targets_seekRanges .= ' lr'                      " range around the cursor, fully contained on the same line
+let g:targets_seekRanges .= ' rr'                      " range ahead of the cursor, fully contained on the same line
+let g:targets_seekRanges .= ' lb ar ab lB Ar aB Ab AB' " ranges around the cursor, multiline
+let g:targets_seekRanges .= ' ll'                      " ranges behind the cursor, fully contained on the same line
 " }}}
 
 " vim-slime {{{
@@ -344,6 +348,10 @@ let g:go_fold_enable = ['import']
 let g:gutentags_generate_on_new = 0
 " }}}
 
+" vim-rsi {{{
+let g:rsi_no_meta = 1
+" }}}
+
 " fzf.vim {{{
 let g:fzf_layout = { 'down': 10 }
 let g:fzf_history_dir = '~/.fzf-history'
@@ -353,17 +361,16 @@ let g:fzf_action = {
             \ 'ctrl-v': 'vsplit',
             \ }
 
-" helper methods {{{
 function! s:FzfStatusLine() abort
     setlocal statusline=%#StatusLine#\ »\ fzf
 endfunction
-augroup FZF
-    autocmd! User FzfStatusLine call <SID>FzfStatusLine()
-augroup END
-" }}}
 
 command! SmartFiles execute (len(system('git rev-parse')) ? ':Files' : ':GFiles')
 command! -bang Dotfiles call fzf#vim#files('~/.dotfiles', <bang>0)
+
+augroup FZF
+    autocmd! User FzfStatusLine call <SID>FzfStatusLine()
+augroup END
 " }}}
 
 " elm-vim {{{

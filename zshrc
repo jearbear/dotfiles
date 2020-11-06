@@ -65,11 +65,12 @@ BASE16_SHELL="$HOME/.config/base16-shell/"
 [ -n "$PS1" ] && [ -s "$BASE16_SHELL/profile_helper.sh" ] && eval "$("$BASE16_SHELL/profile_helper.sh")"
 
 # aliases
+alias n='nnn -CReor'
 alias pn='ping www.google.com -c 1'
 alias reload='source ~/.zshrc && source ~/.zshenv'
 alias rgo='rg --no-heading --no-filename --no-line-number --only-matching'
 alias s='sudo'
-alias t='tmux new-session -A -s main'
+alias t='TERM=xterm-256color tmux new-session -A -s main'
 alias vi='nvim'
 alias vim='nvim'
 
