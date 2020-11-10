@@ -37,7 +37,6 @@ Plug 'tpope/vim-endwise'
 
 " project navigation
 Plug 'justinmk/vim-dirvish'
-Plug 'ludovicchabant/vim-gutentags'
 Plug 'mhinz/vim-grepper'
 
 " language support
@@ -64,7 +63,6 @@ call plug#end()
 " COLOR SCHEME {{{
 if filereadable(expand('~/.vimrc_background'))
     set termguicolors
-    " let base16colorspace=256
     source ~/.vimrc_background
 endif
 " }}}
@@ -109,7 +107,6 @@ hi Comment    cterm=italic gui=italic
 
 set statusline=\ \                              " padding
 set statusline+=%f                              " filename
-" set statusline+=\ %y%*                          " filetype
 set statusline+=\ %m%*                          " modified flag
 set statusline+=%=                              " center divide
 set statusline+=%{gina#component#repo#branch()} " vcs info
@@ -185,6 +182,10 @@ map <silent> 0 ^
 " file navigation
 nnoremap <silent> <Leader>f :SmartFiles<CR>
 
+" more sane line navigation
+nnoremap j gj
+nnoremap k gk
+
 " buffer navigation
 nnoremap <silent> <Backspace> <C-^>
 nnoremap <silent> <Leader>l :Buffers<CR>
@@ -192,14 +193,12 @@ nnoremap <silent> <Leader>[ :bprevious<CR>
 nnoremap <silent> <Leader>] :bnext<CR>
 nnoremap <silent> Q :bprevious <Bar> bdelete #<CR>
 nnoremap <silent> <Leader>; :BLines<CR>
-nnoremap <silent> <Leader>: :Lines<CR>
 
 " tab navigation
 nnoremap <silent> <Leader>{ :tabp<CR>
 nnoremap <silent> <Leader>} :tabn<CR>
 
 " tag jumping/previewing
-nnoremap <silent> <Leader>j :Tags<CR>
 nnoremap <silent> <Leader>k :BTags<CR>
 
 " faster commenting
@@ -271,9 +270,9 @@ augroup END
 " gina.vim {{{
 nnoremap <silent> <Leader>gs :Gina status<CR>
 nnoremap <silent> <Leader>gb :.Gina browse : --exact --scheme=blame<CR>
-nnoremap <silent> <Leader>gh :.Gina browse : --exact<CR>
+nnoremap <silent> <Leader>gh :Gina browse : --exact<CR>
 xnoremap <silent> <Leader>gh :Gina browse : --exact<CR>
-nnoremap <silent> <Leader>gl "+:.Gina browse : --yank --exact<CR>
+nnoremap <silent> <Leader>gl "+:Gina browse : --yank --exact<CR>
 xnoremap <silent> <Leader>gl "+:Gina browse : --yank --exact<CR>
 " }}}
 
@@ -342,10 +341,6 @@ let g:slime_paste_file = tempname()
 let g:go_fmt_command = 'goimports'
 let g:go_list_type = 'quickfix'
 let g:go_fold_enable = ['import']
-" }}}
-
-" vim-gutentags {{{
-let g:gutentags_generate_on_new = 0
 " }}}
 
 " vim-rsi {{{
