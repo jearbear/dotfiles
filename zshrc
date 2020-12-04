@@ -77,8 +77,8 @@ alias vim='nvim'
 # quickly load the relevant vim session
 alias vs='__vs'
 function __vs() {
-    if [ -d '.git' ] && [ -f ".git/sessions/$(git bname).vim" ]; then
-        nvim -S ".git/sessions/$(git bname).vim"
+    if [ -d '.git' ] && [ -f ".git/sessions/$(git branch-name).vim" ]; then
+        nvim -S ".git/sessions/$(git branch-name).vim"
     elif [ -f 'Session.vim' ]; then
         nvim -S 'Session.vim'
     else

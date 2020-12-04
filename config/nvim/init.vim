@@ -1,3 +1,7 @@
+" ENV VARIABLES {{{
+let $VIMFILES=expand('~/.config/nvim')
+" }}}
+
 " LEADER KEYS {{{
 let mapleader = ' '
 let maplocalleader = ' '
@@ -24,6 +28,7 @@ Plug 'lambdalisue/gina.vim'
 Plug 'mhinz/vim-signify'
 
 " project management
+Plug 'alok/notational-fzf-vim'
 Plug 'dense-analysis/ale'
 Plug 'jpalardy/vim-slime'
 Plug 'romainl/vim-qf'
@@ -31,7 +36,6 @@ Plug 'tpope/vim-eunuch'
 
 " completion
 Plug 'lifepillar/vim-mucomplete'
-" Plug 'racer-rust/vim-racer', { 'for': 'rust' }
 Plug 'rstacruz/vim-closer'
 Plug 'tpope/vim-endwise'
 
@@ -54,7 +58,7 @@ Plug 'tpope/vim-ragtag', { 'for': 'html' }
 Plug 'vim-ruby/vim-ruby', { 'for': 'ruby' }
 
 " fzf
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
 call plug#end()
@@ -63,44 +67,51 @@ call plug#end()
 " COLOR SCHEME {{{
 if filereadable(expand('~/.vimrc_background'))
     set termguicolors
+    " let base16colorspace=256
     source ~/.vimrc_background
 endif
 " }}}
 
-" VISUAL SETTINGS {{{
-set hidden
+" VIM SETTINGS {{{
+set hidden                               " allow switching buffers without saving
 
-set expandtab shiftwidth=4 softtabstop=4
+set noruler                              " disable the default buffer ruler
 
-set cursorline
-set scrolljump=-50
+set expandtab shiftwidth=4 softtabstop=4 " use 4 spaces for indentation
 
-" more useful <C-G> with line number
-set noruler
+set cursorline                           " highlight the line the cursor is on
+" set scrolloff=5                          " ensure 5 lines of padding between the cursor and the edges of the window
 
-set nojoinspaces
+set nojoinspaces                         " only insert one space when joining lines
+set wrap linebreak                       " wrap lines and do so on word boundaries only
+set breakindent showbreak=..             " indent wrapped lines with `..`
 
-set wrap linebreak
-set breakindent showbreak=..
+set lazyredraw                           " don't redraw the screen while executing macros and registers
 
-set nofoldenable
-set conceallevel=2 concealcursor="nc"
+set nofoldenable                         " default to open folds
+set conceallevel=2                       " hide concealed text
+set concealcursor=nc                     " conceal text on the line in normal and command mode
 
-set inccommand=nosplit
-set incsearch nohlsearch
-set ignorecase smartcase
+set inccommand=nosplit                   " display incremental results of substitution commands in the buffer
+set incsearch nohlsearch                 " incrementally search and don't highlight when done
+set ignorecase smartcase                 " only care about case when searching if it includes capital letters
+set nowrapscan                           " don't wrap around when searching
 
-" prefer files with suffixes (deprioritize binaries)
-set suffixes+=,,
+set gdefault                             " default to global substitution
+
+set splitbelow splitright                " default to opening splits below and to the right
+
+set virtualedit=block                    " allow the cursor to move off the end of the line in visual block mode
+
+set suffixes+=,,                         " during completion, if prefixes are the same, prefer files with suffixes
 
 set wildignore+=*.pyc,*.swp,*.lock,*.min.js,*.min.css,tags
 set wildignore+=*/tmp/*,*/target/*,*/venv/*,*/vendor/*,*/elm-stuff/*,*/bazel*/*,*/build/*
 set wildmenu wildignorecase
 set wildmode=full,full
 
-" no completion messages
-set shortmess+=c
-set completeopt=menu,menuone
+set shortmess+=c             " don't show messages when performing completion
+set completeopt=menu,menuone " when completing, show a menu even if there is only one result
 
 hi StatusLine cterm=bold   gui=bold
 hi Comment    cterm=italic gui=italic
@@ -144,16 +155,18 @@ endfunction
 set tabline=%!Tabline()
 " }}}
 
-" }}}
-
-" VIM SETTINGS {{{
 set spelllang=en
 set dictionary+=/usr/share/dict/words
 
-silent !mkdir ~/.config/nvim/backup// > /dev/null 2>&1
-silent !mkdir ~/.config/nvim/swp// > /dev/null 2>&1
-set backupdir=~/.config/nvim/backup//
-set directory=~/.config/nvim/swp//
+" ensure that these directories exist if they don't already
+silent !mkdir $VIMFILES/backup// > /dev/null 2>&1
+silent !mkdir $VIMFILES/swp// > /dev/null 2>&1
+silent !mkdir $VIMFILES/undo// > /dev/null 2>&1
+
+" relegate backup, swp, and undo files to their own directory
+set backupdir=$VIMFILES/backup//
+set directory=$VIMFILES/swp//
+set undofile undodir=$VIMFILES/undo//
 
 " allow jumping to filename:linenum
 set isfname-=:
@@ -168,7 +181,7 @@ augroup END
 " default to bash filetype for ft=sh
 let g:is_bash = 1
 
-" automatically create parent directories as needed
+" automatically create parent directories as needed when saving files
 augroup MKDIR
     autocmd!
     autocmd BufWritePre,FileWritePre * silent! call mkdir(expand('<afile>:p:h'), 'p')
@@ -178,6 +191,9 @@ augroup END
 " MAPPINGS {{{
 map <silent> Y y$
 map <silent> 0 ^
+
+nnoremap <C-d> 3<C-d> " `:set scroll...` doesn't seem to persist so we rebind the defaults instead
+nnoremap <C-u> 3<C-u>
 
 " file navigation
 nnoremap <silent> <Leader>f :SmartFiles<CR>
@@ -189,14 +205,14 @@ nnoremap k gk
 " buffer navigation
 nnoremap <silent> <Backspace> <C-^>
 nnoremap <silent> <Leader>l :Buffers<CR>
-nnoremap <silent> <Leader>[ :bprevious<CR>
-nnoremap <silent> <Leader>] :bnext<CR>
+nnoremap <silent> <Leader>{ :bprevious<CR>
+nnoremap <silent> <Leader>} :bnext<CR>
 nnoremap <silent> Q :bprevious <Bar> bdelete #<CR>
 nnoremap <silent> <Leader>; :BLines<CR>
 
 " tab navigation
-nnoremap <silent> <Leader>{ :tabp<CR>
-nnoremap <silent> <Leader>} :tabn<CR>
+nnoremap <silent> <Leader>[ :tabp<CR>
+nnoremap <silent> <Leader>] :tabn<CR>
 
 " tag jumping/previewing
 nnoremap <silent> <Leader>k :BTags<CR>
@@ -227,9 +243,6 @@ function! s:SaveSession() abort
     endif
 endfunction
 command! SaveSession call s:SaveSession()
-
-" search the beginning of a line only
-nnoremap <silent> ? /^\s*\zs
 
 " gv for pasted text
 nnoremap <silent> gp `[v`]
@@ -286,7 +299,7 @@ runtime plugin/grepper.vim
 let g:grepper.prompt_text = '$t> '
 let g:grepper.switch = 1
 let g:grepper.tools = ['rg']
-let g:grepper.stop = 1000
+let g:grepper.stop = 500
 
 nnoremap <silent> \ :Grepper<CR>
 nnoremap <silent> <bar> :Grepper -buffers<CR>
@@ -355,6 +368,7 @@ let g:fzf_action = {
             \ 'ctrl-s': 'split',
             \ 'ctrl-v': 'vsplit',
             \ }
+let g:fzf_preview_window = []
 
 function! s:FzfStatusLine() abort
     setlocal statusline=%#StatusLine#\ »\ fzf
@@ -366,6 +380,10 @@ command! -bang Dotfiles call fzf#vim#files('~/.dotfiles', <bang>0)
 augroup FZF
     autocmd! User FzfStatusLine call <SID>FzfStatusLine()
 augroup END
+
+" insert mode completions
+imap <c-x><c-k> <plug>(fzf-complete-word)
+inoremap <expr> <c-x><c-f> fzf#vim#complete#path('fd')
 " }}}
 
 " elm-vim {{{
@@ -376,9 +394,16 @@ let g:elm_setup_keybindings = 0
 let g:signify_vcs_list = ['git']
 " }}}
 
+" notational-fzf-vim {{{
+let g:nv_search_paths = ['~/notes']
+
+nnoremap <Leader>j :NV!<CR>
+" }}}
+
 " vim-ruby {{{
 let ruby_foldable_groups = 'def class module do case'
 " }}}
+
 " }}}
 
 " LANGUAGE AUTO GROUPS {{{

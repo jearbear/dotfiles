@@ -1,5 +1,9 @@
 ; vim: set filetype=gitconfig:
 [alias]
+    ; `&& :` is appended to aliases to stop them from using extra arguments
+    ; `set -e; FOO=$(...)` is used to terminate when <C-c> is pressed in FZF
+    ; `xargs` will trim for you if you don't provide other arguments
+
     c = clone --single-branch
     b = branch
     s = status
@@ -9,29 +13,30 @@
     db = !git diff $(git base)
 
     base = merge-base HEAD master
+    branch-name = rev-parse --abbrev-ref HEAD
     head = rev-parse HEAD
 
     new = !git co -b jerry-${1?} ${2:-HEAD} && :
-    rand = !git co -b jerry-rand-$(rand) ${1:-HEAD} && :
-    test = !git commit -am \"${1:-testing}\" && git push && :
-    retest = !git recommit -a && git push -f
+    rand = !git co -b jerry-rand-$(shuf -n 1 ~/.word_list.txt) ${1:-HEAD} && :
 
-    bname = rev-parse --abbrev-ref HEAD
-    backup = !git co -b $(git bname)-backup && git co - && :
-    cleanup = !git branch -D $(git pick-branches-wo-master)
+    save = !git add -A && git commit -m \"${1:-$(shuf -n 1 ~/.word_list.txt)}\" && git push && :
+    resave = !git add -A && git recommit && git push -f && :
 
-    l = log --oneline --graph master..
-    ls = log --oneline --graph --since='1 month ago'
-    lsa = log --oneline --graph
+    backup = !git co -b $(git branch-name)-backup && git co - && :
+    cleanup = !"f() { set -e; BRANCHES=$(git pick-branches-wo-master); git branch -D $BRANCHES; }; f"
 
-    ri = !git rebase --interactive $(git pick-branch)
+    l = log --oneline master..
+    ls = log --oneline --graph --since='1 month ago' --simplify-by-decoration --branches
+    lsa = log --oneline --graph --simplify-by-decoration --branches
+
+    ri = !"f() { set -e; BRANCH=$(git pick-branch); git rebase --interactive $BRANCH; }; f"
     rim = rebase --interactive master
-    rib = !git rebase --interactive $(git base)
-    rom = !git fetch origin master:master && git rebase master
+    rib = !git rebase --interactive $(git base) && :
+    rom = !git fetch origin master:master && git rebase master && :
 
     co = checkout
     com = checkout master
-    cob = !git co $(git pick-branch)
+    cob = !"f() { set -e; BRANCH=$(git pick-branch); git co $BRANCH; }; f"
 
     get = !git fetch origin ${1?}:${1?} && git checkout ${1?} && :
 
@@ -41,17 +46,20 @@
     recommit = commit --amend --no-edit
     uncommit = reset --soft HEAD^
 
-    rev = !git revert $(git pick-commit)
-    fix = !git commit --fixup $(git pick-commit)
+    rev = !"f() { set -e; COMMIT=$(git pick-commit); git revert $COMMIT; }; f"
+    fix = !"f() { set -e; COMMIT=$(git pick-commit); git commit --fixup $COMMIT; }; f"
 
     stow = !"if [[ $(git log -1 --format=%B) == \"stowed\" ]]; then git commit -a --amend --no-edit; else git commit -a -m stowed; fi"
     unstow = !"if [[ $(git log -1 --format=%B) == \"stowed\" ]]; then git reset @^; else echo \"Nothing to unstow\"; fi"
 
-    pick-commit = !"git log --oneline master..HEAD --color=always | fzf --reverse --ansi --preview='git show --color=always {1} --stat' --preview-window='70%' | cut -f 1 -d ' ' | tr -d '\\n'"
-    pick-branch = !"git branch | rg -v '^\\*' | awk '{$1=$1};1' | fzf --reverse --preview='git log --oneline master..{} --color=always' --preview-window='70%' | tr -d '\\n'"
-    pick-branch-wo-master = !"git branch | rg -v '^\\*' | rg -v 'master' | awk '{$1=$1};1' | fzf --reverse --preview='git log --oneline master..{} --color=always' --preview-window='70%' | tr -d '\\n'"
-    pick-branches = !"git branch | rg -v '^\\*' | awk '{$1=$1};1' | fzf --multi --reverse --preview='git log --oneline master..{} --color=always' --preview-window='70%' | tr '\\n' ' '"
-    pick-branches-wo-master = !"git branch | rg -v '^\\*' | rg -v 'master' | awk '{$1=$1};1' | fzf --multi --reverse --preview='git log --oneline master..{} --color=always' --preview-window='70%' | tr '\\n' ' '"
+    fzf-commit = !"f() { fzf --reverse --ansi --no-info --multi --preview='git show --color=always {1} --stat' --preview-window='up:70%:sharp'; }; f"
+    fzf-branch = !"f() { fzf --reverse --ansi --no-info --multi --preview='git log --oneline --color master..{1}' --preview-window='up:70%:sharp'; }; f"
+
+    pick-commit = !"f() { set -euo pipefail; git log --oneline master..HEAD --color | git fzf-commit | cut -f 1 -d ' ' | head -n 1 | tr -d '\\n'; }; f"
+    pick-branch = !"f() { set -euo pipefail; git branch | rg -v '^\\*' | awk '{$1=$1};1' | git fzf-branch | cut -f 1 -d ' ' | head -n 1 | tr -d '\\n'; }; f"
+    pick-branch-wo-master = !"f() { set -euo pipefail; git branch | rg -v '^\\*' | rg -v 'master' | awk '{$1=$1};1' | git fzf-branch | head -n 1 | tr -d '\\n'; }; f"
+    pick-branches = !"f() { set -euo pipefail; git branch | rg -v '^\\*' | awk '{$1=$1};1' | git fzf-branch | tr '\\n' ' '; }; f"
+    pick-branches-wo-master = !"f() { set -euo pipefail; git branch | rg -v '^\\*' | rg -v 'master' | awk '{$1=$1};1' | git fzf-branch | tr '\\n' ' '; }; f"
 
 [commit]
     gpgSign = false

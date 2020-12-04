@@ -14,8 +14,6 @@ export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.npm-packages/bin:$PATH"
 
-export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
-
 export BAT_THEME='base16' # TODO: Update this to 'base16-256' when bat is updated
 
 # system-specific
