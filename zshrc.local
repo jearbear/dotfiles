@@ -6,6 +6,7 @@ alias sc='sudo systemctl'
 alias scu='systemctl --user'
 
 alias pac='sudo pacman'
+alias async='aur sync -cur'
 
 alias reboot='sudo reboot'
 alias shutdown='sudo shutdown -h now'
