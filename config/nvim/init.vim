@@ -90,7 +90,6 @@ set lazyredraw                           " don't redraw the screen while executi
 
 set nofoldenable                         " default to open folds
 set conceallevel=2                       " hide concealed text
-set concealcursor=nc                     " conceal text on the line in normal and command mode
 
 set inccommand=nosplit                   " display incremental results of substitution commands in the buffer
 set incsearch nohlsearch                 " incrementally search and don't highlight when done

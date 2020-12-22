@@ -10,19 +10,20 @@
 
     d = diff
     ds = diff --staged HEAD
-    db = !git diff $(git base)
+    db = !git diff $(git base ${1:-HEAD}) ${1:-HEAD} && :
 
-    base = merge-base HEAD master
+    base = !git merge-base ${1:-HEAD} master && :
     branch-name = rev-parse --abbrev-ref HEAD
     head = rev-parse HEAD
 
     new = !git co -b jerry-${1?} ${2:-HEAD} && :
     rand = !git co -b jerry-rand-$(shuf -n 1 ~/.word_list.txt) ${1:-HEAD} && :
+    test = !git co -b $(git branch-name)-test && :
+    backup = !git co -b $(git branch-name)-backup && git co - && :
 
     save = !git add -A && git commit -m \"${1:-$(shuf -n 1 ~/.word_list.txt)}\" && git push && :
     resave = !git add -A && git recommit && git push -f && :
 
-    backup = !git co -b $(git branch-name)-backup && git co - && :
     cleanup = !"f() { set -e; BRANCHES=$(git pick-branches-wo-master); git branch -D $BRANCHES; }; f"
 
     l = log --oneline master..
@@ -49,8 +50,8 @@
     rev = !"f() { set -e; COMMIT=$(git pick-commit); git revert $COMMIT; }; f"
     fix = !"f() { set -e; COMMIT=$(git pick-commit); git commit --fixup $COMMIT; }; f"
 
-    stow = !"if [[ $(git log -1 --format=%B) == \"stowed\" ]]; then git commit -a --amend --no-edit; else git commit -a -m stowed; fi"
-    unstow = !"if [[ $(git log -1 --format=%B) == \"stowed\" ]]; then git reset @^; else echo \"Nothing to unstow\"; fi"
+    stow = !"if [[ $(git log -1 --format=%B) == '[STOWED]' ]]; then git commit -a --amend --no-edit; else git add -A && git commit -m '[STOWED]'; fi"
+    unstow = !"if [[ $(git log -1 --format=%B) == '[STOWED]' ]]; then git reset @^; else echo \"Nothing to unstow\"; fi"
 
     fzf-commit = !"f() { fzf --reverse --ansi --no-info --multi --preview='git show --color=always {1} --stat' --preview-window='up:70%:sharp'; }; f"
     fzf-branch = !"f() { fzf --reverse --ansi --no-info --multi --preview='git log --oneline --color master..{1}' --preview-window='up:70%:sharp'; }; f"
@@ -60,6 +61,8 @@
     pick-branch-wo-master = !"f() { set -euo pipefail; git branch | rg -v '^\\*' | rg -v 'master' | awk '{$1=$1};1' | git fzf-branch | head -n 1 | tr -d '\\n'; }; f"
     pick-branches = !"f() { set -euo pipefail; git branch | rg -v '^\\*' | awk '{$1=$1};1' | git fzf-branch | tr '\\n' ' '; }; f"
     pick-branches-wo-master = !"f() { set -euo pipefail; git branch | rg -v '^\\*' | rg -v 'master' | awk '{$1=$1};1' | git fzf-branch | tr '\\n' ' '; }; f"
+
+    ci = !hub ci-status -v ${1:-HEAD} && :
 
 [commit]
     gpgSign = false
