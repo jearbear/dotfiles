@@ -47,6 +47,7 @@ Plug 'mhinz/vim-grepper'
 Plug 'ElmCast/elm-vim', { 'for': 'elm' }
 Plug 'MaxMEllon/vim-jsx-pretty', { 'for': 'javascript' }
 Plug 'cespare/vim-toml', { 'for': 'toml' }
+Plug 'elixir-editors/vim-elixir'
 Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoInstallBinaries' }
 Plug 'godlygeek/tabular', { 'for': 'markdown' }
 Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
@@ -67,7 +68,6 @@ call plug#end()
 " COLOR SCHEME {{{
 if filereadable(expand('~/.vimrc_background'))
     set termguicolors
-    " let base16colorspace=256
     source ~/.vimrc_background
 endif
 " }}}
@@ -80,7 +80,7 @@ set noruler                              " disable the default buffer ruler
 set expandtab shiftwidth=4 softtabstop=4 " use 4 spaces for indentation
 
 set cursorline                           " highlight the line the cursor is on
-" set scrolloff=5                          " ensure 5 lines of padding between the cursor and the edges of the window
+set scrolloff=999                        " ensure 5 lines of padding between the cursor and the edges of the window
 
 set nojoinspaces                         " only insert one space when joining lines
 set wrap linebreak                       " wrap lines and do so on word boundaries only
@@ -301,6 +301,7 @@ let g:grepper.tools = ['rg']
 let g:grepper.stop = 500
 
 nnoremap <silent> \ :Grepper<CR>
+nnoremap <silent> <Leader>\ :Grepper -buffer<CR>
 nnoremap <silent> <bar> :Grepper -buffers<CR>
 nmap <silent> gs <Plug>(GrepperOperator)
 xmap <silent> gs <Plug>(GrepperOperator)
@@ -318,10 +319,14 @@ let g:ale_linters = {
             \ }
 let g:ale_fixers = {
             \ '*': ['remove_trailing_lines', 'trim_whitespace'],
+            \ 'elixir': ['mix_format'],
             \ 'haskell': [{_ -> { 'command': 'ormolu --mode inplace %t', 'read_temporary_file': 1 }}],
+            \ 'python': ['black'],
             \ 'rust': 'rustfmt',
             \ }
 let g:ale_fix_on_save = 1
+
+let g:ale_python_auto_pipenv = 1
 
 let g:ale_rust_cargo_use_clippy = 1
 
@@ -389,10 +394,6 @@ inoremap <expr> <c-x><c-f> fzf#vim#complete#path('fd')
 let g:elm_setup_keybindings = 0
 " }}}
 
-" vim-signify {{{
-let g:signify_vcs_list = ['git']
-" }}}
-
 " notational-fzf-vim {{{
 let g:nv_search_paths = ['~/notes']
 
@@ -401,6 +402,10 @@ nnoremap <Leader>j :NV!<CR>
 
 " vim-ruby {{{
 let ruby_foldable_groups = 'def class module do case'
+" }}}
+
+" vim-signify {{{
+let g:signify_vcs_list = ['git']
 " }}}
 
 " }}}

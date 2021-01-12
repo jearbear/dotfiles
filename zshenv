@@ -13,6 +13,7 @@ export PATH="$HOME/.bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.npm-packages/bin:$PATH"
+export PATH="$HOME/.poetry/bin:$PATH"
 
 export BAT_THEME='base16' # TODO: Update this to 'base16-256' when bat is updated
 

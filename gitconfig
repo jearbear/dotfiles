@@ -10,7 +10,10 @@
 
     d = diff
     ds = diff --staged HEAD
-    db = !git diff $(git base ${1:-HEAD}) ${1:-HEAD} && :
+    db = !git diff $(git base ${1:-HEAD}) ${1} && :
+
+    dt = difftool
+    dtb = !git difftool $(git base ${1:-HEAD}) ${1:-HEAD} && :
 
     base = !git merge-base ${1:-HEAD} master && :
     branch-name = rev-parse --abbrev-ref HEAD
@@ -34,6 +37,8 @@
     rim = rebase --interactive master
     rib = !git rebase --interactive $(git base) && :
     rom = !git fetch origin master:master && git rebase master && :
+
+    bmerge = !"f() { set -e; BRANCH=$(git pick-branch); git merge --squash $BRANCH && git commit -m \"[MERGED] $BRANCH\"; }; f"
 
     co = checkout
     com = checkout master
@@ -93,10 +98,23 @@
 [diff]
     algorithm = patience
     indentheuristic = true
+    tool = nvimdiff
+
+[difftool]
+    prompt = true
+
+[difftool "nvimdiff"]
+    cmd = nvim -d $LOCAL $MERGED -c 'wincmd w'
 
 [merge]
     conflictstyle = diff3
-    tool = fugitive
+    tool = nvimdiff
+
+[mergetool]
+    prompt = true
+
+[mergetool "nvimdiff"]
+    cmd = nvim -d $LOCAL $REMOTE $MERGED -c 'wincmd w' -c 'wincmd J'
 
 [pager]
     diff = diff-so-fancy | less --tabs=4 -RFX

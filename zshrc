@@ -53,12 +53,12 @@ zstyle ':vcs_info:*' enable git
 precmd() {
     vcs_info
 }
-zstyle ':vcs_info:git*' formats "- %b -"
+zstyle ':vcs_info:git*' formats "%F{magenta}// %F{white}%b"
 setopt prompt_subst
 
 # prompt
-PROMPT='%1/ %F{magenta}%(1j.[%j] .)-%f '
-RPROMPT='%F{white}${vcs_info_msg_0_}%f'
+PROMPT='%1/ %F{magenta}%(1j.[%j] .)//%f '
+RPROMPT='${vcs_info_msg_0_}%f'
 
 # base16 shell
 BASE16_SHELL="$HOME/.config/base16-shell/"
@@ -71,7 +71,7 @@ alias reload='source ~/.zshrc && source ~/.zshenv'
 alias rgo='rg --no-heading --no-filename --no-line-number --only-matching'
 alias rm='rm -i'
 alias s='sudo'
-alias t='TERM=xterm-256color tmux new-session -A -s main'
+alias t='tmux new-session -A -s main'
 alias vi='nvim'
 alias vim='nvim'
 
