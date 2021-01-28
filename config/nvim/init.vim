@@ -23,6 +23,11 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'wellle/targets.vim'
 
+" copy pasta
+Plug 'svermeulen/vim-cutlass'
+Plug 'svermeulen/vim-yoink'
+Plug 'svermeulen/vim-subversive'
+
 " version control
 Plug 'lambdalisue/gina.vim'
 Plug 'mhinz/vim-signify'
@@ -61,6 +66,9 @@ Plug 'vim-ruby/vim-ruby', { 'for': 'ruby' }
 " fzf
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
+
+" writing
+Plug 'junegunn/goyo.vim'
 
 call plug#end()
 " }}}
@@ -208,6 +216,7 @@ nnoremap <silent> <Leader>{ :bprevious<CR>
 nnoremap <silent> <Leader>} :bnext<CR>
 nnoremap <silent> Q :bprevious <Bar> bdelete #<CR>
 nnoremap <silent> <Leader>; :BLines<CR>
+nnoremap <silent> <Leader>: :Lines<CR>
 
 " tab navigation
 nnoremap <silent> <Leader>[ :tabp<CR>
@@ -243,11 +252,10 @@ function! s:SaveSession() abort
 endfunction
 command! SaveSession call s:SaveSession()
 
-" gv for pasted text
-nnoremap <silent> gp `[v`]
-
-" replace selected text without yanking it
-vnoremap <silent> <Leader>p "_dP
+" vim-cutlass pipes all deletes to the blackhole register, restore some of
+" them under a new mapping
+nnoremap <Leader>d d
+xnoremap <Leader>d d
 
 " repeat macro on selection
 xnoremap <silent> . :norm.<CR>
@@ -386,8 +394,8 @@ augroup FZF
 augroup END
 
 " insert mode completions
-imap <c-x><c-k> <plug>(fzf-complete-word)
-inoremap <expr> <c-x><c-f> fzf#vim#complete#path('fd')
+inoremap <expr> <c-x><c-k> fzf#vim#complete#word()
+inoremap <expr> <c-x><c-l> fzf#vim#complete#line()
 " }}}
 
 " elm-vim {{{
@@ -406,6 +414,28 @@ let ruby_foldable_groups = 'def class module do case'
 
 " vim-signify {{{
 let g:signify_vcs_list = ['git']
+" }}}
+
+" vim-yoink {{{
+nmap <c-n> <plug>(YoinkPostPasteSwapBack)
+nmap <c-p> <plug>(YoinkPostPasteSwapForward)
+
+nmap p <plug>(YoinkPaste_p)
+nmap P <plug>(YoinkPaste_P)
+
+nmap <c-=> <plug>(YoinkPostPasteToggleFormat)
+
+nmap y <plug>(YoinkYankPreserveCursorPosition)
+xmap y <plug>(YoinkYankPreserveCursorPosition)
+
+let g:yoinkIncludeDeleteOperations = 1
+let g:yoinkAutoFormatPaste = 1
+" }}}
+
+" vim-subversive {{{
+nmap s <plug>(SubversiveSubstitute)
+nmap ss <plug>(SubversiveSubstituteLine)
+nmap S <plug>(SubversiveSubstituteToEndOfLine)
 " }}}
 
 " }}}
