@@ -44,7 +44,7 @@
     com = checkout master
     cob = !"f() { set -e; BRANCH=$(git pick-branch); git co $BRANCH; }; f"
 
-    get = !git fetch origin ${1?}:${1?} && git checkout ${1?} && :
+    get = !git fetch origin ${1?}:jerry-${1?} && git checkout jerry-${1?} && :
 
     update = fetch origin master:master
 
@@ -67,7 +67,8 @@
     pick-branches = !"f() { set -euo pipefail; git branch | rg -v '^\\*' | awk '{$1=$1};1' | git fzf-branch | tr '\\n' ' '; }; f"
     pick-branches-wo-master = !"f() { set -euo pipefail; git branch | rg -v '^\\*' | rg -v 'master' | awk '{$1=$1};1' | git fzf-branch | tr '\\n' ' '; }; f"
 
-    ci = !hub ci-status -v ${1:-HEAD} && :
+    ci = !hub ci-status --color -v ${1:-HEAD} && :
+    watch-ci = !watch --color -n 30 git ci && :
 
 [commit]
     gpgSign = false
@@ -116,9 +117,6 @@
 [mergetool "nvimdiff"]
     cmd = nvim -d $LOCAL $REMOTE $MERGED -c 'wincmd w' -c 'wincmd J'
 
-[pager]
-    diff = diff-so-fancy | less --tabs=4 -RFX
-
 [pull]
     ff = only
     rebase = true
@@ -138,6 +136,29 @@
 
 [core]
     excludesfile = ~/.gitignore
+    pager = delta
+
+[interactive]
+    ; make interactive commands such as `git add --patch` use delta to colorize
+    diffFilter = delta --color-only
+
+[delta]
+    minus-style = red bold
+    minus-emph-style = bold underline red
+    minus-non-emph-style = syntax
+    minus-empty-line-marker-style = normal
+    plus-style = green bold
+    plus-emph-style = bold underline green
+    plus-non-emph-style = syntax
+    plus-empty-line-marker-style = normal
+
+    commit-decoration-style = bold yellow box ul
+    file-style = bold yellow ul
+
+    line-numbers-minus-style = red
+    line-numbers-plus-style = green
+
+    features = side-by-side
 
 [url "git@github.com:"]
     insteadOf = gh:

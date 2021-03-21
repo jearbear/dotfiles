@@ -24,7 +24,7 @@ Plug 'tpope/vim-unimpaired'
 Plug 'wellle/targets.vim'
 
 " copy pasta
-Plug 'svermeulen/vim-cutlass'
+" Plug 'svermeulen/vim-cutlass'
 Plug 'svermeulen/vim-yoink'
 Plug 'svermeulen/vim-subversive'
 
@@ -67,8 +67,12 @@ Plug 'vim-ruby/vim-ruby', { 'for': 'ruby' }
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
-" writing
-Plug 'junegunn/goyo.vim'
+" trying out
+Plug 'Yilin-Yang/vim-markbar'
+Plug 'mbbill/undotree'
+Plug 'preservim/tagbar'
+Plug 'tpope/vim-obsession'
+Plug 'Asheq/close-buffers.vim'
 
 call plug#end()
 " }}}
@@ -131,7 +135,7 @@ set statusline+=%{gina#component#repo#branch()} " vcs info
 set statusline+=\ \                             " padding
 set statusline+=\ \                             " padding
 set statusline+=\ \                             " padding
-set statusline+=%l/%L
+set statusline+=%l/%L                           " line number / number of lines
 set statusline+=\ \                             " padding
 
 " nicer tabline {{{
@@ -193,6 +197,13 @@ augroup MKDIR
     autocmd!
     autocmd BufWritePre,FileWritePre * silent! call mkdir(expand('<afile>:p:h'), 'p')
 augroup END
+
+" turn search highlighting on while searching
+augroup SEARCH
+    autocmd!
+    autocmd CmdlineEnter /,\? :set hlsearch
+    autocmd CmdlineLeave /,\? :set nohlsearch
+augroup END
 " }}}
 
 " MAPPINGS {{{
@@ -205,22 +216,22 @@ nnoremap <C-u> 3<C-u>
 " file navigation
 nnoremap <silent> <Leader>f :SmartFiles<CR>
 
-" more sane line navigation
+" navigate by visual lines when wrapped
 nnoremap j gj
 nnoremap k gk
 
 " buffer navigation
 nnoremap <silent> <Backspace> <C-^>
 nnoremap <silent> <Leader>l :Buffers<CR>
-nnoremap <silent> <Leader>{ :bprevious<CR>
-nnoremap <silent> <Leader>} :bnext<CR>
-nnoremap <silent> Q :bprevious <Bar> bdelete #<CR>
+nnoremap <silent> <Leader>[ :bprevious<CR>
+nnoremap <silent> <Leader>] :bnext<CR>
 nnoremap <silent> <Leader>; :BLines<CR>
 nnoremap <silent> <Leader>: :Lines<CR>
+nnoremap <silent> Q :bprevious <Bar> bdelete #<CR>
 
 " tab navigation
-nnoremap <silent> <Leader>[ :tabp<CR>
-nnoremap <silent> <Leader>] :tabn<CR>
+nnoremap <silent> <Leader>{ :tabp<CR>
+nnoremap <silent> <Leader>} :tabn<CR>
 
 " tag jumping/previewing
 nnoremap <silent> <Leader>k :BTags<CR>
@@ -232,19 +243,22 @@ vmap <silent> <Leader>/ gc
 " faster renaming
 nnoremap <silent> <Leader>r *``cgn
 nnoremap <silent> <Leader>gr g*``cgn
-nnoremap <silent> <Leader>s :s/<C-r><C-w>/
-xnoremap <silent> <Leader>s :s/
 
-" session management
+" these intentionally omit <silent>
+nnoremap <Leader>s :s/<C-r><C-w>/
+xnoremap <Leader>s :s/
+nnoremap <Leader>S :%s/<C-r><C-w>/
+
+" save a session under the current git branch name
 nnoremap <silent> <Leader>vs :SaveSession<CR>
 function! s:SaveSession() abort
     if getcwd() =~ '/' . gina#component#repo#name() . '$'
         let branch = gina#component#repo#branch()
         if branch ==# ''
-            mksession!
+            Obsession
         else
             let _ = system('mkdir -p .git/sessions')
-            execute 'mksession! .git/sessions/' . branch . '.vim'
+            execute 'Obsession .git/sessions/' . branch . '.vim'
         endif
     else
         echo 'SaveSession only works in the root .git directory'
@@ -252,16 +266,15 @@ function! s:SaveSession() abort
 endfunction
 command! SaveSession call s:SaveSession()
 
-" vim-cutlass pipes all deletes to the blackhole register, restore some of
-" them under a new mapping
-nnoremap <Leader>d d
-xnoremap <Leader>d d
+" delete text without yanking
+nnoremap <Leader>d "_d
+xnoremap <Leader>d "_d
 
 " repeat macro on selection
 xnoremap <silent> . :norm.<CR>
 
 " additional readline (emacs) mappings that vim-rsi doesn't cover
-inoremap <C-k> <C-o>C
+inoremap <C-k> <ESC><Right>C
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
 
@@ -273,6 +286,18 @@ nmap <silent> <Leader>ve :e ~/.config/nvim/init.vim<CR>
 nmap <silent> <Leader>vr :source ~/.config/nvim/init.vim<CR>
 " }}}
 
+" FUNCTIONS {{{
+function MakeScratch(ft)
+    setlocal buftype=nofile
+    setlocal bufhidden=hide
+    setlocal noswapfile
+    execute 'setlocal filetype=' . a:ft
+endfunction
+
+command! -nargs=0 MD call MakeScratch('markdown')
+command! -nargs=0 JSON call MakeScratch('json')
+" }}}
+
 " PLUGIN SETTINGS {{{
 " vim-qf {{{
 let g:qf_mapping_ack_style = 1
@@ -282,8 +307,8 @@ nmap <silent> [q :cprev<CR>
 nmap <silent> ]q :cnext<CR>
 
 augroup QF
-    autocmd Filetype qf nnoremap <silent> <buffer> dd 0:Reject<CR>
-    autocmd Filetype qf nnoremap <silent> <buffer> <Backspace> <Nop>
+    autocmd FileType qf nnoremap <silent> <buffer> dd 0:Reject<CR>
+    autocmd FileType qf nnoremap <silent> <buffer> <Backspace> <Nop>
 augroup END
 " }}}
 
@@ -338,11 +363,11 @@ let g:ale_python_auto_pipenv = 1
 
 let g:ale_rust_cargo_use_clippy = 1
 
-augroup LSP
+augroup ALE_LSP
     autocmd!
-    autocmd Filetype rust nmap <silent> <buffer> <Leader>d <Plug>(ale_go_to_definition)
-    autocmd Filetype rust nmap <silent> <buffer> <Leader>h <Plug>(ale_hover)
-    autocmd Filetype rust setlocal omnifunc=ale#completion#OmniFunc
+    autocmd FileType rust nmap <silent> <buffer> <Leader>d <Plug>(ale_go_to_definition)
+    autocmd FileType rust nmap <silent> <buffer> <Leader>h <Plug>(ale_hover)
+    autocmd FileType rust setlocal omnifunc=ale#completion#OmniFunc
 augroup END
 
 nmap <silent> <C-k> <Plug>(ale_previous)
@@ -392,10 +417,6 @@ command! -bang Dotfiles call fzf#vim#files('~/.dotfiles', <bang>0)
 augroup FZF
     autocmd! User FzfStatusLine call <SID>FzfStatusLine()
 augroup END
-
-" insert mode completions
-inoremap <expr> <c-x><c-k> fzf#vim#complete#word()
-inoremap <expr> <c-x><c-l> fzf#vim#complete#line()
 " }}}
 
 " elm-vim {{{
@@ -417,8 +438,11 @@ let g:signify_vcs_list = ['git']
 " }}}
 
 " vim-yoink {{{
-nmap <c-n> <plug>(YoinkPostPasteSwapBack)
-nmap <c-p> <plug>(YoinkPostPasteSwapForward)
+nmap <c-p> <plug>(YoinkPostPasteSwapBack)
+nmap <c-n> <plug>(YoinkPostPasteSwapForward)
+
+nmap [y <plug>(YoinkRotateBack)
+nmap ]y <plug>(YoinkRotateForward)
 
 nmap p <plug>(YoinkPaste_p)
 nmap P <plug>(YoinkPaste_P)
@@ -438,12 +462,79 @@ nmap ss <plug>(SubversiveSubstituteLine)
 nmap S <plug>(SubversiveSubstituteToEndOfLine)
 " }}}
 
+" {{{ vim-tagbar
+nnoremap <Leader>K :TagbarToggle<CR>
+
+let g:tagbar_zoomwidth = 0
+let g:tagbar_autoclose = 1
+let g:tagbar_autofocus = 1
+let g:tagbar_show_data_type = 1
+
+let g:tagbar_type_elixir = {
+    \ 'ctagstype' : 'elixir',
+    \ 'kinds' : [
+        \ 'p:protocols',
+        \ 'm:modules',
+        \ 'e:exceptions',
+        \ 'y:types',
+        \ 'd:delegates',
+        \ 'f:functions',
+        \ 'c:callbacks',
+        \ 'a:macros',
+        \ 't:tests',
+        \ 'i:implementations',
+        \ 'o:operators',
+        \ 'r:records'
+    \ ],
+    \ 'sro' : '.',
+    \ 'kind2scope' : {
+        \ 'p' : 'protocol',
+        \ 'm' : 'module'
+    \ },
+    \ 'scope2kind' : {
+        \ 'protocol' : 'p',
+        \ 'module' : 'm'
+    \ },
+    \ 'sort' : 0
+\ }
+
+let g:tagbar_type_ruby = {
+    \ 'kinds' : [
+        \ 'm:modules',
+        \ 'c:classes',
+        \ 'd:describes',
+        \ 'C:contexts',
+        \ 'f:methods',
+        \ 'F:singleton methods'
+    \ ]
+\ }
+" }}}
+
+" {{{ undotree
+nnoremap <Leader>u :UndotreeToggle<CR>
+
+let g:undotree_SetFocusWhenToggle = 1
+let g:undotree_WindowLayout = 3
+let g:undotree_SplitWidth = 50
+" }}}
+
+" {{{ vim-markbar
+map <Leader>m <Plug>ToggleMarkbar
+
+let g:markbar_width = 50
+let g:markbar_peekaboo_width = 50
+" }}}
+
+" {{{ close-buffers.vim
+nnoremap <silent> <Leader>Q :Bdelete menu<CR>
+" }}}
+
 " }}}
 
 " LANGUAGE AUTO GROUPS {{{
 augroup BASH
     autocmd!
-    autocmd Filetype sh setlocal iskeyword+=-
+    autocmd FileType sh setlocal iskeyword+=-
 augroup END
 
 augroup GOLANG
@@ -453,23 +544,23 @@ augroup END
 
 augroup HASKELL
     autocmd!
-    autocmd Filetype haskell setlocal shiftwidth=2 softtabstop=2
+    autocmd FileType haskell setlocal shiftwidth=2 softtabstop=2
 augroup END
 
 augroup JSON
     autocmd!
-    autocmd Filetype json nmap <silent> <buffer> <Leader>fp :%!jq<CR>
+    autocmd FileType json nmap <silent> <buffer> <Leader>fp :%!jq<CR>
 augroup END
 
 augroup RUST
     autocmd!
-    autocmd Filetype rust nmap <silent> <buffer> <C-]> <Plug>(rust-def)
-    autocmd Filetype rust nmap <silent> <buffer> K <Plug>(rust-doc)
+    autocmd FileType rust nmap <silent> <buffer> <C-]> <Plug>(rust-def)
+    autocmd FileType rust nmap <silent> <buffer> K <Plug>(rust-doc)
 augroup END
 
 augroup VIMRC
     autocmd!
-    autocmd Filetype vim setlocal foldenable foldmethod=marker
+    autocmd FileType vim setlocal foldenable foldmethod=marker
 augroup END
 " }}}
 
