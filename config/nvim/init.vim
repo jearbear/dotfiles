@@ -207,8 +207,8 @@ augroup END
 " }}}
 
 " MAPPINGS {{{
-map <silent> Y y$
-map <silent> 0 ^
+map Y y$
+map 0 ^
 
 nnoremap <C-d> 3<C-d> " `:set scroll...` doesn't seem to persist so we rebind the defaults instead
 nnoremap <C-u> 3<C-u>
@@ -221,7 +221,7 @@ nnoremap j gj
 nnoremap k gk
 
 " buffer navigation
-nnoremap <silent> <Backspace> <C-^>
+nnoremap <Backspace> <C-^>
 nnoremap <silent> <Leader>l :Buffers<CR>
 nnoremap <silent> <Leader>[ :bprevious<CR>
 nnoremap <silent> <Leader>] :bnext<CR>
@@ -237,14 +237,17 @@ nnoremap <silent> <Leader>} :tabn<CR>
 nnoremap <silent> <Leader>k :BTags<CR>
 
 " faster commenting
-nmap <silent> <Leader>/ gcc
-vmap <silent> <Leader>/ gc
+nmap <Leader>/ gcc
+vmap <Leader>/ gc
 
 " faster renaming
-nnoremap <silent> <Leader>r *``cgn
-nnoremap <silent> <Leader>gr g*``cgn
+nnoremap <Leader>r *``cgn
+nnoremap <Leader>gr g*``cgn
 
-" these intentionally omit <silent>
+" load the word under the cursor into the search register
+nnoremap <Leader>* *``
+
+" more convenient substitution
 nnoremap <Leader>s :s/<C-r><C-w>/
 xnoremap <Leader>s :s/
 nnoremap <Leader>S :%s/<C-r><C-w>/
@@ -269,6 +272,12 @@ command! SaveSession call s:SaveSession()
 " delete text without yanking
 nnoremap <Leader>d "_d
 xnoremap <Leader>d "_d
+
+" yank text to the system clipboard
+" (recursive mappings are intentionally used to preserve the benefits of
+" preserving cursor position provided by vim-yoink)
+nmap <Leader>y "+y
+xmap <Leader>y "+y
 
 " repeat macro on selection
 xnoremap <silent> . :norm.<CR>
@@ -302,13 +311,13 @@ command! -nargs=0 JSON call MakeScratch('json')
 " vim-qf {{{
 let g:qf_mapping_ack_style = 1
 
-nmap <silent> <Leader>qq <Plug>(qf_qf_toggle)
+nmap <Leader>qq <Plug>(qf_qf_toggle)
 nmap <silent> [q :cprev<CR>
 nmap <silent> ]q :cnext<CR>
 
 augroup QF
     autocmd FileType qf nnoremap <silent> <buffer> dd 0:Reject<CR>
-    autocmd FileType qf nnoremap <silent> <buffer> <Backspace> <Nop>
+    autocmd FileType qf nnoremap <buffer> <Backspace> <Nop>
 augroup END
 " }}}
 
@@ -322,8 +331,8 @@ xnoremap <silent> <Leader>gl "+:Gina browse : --yank --exact<CR>
 " }}}
 
 " vim-easy-align {{{
-nmap <silent> ga <Plug>(EasyAlign)
-xmap <silent> ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+xmap ga <Plug>(EasyAlign)
 " }}}
 
 " vim-grepper {{{
@@ -336,8 +345,8 @@ let g:grepper.stop = 500
 nnoremap <silent> \ :Grepper<CR>
 nnoremap <silent> <Leader>\ :Grepper -buffer<CR>
 nnoremap <silent> <bar> :Grepper -buffers<CR>
-nmap <silent> gs <Plug>(GrepperOperator)
-xmap <silent> gs <Plug>(GrepperOperator)
+nmap gs <Plug>(GrepperOperator)
+xmap gs <Plug>(GrepperOperator)
 " }}}
 
 " ale {{{
@@ -365,13 +374,13 @@ let g:ale_rust_cargo_use_clippy = 1
 
 augroup ALE_LSP
     autocmd!
-    autocmd FileType rust nmap <silent> <buffer> <Leader>d <Plug>(ale_go_to_definition)
-    autocmd FileType rust nmap <silent> <buffer> <Leader>h <Plug>(ale_hover)
+    autocmd FileType rust nmap <buffer> <Leader>d <Plug>(ale_go_to_definition)
+    autocmd FileType rust nmap <buffer> <Leader>h <Plug>(ale_hover)
     autocmd FileType rust setlocal omnifunc=ale#completion#OmniFunc
 augroup END
 
-nmap <silent> <C-k> <Plug>(ale_previous)
-nmap <silent> <C-j> <Plug>(ale_next)
+nmap <C-k> <Plug>(ale_previous)
+nmap <C-j> <Plug>(ale_next)
 " }}}
 
 " targets.vim {{{
@@ -554,8 +563,8 @@ augroup END
 
 augroup RUST
     autocmd!
-    autocmd FileType rust nmap <silent> <buffer> <C-]> <Plug>(rust-def)
-    autocmd FileType rust nmap <silent> <buffer> K <Plug>(rust-doc)
+    autocmd FileType rust nmap <buffer> <C-]> <Plug>(rust-def)
+    autocmd FileType rust nmap <buffer> K <Plug>(rust-doc)
 augroup END
 
 augroup VIMRC
