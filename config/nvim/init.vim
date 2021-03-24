@@ -68,7 +68,6 @@ Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
 " trying out
-Plug 'Yilin-Yang/vim-markbar'
 Plug 'mbbill/undotree'
 Plug 'preservim/tagbar'
 Plug 'tpope/vim-obsession'
@@ -184,7 +183,7 @@ set isfname-=:
 
 " auto read/write file on enter/jump
 set noswapfile autoread autowrite
-augroup AUTORW
+augroup AUTO_RW
     autocmd!
     autocmd FocusGained,BufEnter * checktime
 augroup END
@@ -199,10 +198,10 @@ augroup MKDIR
 augroup END
 
 " turn search highlighting on while searching
-augroup SEARCH
+augroup HL_SEARCH
     autocmd!
-    autocmd CmdlineEnter /,\? :set hlsearch
-    autocmd CmdlineLeave /,\? :set nohlsearch
+    autocmd CmdlineEnter /,\? :setlocal hlsearch
+    autocmd CmdlineLeave /,\? :setlocal nohlsearch
 augroup END
 " }}}
 
@@ -213,32 +212,19 @@ map 0 ^
 nnoremap <C-d> 3<C-d> " `:set scroll...` doesn't seem to persist so we rebind the defaults instead
 nnoremap <C-u> 3<C-u>
 
-" file navigation
-nnoremap <silent> <Leader>f :SmartFiles<CR>
-
 " navigate by visual lines when wrapped
 nnoremap j gj
 nnoremap k gk
 
 " buffer navigation
-nnoremap <Backspace> <C-^>
-nnoremap <silent> <Leader>l :Buffers<CR>
+nnoremap <BS> <C-^>
 nnoremap <silent> <Leader>[ :bprevious<CR>
 nnoremap <silent> <Leader>] :bnext<CR>
-nnoremap <silent> <Leader>; :BLines<CR>
-nnoremap <silent> <Leader>: :Lines<CR>
 nnoremap <silent> Q :bprevious <Bar> bdelete #<CR>
 
 " tab navigation
 nnoremap <silent> <Leader>{ :tabp<CR>
 nnoremap <silent> <Leader>} :tabn<CR>
-
-" tag jumping/previewing
-nnoremap <silent> <Leader>k :BTags<CR>
-
-" faster commenting
-nmap <Leader>/ gcc
-vmap <Leader>/ gc
 
 " faster renaming
 nnoremap <Leader>r *``cgn
@@ -252,22 +238,9 @@ nnoremap <Leader>s :s/<C-r><C-w>/
 xnoremap <Leader>s :s/
 nnoremap <Leader>S :%s/<C-r><C-w>/
 
-" save a session under the current git branch name
-nnoremap <silent> <Leader>vs :SaveSession<CR>
-function! s:SaveSession() abort
-    if getcwd() =~ '/' . gina#component#repo#name() . '$'
-        let branch = gina#component#repo#branch()
-        if branch ==# ''
-            Obsession
-        else
-            let _ = system('mkdir -p .git/sessions')
-            execute 'Obsession .git/sessions/' . branch . '.vim'
-        endif
-    else
-        echo 'SaveSession only works in the root .git directory'
-    endif
-endfunction
-command! SaveSession call s:SaveSession()
+" search for whatever is in the " register
+nnoremap <Leader>n /<C-r>"<CR>
+nnoremap <Leader>N ?<C-r>"<CR>
 
 " delete text without yanking
 nnoremap <Leader>d "_d
@@ -291,8 +264,8 @@ cnoremap <C-n> <Down>
 cnoremap w' w
 
 " edit/save vimrc
-nmap <silent> <Leader>ve :e ~/.config/nvim/init.vim<CR>
-nmap <silent> <Leader>vr :source ~/.config/nvim/init.vim<CR>
+nnoremap <silent> <Leader>ve :e ~/.config/nvim/init.vim<CR>
+nnoremap <silent> <Leader>vr :source ~/.config/nvim/init.vim<CR>
 " }}}
 
 " FUNCTIONS {{{
@@ -303,8 +276,8 @@ function MakeScratch(ft)
     execute 'setlocal filetype=' . a:ft
 endfunction
 
-command! -nargs=0 MD call MakeScratch('markdown')
-command! -nargs=0 JSON call MakeScratch('json')
+command! MD call MakeScratch('markdown')
+command! JSON call MakeScratch('json')
 " }}}
 
 " PLUGIN SETTINGS {{{
@@ -317,7 +290,7 @@ nmap <silent> ]q :cnext<CR>
 
 augroup QF
     autocmd FileType qf nnoremap <silent> <buffer> dd 0:Reject<CR>
-    autocmd FileType qf nnoremap <buffer> <Backspace> <Nop>
+    autocmd FileType qf nnoremap <buffer> <BS> <Nop>
 augroup END
 " }}}
 
@@ -337,6 +310,7 @@ xmap ga <Plug>(EasyAlign)
 
 " vim-grepper {{{
 runtime plugin/grepper.vim
+
 let g:grepper.prompt_text = '$t> '
 let g:grepper.switch = 1
 let g:grepper.tools = ['rg']
@@ -372,15 +346,15 @@ let g:ale_python_auto_pipenv = 1
 
 let g:ale_rust_cargo_use_clippy = 1
 
-augroup ALE_LSP
+nmap <C-k> <Plug>(ale_previous)
+nmap <C-j> <Plug>(ale_next)
+
+augroup ALE
     autocmd!
     autocmd FileType rust nmap <buffer> <Leader>d <Plug>(ale_go_to_definition)
     autocmd FileType rust nmap <buffer> <Leader>h <Plug>(ale_hover)
     autocmd FileType rust setlocal omnifunc=ale#completion#OmniFunc
 augroup END
-
-nmap <C-k> <Plug>(ale_previous)
-nmap <C-j> <Plug>(ale_next)
 " }}}
 
 " targets.vim {{{
@@ -416,15 +390,19 @@ let g:fzf_action = {
             \ }
 let g:fzf_preview_window = []
 
-function! s:FzfStatusLine() abort
-    setlocal statusline=%#StatusLine#\ »\ fzf
-endfunction
-
 command! SmartFiles execute (len(system('git rev-parse')) ? ':Files' : ':GFiles')
-command! -bang Dotfiles call fzf#vim#files('~/.dotfiles', <bang>0)
+command! Dotfiles call fzf#vim#files('~/.dotfiles')
+
+nnoremap <silent> <Leader>f :SmartFiles<CR>
+nnoremap <silent> <Leader>l :Buffers<CR>
+nnoremap <silent> <Leader>; :BLines<CR>
+nnoremap <silent> <Leader>: :Lines<CR>
+nnoremap <silent> <Leader>k :BTags<CR>
+nnoremap <silent> <Leader>m :Marks<CR>
 
 augroup FZF
-    autocmd! User FzfStatusLine call <SID>FzfStatusLine()
+    autocmd!
+    autocmd User FzfStatusLine setlocal statusline=%#StatusLine#\ »\ fzf
 augroup END
 " }}}
 
@@ -435,7 +413,7 @@ let g:elm_setup_keybindings = 0
 " notational-fzf-vim {{{
 let g:nv_search_paths = ['~/notes']
 
-nnoremap <Leader>j :NV!<CR>
+nnoremap <silent> <Leader>j :NV!<CR>
 " }}}
 
 " vim-ruby {{{
@@ -447,33 +425,27 @@ let g:signify_vcs_list = ['git']
 " }}}
 
 " vim-yoink {{{
-nmap <c-p> <plug>(YoinkPostPasteSwapBack)
-nmap <c-n> <plug>(YoinkPostPasteSwapForward)
-
-nmap [y <plug>(YoinkRotateBack)
-nmap ]y <plug>(YoinkRotateForward)
-
-nmap p <plug>(YoinkPaste_p)
-nmap P <plug>(YoinkPaste_P)
+let g:yoinkAutoFormatPaste = 1
+let g:yoinkIncludeDeleteOperations = 1
 
 nmap <c-=> <plug>(YoinkPostPasteToggleFormat)
-
+nmap <c-n> <plug>(YoinkPostPasteSwapForward)
+nmap <c-p> <plug>(YoinkPostPasteSwapBack)
+nmap P <plug>(YoinkPaste_P)
+nmap [y <plug>(YoinkRotateBack)
+nmap ]y <plug>(YoinkRotateForward)
+nmap p <plug>(YoinkPaste_p)
 nmap y <plug>(YoinkYankPreserveCursorPosition)
 xmap y <plug>(YoinkYankPreserveCursorPosition)
-
-let g:yoinkIncludeDeleteOperations = 1
-let g:yoinkAutoFormatPaste = 1
 " }}}
 
 " vim-subversive {{{
+nmap S <plug>(SubversiveSubstituteToEndOfLine)
 nmap s <plug>(SubversiveSubstitute)
 nmap ss <plug>(SubversiveSubstituteLine)
-nmap S <plug>(SubversiveSubstituteToEndOfLine)
 " }}}
 
 " {{{ vim-tagbar
-nnoremap <Leader>K :TagbarToggle<CR>
-
 let g:tagbar_zoomwidth = 0
 let g:tagbar_autoclose = 1
 let g:tagbar_autofocus = 1
@@ -517,21 +489,42 @@ let g:tagbar_type_ruby = {
         \ 'F:singleton methods'
     \ ]
 \ }
+
+nnoremap <silent> <Leader>K :TagbarToggle<CR>
 " }}}
 
 " {{{ undotree
-nnoremap <Leader>u :UndotreeToggle<CR>
-
 let g:undotree_SetFocusWhenToggle = 1
 let g:undotree_WindowLayout = 3
 let g:undotree_SplitWidth = 50
+
+nnoremap <silent> <Leader>u :UndotreeToggle<CR>
 " }}}
 
-" {{{ vim-markbar
-map <Leader>m <Plug>ToggleMarkbar
+" {{{ vim-obsession
+" save a session under the current git branch name
+function! s:SaveSession() abort
+    if getcwd() =~ '/' . gina#component#repo#name() . '$'
+        let branch = gina#component#repo#branch()
+        if branch ==# ''
+            Obsession
+        else
+            let _ = system('mkdir -p .git/sessions')
+            execute 'Obsession .git/sessions/' . branch . '.vim'
+        endif
+    else
+        echo 'SaveSession only works in the root .git directory'
+    endif
+endfunction
 
-let g:markbar_width = 50
-let g:markbar_peekaboo_width = 50
+command! SaveSession call s:SaveSession()
+
+nnoremap <silent> <Leader>vs :SaveSession<CR>
+" }}}
+
+" {{{ vim-commentary
+nmap <Leader>/ gcc
+vmap <Leader>/ gc
 " }}}
 
 " {{{ close-buffers.vim
@@ -541,12 +534,12 @@ nnoremap <silent> <Leader>Q :Bdelete menu<CR>
 " }}}
 
 " LANGUAGE AUTO GROUPS {{{
-augroup BASH
+augroup SH
     autocmd!
     autocmd FileType sh setlocal iskeyword+=-
 augroup END
 
-augroup GOLANG
+augroup GO
     autocmd!
     autocmd FileType go setlocal foldenable foldmethod=syntax
 augroup END
@@ -567,7 +560,7 @@ augroup RUST
     autocmd FileType rust nmap <buffer> K <Plug>(rust-doc)
 augroup END
 
-augroup VIMRC
+augroup VIM
     autocmd!
     autocmd FileType vim setlocal foldenable foldmethod=marker
 augroup END
