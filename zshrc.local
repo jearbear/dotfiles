@@ -6,7 +6,11 @@ alias sc='sudo systemctl'
 alias scu='systemctl --user'
 
 alias pac='sudo pacman'
-alias async='aur sync -cur'
+alias async='aur sync --upgrades --chroot --noconfirm --no-view --rmdeps'
+alias aremove='repo-remove /var/cache/pacman/aur/aur.db.tar'
+alias aadd='repo-add /var/cache/pacman/aur/aur.db.tar'
+alias alist='pacman -Sl aur'
+alias asearch='aur search'
 
 alias reboot='sudo reboot'
 alias shutdown='sudo shutdown -h now'
