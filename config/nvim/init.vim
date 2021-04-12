@@ -24,7 +24,6 @@ Plug 'tpope/vim-unimpaired'
 Plug 'wellle/targets.vim'
 
 " copy pasta
-" Plug 'svermeulen/vim-cutlass'
 Plug 'svermeulen/vim-yoink'
 Plug 'svermeulen/vim-subversive'
 
@@ -443,6 +442,9 @@ xmap y <plug>(YoinkYankPreserveCursorPosition)
 nmap S <plug>(SubversiveSubstituteToEndOfLine)
 nmap s <plug>(SubversiveSubstitute)
 nmap ss <plug>(SubversiveSubstituteLine)
+xmap P <plug>(SubversiveSubstitute)
+xmap p <plug>(SubversiveSubstitute)
+xmap s <plug>(SubversiveSubstitute)
 " }}}
 
 " {{{ vim-tagbar

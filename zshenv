@@ -9,6 +9,8 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 export GOPASS_EXTERNAL_PWGEN="xkcd-pass"
 
+export MANPAGER='nvim +Man!'
+
 export PATH="$HOME/.bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
