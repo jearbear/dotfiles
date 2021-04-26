@@ -30,6 +30,8 @@
 
     cleanup = !"f() { set -e; BRANCHES=$(git pick-branches-wo-master); git branch -D $BRANCHES; }; f"
 
+    rename = branch -m
+
     l = log --oneline master..
     ls = log --oneline --graph --since='1 month ago' --simplify-by-decoration --branches
     lsa = log --oneline --graph --simplify-by-decoration --branches
@@ -40,6 +42,7 @@
     rib = !git rebase --interactive $(git base) && :
     rom = !git update && git rebase master && :
     romp = !git rom && git push -f && :
+    recon = !git add -A && git rebase --continue
 
     bmerge = !"f() { set -e; BRANCH=$(git pick-branch); git merge --squash $BRANCH && git commit -m \"[MERGED] $BRANCH\"; }; f"
 
@@ -70,8 +73,9 @@
     pick-branches = !"f() { set -euo pipefail; git branch | rg -v '^\\*' | awk '{$1=$1};1' | git fzf-branch | tr '\\n' ' '; }; f"
     pick-branches-wo-master = !"f() { set -euo pipefail; git branch | rg -v '^\\*' | rg -v 'master' | awk '{$1=$1};1' | git fzf-branch | tr '\\n' ' '; }; f"
 
-    ci = !hub ci-status --color -v ${1:-HEAD} && :
-    watch-ci = !watch --color -n 30 git ci && :
+    ci = !hub ci-status --color --verbose ${1:-HEAD} && :
+    cir = !git fetch --quiet origin $(git branch-name) && git ci FETCH_HEAD && :
+    watch-ci = !watch --color --interval 30 git ci && :
 
 [commit]
     gpgSign = false
@@ -162,6 +166,7 @@
     line-numbers-plus-style = reverse bold green
 
     features = side-by-side
+    navigate = true
 
 [url "git@github.com:"]
     insteadOf = gh:

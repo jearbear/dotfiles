@@ -65,6 +65,10 @@ BASE16_SHELL="$HOME/.config/base16-shell/"
 [ -n "$PS1" ] && [ -s "$BASE16_SHELL/profile_helper.sh" ] && eval "$("$BASE16_SHELL/profile_helper.sh")"
 
 # aliases
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias ls='ls -GF' # enable color and sigils depending on filetype
 alias n='nnn -CReor'
 alias pn='ping www.google.com -c 1'
 alias reload='source ~/.zshrc && source ~/.zshenv'
@@ -74,6 +78,7 @@ alias s='sudo'
 alias t='TERM=xterm-256color tmux new-session -A -s main'
 alias vi='nvim'
 alias vim='nvim'
+alias watch='watch --color --interval 5'
 
 # quickly load the relevant vim session
 alias vs='__vim_with_session'
@@ -98,10 +103,12 @@ hash -d dots=$HOME/.dotfiles
 # fzf + git integrations
 bindkey -r '^G'
 
+# determine if the CWD is within a git repo
 __is_in_git_repo() {
     git rev-parse HEAD > /dev/null 2>&1
 }
 
+# select a git commit via FZF and dump it into the prompt
 __git-pick-commit() {
     __is_in_git_repo || return
     LBUFFER="${LBUFFER}$(git pick-commit) "
@@ -110,6 +117,7 @@ __git-pick-commit() {
 zle -N __git-pick-commit
 bindkey '^G^P' __git-pick-commit
 
+# select a git branch via FZF and dump it into the prompt
 __git-pick-branch() {
     __is_in_git_repo || return
     LBUFFER="${LBUFFER}$(git pick-branch) "

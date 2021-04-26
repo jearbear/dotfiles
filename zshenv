@@ -7,17 +7,19 @@ export FZF_DEFAULT_COMMAND='fd -t file'
 export FZF_DEFAULT_OPTS='--color=16'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
-export GOPASS_EXTERNAL_PWGEN="xkcd-pass"
-
 export MANPAGER='nvim +Man!'
 
-export PATH="$HOME/.bin:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/.cargo/bin:$PATH"
-export PATH="$HOME/.npm-packages/bin:$PATH"
-export PATH="$HOME/.poetry/bin:$PATH"
+typeset -U PATH path # deduplicate PATH
+path=(
+    "$HOME/.bin"
+    "$HOME/.local/bin"
+    "$HOME/.cargo/bin"
+    "$HOME/.npm-packages/bin"
+    "$path[@]"
+)
+export PATH
 
-export BAT_THEME='base16' # TODO: Update this to 'base16-256' when bat is updated
+export BAT_THEME='base16-256'
 
 # system-specific
 [ -f ~/.zshenv.local ] && source ~/.zshenv.local
