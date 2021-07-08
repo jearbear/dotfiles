@@ -126,5 +126,14 @@ __git-pick-branch() {
 zle -N __git-pick-branch
 bindkey '^G^B' __git-pick-branch
 
+# select a git unstaged file via FZF and dump it into the prompt
+__git-pick-unstaged-files() {
+__is_in_git_repo || return
+LBUFFER="${LBUFFER}$(git pick-unstaged-files) "
+zle reset-prompt
+}
+zle -N __git-pick-unstaged-files
+bindkey '^G^U' __git-pick-unstaged-files
+
 # source local configs
 [ -r ~/.zshrc.local ] && . ~/.zshrc.local

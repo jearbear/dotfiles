@@ -32,7 +32,6 @@ Plug 'lambdalisue/gina.vim'
 Plug 'mhinz/vim-signify'
 
 " project management
-Plug 'alok/notational-fzf-vim'
 Plug 'dense-analysis/ale'
 Plug 'jpalardy/vim-slime'
 Plug 'romainl/vim-qf'
@@ -46,6 +45,7 @@ Plug 'tpope/vim-endwise'
 " project navigation
 Plug 'justinmk/vim-dirvish'
 Plug 'mhinz/vim-grepper'
+Plug 'wsdjeg/vim-fetch'
 
 " language support
 Plug 'ElmCast/elm-vim', { 'for': 'elm' }
@@ -54,6 +54,7 @@ Plug 'cespare/vim-toml', { 'for': 'toml' }
 Plug 'elixir-editors/vim-elixir'
 Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoInstallBinaries' }
 Plug 'godlygeek/tabular', { 'for': 'markdown' }
+Plug 'lervag/vimtex', { 'for': 'latex' }
 Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
 Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
 Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
@@ -67,10 +68,12 @@ Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
 " trying out
+Plug 'Asheq/close-buffers.vim'
+" Plug 'lukas-reineke/indent-blankline.nvim', {'branch': 'lua'}
 Plug 'mbbill/undotree'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'preservim/tagbar'
 Plug 'tpope/vim-obsession'
-Plug 'Asheq/close-buffers.vim'
 
 call plug#end()
 " }}}
@@ -90,7 +93,7 @@ set noruler                              " disable the default buffer ruler
 set expandtab shiftwidth=4 softtabstop=4 " use 4 spaces for indentation
 
 set cursorline                           " highlight the line the cursor is on
-set scrolloff=999                        " ensure 5 lines of padding between the cursor and the edges of the window
+set scrolloff=5                          " ensure 5 lines of padding between the cursor and the edges of the window
 
 set nojoinspaces                         " only insert one space when joining lines
 set wrap linebreak                       " wrap lines and do so on word boundaries only
@@ -118,6 +121,8 @@ set wildignore+=*.pyc,*.swp,*.lock,*.min.js,*.min.css,tags
 set wildignore+=*/tmp/*,*/target/*,*/venv/*,*/vendor/*,*/elm-stuff/*,*/bazel*/*,*/build/*
 set wildmenu wildignorecase
 set wildmode=full,full
+
+set wildcharm=<C-z>          " allows invoking completion menu with <C-z>
 
 set shortmess+=c             " don't show messages when performing completion
 set completeopt=menu,menuone " when completing, show a menu even if there is only one result
@@ -265,6 +270,12 @@ cnoremap w' w
 " edit/save vimrc
 nnoremap <silent> <Leader>ve :e ~/.config/nvim/init.vim<CR>
 nnoremap <silent> <Leader>vr :source ~/.config/nvim/init.vim<CR>
+
+" maximize the window
+nnoremap <C-w>m <C-w><bar><C-w>_
+
+" copy the file with another name
+nnoremap <Leader>cc :saveas %:h<C-z>
 " }}}
 
 " FUNCTIONS {{{
@@ -331,6 +342,7 @@ let g:ale_sign_warning = '!!'
 
 let g:ale_linters = {
             \ 'haskell': ['stack-build', 'hlint'],
+            \ 'javascript': ['eslint'],
             \ }
 let g:ale_fixers = {
             \ '*': ['remove_trailing_lines', 'trim_whitespace'],
@@ -338,6 +350,7 @@ let g:ale_fixers = {
             \ 'haskell': [{_ -> { 'command': 'ormolu --mode inplace %t', 'read_temporary_file': 1 }}],
             \ 'python': ['black'],
             \ 'rust': 'rustfmt',
+            \ 'javascript': 'eslint',
             \ }
 let g:ale_fix_on_save = 1
 
@@ -409,12 +422,6 @@ augroup END
 let g:elm_setup_keybindings = 0
 " }}}
 
-" notational-fzf-vim {{{
-let g:nv_search_paths = ['~/notes']
-
-nnoremap <silent> <Leader>j :NV!<CR>
-" }}}
-
 " vim-ruby {{{
 let ruby_foldable_groups = 'def class module do case'
 " }}}
@@ -427,9 +434,9 @@ let g:signify_vcs_list = ['git']
 let g:yoinkAutoFormatPaste = 1
 let g:yoinkIncludeDeleteOperations = 1
 
-nmap <c-=> <plug>(YoinkPostPasteToggleFormat)
-nmap <c-n> <plug>(YoinkPostPasteSwapForward)
-nmap <c-p> <plug>(YoinkPostPasteSwapBack)
+nmap <C-=> <plug>(YoinkPostPasteToggleFormat)
+nmap <C-n> <plug>(YoinkPostPasteSwapForward)
+nmap <C-p> <plug>(YoinkPostPasteSwapBack)
 nmap P <plug>(YoinkPaste_P)
 nmap [y <plug>(YoinkRotateBack)
 nmap ]y <plug>(YoinkRotateForward)
@@ -533,6 +540,18 @@ vmap <Leader>/ gc
 nnoremap <silent> <Leader>Q :Bdelete menu<CR>
 " }}}
 
+" {{{ nvim-treesitter
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+    highlight = {
+        enable = true,
+    },
+    indent = {
+        enable = true,
+    },
+}
+EOF
+" }}}
 " }}}
 
 " LANGUAGE AUTO GROUPS {{{
@@ -549,6 +568,13 @@ augroup END
 augroup HASKELL
     autocmd!
     autocmd FileType haskell setlocal shiftwidth=2 softtabstop=2
+augroup END
+
+augroup PYTHON
+    autocmd!
+
+    " Drop a breakpoint and set a mark for it
+    autocmd Filetype python nnoremap <silent> <buffer> <Leader>pr Oimport bpdb; bpdb.set_trace()<ESC>mp
 augroup END
 
 augroup JSON
