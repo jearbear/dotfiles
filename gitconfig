@@ -98,7 +98,7 @@
     open = !"hub pr show || open https://$(git remote get-url origin | sed 's/git@//; s/.git//; s/:/\\//')/pull/new/$(git branch-name)"
 
 [commit]
-    gpgSign = true
+    gpgSign = false
     verbose = true
 
 [color]
