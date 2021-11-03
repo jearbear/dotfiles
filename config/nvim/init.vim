@@ -48,20 +48,22 @@ Plug 'mhinz/vim-grepper'
 Plug 'wsdjeg/vim-fetch'
 
 " language support
-Plug 'ElmCast/elm-vim', { 'for': 'elm' }
-Plug 'MaxMEllon/vim-jsx-pretty', { 'for': 'javascript' }
-Plug 'cespare/vim-toml', { 'for': 'toml' }
+Plug 'ElmCast/elm-vim'
+Plug 'MaxMEllon/vim-jsx-pretty'
+Plug 'cespare/vim-toml'
 Plug 'elixir-editors/vim-elixir'
-Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoInstallBinaries' }
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'godlygeek/tabular', { 'for': 'markdown' }
-Plug 'lervag/vimtex', { 'for': 'latex' }
-Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
-Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
-Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
-Plug 'rodjek/vim-puppet', { 'for': 'puppet' }
-Plug 'rust-lang/rust.vim', { 'for': 'rust' }
-Plug 'tpope/vim-ragtag', { 'for': 'html' }
-Plug 'vim-ruby/vim-ruby', { 'for': 'ruby' }
+Plug 'jparise/vim-graphql'
+Plug 'leafgarland/typescript-vim'
+Plug 'lervag/vimtex'
+Plug 'neovimhaskell/haskell-vim'
+Plug 'pangloss/vim-javascript'
+Plug 'plasticboy/vim-markdown'
+Plug 'rodjek/vim-puppet'
+Plug 'rust-lang/rust.vim'
+Plug 'tpope/vim-ragtag'
+Plug 'vim-ruby/vim-ruby'
 
 " fzf
 Plug 'junegunn/fzf'
@@ -69,9 +71,8 @@ Plug 'junegunn/fzf.vim'
 
 " trying out
 Plug 'Asheq/close-buffers.vim'
-" Plug 'lukas-reineke/indent-blankline.nvim', {'branch': 'lua'}
+" Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'mbbill/undotree'
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'preservim/tagbar'
 Plug 'tpope/vim-obsession'
 
@@ -341,8 +342,13 @@ let g:ale_sign_error = '!!'
 let g:ale_sign_warning = '!!'
 
 let g:ale_linters = {
+            \ 'sh': ['shell', 'shellcheck'],
+            \ 'bash': ['shell', 'shellcheck'],
+            \ 'zsh': ['shell', 'shellcheck'],
             \ 'haskell': ['stack-build', 'hlint'],
-            \ 'javascript': ['eslint'],
+            \ 'javascript': ['tsserver', 'eslint', 'prettier'],
+            \ 'typescript': ['tsserver', 'eslint', 'prettier'],
+            \ 'typescriptreact': ['tsserver', 'eslint', 'prettier'],
             \ }
 let g:ale_fixers = {
             \ '*': ['remove_trailing_lines', 'trim_whitespace'],
@@ -350,7 +356,9 @@ let g:ale_fixers = {
             \ 'haskell': [{_ -> { 'command': 'ormolu --mode inplace %t', 'read_temporary_file': 1 }}],
             \ 'python': ['black'],
             \ 'rust': 'rustfmt',
-            \ 'javascript': 'eslint',
+            \ 'javascript': ['prettier'],
+            \ 'typescript': ['prettier'],
+            \ 'typescriptreact': ['prettier'],
             \ }
 let g:ale_fix_on_save = 1
 
@@ -363,9 +371,10 @@ nmap <C-j> <Plug>(ale_next)
 
 augroup ALE
     autocmd!
-    autocmd FileType rust nmap <buffer> <Leader>d <Plug>(ale_go_to_definition)
-    autocmd FileType rust nmap <buffer> <Leader>h <Plug>(ale_hover)
-    autocmd FileType rust setlocal omnifunc=ale#completion#OmniFunc
+    autocmd FileType javascript,typescript,typescriptreact,rust nmap <buffer> <Leader>d <Plug>(ale_go_to_definition)
+    autocmd FileType javascript,typescript,typescriptreact,rust nmap <buffer> <C-]> <Plug>(ale_go_to_definition)
+    autocmd FileType javascript,typescript,typescriptreact,rust nmap <buffer> <Leader>h <Plug>(ale_hover)
+    autocmd FileType javascript,typescript,typescriptreact,rust setlocal omnifunc=ale#completion#OmniFunc
 augroup END
 " }}}
 
@@ -540,18 +549,6 @@ vmap <Leader>/ gc
 nnoremap <silent> <Leader>Q :Bdelete menu<CR>
 " }}}
 
-" {{{ nvim-treesitter
-lua <<EOF
-require'nvim-treesitter.configs'.setup {
-    highlight = {
-        enable = true,
-    },
-    indent = {
-        enable = true,
-    },
-}
-EOF
-" }}}
 " }}}
 
 " LANGUAGE AUTO GROUPS {{{
@@ -591,6 +588,21 @@ augroup END
 augroup VIM
     autocmd!
     autocmd FileType vim setlocal foldenable foldmethod=marker
+augroup END
+
+augroup JAVASCRIPT
+    autocmd!
+    autocmd Filetype javascript,typescript,typescriptreact setlocal shiftwidth=2 softtabstop=2
+augroup END
+
+augroup PRS
+    autocmd!
+    autocmd BufEnter */PULLREQ_EDITMSG setlocal ft=markdown
+augroup END
+
+augroup YAML
+    autocmd!
+    autocmd Filetype yaml setlocal shiftwidth=2 softtabstop=2
 augroup END
 " }}}
 
