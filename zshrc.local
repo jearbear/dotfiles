@@ -1,6 +1,6 @@
 # fnm (a faster alternative to nvm)
 eval "$(fnm env)"
 
-hash -d pipe=$HOME/Pipe/pipe
-hash -d be=$HOME/Pipe/pipe/backend
-hash -d fe=$HOME/Pipe/pipe/frontend
+hash -d pipe=$HOME/Code/pipe
+hash -d be=$HOME/Code/pipe/backend
+hash -d fe=$HOME/Code/pipe/frontend
