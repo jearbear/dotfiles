@@ -1,6 +1,17 @@
-# fnm (a faster alternative to nvm)
-eval "$(fnm env)"
+# aliases
+alias ls='ls --color=auto'
+alias copy='xclip -selection clipboard'
 
-hash -d pipe=$HOME/Pipe/pipe
-hash -d be=$HOME/Pipe/pipe/backend
-hash -d fe=$HOME/Pipe/pipe/frontend
+alias sc='sudo systemctl'
+alias scu='systemctl --user'
+
+alias pac='sudo pacman'
+
+alias aur-sync='aur sync --upgrades --chroot --noconfirm --no-view --rmdeps'
+alias aur-remove='repo-remove /var/cache/pacman/aur/aur.db.tar'
+alias aur-add='repo-add /var/cache/pacman/aur/aur.db.tar'
+alias aur-list='pacman -Sl aur'
+alias aur-search='aur search'
+
+alias reboot='sudo reboot'
+alias shutdown='sudo shutdown -h now'
