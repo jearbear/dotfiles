@@ -1,0 +1,17 @@
+window:
+  padding:
+    x: 10
+    y: 10
+  dynamic_title: false
+  decorations: buttonless
+
+font:
+  normal:
+    family: Input
+    style: Regular
+  size: 13.0
+  use_thin_strokes: true
+
+cursor:
+  thickness: 0.20
+  vi_mode_style: Underline
