@@ -11,13 +11,12 @@ let maplocalleader = ' '
 call plug#begin('~/.config/nvim/plugged')
 
 " themes
-Plug 'chriskempson/base16-vim'
+Plug 'RRethy/nvim-base16'
 
 " mappings
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
@@ -33,7 +32,6 @@ Plug 'mhinz/vim-signify'
 
 " project management
 Plug 'dense-analysis/ale'
-Plug 'jpalardy/vim-slime'
 Plug 'romainl/vim-qf'
 Plug 'tpope/vim-eunuch'
 
@@ -46,6 +44,9 @@ Plug 'tpope/vim-endwise'
 Plug 'justinmk/vim-dirvish'
 Plug 'mhinz/vim-grepper'
 Plug 'wsdjeg/vim-fetch'
+
+" LSP stuff
+Plug 'neovim/nvim-lspconfig'
 
 " language support
 Plug 'ElmCast/elm-vim'
@@ -71,7 +72,6 @@ Plug 'junegunn/fzf.vim'
 
 " trying out
 Plug 'Asheq/close-buffers.vim'
-" Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'mbbill/undotree'
 Plug 'preservim/tagbar'
 Plug 'tpope/vim-obsession'
@@ -272,7 +272,7 @@ cnoremap w' w
 nnoremap <silent> <Leader>ve :e ~/.config/nvim/init.vim<CR>
 nnoremap <silent> <Leader>vr :source ~/.config/nvim/init.vim<CR>
 
-" maximize the window
+" maximize the pane
 nnoremap <C-w>m <C-w><bar><C-w>_
 
 " copy the file with another name
@@ -329,7 +329,6 @@ let g:grepper.stop = 500
 
 nnoremap <silent> \ :Grepper<CR>
 nnoremap <silent> <Leader>\ :Grepper -buffer<CR>
-nnoremap <silent> <bar> :Grepper -buffers<CR>
 nmap gs <Plug>(GrepperOperator)
 xmap gs <Plug>(GrepperOperator)
 " }}}
@@ -386,11 +385,6 @@ let g:targets_seekRanges .= ' lb ar ab lB Ar aB Ab AB' " ranges around the curso
 let g:targets_seekRanges .= ' ll'                      " ranges behind the cursor, fully contained on the same line
 " }}}
 
-" vim-slime {{{
-let g:slime_target = 'tmux'
-let g:slime_paste_file = tempname()
-" }}}
-
 " vim-go {{{
 let g:go_fmt_command = 'goimports'
 let g:go_list_type = 'quickfix'
@@ -409,17 +403,16 @@ let g:fzf_action = {
             \ 'ctrl-s': 'split',
             \ 'ctrl-v': 'vsplit',
             \ }
-let g:fzf_preview_window = []
+let g:fzf_preview_window = [] " disable the preview window
 
-command! SmartFiles execute (len(system('git rev-parse')) ? ':Files' : ':GFiles')
-command! Dotfiles call fzf#vim#files('~/.dotfiles')
-
-nnoremap <silent> <Leader>f :SmartFiles<CR>
+nnoremap <silent> <Leader>f :Files<CR>
+nnoremap <silent> <Leader>F :GFiles<CR>
 nnoremap <silent> <Leader>l :Buffers<CR>
 nnoremap <silent> <Leader>; :BLines<CR>
 nnoremap <silent> <Leader>: :Lines<CR>
 nnoremap <silent> <Leader>k :BTags<CR>
 nnoremap <silent> <Leader>m :Marks<CR>
+nnoremap <silent> <bar> :Rg<CR>
 
 augroup FZF
     autocmd!
@@ -572,11 +565,6 @@ augroup PYTHON
 
     " Drop a breakpoint and set a mark for it
     autocmd Filetype python nnoremap <silent> <buffer> <Leader>pr Oimport bpdb; bpdb.set_trace()<ESC>mp
-augroup END
-
-augroup JSON
-    autocmd!
-    autocmd FileType json nmap <silent> <buffer> <Leader>fp :%!jq<CR>
 augroup END
 
 augroup RUST

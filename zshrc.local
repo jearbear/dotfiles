@@ -4,3 +4,5 @@ eval "$(fnm env)"
 hash -d pipe=$HOME/Code/pipe
 hash -d be=$HOME/Code/pipe/backend
 hash -d fe=$HOME/Code/pipe/frontend
+
+alias cdp='cd ~/code/pipe'
