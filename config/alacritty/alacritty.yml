@@ -7,9 +7,9 @@ window:
 
 font:
   normal:
-    family: Input
+    family: Iosevka Term
     style: Regular
-  size: 13.0
+  size: 14.0
   use_thin_strokes: true
 
 cursor:

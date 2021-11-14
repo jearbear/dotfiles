@@ -55,6 +55,7 @@ Plug 'cespare/vim-toml'
 Plug 'elixir-editors/vim-elixir'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'godlygeek/tabular', { 'for': 'markdown' }
+Plug 'google/vim-jsonnet'
 Plug 'jparise/vim-graphql'
 Plug 'leafgarland/typescript-vim'
 Plug 'lervag/vimtex'

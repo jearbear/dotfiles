@@ -75,6 +75,7 @@ alias reload='source ~/.zshrc && source ~/.zshenv'
 alias rgm='rg --multiline --multiline-dotall'
 alias rgo='rg --no-heading --no-filename --no-line-number --only-matching'
 alias s='sudo'
+alias sdots='dots --store-dir ~/.dotfiles.secret'
 alias t='TERM=xterm-256color tmux new-session -A -s main'
 alias vi='nvim'
 alias vim='nvim'
@@ -100,7 +101,7 @@ hash -d dots=$HOME/.dotfiles
 # fzf
 [ -r ~/.fzf.zsh ] && . ~/.fzf.zsh
 
-# fzf + git integrations
+# disable a conflicting mapping to allow for fzf + git integrations
 bindkey -r '^G'
 
 # determine if the CWD is within a git repo
@@ -108,32 +109,44 @@ __is_in_git_repo() {
     git rev-parse HEAD > /dev/null 2>&1
 }
 
-# select a git commit via FZF and dump it into the prompt
+
+# select a git commit from the branch via FZF and dump it into the prompt
+__git-pick-branch-commit() {
+    __is_in_git_repo || return
+    LBUFFER="${LBUFFER}$(git pick branch-commit) "
+    zle reset-prompt
+}
+zle -N __git-pick-branch-commit
+bindkey '^G^P' __git-pick-branch-commit
+
+# select a git commit from the log via FZF and dump it into the prompt
 __git-pick-commit() {
     __is_in_git_repo || return
-    LBUFFER="${LBUFFER}$(git pick-commit) "
+    LBUFFER="${LBUFFER}$(git pick commit) "
     zle reset-prompt
 }
 zle -N __git-pick-commit
-bindkey '^G^P' __git-pick-commit
+bindkey '^G^L' __git-pick-commit
 
 # select a git branch via FZF and dump it into the prompt
 __git-pick-branch() {
     __is_in_git_repo || return
-    LBUFFER="${LBUFFER}$(git pick-branch) "
+    LBUFFER="${LBUFFER}$(git pick branch) "
     zle reset-prompt
 }
 zle -N __git-pick-branch
 bindkey '^G^B' __git-pick-branch
 
 # select a git unstaged file via FZF and dump it into the prompt
-__git-pick-unstaged-files() {
-__is_in_git_repo || return
-LBUFFER="${LBUFFER}$(git pick-unstaged-files) "
-zle reset-prompt
+__git-pick-files() {
+    __is_in_git_repo || return
+    LBUFFER="${LBUFFER}$(git pick files)"
+    zle reset-prompt
 }
-zle -N __git-pick-unstaged-files
-bindkey '^G^U' __git-pick-unstaged-files
+zle -N __git-pick-files
+bindkey '^G^F' __git-pick-files
+
+[ -r ~/.zshrc.git ] && . ~/.zshrc.git
 
 # source local configs
 [ -r ~/.zshrc.local ] && . ~/.zshrc.local

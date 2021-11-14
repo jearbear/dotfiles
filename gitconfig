@@ -17,7 +17,7 @@
     fp = push -f
 
     aa = add -A
-    ai = !git add $(git pick-unstaged-files) && :
+    ai = !git add $(git pick files) && :
 
     d = diff
     ds = diff --staged HEAD
@@ -39,7 +39,7 @@
     save = !git add -A && git commit -m \"${1:-$(shuf -n 1 ~/.word_list.txt)}\" && git push && :
     resave = !git add -A && git recommit && git push -f && :
 
-    cleanup = !"f() { set -e; BRANCHES=$(git pick-branches-wo-main); git branch -D $BRANCHES; }; f"
+    cleanup = !"f() { set -e; BRANCHES=$(git pick branches-without-main); git branch -D $BRANCHES; }; f"
 
     rename = branch -m
 
@@ -47,7 +47,7 @@
     ls = log --oneline --graph --since='1 month ago' --simplify-by-decoration --branches
     lsa = log --oneline --graph --simplify-by-decoration --branches
 
-    ri = !"f() { set -e; BRANCH=$(git pick-branch); git rebase --interactive $BRANCH; }; f"
+    ri = !"f() { set -e; BRANCH=$(git pick branch); git rebase --interactive $BRANCH; }; f"
     rim = !git update && git rebase --interactive main && :
     rimp = !git rim && git push -f && :
     rib = !git rebase --interactive $(git base) && :
@@ -55,11 +55,11 @@
     romp = !git rom && git push -f && :
     recon = !git add -A && git rebase --continue
 
-    bmerge = !"f() { set -e; BRANCH=$(git pick-branch); git merge --squash $BRANCH && git commit -m \"[MERGED] $BRANCH\"; }; f"
+    bmerge = !"f() { set -e; BRANCH=$(git pick branch); git merge --squash $BRANCH && git commit -m \"[MERGED] $BRANCH\"; }; f"
 
     co = checkout
     com = checkout main
-    cob = !"f() { set -e; BRANCH=$(git pick-branch); git co $BRANCH; }; f"
+    cob = !"f() { set -e; BRANCH=$(git pick branch); git co $BRANCH; }; f"
 
     get = !git fetch origin ${1?}:jerry-${1?} && git checkout jerry-${1?} && :
 
@@ -69,25 +69,14 @@
     recommit = commit --amend --no-edit
     uncommit = reset --soft HEAD^
 
-    rev = !"f() { set -e; COMMIT=$(git pick-commit); git revert $COMMIT; }; f"
-    fix = !"f() { set -e; COMMIT=$(git pick-commit); git commit --fixup $COMMIT; }; f"
+    rev = !"f() { set -e; COMMIT=$(git pick branch-commit); git revert $COMMIT; }; f"
+    fix = !"f() { set -e; COMMIT=$(git pick branch-commit); git commit --fixup $COMMIT; }; f"
 
     stow = !"if [[ $(git log -1 --format=%B) == '[STOWED]' ]]; then git commit -a --amend --no-edit; else git add -A && git commit -m '[STOWED]'; fi"
     unstow = !"if [[ $(git log -1 --format=%B) == '[STOWED]' ]]; then git reset @^; else echo \"Nothing to unstow\"; fi"
 
-    fzf-commit = !"f() { fzf --reverse --ansi --no-info --multi --preview='git show --color=always {1} --stat' --preview-window='up:70%:sharp'; }; f"
-    fzf-branch = !"f() { fzf --reverse --ansi --no-info --multi --preview='git log --oneline --color main..{1}' --preview-window='up:70%:sharp'; }; f"
-    fzf-unstaged-file = !"f() { fzf --ansi --multi --preview='git diff --color=always {1}' --preview-window='up:70%:sharp'; }; f"
-
-    pick-commit = !"f() { set -euo pipefail; git log --oneline main..HEAD --color | git fzf-commit | cut -f 1 -d ' ' | head -n 1 | tr -d '\\n'; }; f"
-    pick-branch = !"f() { set -euo pipefail; git branch | rg -v '^\\*' | awk '{$1=$1};1' | git fzf-branch | cut -f 1 -d ' ' | head -n 1 | tr -d '\\n'; }; f"
-    pick-branch-wo-main = !"f() { set -euo pipefail; git branch | rg -v '^\\*' | rg -v 'main' | awk '{$1=$1};1' | git fzf-branch | head -n 1 | tr -d '\\n'; }; f"
-    pick-branches = !"f() { set -euo pipefail; git branch | rg -v '^\\*' | awk '{$1=$1};1' | git fzf-branch | tr '\\n' ' '; }; f"
-    pick-branches-wo-main = !"f() { set -euo pipefail; git branch | rg -v '^\\*' | rg -v 'main' | awk '{$1=$1};1' | git fzf-branch | tr '\\n' ' '; }; f"
-
-    pick-unstaged-files = !"f() { set -euo pipefail; git status --short | cut -c 4- | git fzf-unstaged-file | tr '\\n' ' '; }; f"
-
     ci = !hub ci-status --color --verbose ${1:-HEAD} && :
+    cis = !hub ci-status --color ${1:-HEAD} && :
     cir = !git fetch --quiet origin $(git branch-name) && git ci FETCH_HEAD && :
     watch-ci = !watch --color --interval 30 git ci && :
 

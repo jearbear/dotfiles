@@ -1,0 +1,102 @@
+#!/bin/bash
+set -euo pipefail
+
+__is-in-git-repo() {
+    git rev-parse HEAD > /dev/null 2>&1
+}
+
+__fzf-git() {
+    fzf --reverse --ansi --no-info --no-multi --preview-window='up:70%' "$@"
+}
+
+__fzf-git-file() {
+    # `--nth 2..,..` ignores status modifiers when filtering if present
+    __fzf-git --preview='git diff --color=always {-1}' --nth 2..,.. "$@"
+}
+
+__fzf-git-commit() {
+    __fzf-git --preview='git show --color=always {1} --stat' "$@"
+}
+
+__fzf-git-branch() {
+    __fzf-git --preview='git log --oneline --color main..{1}' "$@"
+}
+
+
+__git-pick-file() {
+    git -c color.status=always status --short |
+        __fzf-git-file                        |
+        cut -c 4-  # trim away the status modifiers
+}
+
+__git-pick-files() {
+    git -c color.status=always status --short |
+        __fzf-git-file --multi                |
+        cut -c 4-                             | # trim away the status modifiers
+        tr '\n' ' '
+}
+
+__git-pick-branch-commit() {
+    git log --oneline main..HEAD --color |
+        __fzf-git-commit                 |
+        cut -f 1 -d ' '                  |
+        head -n 1                        |
+        tr -d '\n'
+}
+
+__git-pick-branch() {
+    git branch                  |
+        rg --invert-match '^\*' | # ignore the current branch
+        awk '{$1=$1};1'         |
+        __fzf-git-branch        |
+        cut -f 1 -d ' '         |
+        head -n 1               |
+        tr -d '\n'
+}
+
+__git-pick-branch-without-main() {
+    git branch                   |
+        rg --invert-match '^\*'  |
+        rg --invert-match 'main' |
+        awk '{$1=$1};1'          |
+        __fzf-git-branch         |
+        cut -f 1 -d ' '          |
+        head -n 1                |
+        tr -d '\n'
+}
+
+__git-pick-branches() {
+    git branch                   |
+        rg --invert-match '^\*'  |
+        awk '{$1=$1};1'          |
+        __fzf-git-branch --multi |
+        tr '\n' ' '
+}
+
+__git-pick-branches-without-main() {
+    git branch                   |
+        rg --invert-match '^\*'  |
+        rg --invert-match 'main' |
+        awk '{$1=$1};1'          |
+        __fzf-git-branch --multi |
+        tr '\n' ' '
+}
+
+__git-pick-commit() {
+    git log --date=short --format="%C(green)%C(bold)%cd %C(auto)%h%d %s (%an)" --color=always |
+        __fzf-git-commit --multi --preview 'git show --color=always {2}'                      |
+        cut -d ' ' -f 2
+}
+
+__is-in-git-repo || exit
+
+subcommand=$1
+case $subcommand in
+    "")
+        echo "Error: must provide a subcommand." >&2
+        ;;
+    *)
+        shift
+        __git-pick-${subcommand} $@
+        ;;
+esac
