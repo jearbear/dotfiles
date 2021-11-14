@@ -60,10 +60,6 @@ setopt prompt_subst
 PROMPT='%1/ %F{magenta}%(1j.[%j] .)//%f '
 RPROMPT='${vcs_info_msg_0_}%f'
 
-# base16 shell
-BASE16_SHELL="$HOME/.config/base16-shell/"
-[ -n "$PS1" ] && [ -s "$BASE16_SHELL/profile_helper.sh" ] && eval "$("$BASE16_SHELL/profile_helper.sh")"
-
 # aliases
 alias ..='cd ..'
 alias ...='cd ../..'
@@ -108,7 +104,6 @@ bindkey -r '^G'
 __is_in_git_repo() {
     git rev-parse HEAD > /dev/null 2>&1
 }
-
 
 # select a git commit from the branch via FZF and dump it into the prompt
 __git-pick-branch-commit() {

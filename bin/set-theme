@@ -1,0 +1,14 @@
+#!/bin/bash
+set -euo pipefail
+
+colors_dir="${HOME}/.base16-kitty/colors"
+
+# You'll need to clone https://github.com/kdrag0n/base16-kitty for this to work
+theme=$(fd '.*-256.conf' ${colors_dir} | rg --only-matching '[^/]*$' | sed 's/-256.conf//; s/base16-//' | fzf)
+
+# Set Kitty theme
+kitty @ set-colors --all --configured "${colors_dir}/base16-${theme}-256.conf"
+ln -sF "${colors_dir}/base16-${theme}-256.conf" "${HOME}/.config/kitty/theme.conf"
+
+# Set Vim theme
+echo -e "colorscheme base16-${theme}" >| ~/.config/nvim/theme.vim

@@ -11,7 +11,7 @@ let maplocalleader = ' '
 call plug#begin('~/.config/nvim/plugged')
 
 " themes
-Plug 'RRethy/nvim-base16'
+Plug 'RRethy/nvim-base16' " properly sets colors for LSP highlights
 
 " mappings
 Plug 'AndrewRadev/splitjoin.vim'
@@ -82,10 +82,8 @@ call plug#end()
 " }}}
 
 " COLOR SCHEME {{{
-if filereadable(expand('~/.vimrc_background'))
-    set termguicolors
-    source ~/.vimrc_background
-endif
+set termguicolors
+source $VIMFILES/theme.vim " this file is created by running `set-theme`
 " }}}
 
 " VIM SETTINGS {{{
