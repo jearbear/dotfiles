@@ -66,6 +66,7 @@ Plug 'rodjek/vim-puppet'
 Plug 'rust-lang/rust.vim'
 Plug 'tpope/vim-ragtag'
 Plug 'vim-ruby/vim-ruby'
+Plug 'fladson/vim-kitty'
 
 " fzf
 Plug 'junegunn/fzf'
