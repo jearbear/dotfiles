@@ -1,5 +1,5 @@
 " ENV VARIABLES {{{
-let $VIMFILES=expand('~/.config/nvim')
+let $VIM_FILES=expand('~/.config/nvim')
 " }}}
 
 " LEADER KEYS {{{
@@ -11,79 +11,76 @@ let maplocalleader = ' '
 call plug#begin('~/.config/nvim/plugged')
 
 " themes
-Plug 'RRethy/nvim-base16' " properly sets colors for LSP highlights
+Plug 'RRethy/nvim-base16'        " properly sets colors for LSP highlights
 
 " mappings
-Plug 'AndrewRadev/splitjoin.vim'
-Plug 'junegunn/vim-easy-align'
-Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-rsi'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-unimpaired'
-Plug 'wellle/targets.vim'
+Plug 'AndrewRadev/splitjoin.vim' " language-aware splits and joins
+Plug 'junegunn/vim-easy-align'   " easily vertically align text (like this!)
+Plug 'tpope/vim-commentary'      " key bindings for commenting
+Plug 'tpope/vim-rsi'             " Emacs bindings in command mode
+Plug 'tpope/vim-surround'        " additional mappings to manipulate brackets
+Plug 'tpope/vim-unimpaired'      " mostly use for [<Space> and ]<Space>
+Plug 'wellle/targets.vim'        " additional text objects
+Plug 'Asheq/close-buffers.vim'   " delete buffers without closing the window
 
 " copy pasta
-Plug 'svermeulen/vim-yoink'
-Plug 'svermeulen/vim-subversive'
+Plug 'svermeulen/vim-yoink'      " better handling of yanks (yank rings, auto-formatting)
+Plug 'svermeulen/vim-subversive' " mappings to substitute text
 
 " version control
-Plug 'lambdalisue/gina.vim'
-Plug 'mhinz/vim-signify'
+Plug 'lambdalisue/gina.vim'      " git integration (show current branch, open in GH)
+Plug 'mhinz/vim-signify'         " VCS change indicators in the gutter
 
 " project management
-Plug 'dense-analysis/ale'
-Plug 'romainl/vim-qf'
-Plug 'tpope/vim-eunuch'
+Plug 'neomake/neomake'           " code linting
+Plug 'romainl/vim-qf'            " slicker qf and loclist handling
+Plug 'tpope/vim-eunuch'          " unix shell commands in command mode
 
 " completion
-Plug 'lifepillar/vim-mucomplete'
-Plug 'rstacruz/vim-closer'
-Plug 'tpope/vim-endwise'
+Plug 'lifepillar/vim-mucomplete' " best-effort tab completion
+Plug 'rstacruz/vim-closer'       " automatically close brackets
+Plug 'tpope/vim-endwise'         " automatically close everything else
 
 " project navigation
-Plug 'justinmk/vim-dirvish'
-Plug 'mhinz/vim-grepper'
-Plug 'wsdjeg/vim-fetch'
+Plug 'justinmk/vim-dirvish'      " minimal file browser
+Plug 'mhinz/vim-grepper'         " slicker grep support
+Plug 'wsdjeg/vim-fetch'          " support opening line and column numbers (e.g. foo.bar:13)
 
 " LSP stuff
 Plug 'neovim/nvim-lspconfig'
 
 " language support
-Plug 'ElmCast/elm-vim'
 Plug 'MaxMEllon/vim-jsx-pretty'
 Plug 'cespare/vim-toml'
 Plug 'elixir-editors/vim-elixir'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'fladson/vim-kitty'
 Plug 'godlygeek/tabular', { 'for': 'markdown' }
 Plug 'google/vim-jsonnet'
 Plug 'jparise/vim-graphql'
 Plug 'leafgarland/typescript-vim'
-Plug 'lervag/vimtex'
 Plug 'neovimhaskell/haskell-vim'
 Plug 'pangloss/vim-javascript'
 Plug 'plasticboy/vim-markdown'
-Plug 'rodjek/vim-puppet'
 Plug 'rust-lang/rust.vim'
 Plug 'tpope/vim-ragtag'
-Plug 'vim-ruby/vim-ruby'
-Plug 'fladson/vim-kitty'
 
 " fzf
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
 " trying out
-Plug 'Asheq/close-buffers.vim'
 Plug 'mbbill/undotree'
 Plug 'preservim/tagbar'
 Plug 'tpope/vim-obsession'
+Plug 'tpope/vim-projectionist'
 
 call plug#end()
 " }}}
 
 " COLOR SCHEME {{{
 set termguicolors
-source $VIMFILES/theme.vim " this file is created by running `set-theme`
+source $VIM_FILES/theme.vim " this file is created by running `set-theme`
 " }}}
 
 " VIM SETTINGS {{{
@@ -174,14 +171,14 @@ set spelllang=en
 set dictionary+=/usr/share/dict/words
 
 " ensure that these directories exist if they don't already
-silent !mkdir $VIMFILES/backup// > /dev/null 2>&1
-silent !mkdir $VIMFILES/swp// > /dev/null 2>&1
-silent !mkdir $VIMFILES/undo// > /dev/null 2>&1
+silent !mkdir $VIM_FILES/backup// > /dev/null 2>&1
+silent !mkdir $VIM_FILES/swp// > /dev/null 2>&1
+silent !mkdir $VIM_FILES/undo// > /dev/null 2>&1
 
 " relegate backup, swp, and undo files to their own directory
-set backupdir=$VIMFILES/backup//
-set directory=$VIMFILES/swp//
-set undofile undodir=$VIMFILES/undo//
+set backupdir=$VIM_FILES/backup//
+set directory=$VIM_FILES/swp//
+set undofile undodir=$VIM_FILES/undo//
 
 " allow jumping to filename:linenum
 set isfname-=:
@@ -247,15 +244,15 @@ nnoremap <Leader>S :%s/<C-r><C-w>/
 nnoremap <Leader>n /<C-r>"<CR>
 nnoremap <Leader>N ?<C-r>"<CR>
 
-" delete text without yanking
-nnoremap <Leader>d "_d
-xnoremap <Leader>d "_d
-
-" yank text to the system clipboard
+" yank/paste to/from system clipboard
 " (recursive mappings are intentionally used to preserve the benefits of
 " preserving cursor position provided by vim-yoink)
+nmap <Leader>d "+d
+xmap <Leader>d "+d
 nmap <Leader>y "+y
 xmap <Leader>y "+y
+nmap <Leader>p "+p
+xmap <Leader>p "+p
 
 " repeat macro on selection
 xnoremap <silent> . :norm.<CR>
@@ -277,6 +274,9 @@ nnoremap <C-w>m <C-w><bar><C-w>_
 
 " copy the file with another name
 nnoremap <Leader>cc :saveas %:h<C-z>
+
+" create a new file in the same directory
+nnoremap <Leader>cn :e %:h<C-z>
 " }}}
 
 " FUNCTIONS {{{
@@ -295,7 +295,8 @@ command! JSON call MakeScratch('json')
 " vim-qf {{{
 let g:qf_mapping_ack_style = 1
 
-nmap <Leader>qq <Plug>(qf_qf_toggle)
+nmap <Leader>qf <Plug>(qf_qf_toggle)
+nmap <Leader>ql <Plug>(qf_loc_toggle)
 nmap <silent> [q :cprev<CR>
 nmap <silent> ]q :cnext<CR>
 
@@ -333,48 +334,31 @@ nmap gs <Plug>(GrepperOperator)
 xmap gs <Plug>(GrepperOperator)
 " }}}
 
-" ale {{{
-let g:ale_lint_on_insert_leave = 0
-let g:ale_lint_on_text_changed = 'never'
-let g:ale_set_highlights = 0
-let g:ale_sign_error = '!!'
-let g:ale_sign_warning = '!!'
+" neomake {{{
+call neomake#configure#automake('rw')
+let g:neomake_virtualtext_prefix = ' ❯❯ '
+let g:neomake_cursormoved_delay = 10
 
-let g:ale_linters = {
-            \ 'sh': ['shell', 'shellcheck'],
-            \ 'bash': ['shell', 'shellcheck'],
-            \ 'zsh': ['shell', 'shellcheck'],
-            \ 'haskell': ['stack-build', 'hlint'],
-            \ 'javascript': ['tsserver', 'eslint', 'prettier'],
-            \ 'typescript': ['tsserver', 'eslint', 'prettier'],
-            \ 'typescriptreact': ['tsserver', 'eslint', 'prettier'],
+let g:neomake_error_sign = {
+            \ 'text': 'XX',
+            \ 'texthl': 'NeomakeErrorSign',
             \ }
-let g:ale_fixers = {
-            \ '*': ['remove_trailing_lines', 'trim_whitespace'],
-            \ 'elixir': ['mix_format'],
-            \ 'haskell': [{_ -> { 'command': 'ormolu --mode inplace %t', 'read_temporary_file': 1 }}],
-            \ 'python': ['black'],
-            \ 'rust': 'rustfmt',
-            \ 'javascript': ['prettier'],
-            \ 'typescript': ['prettier'],
-            \ 'typescriptreact': ['prettier'],
+let g:neomake_warning_sign = {
+            \ 'text': '!!',
+            \ 'texthl': 'NeomakeWarningSign',
             \ }
-let g:ale_fix_on_save = 1
+let g:neomake_message_sign = {
+            \ 'text': '>>',
+            \ 'texthl': 'NeomakeMessageSign',
+            \ }
+let g:neomake_info_sign = {
+            \ 'text': 'ii',
+            \ 'texthl': 'NeomakeInfoSign'
+            \ }
+let g:neomake_highlight_columns = 0
 
-let g:ale_python_auto_pipenv = 1
-
-let g:ale_rust_cargo_use_clippy = 1
-
-nmap <C-k> <Plug>(ale_previous)
-nmap <C-j> <Plug>(ale_next)
-
-augroup ALE
-    autocmd!
-    autocmd FileType javascript,typescript,typescriptreact,rust nmap <buffer> <Leader>d <Plug>(ale_go_to_definition)
-    autocmd FileType javascript,typescript,typescriptreact,rust nmap <buffer> <C-]> <Plug>(ale_go_to_definition)
-    autocmd FileType javascript,typescript,typescriptreact,rust nmap <buffer> <Leader>h <Plug>(ale_hover)
-    autocmd FileType javascript,typescript,typescriptreact,rust setlocal omnifunc=ale#completion#OmniFunc
-augroup END
+nnoremap <silent> <C-k> :NeomakePrevLoclist<CR>
+nnoremap <silent> <C-j> :NeomakeNextLoclist<CR>
 " }}}
 
 " targets.vim {{{
@@ -387,7 +371,6 @@ let g:targets_seekRanges .= ' ll'                      " ranges behind the curso
 
 " vim-go {{{
 let g:go_fmt_command = 'goimports'
-let g:go_list_type = 'quickfix'
 let g:go_fold_enable = ['import']
 " }}}
 
@@ -420,31 +403,28 @@ augroup FZF
 augroup END
 " }}}
 
-" elm-vim {{{
-let g:elm_setup_keybindings = 0
-" }}}
-
-" vim-ruby {{{
-let ruby_foldable_groups = 'def class module do case'
-" }}}
-
 " vim-signify {{{
 let g:signify_vcs_list = ['git']
+let g:signify_priority = 9 " allow neomake to have priority
 " }}}
 
 " vim-yoink {{{
 let g:yoinkAutoFormatPaste = 1
 let g:yoinkIncludeDeleteOperations = 1
 
-nmap <C-=> <plug>(YoinkPostPasteToggleFormat)
 nmap <C-n> <plug>(YoinkPostPasteSwapForward)
 nmap <C-p> <plug>(YoinkPostPasteSwapBack)
+
 nmap P <plug>(YoinkPaste_P)
+nmap p <plug>(YoinkPaste_p)
+
 nmap [y <plug>(YoinkRotateBack)
 nmap ]y <plug>(YoinkRotateForward)
-nmap p <plug>(YoinkPaste_p)
+
 nmap y <plug>(YoinkYankPreserveCursorPosition)
 xmap y <plug>(YoinkYankPreserveCursorPosition)
+
+nmap <C-[> <plug>(YoinkPostPasteToggleFormat)
 " }}}
 
 " vim-subversive {{{
@@ -490,17 +470,6 @@ let g:tagbar_type_elixir = {
     \ 'sort' : 0
 \ }
 
-let g:tagbar_type_ruby = {
-    \ 'kinds' : [
-        \ 'm:modules',
-        \ 'c:classes',
-        \ 'd:describes',
-        \ 'C:contexts',
-        \ 'f:methods',
-        \ 'F:singleton methods'
-    \ ]
-\ }
-
 nnoremap <silent> <Leader>K :TagbarToggle<CR>
 " }}}
 
@@ -513,19 +482,17 @@ nnoremap <silent> <Leader>u :UndotreeToggle<CR>
 " }}}
 
 " {{{ vim-obsession
-" save a session under the current git branch name
+" save a session using the current cwd and git branch name as identifiers
 function! s:SaveSession() abort
-    if getcwd() =~ '/' . gina#component#repo#name() . '$'
-        let branch = gina#component#repo#branch()
-        if branch ==# ''
-            Obsession
-        else
-            let _ = system('mkdir -p .git/sessions')
-            execute 'Obsession .git/sessions/' . branch . '.vim'
-        endif
-    else
-        echo 'SaveSession only works in the root .git directory'
+    let session_id = substitute(getcwd(), '/', '_', 'g')
+    let branch = gina#component#repo#branch()
+    if branch != ''
+        let session_id = session_id . '@' . branch
     endif
+
+    let sessions_dir = $VIM_FILES . '/sessions'
+    let _ = system('mkdir -p ' . sessions_dir)
+    execute 'Obsession ' . sessions_dir . '/' . session_id . '.vim'
 endfunction
 
 command! SaveSession call s:SaveSession()
@@ -553,6 +520,12 @@ augroup END
 augroup GO
     autocmd!
     autocmd FileType go setlocal foldenable foldmethod=syntax
+    autocmd FileType go setlocal noexpandtab shiftwidth=8
+    autocmd FileType go setlocal textwidth=100
+
+    autocmd FileType go nnoremap <silent> <buffer> <Leader>h :GoInfo<CR>
+    autocmd FileType go nnoremap <silent> <buffer> <Leader>gc :GoCallers<CR>
+    autocmd FileType go nnoremap <silent> <buffer> <Leader>gr :GoReferrers<CR>
 augroup END
 
 augroup HASKELL

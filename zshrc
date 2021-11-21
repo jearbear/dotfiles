@@ -77,18 +77,29 @@ alias vi='nvim'
 alias vim='nvim'
 alias watch='watch --color --interval 5'
 
+# determine if the CWD is within a git repo
+__is_in_git_repo() {
+    git rev-parse HEAD > /dev/null 2>&1
+}
+
 # quickly load the relevant vim session
 alias vs='__vim_with_session'
 function __vim_with_session() {
-    if [ -d '.git' ]; then
-        [ ! -d ".git/sessions" ] && mkdir ".git/sessions"
-        touch ".git/sessions/$(git branch-name).vim"
-        nvim -S ".git/sessions/$(git branch-name).vim"
-    elif [ -f 'Session.vim' ]; then
-        nvim -S 'Session.vim'
+    sessions_dir="$HOME/.config/nvim/sessions"
+    if __is_in_git_repo; then
+        session_id="${PWD//\//_}@$(git branch-name).vim"
+        [ ! -d "$sessions_dir" ] && mkdir "$sessions_dir"
     else
-        nvim
+        session_id="${PWD//\//_}.vim"
     fi;
+
+    session_file="${sessions_dir}/${session_id}"
+    if [ -f "${session_file}" ]; then
+        nvim -S "${session_file}"
+    else
+        touch "${session_file}"
+        nvim -c "SaveSession"
+    fi
 }
 
 # directory shortcuts
@@ -99,11 +110,6 @@ hash -d dots=$HOME/.dotfiles
 
 # disable a conflicting mapping to allow for fzf + git integrations
 bindkey -r '^G'
-
-# determine if the CWD is within a git repo
-__is_in_git_repo() {
-    git rev-parse HEAD > /dev/null 2>&1
-}
 
 # select a git commit from the branch via FZF and dump it into the prompt
 __git-pick-branch-commit() {

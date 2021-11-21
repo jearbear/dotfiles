@@ -6,3 +6,5 @@ hash -d be=$HOME/Code/pipe/backend
 hash -d fe=$HOME/Code/pipe/frontend
 
 alias cdp='cd ~/code/pipe'
+alias cdbe='cd ~/code/pipe/backend'
+alias cdfe='cd ~/code/pipe/frontend'
