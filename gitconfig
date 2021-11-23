@@ -1,4 +1,7 @@
 ; vim: set filetype=gitconfig:
+[init]
+    defaultBranch = main
+
 [core]
     excludesfile = ~/.gitignore
     pager = delta

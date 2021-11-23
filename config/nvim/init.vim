@@ -75,6 +75,9 @@ Plug 'preservim/tagbar'
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-projectionist'
 
+" keeping this around until I find a better solution for typescript
+Plug 'dense-analysis/ale', { 'for': ['javascript', 'typescript', 'typescriptreact'] }
+
 call plug#end()
 " }}}
 
@@ -292,6 +295,11 @@ command! JSON call MakeScratch('json')
 " }}}
 
 " PLUGIN SETTINGS {{{
+" vim-mucomplete {{{
+let g:mucomplete#chains = {}
+let g:mucomplete#can_complete = {}
+" }}}
+
 " vim-qf {{{
 let g:qf_mapping_ack_style = 1
 
@@ -336,8 +344,8 @@ xmap gs <Plug>(GrepperOperator)
 
 " neomake {{{
 call neomake#configure#automake('rw')
-let g:neomake_virtualtext_prefix = ' ❯❯ '
 let g:neomake_cursormoved_delay = 10
+let g:neomake_virtualtext_prefix = ' ❯❯ '
 
 let g:neomake_error_sign = {
             \ 'text': 'XX',
@@ -357,6 +365,8 @@ let g:neomake_info_sign = {
             \ }
 let g:neomake_highlight_columns = 0
 
+
+nnoremap <silent> <Leader>m :Neomake!<CR>
 nnoremap <silent> <C-k> :NeomakePrevLoclist<CR>
 nnoremap <silent> <C-j> :NeomakeNextLoclist<CR>
 " }}}
@@ -394,7 +404,7 @@ nnoremap <silent> <Leader>l :Buffers<CR>
 nnoremap <silent> <Leader>; :BLines<CR>
 nnoremap <silent> <Leader>: :Lines<CR>
 nnoremap <silent> <Leader>k :BTags<CR>
-nnoremap <silent> <Leader>m :Marks<CR>
+" nnoremap <silent> <Leader>m :Marks<CR>
 nnoremap <silent> <bar> :Rg<CR>
 
 augroup FZF
@@ -509,6 +519,37 @@ vmap <Leader>/ gc
 nnoremap <silent> <Leader>Q :Bdelete menu<CR>
 " }}}
 
+" ale {{{
+let g:ale_lint_on_insert_leave = 0
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_set_highlights = 1
+let g:ale_sign_error = '!!'
+let g:ale_sign_warning = '!!'
+
+let g:ale_linters = {
+            \ 'javascript': ['tsserver', 'eslint', 'prettier'],
+            \ 'typescript': ['tsserver', 'eslint', 'prettier'],
+            \ 'typescriptreact': ['tsserver', 'eslint', 'prettier'],
+            \ }
+let g:ale_fixers = {
+            \ 'javascript': ['prettier'],
+            \ 'typescript': ['prettier'],
+            \ 'typescriptreact': ['prettier'],
+            \ }
+let g:ale_fix_on_save = 1
+
+augroup ALE
+    autocmd!
+
+    autocmd FileType javascript,typescript,typescriptreact nmap <buffer> <C-k> <Plug>(ale_previous)
+    autocmd FileType javascript,typescript,typescriptreact nmap <buffer> <C-j> <Plug>(ale_next)
+    autocmd FileType javascript,typescript,typescriptreact nmap <buffer> <Leader>d <Plug>(ale_go_to_definition)
+    autocmd FileType javascript,typescript,typescriptreact nmap <buffer> <C-]> <Plug>(ale_go_to_definition)
+    autocmd FileType javascript,typescript,typescriptreact nmap <buffer> <Leader>h <Plug>(ale_hover)
+    autocmd FileType javascript,typescript,typescriptreact setlocal omnifunc=ale#completion#OmniFunc
+augroup END
+" }}}
+
 " }}}
 
 " LANGUAGE AUTO GROUPS {{{
@@ -526,6 +567,17 @@ augroup GO
     autocmd FileType go nnoremap <silent> <buffer> <Leader>h :GoInfo<CR>
     autocmd FileType go nnoremap <silent> <buffer> <Leader>gc :GoCallers<CR>
     autocmd FileType go nnoremap <silent> <buffer> <Leader>gr :GoReferrers<CR>
+
+    autocmd FileType go iabbrev <buffer> ife; if err != nil {<CR>return err<ESC>ja
+    autocmd FileType go iabbrev <buffer> ifne; if err != nil {<CR>return nil, err<ESC>ja
+    autocmd FileType go iabbrev <buffer> iffe; if err :=; err != nil {<CR>return err<ESC>k0f;i
+    autocmd FileType go iabbrev <buffer> iffne; if err :=; err != nil {<CR>return nil, err<ESC>k0f;i
+    autocmd FileType go iabbrev <buffer> dbg; b, _ := json.MarshalIndent(Z, "", "\t")<CR>fmt.Printf("[DEBUGGING]: %+v\n", b)<ESC>k0fZcw
+
+    let g:mucomplete#chains.go = ['omni']
+    let g:mucomplete#can_complete.go = {
+                \    'omni': { t -> strlen(&l:omnifunc) > 0 }
+                \    }
 augroup END
 
 augroup HASKELL
