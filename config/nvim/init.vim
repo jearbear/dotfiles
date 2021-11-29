@@ -11,7 +11,7 @@ let maplocalleader = ' '
 call plug#begin('~/.config/nvim/plugged')
 
 " themes
-Plug 'RRethy/nvim-base16'        " properly sets colors for LSP highlights
+Plug 'RRethy/nvim-base16'        " version of 'chriskempson/base16-vim' that properly sets colors for LSP highlights
 
 " mappings
 Plug 'AndrewRadev/splitjoin.vim' " language-aware splits and joins
@@ -32,7 +32,6 @@ Plug 'lambdalisue/gina.vim'      " git integration (show current branch, open in
 Plug 'mhinz/vim-signify'         " VCS change indicators in the gutter
 
 " project management
-Plug 'neomake/neomake'           " code linting
 Plug 'romainl/vim-qf'            " slicker qf and loclist handling
 Plug 'tpope/vim-eunuch'          " unix shell commands in command mode
 
@@ -42,18 +41,20 @@ Plug 'rstacruz/vim-closer'       " automatically close brackets
 Plug 'tpope/vim-endwise'         " automatically close everything else
 
 " project navigation
-Plug 'justinmk/vim-dirvish'      " minimal file browser
-Plug 'mhinz/vim-grepper'         " slicker grep support
-Plug 'wsdjeg/vim-fetch'          " support opening line and column numbers (e.g. foo.bar:13)
+Plug 'justinmk/vim-dirvish'            " minimal file browser
+Plug 'mhinz/vim-grepper'               " slicker grep support
+Plug 'wsdjeg/vim-fetch'                " support opening line and column numbers (e.g. foo.bar:13)
 
 " LSP stuff
-Plug 'neovim/nvim-lspconfig'
+Plug 'neovim/nvim-lspconfig'           " defines configs for various servers for me
+Plug 'jose-elias-alvarez/null-ls.nvim' " integrates gofumports, prettier, etc with the LSP support
+Plug 'nvim-lua/plenary.nvim'
 
 " language support
 Plug 'MaxMEllon/vim-jsx-pretty'
 Plug 'cespare/vim-toml'
 Plug 'elixir-editors/vim-elixir'
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' } " only really used for the syntax highlighting and folding of imports blocks
 Plug 'fladson/vim-kitty'
 Plug 'godlygeek/tabular', { 'for': 'markdown' }
 Plug 'google/vim-jsonnet'
@@ -74,9 +75,6 @@ Plug 'mbbill/undotree'
 Plug 'preservim/tagbar'
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-projectionist'
-
-" keeping this around until I find a better solution for typescript
-Plug 'dense-analysis/ale', { 'for': ['javascript', 'typescript', 'typescriptreact'] }
 
 call plug#end()
 " }}}
@@ -296,17 +294,21 @@ command! JSON call MakeScratch('json')
 
 " PLUGIN SETTINGS {{{
 " vim-mucomplete {{{
-let g:mucomplete#chains = {}
 let g:mucomplete#can_complete = {}
+let g:mucomplete#can_complete.default = {
+            \    'omni': { t -> strlen(&l:omnifunc) > 0 }
+            \    }
 " }}}
 
 " vim-qf {{{
 let g:qf_mapping_ack_style = 1
 
-nmap <Leader>qf <Plug>(qf_qf_toggle)
+nmap <Leader>qq <Plug>(qf_qf_toggle)
 nmap <Leader>ql <Plug>(qf_loc_toggle)
-nmap <silent> [q :cprev<CR>
-nmap <silent> ]q :cnext<CR>
+nmap [q <Plug>(qf_qf_prev)
+nmap ]q <Plug>(qf_qf_next)
+nmap [l <Plug>(qf_loc_prev)
+nmap ]l <Plug>(qf_loc_next)
 
 augroup QF
     autocmd FileType qf nnoremap <silent> <buffer> dd 0:Reject<CR>
@@ -342,35 +344,6 @@ nmap gs <Plug>(GrepperOperator)
 xmap gs <Plug>(GrepperOperator)
 " }}}
 
-" neomake {{{
-call neomake#configure#automake('rw')
-let g:neomake_cursormoved_delay = 10
-let g:neomake_virtualtext_prefix = ' ❯❯ '
-
-let g:neomake_error_sign = {
-            \ 'text': 'XX',
-            \ 'texthl': 'NeomakeErrorSign',
-            \ }
-let g:neomake_warning_sign = {
-            \ 'text': '!!',
-            \ 'texthl': 'NeomakeWarningSign',
-            \ }
-let g:neomake_message_sign = {
-            \ 'text': '>>',
-            \ 'texthl': 'NeomakeMessageSign',
-            \ }
-let g:neomake_info_sign = {
-            \ 'text': 'ii',
-            \ 'texthl': 'NeomakeInfoSign'
-            \ }
-let g:neomake_highlight_columns = 0
-
-
-nnoremap <silent> <Leader>m :Neomake!<CR>
-nnoremap <silent> <C-k> :NeomakePrevLoclist<CR>
-nnoremap <silent> <C-j> :NeomakeNextLoclist<CR>
-" }}}
-
 " targets.vim {{{
 let g:targets_seekRanges = 'cc cr cb cB lc ac Ac'      " ranges on the cursor
 let g:targets_seekRanges .= ' lr'                      " range around the cursor, fully contained on the same line
@@ -380,8 +353,14 @@ let g:targets_seekRanges .= ' ll'                      " ranges behind the curso
 " }}}
 
 " vim-go {{{
-let g:go_fmt_command = 'goimports'
 let g:go_fold_enable = ['import']
+
+" rely on the built-in LSP instead for the following
+let g:go_code_completion_enabled = 0
+let g:go_fmt_autosave = 0
+let g:go_imports_autosave = 0
+let g:go_mod_fmt_autosave = 0
+let g:go_gopls_enabled = 0
 " }}}
 
 " vim-rsi {{{
@@ -404,7 +383,6 @@ nnoremap <silent> <Leader>l :Buffers<CR>
 nnoremap <silent> <Leader>; :BLines<CR>
 nnoremap <silent> <Leader>: :Lines<CR>
 nnoremap <silent> <Leader>k :BTags<CR>
-" nnoremap <silent> <Leader>m :Marks<CR>
 nnoremap <silent> <bar> :Rg<CR>
 
 augroup FZF
@@ -415,7 +393,7 @@ augroup END
 
 " vim-signify {{{
 let g:signify_vcs_list = ['git']
-let g:signify_priority = 9 " allow neomake to have priority
+let g:signify_priority = 9 " allow LSP diagnostics to have priority
 " }}}
 
 " vim-yoink {{{
@@ -519,37 +497,8 @@ vmap <Leader>/ gc
 nnoremap <silent> <Leader>Q :Bdelete menu<CR>
 " }}}
 
-" ale {{{
-let g:ale_lint_on_insert_leave = 0
-let g:ale_lint_on_text_changed = 'never'
-let g:ale_set_highlights = 1
-let g:ale_sign_error = '!!'
-let g:ale_sign_warning = '!!'
-
-let g:ale_linters = {
-            \ 'javascript': ['tsserver', 'eslint', 'prettier'],
-            \ 'typescript': ['tsserver', 'eslint', 'prettier'],
-            \ 'typescriptreact': ['tsserver', 'eslint', 'prettier'],
-            \ }
-let g:ale_fixers = {
-            \ 'javascript': ['prettier'],
-            \ 'typescript': ['prettier'],
-            \ 'typescriptreact': ['prettier'],
-            \ }
-let g:ale_fix_on_save = 1
-
-augroup ALE
-    autocmd!
-
-    autocmd FileType javascript,typescript,typescriptreact nmap <buffer> <C-k> <Plug>(ale_previous)
-    autocmd FileType javascript,typescript,typescriptreact nmap <buffer> <C-j> <Plug>(ale_next)
-    autocmd FileType javascript,typescript,typescriptreact nmap <buffer> <Leader>d <Plug>(ale_go_to_definition)
-    autocmd FileType javascript,typescript,typescriptreact nmap <buffer> <C-]> <Plug>(ale_go_to_definition)
-    autocmd FileType javascript,typescript,typescriptreact nmap <buffer> <Leader>h <Plug>(ale_hover)
-    autocmd FileType javascript,typescript,typescriptreact setlocal omnifunc=ale#completion#OmniFunc
-augroup END
-" }}}
-
+" LSP {{{
+lua require('lsp')
 " }}}
 
 " LANGUAGE AUTO GROUPS {{{
@@ -564,20 +513,11 @@ augroup GO
     autocmd FileType go setlocal noexpandtab shiftwidth=8
     autocmd FileType go setlocal textwidth=100
 
-    autocmd FileType go nnoremap <silent> <buffer> <Leader>h :GoInfo<CR>
-    autocmd FileType go nnoremap <silent> <buffer> <Leader>gc :GoCallers<CR>
-    autocmd FileType go nnoremap <silent> <buffer> <Leader>gr :GoReferrers<CR>
-
     autocmd FileType go iabbrev <buffer> ife; if err != nil {<CR>return err<ESC>ja
     autocmd FileType go iabbrev <buffer> ifne; if err != nil {<CR>return nil, err<ESC>ja
     autocmd FileType go iabbrev <buffer> iffe; if err :=; err != nil {<CR>return err<ESC>k0f;i
     autocmd FileType go iabbrev <buffer> iffne; if err :=; err != nil {<CR>return nil, err<ESC>k0f;i
-    autocmd FileType go iabbrev <buffer> dbg; b, _ := json.MarshalIndent(Z, "", "\t")<CR>fmt.Printf("[DEBUGGING]: %+v\n", b)<ESC>k0fZcw
-
-    let g:mucomplete#chains.go = ['omni']
-    let g:mucomplete#can_complete.go = {
-                \    'omni': { t -> strlen(&l:omnifunc) > 0 }
-                \    }
+    autocmd FileType go iabbrev <buffer> dbg; b, _ := json.MarshalIndent(Z, "", "\t")<CR>fmt.Printf("[DEBUGGING]: %+v\n", string(b))<ESC>k0fZcw
 augroup END
 
 augroup HASKELL
@@ -605,7 +545,8 @@ augroup END
 
 augroup JAVASCRIPT
     autocmd!
-    autocmd Filetype javascript,typescript,typescriptreact setlocal shiftwidth=2 softtabstop=2
+
+    autocmd Filetype javascript,javascriptreact,typescript,typescriptreact setlocal shiftwidth=2 softtabstop=2
 augroup END
 
 augroup PRS
