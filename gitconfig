@@ -11,35 +11,29 @@
     ; `set -e; FOO=$(...)` is used to terminate when <C-c> is pressed in FZF
     ; `xargs` will trim for you if you don't provide other arguments
 
-    cs = clone --single-branch
-
     b = branch
     s = status
-    c = !git commit -m \"${1:-$(shuf -n 1 ~/.word_list.txt)}\" && :
+    c = commit
     p = push
     fp = push -f
 
     aa = add -A
-    ai = !git add $(git pick files) && :
+    ai = !"f() { set -e; FILES=$(git pick files); git add $FILES; }; f"
 
     d = diff
     ds = diff --staged HEAD
-    db = !git diff $(git base ${1:-HEAD}) ${1} && :
-    dbs = !git diff $(git base ${1:-HEAD}) ${1} --stat && :
-
-    dt = difftool
-    dtb = !git difftool $(git base ${1:-HEAD}) ${1:-HEAD} && :
+    db = !git diff $(git base) && :
+    dbs = !git diff $(git base) --stat && :
 
     base = !git merge-base ${1:-HEAD} main && :
     branch-name = rev-parse --abbrev-ref HEAD
     head = rev-parse HEAD
 
-    new = !git co -b jerry-${1?} ${2:-HEAD} && :
-    rand = !git co -b jerry-rand-$(shuf -n 1 ~/.word_list.txt) ${1:-HEAD} && :
-    test = !git co -b $(git branch-name)-test && :
+    new = !git co -b jerry-${1?} main && :
+    newb = !git co -b jerry-${1?} ${2:-HEAD} && :
     backup = !git co -b $(git branch-name)-backup && git co - && :
 
-    save = !git add -A && git commit -m \"${1:-$(shuf -n 1 ~/.word_list.txt)}\" && git push && :
+    save = !"f() { git add -A && git commit -m \"${1:-$(shuf -n 1 ~/.word_list.txt)}\"; git push; }; f"
     resave = !git add -A && git recommit && git push -f && :
 
     cleanup = !"f() { set -e; BRANCHES=$(git pick branches-without-main); git branch -D $BRANCHES; }; f"
@@ -50,12 +44,13 @@
     ls = log --oneline --graph --since='1 month ago' --simplify-by-decoration --branches
     lsa = log --oneline --graph --simplify-by-decoration --branches
 
+    mm = !git update && git merge main
+    mt = mergetool
+
     ri = !"f() { set -e; BRANCH=$(git pick branch); git rebase --interactive $BRANCH; }; f"
     rim = !git update && git rebase --interactive main && :
-    rimp = !git rim && git push -f && :
     rib = !git rebase --interactive $(git base) && :
     rom = !git update && git rebase main && :
-    romp = !git rom && git push -f && :
     recon = !git add -A && git rebase --continue
 
     bmerge = !"f() { set -e; BRANCH=$(git pick branch); git merge --squash $BRANCH && git commit -m \"[MERGED] $BRANCH\"; }; f"
@@ -78,16 +73,9 @@
     stow = !"if [[ $(git log -1 --format=%B) == '[STOWED]' ]]; then git commit -a --amend --no-edit; else git add -A && git commit -m '[STOWED]'; fi"
     unstow = !"if [[ $(git log -1 --format=%B) == '[STOWED]' ]]; then git reset @^; else echo \"Nothing to unstow\"; fi"
 
-    ci = !hub ci-status --color --verbose ${1:-HEAD} && :
-    cis = !hub ci-status --color ${1:-HEAD} && :
-    cir = !git fetch --quiet origin $(git branch-name) && git ci FETCH_HEAD && :
-    watch-ci = !watch --color --interval 30 git ci && :
-
-    ; create a pull-request from the command line
-    pr = !hub pull-request --push --browse
-
-    ; open the current PR in Github
-    open = !"hub pr show || open https://$(git remote get-url origin | sed 's/git@//; s/.git//; s/:/\\//')/pull/new/$(git branch-name)"
+    ci = !gh pr checks
+    pr = !gh pr create --draft
+    open = !"gh pr view --web || open https://$(git remote get-url origin | sed 's/git@//; s/.git//; s/:/\\//')/pull/new/$(git branch-name)"
 
 [commit]
     gpgSign = false
@@ -131,10 +119,10 @@
     tool = nvimdiff
 
 [mergetool]
-    prompt = true
+    prompt = false
 
 [mergetool "nvimdiff"]
-    cmd = nvim -d $LOCAL $REMOTE $MERGED -c 'wincmd w' -c 'wincmd J'
+    cmd = nvim $MERGED
 
 [pull]
     ff = only

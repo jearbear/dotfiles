@@ -1,0 +1,24 @@
+-- don't log the following when starting the shell
+\set QUIET 1
+
+-- complete keywords using uppercase always
+\set COMP_KEYWORD_CASE upper
+
+-- show NULL values
+\pset null 'NULL'
+
+-- make it more obvious when you're in a multi-line context
+\set PROMPT2 '... > '
+
+-- automatically format large tables
+\x auto
+
+-- maintain history files based on host and DB name to prevent mistakes
+-- in live contexts and ignore duplicate values
+\set HISTFILE ~/.psql_history- :HOST - :DBNAME
+\set HISTCONTROL ignoredups
+
+-- display timing information
+\timing
+
+\unset QUIET
