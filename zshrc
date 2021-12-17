@@ -74,6 +74,7 @@ alias sdots='dots --store-dir ~/.dotfiles.secret'
 alias t='TERM=xterm-256color tmux new-session -A -s main'
 alias vi='nvim'
 alias vim='nvim'
+alias vg='nvim +Git +only'
 alias watch='watch --color --interval 5'
 
 # determine if the CWD is within a git repo

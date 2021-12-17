@@ -21,20 +21,22 @@ Plug 'tpope/vim-rsi'                   " Emacs bindings in command mode
 Plug 'tpope/vim-surround'              " additional mappings to manipulate brackets
 Plug 'tpope/vim-unimpaired'            " mostly use for [<Space> and ]<Space>
 Plug 'wellle/targets.vim'              " additional text objects
-Plug 'Asheq/close-buffers.vim'         " delete buffers without closing the window
+Plug 'moll/vim-bbye'                   " delete buffers without closing the window
 
 " copy pasta
 Plug 'svermeulen/vim-yoink'            " better handling of yanks (yank rings, auto-formatting)
 Plug 'svermeulen/vim-subversive'       " mappings to substitute text
 
 " version control
-Plug 'lambdalisue/gina.vim'            " git integration (show current branch, open in GH)
+Plug 'tpope/vim-fugitive'              " git integration (show current branch, open in GH)
+Plug 'tpope/vim-rhubarb'               " allow vim-fugitive to interact with Github
 Plug 'mhinz/vim-signify'               " VCS change indicators in the gutter
 
 " project management
 Plug 'romainl/vim-qf'                  " slicker qf and loclist handling
 Plug 'tpope/vim-eunuch'                " unix shell commands in command mode
 Plug 'tpope/vim-obsession'             " smarter session management
+Plug 'aymericbeaumet/vim-symlink'      " follow symlinks
 
 " completion
 Plug 'lifepillar/vim-mucomplete'       " best-effort tab completion
@@ -49,7 +51,7 @@ Plug 'wsdjeg/vim-fetch'                " support opening line and column numbers
 " LSP stuff
 Plug 'neovim/nvim-lspconfig'           " defines configs for various servers for me
 Plug 'jose-elias-alvarez/null-ls.nvim' " integrates gofumports, prettier, etc with the LSP support
-Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-lua/plenary.nvim'           " dependency for null-ls.nvim
 
 " language support
 Plug 'MaxMEllon/vim-jsx-pretty'
@@ -128,7 +130,7 @@ set statusline=\ \                              " padding
 set statusline+=%f                              " filename
 set statusline+=\ %m%*                          " modified flag
 set statusline+=%=                              " center divide
-set statusline+=%{gina#component#repo#branch()} " vcs info
+set statusline+=%{FugitiveHead(10)}             " vcs info
 set statusline+=\ \                             " padding
 set statusline+=\ \                             " padding
 set statusline+=\ \                             " padding
@@ -218,7 +220,6 @@ nnoremap k gk
 nnoremap <BS> <C-^>
 nnoremap <silent> <Leader>[ :bprevious<CR>
 nnoremap <silent> <Leader>] :bnext<CR>
-nnoremap <silent> Q :bprevious <Bar> bdelete #<CR>
 
 " tab navigation
 nnoremap <silent> <Leader>{ :tabp<CR>
@@ -258,9 +259,6 @@ xnoremap <silent> . :norm.<CR>
 inoremap <C-k> <ESC><Right>C
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
-
-" this is never intentional
-cnoremap w' w
 
 " edit/save vimrc
 nnoremap <silent> <Leader>vev :e ~/.config/nvim/init.vim<CR>
@@ -315,13 +313,12 @@ augroup QF
 augroup END
 " }}}
 
-" gina.vim {{{
-nnoremap <silent> <Leader>gs :Gina status<CR>
-nnoremap <silent> <Leader>gb :.Gina browse : --exact --scheme=blame<CR>
-nnoremap <silent> <Leader>gh :Gina browse : --exact<CR>
-xnoremap <silent> <Leader>gh :Gina browse : --exact<CR>
-nnoremap <silent> <Leader>gl "+:Gina browse : --yank --exact<CR>
-xnoremap <silent> <Leader>gl "+:Gina browse : --yank --exact<CR>
+" vim-fugitive {{{
+nnoremap <silent> <Leader>gs :Git<CR>
+nnoremap <silent> <Leader>gb :GBrowse<CR>
+xnoremap <silent> <Leader>gb :GBrowse<CR>
+nnoremap <silent> <Leader>gl :GBrowse!<CR>
+xnoremap <silent> <Leader>gl :GBrowse!<CR>
 " }}}
 
 " vim-easy-align {{{
@@ -466,7 +463,7 @@ nnoremap <silent> <Leader>K :TagbarToggle<CR>
 " save a session using the current cwd and git branch name as identifiers
 function! s:SaveSession() abort
     let session_id = substitute(getcwd(), '/', '_', 'g')
-    let branch = gina#component#repo#branch()
+    let branch = FugitiveHead(10)
     if branch != ''
         let session_id = session_id . '@' . branch
     endif
@@ -486,8 +483,8 @@ nmap <Leader>/ gcc
 vmap <Leader>/ gc
 " }}}
 
-" {{{ close-buffers.vim
-nnoremap <silent> <Leader>Q :Bdelete menu<CR>
+" {{{ vim-bbye
+nnoremap <silent> Q :Bwipeout<CR>
 " }}}
 
 " LSP {{{
