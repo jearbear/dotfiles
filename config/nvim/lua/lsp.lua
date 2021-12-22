@@ -60,7 +60,6 @@ local on_attach = function(client, bufnr)
         opts
     )
     buf_set_keymap("n", "<Leader>gr", "<cmd>lua vim.lsp.buf.references()<CR>", opts)
-    buf_set_keymap("n", "<Leader>m", "<cmd>LspDiagnosticsAll<CR>", opts)
     buf_set_keymap("n", "<Leader>M", "<cmd>lua vim.diagnostic.setqflist()<CR>", opts)
     buf_set_keymap("n", "<Leader>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
 

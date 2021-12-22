@@ -35,7 +35,6 @@ Plug 'mhinz/vim-signify'               " VCS change indicators in the gutter
 " project management
 Plug 'romainl/vim-qf'                  " slicker qf and loclist handling
 Plug 'tpope/vim-eunuch'                " unix shell commands in command mode
-Plug 'tpope/vim-obsession'             " smarter session management
 Plug 'aymericbeaumet/vim-symlink'      " follow symlinks
 
 " completion
@@ -73,7 +72,10 @@ Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
 " trying out
-Plug 'preservim/tagbar'
+Plug 'tpope/vim-dadbod'
+Plug 'kristijanhusak/vim-dadbod-ui'
+Plug 'kristijanhusak/vim-dadbod-completion'
+Plug 'mhinz/vim-startify'
 
 call plug#end()
 
@@ -123,19 +125,44 @@ set wildcharm=<C-z>          " allows invoking completion menu with <C-z>
 set shortmess+=c             " don't show messages when performing completion
 set completeopt=menu,menuone " when completing, show a menu even if there is only one result
 
-hi StatusLine cterm=bold   gui=bold
-hi Comment    cterm=italic gui=italic
+" TODO: Use these eventually
+function! GetHLColors(group)
+    return { 'fg': synIDattr(synIDtrans(hlID(a:group)), "fg#"), 'bg': synIDattr(synIDtrans(hlID(a:group)), "bg#") }
+endfunction
 
-set statusline=\ \                              " padding
-set statusline+=%f                              " filename
-set statusline+=\ %m%*                          " modified flag
-set statusline+=%=                              " center divide
-set statusline+=%{FugitiveHead(10)}             " vcs info
-set statusline+=\ \                             " padding
-set statusline+=\ \                             " padding
-set statusline+=\ \                             " padding
-set statusline+=%l/%L                           " line number / number of lines
-set statusline+=\ \                             " padding
+execute 'hi StatusLineHL guibg=' . GetHLColors('StatusLine').fg . ' guifg=' . GetHLColors('StatusLine').bg
+execute 'hi StatusLineSep guibg=' . GetHLColors('StatusLine').bg . ' guifg=' . GetHLColors('StatusLine').fg
+execute 'hi StatusLineHLNC guibg=' . GetHLColors('StatusLineNC').fg . ' guifg=' . GetHLColors('StatusLineNC').bg
+execute 'hi StatusLineSepNC guibg=' . GetHLColors('StatusLineNC').bg . ' guifg=' . GetHLColors('StatusLineNC').fg
+
+hi StatusLine gui=bold
+hi Comment    gui=italic
+
+function! StatusLine()
+    let padding = '  '
+    let filename = '%f %m%*'
+    let center_divide = '%='
+    let line_number = '  %l/%L  '
+    let git_branch = '  %{FugitiveHead(10)}  '
+
+    let statusline = padding . filename
+
+    if g:statusline_winid != win_getid()
+        return statusline
+    endif
+
+    let statusline .= center_divide
+
+    if FugitiveIsGitDir()
+        let statusline .= git_branch
+    endif
+
+    let statusline .= line_number
+
+    return statusline
+endfunction
+
+set statusline=%!StatusLine()
 
 " nicer tabline {{{
 function! Tabline()
@@ -230,11 +257,6 @@ nnoremap <Leader>r *``cgn
 
 " load the word under the cursor into the search register
 nnoremap <Leader>* *``
-
-" more convenient substitution
-nnoremap <Leader>s :s/<C-r><C-w>/
-xnoremap <Leader>s :s/
-nnoremap <Leader>S :%s/<C-r><C-w>/
 
 " yank/paste to/from system clipboard
 " (recursive mappings are intentionally used to preserve the benefits of
@@ -377,16 +399,13 @@ nnoremap <silent> <Leader>f :Files<CR>
 nnoremap <silent> <Leader>F :GFiles?<CR>
 nnoremap <silent> <Leader>l :Buffers<CR>
 nnoremap <silent> <Leader>; :BLines<CR>
-nnoremap <silent> <Leader>: :Lines<CR>
+nnoremap <silent> <Leader>: :History:<CR>
 nnoremap <silent> <Leader>k :BTags<CR>
 nnoremap <silent> <Leader>h :Help<CR>
 nnoremap <silent> <Leader>w :Windows<CR>
+nnoremap <silent> <Leader>m :Marks<CR>
+nnoremap <silent> <Leader>B :BCommits<CR>
 nnoremap <silent> <bar> :Rg<CR>
-
-augroup FZF
-    autocmd!
-    autocmd User FzfStatusLine setlocal statusline=%#StatusLine#\ »\ fzf
-augroup END
 " }}}
 
 " vim-signify {{{
@@ -422,62 +441,6 @@ xmap p <plug>(SubversiveSubstitute)
 xmap s <plug>(SubversiveSubstitute)
 " }}}
 
-" {{{ vim-tagbar
-let g:tagbar_zoomwidth = 0
-let g:tagbar_autoclose = 1
-let g:tagbar_autofocus = 1
-let g:tagbar_show_data_type = 1
-
-let g:tagbar_type_elixir = {
-    \ 'ctagstype' : 'elixir',
-    \ 'kinds' : [
-        \ 'p:protocols',
-        \ 'm:modules',
-        \ 'e:exceptions',
-        \ 'y:types',
-        \ 'd:delegates',
-        \ 'f:functions',
-        \ 'c:callbacks',
-        \ 'a:macros',
-        \ 't:tests',
-        \ 'i:implementations',
-        \ 'o:operators',
-        \ 'r:records'
-    \ ],
-    \ 'sro' : '.',
-    \ 'kind2scope' : {
-        \ 'p' : 'protocol',
-        \ 'm' : 'module'
-    \ },
-    \ 'scope2kind' : {
-        \ 'protocol' : 'p',
-        \ 'module' : 'm'
-    \ },
-    \ 'sort' : 0
-\ }
-
-nnoremap <silent> <Leader>K :TagbarToggle<CR>
-" }}}
-
-" {{{ vim-obsession
-" save a session using the current cwd and git branch name as identifiers
-function! s:SaveSession() abort
-    let session_id = substitute(getcwd(), '/', '_', 'g')
-    let branch = FugitiveHead(10)
-    if branch != ''
-        let session_id = session_id . '@' . branch
-    endif
-
-    let sessions_dir = $VIM_FILES . '/sessions'
-    let _ = system('mkdir -p ' . sessions_dir)
-    execute 'Obsession ' . sessions_dir . '/' . session_id . '.vim'
-endfunction
-
-command! SaveSession call s:SaveSession()
-
-nnoremap <silent> <Leader>vs :SaveSession<CR>
-" }}}
-
 " {{{ vim-commentary
 nmap <Leader>/ gcc
 vmap <Leader>/ gc
@@ -485,6 +448,59 @@ vmap <Leader>/ gc
 
 " {{{ vim-bbye
 nnoremap <silent> Q :Bwipeout<CR>
+" }}}
+
+" {{{ vim-dadbod-completion
+autocmd FileType sql setlocal omnifunc=vim_dadbod_completion#omni
+" }}}
+
+" vim-startify {{{
+let g:startify_change_to_dir = 0
+let g:startify_relative_path = 1
+let g:startify_commands = [
+            \ { 'sl': ['Load branch session', ':call LoadSession()'] },
+            \ ]
+let g:startify_bookmarks = [
+            \ { 'vv': '~/.config/nvim/init.vim' },
+            \ { 'vl': '~/.config/nvim/lua/lsp.lua' },
+            \ ]
+let g:startify_fortune_use_unicode = 1
+let g:startify_lists = [
+            \ { 'type': 'dir',       'header': ['   Latest Edits'] },
+            \ { 'type': 'bookmarks', 'header': ['   Bookmarks'] },
+            \ { 'type': 'sessions',  'header': ['   Sessions'] },
+            \ { 'type': 'commands',  'header': ['   Commands'] },
+            \ ]
+
+function! SaveSession() abort
+    if !FugitiveIsGitDir()
+        return
+    endif
+
+    execute 'SSave! ' . substitute(FugitiveRemoteUrl(), '.*\/', '', '') . '__' . FugitiveHead()
+endfunction
+
+function! LoadSession() abort
+    if !FugitiveIsGitDir()
+        return
+    endif
+
+    execute 'SLoad! ' . substitute(FugitiveRemoteUrl(), '.*\/', '', '') . '__' . FugitiveHead()
+endfunction
+
+function! DeleteSession() abort
+    if !FugitiveIsGitDir()
+        return
+    endif
+
+    execute 'SDelete! ' . substitute(FugitiveRemoteUrl(), '.*\/', '', '') . '__' . FugitiveHead()
+    execute 'SClose'
+endfunction
+
+nnoremap <silent> ss :call SaveSession()<CR>
+nnoremap <silent> sl :call LoadSession()<CR>
+nnoremap <silent> sd :call DeleteSession()<CR>
+nnoremap <silent> sc :SClose<CR>
 " }}}
 
 " LSP {{{
