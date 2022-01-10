@@ -76,6 +76,7 @@ Plug 'tpope/vim-dadbod'
 Plug 'kristijanhusak/vim-dadbod-ui'
 Plug 'kristijanhusak/vim-dadbod-completion'
 Plug 'mhinz/vim-startify'
+Plug 'ggandor/lightspeed.nvim'
 
 call plug#end()
 
@@ -433,12 +434,12 @@ nmap <C-[> <plug>(YoinkPostPasteToggleFormat)
 " }}}
 
 " vim-subversive {{{
-nmap S <plug>(SubversiveSubstituteToEndOfLine)
-nmap s <plug>(SubversiveSubstitute)
-nmap ss <plug>(SubversiveSubstituteLine)
+" nmap S <plug>(SubversiveSubstituteToEndOfLine)
+" nmap s <plug>(SubversiveSubstitute)
+" nmap ss <plug>(SubversiveSubstituteLine)
 xmap P <plug>(SubversiveSubstitute)
 xmap p <plug>(SubversiveSubstitute)
-xmap s <plug>(SubversiveSubstitute)
+" xmap s <plug>(SubversiveSubstitute)
 " }}}
 
 " {{{ vim-commentary
@@ -455,6 +456,7 @@ autocmd FileType sql setlocal omnifunc=vim_dadbod_completion#omni
 " }}}
 
 " vim-startify {{{
+let g:startify_session_persistence = 1
 let g:startify_change_to_dir = 0
 let g:startify_relative_path = 1
 let g:startify_commands = [
@@ -497,14 +499,22 @@ function! DeleteSession() abort
     execute 'SClose'
 endfunction
 
-nnoremap <silent> ss :call SaveSession()<CR>
-nnoremap <silent> sl :call LoadSession()<CR>
-nnoremap <silent> sd :call DeleteSession()<CR>
-nnoremap <silent> sc :SClose<CR>
+nnoremap <silent> <Leader>ss :call SaveSession()<CR>
+nnoremap <silent> <Leader>sl :call LoadSession()<CR>
+nnoremap <silent> <Leader>sd :call DeleteSession()<CR>
+nnoremap <silent> <Leader>sc :SClose<CR>
 " }}}
 
 " LSP {{{
 lua require('lsp')
+" }}}
+
+" lightspeed.nvim {{{
+lua << EOF
+require('lightspeed').setup {
+    ignore_case = true
+}
+EOF
 " }}}
 
 

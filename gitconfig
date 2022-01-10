@@ -44,7 +44,7 @@
     ls = log --oneline --graph --since='1 month ago' --simplify-by-decoration --branches
     lsa = log --oneline --graph --simplify-by-decoration --branches
 
-    mm = !git update && git merge main
+    mm = !git update && git merge main --no-edit
     mt = mergetool
 
     ri = !"f() { set -e; BRANCH=$(git pick branch); git rebase --interactive $BRANCH; }; f"
@@ -74,7 +74,7 @@
     unstow = !"if [[ $(git log -1 --format=%B) == '[STOWED]' ]]; then git reset @^; else echo \"Nothing to unstow\"; fi"
 
     ci = !gh pr checks
-    pr = !gh pr create --draft
+    pr = !hub pull-request --draft --edit --browse && :
     open = !"gh pr view --web || open https://$(git remote get-url origin | sed 's/git@//; s/.git//; s/:/\\//')/pull/new/$(git branch-name)"
 
 [commit]
