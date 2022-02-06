@@ -8,7 +8,7 @@ theme=$(fd '.*-256.conf' "${colors_dir}" | rg --only-matching '[^/]*$' | sed 's/
 
 # Set Kitty theme
 kitty @ set-colors --all --configured "${colors_dir}/base16-${theme}-256.conf"
-ln -sF "${colors_dir}/base16-${theme}-256.conf" "${HOME}/.config/kitty/theme.conf"
+ln -sf "${colors_dir}/base16-${theme}-256.conf" "${HOME}/.config/kitty/theme.conf"
 
 # Set Vim theme
 echo -e "colorscheme base16-${theme}" >| ~/.config/nvim/theme.vim

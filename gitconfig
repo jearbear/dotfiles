@@ -14,7 +14,7 @@
     b = branch
     s = status
     c = commit
-    p = push
+    p = push -u
     fp = push -f
 
     aa = add -A
@@ -74,7 +74,7 @@
     unstow = !"if [[ $(git log -1 --format=%B) == '[STOWED]' ]]; then git reset @^; else echo \"Nothing to unstow\"; fi"
 
     ci = !gh pr checks
-    pr = !hub pull-request --draft --edit --browse && :
+    pr = !hub pull-request --draft --edit --browse --push && :
     open = !"gh pr view --web || open https://$(git remote get-url origin | sed 's/git@//; s/.git//; s/:/\\//')/pull/new/$(git branch-name)"
 
 [commit]

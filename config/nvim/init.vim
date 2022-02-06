@@ -13,10 +13,13 @@ call plug#begin('~/.config/nvim/plugged')
 " themes
 Plug 'RRethy/nvim-base16'              " version of 'chriskempson/base16-vim' that properly sets colors for LSP highlights
 
+" statusline
+Plug 'rebelot/heirline.nvim'
+
 " mappings
 Plug 'AndrewRadev/splitjoin.vim'       " language-aware splits and joins
-Plug 'junegunn/vim-easy-align'         " easily vertically align text (like this!)
-Plug 'tpope/vim-commentary'            " key bindings for commenting
+Plug 'junegunn/vim-easy-align'         " easily vertically align text (like these comments!)
+Plug 'numToStr/Comment.nvim'           " key bindings for commenting
 Plug 'tpope/vim-rsi'                   " Emacs bindings in command mode
 Plug 'tpope/vim-surround'              " additional mappings to manipulate brackets
 Plug 'tpope/vim-unimpaired'            " mostly use for [<Space> and ]<Space>
@@ -30,16 +33,16 @@ Plug 'svermeulen/vim-subversive'       " mappings to substitute text
 " version control
 Plug 'tpope/vim-fugitive'              " git integration (show current branch, open in GH)
 Plug 'tpope/vim-rhubarb'               " allow vim-fugitive to interact with Github
-Plug 'mhinz/vim-signify'               " VCS change indicators in the gutter
+Plug 'lewis6991/gitsigns.nvim'         " VCS change indicators in the gutter
 
 " project management
 Plug 'romainl/vim-qf'                  " slicker qf and loclist handling
 Plug 'tpope/vim-eunuch'                " unix shell commands in command mode
-Plug 'aymericbeaumet/vim-symlink'      " follow symlinks
+" Plug 'aymericbeaumet/vim-symlink'      " follow symlinks
 
 " completion
 Plug 'lifepillar/vim-mucomplete'       " best-effort tab completion
-Plug 'rstacruz/vim-closer'             " automatically close brackets
+Plug 'windwp/nvim-autopairs'           " automatically close brackets
 Plug 'tpope/vim-endwise'               " automatically close everything else
 
 " project navigation
@@ -48,9 +51,10 @@ Plug 'mhinz/vim-grepper'               " slicker grep support
 Plug 'wsdjeg/vim-fetch'                " support opening line and column numbers (e.g. foo.bar:13)
 
 " LSP stuff
-Plug 'neovim/nvim-lspconfig'           " defines configs for various servers for me
+Plug 'nvim-lua/plenary.nvim'           " dependency for many lua-based plugins
+Plug 'neovim/nvim-lspconfig'           " defines configs for various LSP servers for me
 Plug 'jose-elias-alvarez/null-ls.nvim' " integrates gofumports, prettier, etc with the LSP support
-Plug 'nvim-lua/plenary.nvim'           " dependency for null-ls.nvim
+Plug 'ojroques/nvim-lspfuzzy'
 
 " language support
 Plug 'MaxMEllon/vim-jsx-pretty'
@@ -72,11 +76,11 @@ Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
 " trying out
-Plug 'tpope/vim-dadbod'
-Plug 'kristijanhusak/vim-dadbod-ui'
-Plug 'kristijanhusak/vim-dadbod-completion'
 Plug 'mhinz/vim-startify'
-Plug 'ggandor/lightspeed.nvim'
+Plug 'anuvyklack/pretty-fold.nvim' " prettier fold markers and previews
+Plug 'junegunn/vim-slash' " clear highlighting when you move the cursor
+Plug 'folke/which-key.nvim' " clear highlighting when you move the cursor
+Plug 'andymass/vim-matchup'
 
 call plug#end()
 
@@ -104,11 +108,11 @@ set nofoldenable                         " default to open folds
 set conceallevel=2                       " hide concealed text
 
 set inccommand=nosplit                   " display incremental results of substitution commands in the buffer
-set incsearch nohlsearch                 " incrementally search and don't highlight when done
+set incsearch                            " incrementally search
 set ignorecase smartcase                 " only care about case when searching if it includes capital letters
-" set nowrapscan                           " don't wrap around when searching
+set nowrapscan                           " don't wrap around when searching
 
-set gdefault                             " default to global substitution
+set gdefault                             " default to global (within the line) substitution
 
 set splitbelow splitright                " default to opening splits below and to the right
 
@@ -125,45 +129,6 @@ set wildcharm=<C-z>          " allows invoking completion menu with <C-z>
 
 set shortmess+=c             " don't show messages when performing completion
 set completeopt=menu,menuone " when completing, show a menu even if there is only one result
-
-" TODO: Use these eventually
-function! GetHLColors(group)
-    return { 'fg': synIDattr(synIDtrans(hlID(a:group)), "fg#"), 'bg': synIDattr(synIDtrans(hlID(a:group)), "bg#") }
-endfunction
-
-execute 'hi StatusLineHL guibg=' . GetHLColors('StatusLine').fg . ' guifg=' . GetHLColors('StatusLine').bg
-execute 'hi StatusLineSep guibg=' . GetHLColors('StatusLine').bg . ' guifg=' . GetHLColors('StatusLine').fg
-execute 'hi StatusLineHLNC guibg=' . GetHLColors('StatusLineNC').fg . ' guifg=' . GetHLColors('StatusLineNC').bg
-execute 'hi StatusLineSepNC guibg=' . GetHLColors('StatusLineNC').bg . ' guifg=' . GetHLColors('StatusLineNC').fg
-
-hi StatusLine gui=bold
-hi Comment    gui=italic
-
-function! StatusLine()
-    let padding = '  '
-    let filename = '%f %m%*'
-    let center_divide = '%='
-    let line_number = '  %l/%L  '
-    let git_branch = '  %{FugitiveHead(10)}  '
-
-    let statusline = padding . filename
-
-    if g:statusline_winid != win_getid()
-        return statusline
-    endif
-
-    let statusline .= center_divide
-
-    if FugitiveIsGitDir()
-        let statusline .= git_branch
-    endif
-
-    let statusline .= line_number
-
-    return statusline
-endfunction
-
-set statusline=%!StatusLine()
 
 " nicer tabline {{{
 function! Tabline()
@@ -225,12 +190,22 @@ augroup MKDIR
     autocmd BufWritePre,FileWritePre * silent! call mkdir(expand('<afile>:p:h'), 'p')
 augroup END
 
-" turn search highlighting on while searching
-augroup HL_SEARCH
-    autocmd!
-    autocmd CmdlineEnter /,\? :setlocal hlsearch
-    autocmd CmdlineLeave /,\? :setlocal nohlsearch
-augroup END
+
+" FUNCTIONS
+function! PushMark(is_global) " {{{
+    if a:is_global
+        let l:curr = char2nr('Z')
+    else
+        let l:curr = char2nr('z')
+    endif
+    let l:until = l:curr - 25
+    while l:curr > l:until
+        call setpos("'" . nr2char(l:curr), getpos("'" . nr2char(l:curr - 1)))
+        let l:curr -= 1
+    endwhile
+    call setpos("'" . nr2char(l:curr), getpos("."))
+endfunction
+" }}}
 
 
 " MAPPINGS 
@@ -286,6 +261,8 @@ cnoremap <C-n> <Down>
 " edit/save vimrc
 nnoremap <silent> <Leader>vev :e ~/.config/nvim/init.vim<CR>
 nnoremap <silent> <Leader>vel :e ~/.config/nvim/lua/lsp.lua<CR>
+nnoremap <silent> <Leader>vep :e ~/.config/nvim/lua/plugins.lua<CR>
+nnoremap <silent> <Leader>ves :e ~/.config/nvim/lua/statusline.lua<CR>
 nnoremap <silent> <Leader>vr :source ~/.config/nvim/init.vim<CR>
 
 " maximize the pane
@@ -297,20 +274,21 @@ nnoremap <Leader>cc :saveas %:h<C-z>
 " create a new file in the same directory
 nnoremap <Leader>cn :e %:h<C-z>
 
+" Push to marks A-Z
+nnoremap <silent> mm :call PushMark(1)<CR>
 
-" FUNCTIONS 
-function MakeScratch(ft)
-    setlocal buftype=nofile
-    setlocal bufhidden=hide
-    setlocal noswapfile
-    execute 'setlocal filetype=' . a:ft
-endfunction
 
-command! MD call MakeScratch('markdown')
-command! JSON call MakeScratch('json')
+" STATUSLINE
+lua require('statusline')
+
+
+" LSP
+lua require('lsp')
 
 
 " PLUGIN SETTINGS 
+lua require('plugins')
+
 " vim-mucomplete {{{
 let g:mucomplete#can_complete = {}
 let g:mucomplete#can_complete.default = {
@@ -332,7 +310,10 @@ nmap ]l <Plug>(qf_loc_next)
 
 augroup QF
     autocmd FileType qf nnoremap <silent> <buffer> dd 0:Reject<CR>
-    autocmd FileType qf nnoremap <buffer> <BS> <Nop>
+    autocmd FileType qf xnoremap <silent> <buffer> d :Reject<CR>
+    autocmd FileType qf nnoremap <silent> <buffer> <BS> <Nop>
+    autocmd Filetype qf nnoremap <buffer> q :q<CR>
+    autocmd Filetype qf nnoremap <buffer> Q :q<CR>
 augroup END
 " }}}
 
@@ -356,6 +337,7 @@ let g:grepper.prompt_text = '$t> '
 let g:grepper.switch = 1
 let g:grepper.tools = ['rg']
 let g:grepper.stop = 500
+let g:grepper.prompt_quote = 2
 
 nnoremap <silent> \ :Grepper<CR>
 nnoremap <silent> <Leader>\ :Grepper -buffer<CR>
@@ -376,7 +358,22 @@ let g:rsi_no_meta = 1
 " }}}
 
 " fzf.vim {{{
-let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9, 'border': 'rounded' } }
+function! DeleteBuffers() " {{{
+    function! s:delete_buffers(lines)
+        execute 'bwipeout' join(map(a:lines, {_, line -> matchstr(line, '\[\zs[0-9]*\ze\]')}))
+    endfunction
+
+    let sorted = fzf#vim#_buflisted_sorted()
+    let header_lines = '--header-lines=' . (bufnr('') == get(sorted, 0, 0) ? 1 : 0)
+    let tabstop = len(max(sorted)) >= 4 ? 9 : 8
+    return fzf#run(fzf#wrap(fzf#vim#with_preview({
+                \ 'source':  map(sorted, 'fzf#vim#_format_buffer(v:val)'),
+                \ 'sink*':   { lines -> s:delete_buffers(lines) },
+                \ 'options': ['+m', '-x', '--tiebreak=index', header_lines, '--ansi', '-d', '\t', '--with-nth', '3..', '-n', '2,1..2', '--prompt', 'BufDel> ', '--preview-window', '+{2}-/2', '--tabstop', tabstop, '--multi']
+                \})))
+endfunction " }}}
+
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9, 'border': 'sharp' } }
 let g:fzf_history_dir = '~/.fzf-history'
 let g:fzf_action = {
             \ 'ctrl-t': 'tab split',
@@ -384,34 +381,17 @@ let g:fzf_action = {
             \ 'ctrl-v': 'vsplit',
             \ }
 let g:fzf_colors = { 'border':  ['fg', 'Comment'] }
-
-" redefine a version of `:Rg` that re-executes the search when the input
-" changes
-function! RipgrepFzf(query, fullscreen)
-  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
-  let initial_command = printf(command_fmt, shellescape(a:query))
-  let reload_command = printf(command_fmt, '{q}')
-  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
-  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
-endfunction
-command! -nargs=* -bang Rg call RipgrepFzf(<q-args>, <bang>0)
+let g:fzf_preview_window = ['up:80%,border-sharp', 'ctrl-/']
 
 nnoremap <silent> <Leader>f :Files<CR>
 nnoremap <silent> <Leader>F :GFiles?<CR>
 nnoremap <silent> <Leader>l :Buffers<CR>
-nnoremap <silent> <Leader>; :BLines<CR>
+nnoremap <silent> <Leader>; :call DeleteBuffers()<CR>
 nnoremap <silent> <Leader>: :History:<CR>
 nnoremap <silent> <Leader>k :BTags<CR>
 nnoremap <silent> <Leader>h :Help<CR>
-nnoremap <silent> <Leader>w :Windows<CR>
 nnoremap <silent> <Leader>m :Marks<CR>
-nnoremap <silent> <Leader>B :BCommits<CR>
 nnoremap <silent> <bar> :Rg<CR>
-" }}}
-
-" vim-signify {{{
-let g:signify_vcs_list = ['git']
-let g:signify_priority = 9 " allow LSP diagnostics to have priority
 " }}}
 
 " vim-yoink {{{
@@ -434,37 +414,38 @@ nmap <C-[> <plug>(YoinkPostPasteToggleFormat)
 " }}}
 
 " vim-subversive {{{
-" nmap S <plug>(SubversiveSubstituteToEndOfLine)
-" nmap s <plug>(SubversiveSubstitute)
-" nmap ss <plug>(SubversiveSubstituteLine)
+nmap S <plug>(SubversiveSubstituteToEndOfLine)
+nmap s <plug>(SubversiveSubstitute)
+nmap ss <plug>(SubversiveSubstituteLine)
 xmap P <plug>(SubversiveSubstitute)
 xmap p <plug>(SubversiveSubstitute)
-" xmap s <plug>(SubversiveSubstitute)
+xmap s <plug>(SubversiveSubstitute)
 " }}}
 
-" {{{ vim-commentary
+" Comment.nvim {{{
 nmap <Leader>/ gcc
 vmap <Leader>/ gc
 " }}}
 
-" {{{ vim-bbye
-nnoremap <silent> Q :Bwipeout<CR>
+" vim-slash {{{
+noremap <plug>(slash-after) zz
 " }}}
 
-" {{{ vim-dadbod-completion
-autocmd FileType sql setlocal omnifunc=vim_dadbod_completion#omni
+" vim-bbye {{{
+nnoremap <silent> Q :Bwipeout<CR>
 " }}}
 
 " vim-startify {{{
 let g:startify_session_persistence = 1
+let g:startify_session_delete_buffers = 1
 let g:startify_change_to_dir = 0
 let g:startify_relative_path = 1
-let g:startify_commands = [
-            \ { 'sl': ['Load branch session', ':call LoadSession()'] },
-            \ ]
+let g:startify_commands = [ ]
 let g:startify_bookmarks = [
             \ { 'vv': '~/.config/nvim/init.vim' },
             \ { 'vl': '~/.config/nvim/lua/lsp.lua' },
+            \ { 'vp': '~/.config/nvim/lua/plugins.lua' },
+            \ { 'vs': '~/.config/nvim/lua/statusline.lua' },
             \ ]
 let g:startify_fortune_use_unicode = 1
 let g:startify_lists = [
@@ -474,47 +455,19 @@ let g:startify_lists = [
             \ { 'type': 'commands',  'header': ['   Commands'] },
             \ ]
 
-function! SaveSession() abort
-    if !FugitiveIsGitDir()
-        return
-    endif
-
-    execute 'SSave! ' . substitute(FugitiveRemoteUrl(), '.*\/', '', '') . '__' . FugitiveHead()
-endfunction
-
-function! LoadSession() abort
-    if !FugitiveIsGitDir()
-        return
-    endif
-
-    execute 'SLoad! ' . substitute(FugitiveRemoteUrl(), '.*\/', '', '') . '__' . FugitiveHead()
-endfunction
-
-function! DeleteSession() abort
-    if !FugitiveIsGitDir()
-        return
-    endif
-
-    execute 'SDelete! ' . substitute(FugitiveRemoteUrl(), '.*\/', '', '') . '__' . FugitiveHead()
-    execute 'SClose'
-endfunction
-
-nnoremap <silent> <Leader>ss :call SaveSession()<CR>
-nnoremap <silent> <Leader>sl :call LoadSession()<CR>
-nnoremap <silent> <Leader>sd :call DeleteSession()<CR>
+nnoremap <silent> <Leader>S :Startify<CR>
+nnoremap <Leader>ss :SSave!<Space>
+nnoremap <Leader>sl :SLoad!<Space>
+nnoremap <Leader>sd :SDelete!<Space>
 nnoremap <silent> <Leader>sc :SClose<CR>
 " }}}
 
-" LSP {{{
-lua require('lsp')
+" vim-matchup {{{
+let g:matchup_matchparen_offscreen = {'method': 'popup'}
 " }}}
 
-" lightspeed.nvim {{{
-lua << EOF
-require('lightspeed').setup {
-    ignore_case = true
-}
-EOF
+" fzf-lua {{{
+nnoremap <silent> <Leader><Leader> :FzfLua<CR>
 " }}}
 
 
@@ -578,6 +531,11 @@ augroup END
 augroup YAML
     autocmd!
     autocmd Filetype yaml setlocal shiftwidth=2 softtabstop=2
+augroup END
+
+augroup LUA
+    autocmd!
+    autocmd FileType lua setlocal foldenable foldmethod=marker
 augroup END
 
 

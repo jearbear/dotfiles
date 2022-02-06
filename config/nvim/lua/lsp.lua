@@ -1,8 +1,7 @@
 local lspconfig = require("lspconfig")
 local null_ls = require("null-ls")
 
--- Copied from https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim-imports
-function goimports()
+function goimports() -- Copied from https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim-imports {{{
     local context = { only = { "source.organizeImports" } }
     vim.validate({ context = { context, "t", true } })
 
@@ -30,7 +29,9 @@ function goimports()
         vim.lsp.buf.execute_command(action)
     end
 end
+-- }}}
 
+-- This function gets executed when the LSP is initiated successfully
 local on_attach = function(client, bufnr)
     local function buf_set_keymap(...)
         vim.api.nvim_buf_set_keymap(bufnr, ...)
@@ -67,9 +68,16 @@ local on_attach = function(client, bufnr)
     if client.resolved_capabilities.document_formatting then
         vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()")
     end
+
+    -- Update signs
+    local signs = { Error = "!!", Warn = "!!", Hint = "ii", Info = "ii" }
+    for type, icon in pairs(signs) do
+        local hl = "DiagnosticSign" .. type
+        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+    end
 end
 
--- Set border colors for hover windows
+-- These are callbacks for various LSP functions that can configure their behavior
 local handlers = {
     ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" }),
     ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" }),
@@ -80,13 +88,7 @@ local handlers = {
     }),
 }
 
--- Update signs
-local signs = { Error = "!!", Warn = "!!", Hint = "ii", Info = "ii" }
-for type, icon in pairs(signs) do
-    local hl = "DiagnosticSign" .. type
-    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-end
-
+-- Golang
 lspconfig.gopls.setup({
     on_attach = function(client, bufnr)
         on_attach(client, bufnr)
@@ -95,6 +97,7 @@ lspconfig.gopls.setup({
         vim.cmd("autocmd BufWritePre <buffer> lua goimports()")
     end,
     handlers = handlers,
+
     settings = {
         gopls = {
             gofumpt = true,
@@ -105,16 +108,25 @@ lspconfig.gopls.setup({
 -- Typescript
 lspconfig.tsserver.setup({
     on_attach = function(client, bufnr)
+        on_attach(client, bufnr)
+
         -- Leave formatting up to eslint_d and prettierd provided by null-ls
         client.resolved_capabilities.document_formatting = false
         client.resolved_capabilities.document_range_formatting = false
-
-        on_attach(client, bufnr)
     end,
     handlers = handlers,
 })
 
-null_ls.config({
+-- Elixir
+lspconfig.elixirls.setup({
+    on_attach = on_attach,
+    handlers = handlers,
+
+    cmd = { "/opt/homebrew/bin/elixir-ls" },
+})
+
+-- null-ls
+null_ls.setup({
     sources = {
         null_ls.builtins.formatting.prettierd,
         null_ls.builtins.formatting.eslint_d,
@@ -126,9 +138,7 @@ null_ls.config({
             extra_args = { "--indent-type", "Spaces" },
         }),
     },
-})
 
-lspconfig["null-ls"].setup({
     on_attach = on_attach,
     handlers = handlers,
 })
