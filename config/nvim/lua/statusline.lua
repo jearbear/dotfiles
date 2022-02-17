@@ -2,13 +2,8 @@ local heirline = require("heirline")
 local conditions = require("heirline.conditions")
 local utils = require("heirline.utils")
 
-local colors = {
-    active = utils.get_highlight("StatusLine"),
-    inactive = utils.get_highlight("StatusLineNC"),
-}
-
 local padding = {
-    provider = function(self)
+    provider = function(_)
         return "  "
     end,
 }

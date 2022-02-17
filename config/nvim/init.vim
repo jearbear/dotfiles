@@ -6,19 +6,22 @@ let $VIM_FILES=expand('~/.config/nvim')
 let mapleader = ' '
 let maplocalleader = ' '
 
-
 " PLUGINS 
 call plug#begin('~/.config/nvim/plugged')
 
 " themes
-Plug 'RRethy/nvim-base16'              " version of 'chriskempson/base16-vim' that properly sets colors for LSP highlights
+Plug 'sainnhe/everforest'
+
+" the basics
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " better syntax highlighting
+Plug 'nvim-lua/plenary.nvim'                                " dependency for many lua-based plugins
 
 " statusline
 Plug 'rebelot/heirline.nvim'
 
 " mappings
 Plug 'AndrewRadev/splitjoin.vim'       " language-aware splits and joins
-Plug 'junegunn/vim-easy-align'         " easily vertically align text (like these comments!)
+" Plug 'junegunn/vim-easy-align'         " easily vertically align text (like these comments!)
 Plug 'numToStr/Comment.nvim'           " key bindings for commenting
 Plug 'tpope/vim-rsi'                   " Emacs bindings in command mode
 Plug 'tpope/vim-surround'              " additional mappings to manipulate brackets
@@ -31,19 +34,23 @@ Plug 'svermeulen/vim-yoink'            " better handling of yanks (yank rings, a
 Plug 'svermeulen/vim-subversive'       " mappings to substitute text
 
 " version control
-Plug 'tpope/vim-fugitive'              " git integration (show current branch, open in GH)
-Plug 'tpope/vim-rhubarb'               " allow vim-fugitive to interact with Github
+Plug 'ruifm/gitlinker.nvim'
+Plug 'f-person/git-blame.nvim'
 Plug 'lewis6991/gitsigns.nvim'         " VCS change indicators in the gutter
+Plug 'sindrets/diffview.nvim'
 
 " project management
 Plug 'romainl/vim-qf'                  " slicker qf and loclist handling
 Plug 'tpope/vim-eunuch'                " unix shell commands in command mode
-" Plug 'aymericbeaumet/vim-symlink'      " follow symlinks
 
 " completion
-Plug 'lifepillar/vim-mucomplete'       " best-effort tab completion
-Plug 'windwp/nvim-autopairs'           " automatically close brackets
-Plug 'tpope/vim-endwise'               " automatically close everything else
+Plug 'ZhiyuanLck/smart-pairs'
+Plug 'RRethy/nvim-treesitter-endwise' " automatically close everything else
+Plug 'dcampos/cmp-snippy'
+Plug 'dcampos/nvim-snippy'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/nvim-cmp'
 
 " project navigation
 Plug 'justinmk/vim-dirvish'            " minimal file browser
@@ -51,25 +58,13 @@ Plug 'mhinz/vim-grepper'               " slicker grep support
 Plug 'wsdjeg/vim-fetch'                " support opening line and column numbers (e.g. foo.bar:13)
 
 " LSP stuff
-Plug 'nvim-lua/plenary.nvim'           " dependency for many lua-based plugins
 Plug 'neovim/nvim-lspconfig'           " defines configs for various LSP servers for me
 Plug 'jose-elias-alvarez/null-ls.nvim' " integrates gofumports, prettier, etc with the LSP support
-Plug 'ojroques/nvim-lspfuzzy'
+Plug 'ojroques/nvim-lspfuzzy'          " use FZF for LSP results
 
-" language support
-Plug 'MaxMEllon/vim-jsx-pretty'
-Plug 'cespare/vim-toml'
-Plug 'elixir-editors/vim-elixir'
+" language support for those not covered by tree-sitter
 Plug 'fladson/vim-kitty'
-Plug 'godlygeek/tabular', { 'for': 'markdown' }
 Plug 'google/vim-jsonnet'
-Plug 'jparise/vim-graphql'
-Plug 'leafgarland/typescript-vim'
-Plug 'neovimhaskell/haskell-vim'
-Plug 'pangloss/vim-javascript'
-Plug 'plasticboy/vim-markdown'
-Plug 'rust-lang/rust.vim'
-Plug 'tpope/vim-ragtag'
 
 " fzf
 Plug 'junegunn/fzf'
@@ -78,15 +73,21 @@ Plug 'junegunn/fzf.vim'
 " trying out
 Plug 'mhinz/vim-startify'
 Plug 'anuvyklack/pretty-fold.nvim' " prettier fold markers and previews
-Plug 'junegunn/vim-slash' " clear highlighting when you move the cursor
-Plug 'folke/which-key.nvim' " clear highlighting when you move the cursor
+Plug 'folke/which-key.nvim' 
 Plug 'andymass/vim-matchup'
+
+Plug 'catppuccin/nvim', {'as': 'catppuccin'}
+
 
 call plug#end()
 
 " COLOR SCHEME 
 set termguicolors
-source $VIM_FILES/theme.vim              " this file is created by running `set-theme`
+lua require('theme')
+" source $VIM_FILES/theme.vim              " this file is created by running `set-theme`
+colorscheme catppuccin
+
+let g:everforest_background = 'soft'
 
 " VIM SETTINGS 
 set hidden                               " allow switching buffers without saving
@@ -102,15 +103,16 @@ set nojoinspaces                         " only insert one space when joining li
 set wrap linebreak                       " wrap lines and do so on word boundaries only
 set breakindent showbreak=..             " indent wrapped lines with `..`
 
+set fillchars+=diff:╱
+
 set lazyredraw                           " don't redraw the screen while executing macros and registers
 
 set nofoldenable                         " default to open folds
 set conceallevel=2                       " hide concealed text
 
 set inccommand=nosplit                   " display incremental results of substitution commands in the buffer
-set incsearch                            " incrementally search
+set incsearch nohlsearch                 " incrementally search and don't highlight when done
 set ignorecase smartcase                 " only care about case when searching if it includes capital letters
-set nowrapscan                           " don't wrap around when searching
 
 set gdefault                             " default to global (within the line) substitution
 
@@ -125,10 +127,10 @@ set wildignore+=*/tmp/*,*/target/*,*/venv/*,*/vendor/*,*/elm-stuff/*,*/bazel*/*,
 set wildmenu wildignorecase
 set wildmode=full,full
 
-set wildcharm=<C-z>          " allows invoking completion menu with <C-z>
+set wildcharm=<C-z>                   " allows invoking completion menu with <C-z>
 
-set shortmess+=c             " don't show messages when performing completion
-set completeopt=menu,menuone " when completing, show a menu even if there is only one result
+set shortmess+=c                      " don't show messages when performing completion
+set completeopt=menu,menuone,noselect " when completing, show a menu even if there is only one result
 
 " nicer tabline {{{
 function! Tabline()
@@ -155,8 +157,15 @@ function! Tabline()
 
     return s
 endfunction
-set tabline=%!Tabline()
 " }}}
+set tabline=%!Tabline()
+
+" turn search highlighting on while searching
+augroup HL_SEARCH
+    autocmd!
+    autocmd CmdlineEnter /,\? :setlocal hlsearch
+    autocmd CmdlineLeave /,\? :setlocal nohlsearch
+augroup END
 
 set spelllang=en
 set dictionary+=/usr/share/dict/words
@@ -263,7 +272,7 @@ nnoremap <silent> <Leader>vev :e ~/.config/nvim/init.vim<CR>
 nnoremap <silent> <Leader>vel :e ~/.config/nvim/lua/lsp.lua<CR>
 nnoremap <silent> <Leader>vep :e ~/.config/nvim/lua/plugins.lua<CR>
 nnoremap <silent> <Leader>ves :e ~/.config/nvim/lua/statusline.lua<CR>
-nnoremap <silent> <Leader>vr :source ~/.config/nvim/init.vim<CR>
+nnoremap <silent> <Leader>vr :source ~/.config/nvim/init.vim<CR>:lua require'heirline'.reset_highlights()<CR>
 
 " maximize the pane
 nnoremap <C-w>m <C-w><bar><C-w>_
@@ -282,12 +291,14 @@ nnoremap <silent> mm :call PushMark(1)<CR>
 lua require('statusline')
 
 
-" LSP
-lua require('lsp')
-
-
 " PLUGIN SETTINGS 
 lua require('plugins')
+
+" vim-dirvish {{{
+augroup DIRVISH
+    autocmd FileType dirvish nmap <buffer> q <Plug>(dirvish_quit)
+augroup END
+" }}}
 
 " vim-mucomplete {{{
 let g:mucomplete#can_complete = {}
@@ -303,9 +314,9 @@ let g:qf_mapping_ack_style = 1
 
 nmap <Leader>qq <Plug>(qf_qf_toggle)
 nmap <Leader>ql <Plug>(qf_loc_toggle)
-nmap [q <Plug>(qf_qf_prev)
+nmap [q <Plug>(qf_qf_previous)
 nmap ]q <Plug>(qf_qf_next)
-nmap [l <Plug>(qf_loc_prev)
+nmap [l <Plug>(qf_loc_previous)
 nmap ]l <Plug>(qf_loc_next)
 
 augroup QF
@@ -318,16 +329,16 @@ augroup END
 " }}}
 
 " vim-fugitive {{{
-nnoremap <silent> <Leader>gs :Git<CR>
-nnoremap <silent> <Leader>gb :GBrowse<CR>
-xnoremap <silent> <Leader>gb :GBrowse<CR>
-nnoremap <silent> <Leader>gl :GBrowse!<CR>
-xnoremap <silent> <Leader>gl :GBrowse!<CR>
+" nnoremap <silent> <Leader>gs :Git<CR>
+" nnoremap <silent> <Leader>gb :GBrowse<CR>
+" xnoremap <silent> <Leader>gb :GBrowse<CR>
+" nnoremap <silent> <Leader>gl :GBrowse!<CR>
+" xnoremap <silent> <Leader>gl :GBrowse!<CR>
 " }}}
 
 " vim-easy-align {{{
-nmap ga <Plug>(EasyAlign)
-xmap ga <Plug>(EasyAlign)
+" nmap ga <Plug>(EasyAlign)
+" xmap ga <Plug>(EasyAlign)
 " }}}
 
 " vim-grepper {{{
@@ -373,20 +384,20 @@ function! DeleteBuffers() " {{{
                 \})))
 endfunction " }}}
 
-let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9, 'border': 'sharp' } }
+let g:fzf_layout = { 'window': { 'width': 0.95, 'height': 0.95, 'border': 'sharp' } }
 let g:fzf_history_dir = '~/.fzf-history'
 let g:fzf_action = {
             \ 'ctrl-t': 'tab split',
             \ 'ctrl-s': 'split',
             \ 'ctrl-v': 'vsplit',
             \ }
-let g:fzf_colors = { 'border':  ['fg', 'Comment'] }
 let g:fzf_preview_window = ['up:80%,border-sharp', 'ctrl-/']
 
 nnoremap <silent> <Leader>f :Files<CR>
 nnoremap <silent> <Leader>F :GFiles?<CR>
 nnoremap <silent> <Leader>l :Buffers<CR>
-nnoremap <silent> <Leader>; :call DeleteBuffers()<CR>
+nnoremap <silent> <Leader>L :call DeleteBuffers()<CR>
+nnoremap <silent> <Leader>; :BLines<CR>
 nnoremap <silent> <Leader>: :History:<CR>
 nnoremap <silent> <Leader>k :BTags<CR>
 nnoremap <silent> <Leader>h :Help<CR>
@@ -466,9 +477,19 @@ nnoremap <silent> <Leader>sc :SClose<CR>
 let g:matchup_matchparen_offscreen = {'method': 'popup'}
 " }}}
 
-" fzf-lua {{{
-nnoremap <silent> <Leader><Leader> :FzfLua<CR>
+" git-blame.nvim {{{
+let g:gitblame_enabled = 0
+
+nnoremap <silent> <Leader>gb :GitBlameToggle<CR>
 " }}}
+
+" diffview.nvim {{{
+nnoremap <silent> <leader>gd :DiffviewFileHistory<CR>
+" }}}
+
+
+" LSP
+lua require('lsp')
 
 
 " LANGUAGE AUTO GROUPS 
@@ -480,18 +501,11 @@ augroup END
 augroup GO
     autocmd!
 
-    let g:go_fold_enable = ['import']
+    " let g:go_fold_enable = ['import']
 
-    autocmd FileType go setlocal foldenable foldmethod=syntax
+    " autocmd FileType go setlocal foldenable foldmethod=expr foldexpr=v:lnum==1?'>1':getline(v:lnum)=~'import'?1:nvim_treesitter#foldexpr()
     autocmd FileType go setlocal noexpandtab shiftwidth=8
     autocmd FileType go setlocal textwidth=100
-
-    autocmd FileType go iabbrev <buffer> ife; if err != nil {<CR>return err<ESC>ja
-    autocmd FileType go iabbrev <buffer> ifne; if err != nil {<CR>return nil, err<ESC>ja
-    autocmd FileType go iabbrev <buffer> iffe; if err :=; err != nil {<CR>return err<ESC>k0f;i
-    autocmd FileType go iabbrev <buffer> iffne; if err :=; err != nil {<CR>return nil, err<ESC>k0f;i
-    autocmd FileType go iabbrev <buffer> dbg; b, _ := json.MarshalIndent(Z, "", "\t")<CR>fmt.Printf("[DEBUGGING]: %+v\n", string(b))<ESC>k0fZcw
-    autocmd Filetype go iabbrev <buffer> ctx; ctx := context.Background()
 augroup END
 
 augroup HASKELL

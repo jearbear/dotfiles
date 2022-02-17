@@ -1,5 +1,6 @@
 local lspconfig = require("lspconfig")
 local null_ls = require("null-ls")
+local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
 function goimports() -- Copied from https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim-imports {{{
     local context = { only = { "source.organizeImports" } }
@@ -88,6 +89,9 @@ local handlers = {
     }),
 }
 
+-- Add completion via cmp-nvim to the list of LSP capabilities available
+local capabilities = cmp_nvim_lsp.update_capabilities(vim.lsp.protocol.make_client_capabilities())
+
 -- Golang
 lspconfig.gopls.setup({
     on_attach = function(client, bufnr)
@@ -97,10 +101,14 @@ lspconfig.gopls.setup({
         vim.cmd("autocmd BufWritePre <buffer> lua goimports()")
     end,
     handlers = handlers,
+    capabilities = capabilities,
 
     settings = {
         gopls = {
             gofumpt = true,
+            usePlaceholders = true,
+            -- TODO: Put this into a Pipe-specific config
+            ["local"] = "github.com/pipe-technologies/pipe/backend",
         },
     },
 })
@@ -115,14 +123,41 @@ lspconfig.tsserver.setup({
         client.resolved_capabilities.document_range_formatting = false
     end,
     handlers = handlers,
+    capabilities = capabilities,
 })
 
 -- Elixir
 lspconfig.elixirls.setup({
     on_attach = on_attach,
     handlers = handlers,
+    capabilities = capabilities,
 
     cmd = { "/opt/homebrew/bin/elixir-ls" },
+})
+
+-- Vimscript
+lspconfig.vimls.setup({
+    on_attach = on_attach,
+    handlers = handlers,
+    capabilities = capabilities,
+})
+
+-- Lua
+lspconfig.sumneko_lua.setup({
+    on_attach = on_attach,
+    handlers = handlers,
+    capabilities = capabilities,
+
+    settings = {
+        Lua = {
+            diagnostics = {
+                globals = { "vim" },
+            },
+            workspace = {
+                library = vim.api.nvim_get_runtime_file("", true),
+            },
+        },
+    },
 })
 
 -- null-ls
