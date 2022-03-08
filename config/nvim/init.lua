@@ -30,6 +30,7 @@ plug("AndrewRadev/splitjoin.vim") -- language-aware splits and joins
 plug("numToStr/Comment.nvim") -- key bindings for commenting
 plug("tpope/vim-rsi") -- Emacs bindings in command mode
 plug("tpope/vim-surround") -- additional mappings to manipulate brackets
+plug("tpope/vim-repeat") -- allow `.` to repeate vim-surround actions
 plug("tpope/vim-unimpaired") -- mostly use for [<Space> and ]<Space>
 plug("wellle/targets.vim") -- additional text objects
 plug("moll/vim-bbye") -- delete buffers without closing the window
@@ -179,9 +180,6 @@ vim.opt.wildmenu = true -- show all command mode completion options in a menu
 vim.opt.wildignorecase = true -- perform case-insensitive completion of files in command mode
 vim.opt.wildmode = { "full", "full" } -- complete the entire result in command mode
 
--- TODO: This isn't the correct way to set this in Lua
--- vim.opt.wildcharm = "<C-z>" -- allows invoking completion menu with <C-z> (useful for mappings)
-
 vim.opt.shortmess:append("c") -- don't show messages when performing completion
 vim.opt.completeopt = { "menu", "menuone", "noselect" } -- when completing, show a menu even if there is only one result
 
@@ -288,14 +286,10 @@ u.cnoremap("<C-p>", "<Up>")
 u.cnoremap("<C-n>", "<Down>")
 
 -- edit config files
-u.nnoremap_c("<Leader>vev", "e ~/.config/nvim/init.vim")
+u.nnoremap_c("<Leader>vev", "e ~/.config/nvim/init.lua")
 u.nnoremap_c("<Leader>vel", "e ~/.config/nvim/lua/lsp.lua")
 u.nnoremap_c("<Leader>vep", "e ~/.config/nvim/lua/plugins.lua")
 u.nnoremap_c("<Leader>ves", "e ~/.config/nvim/lua/statusline.lua")
-
--- reload configs
--- TODO: find out how to properly do this with init.lua
--- u.nnoremap_c("<Leader>vr", "source ~/.config/nvim/init.vim<CR>:lua require'heirline'.reset_highlights()")
 
 -- copy the file with another name
 u.nnoremap("<Leader>cc", ":saveas %:h<C-z>")
