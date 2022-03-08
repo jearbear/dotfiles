@@ -1,94 +1,59 @@
-local heirline = require("heirline")
-local conditions = require("heirline.conditions")
-local utils = require("heirline.utils")
-
-local padding = {
-    provider = function(_)
-        return "  "
-    end,
-}
-
-local filename = {
-    init = function(self)
-        self.filename = vim.api.nvim_buf_get_name(0)
-    end,
-
-    provider = function(self)
-        local filename = vim.fn.fnamemodify(self.filename, ":.")
-
-        if filename == "" then
-            return "[No Name]"
-        end
-
-        if vim.bo.buftype == "help" then
-            return vim.fn.fnamemodify(filename, ":t")
-        end
-
-        if not conditions.width_percent_below(#filename, 0.75) then
-            filename = vim.fn.fnamemodify(filename, ":t")
-        end
-
-        return filename
-    end,
-}
-
-local filename_flag = {
-    {
-        provider = function()
-            if vim.bo.modified then
-                return " [+]"
-            end
-        end,
+require("lualine").setup({
+    options = {
+        icons_enabled = true,
+        theme = "auto",
+        component_separators = { left = "", right = "" },
+        section_separators = { left = "", right = "" },
+        disabled_filetypes = {},
+        always_divide_middle = true,
     },
-    {
-        provider = function()
-            if not vim.bo.modifiable then
-                return " [-]"
-            end
-        end,
+    sections = {
+        lualine_a = { "mode" },
+        lualine_b = {
+            {
+                "tabs",
+                max_length = vim.o.columns,
+                mode = 0,
+                cond = function()
+                    return vim.fn.tabpagenr("$") > 1
+                end,
+            },
+        },
+        lualine_c = {
+            {
+                "filename",
+                path = 1,
+                symbols = {
+                    modified = " [+]",
+                    readonly = " [-]",
+                    unnamed = "[No Name]",
+                },
+                padding = 2,
+            },
+        },
+        lualine_x = {
+            {
+                "branch",
+                padding = 2,
+            },
+        },
+        lualine_y = {
+            {
+                "diagnostics",
+                sources = { "nvim_lsp" },
+                symbols = { error = "", warn = "", info = "", hint = "" },
+            },
+        },
+        lualine_z = { "%l:%L" },
     },
-}
-
-local divider = {
-    provider = "%=",
-}
-
-local ruler = {
-    provider = "%l:%L",
-}
-
-local inactive_statusline = {
-    condition = function()
-        return not conditions.is_active()
-    end,
-
-    padding,
-    filename,
-    filename_flag,
-    divider,
-    padding,
-}
-
-local active_statusline = { padding, filename, filename_flag, divider, ruler, padding }
-
-heirline.setup({
-    hl = function()
-        if conditions.is_active() then
-            return {
-                fg = utils.get_highlight("StatusLine").fg,
-                bg = utils.get_highlight("StatusLine").bg,
-                style = "bold",
-            }
-        else
-            return {
-                fg = utils.get_highlight("StatusLineNC").fg,
-                bg = utils.get_highlight("StatusLineNC").bg,
-            }
-        end
-    end,
-
-    stop_at_first = true,
-
-    inactive_statusline,
-    active_statusline,
+    inactive_sections = {
+        lualine_a = {},
+        lualine_b = {},
+        lualine_c = { { "filename", path = 1 } },
+        lualine_x = { "%l:%L" },
+        lualine_y = {},
+        lualine_z = {},
+    },
+    tabline = {},
+    extensions = { "quickfix" },
 })

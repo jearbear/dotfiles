@@ -160,6 +160,13 @@ lspconfig.sumneko_lua.setup({
     },
 })
 
+-- Rust
+lspconfig.rust_analyzer.setup({
+    on_attach = on_attach,
+    handlers = handlers,
+    capabilities = capabilities,
+})
+
 -- null-ls
 null_ls.setup({
     sources = {

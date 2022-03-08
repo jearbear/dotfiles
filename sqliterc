@@ -1,5 +1,5 @@
 .headers on
-.mode column
-.nullvalue ¤
+.mode table
+.nullvalue NULL
 .prompt "» "
 .timer on
