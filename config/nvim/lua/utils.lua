@@ -48,4 +48,17 @@ function M.xnoremap_c(lhs, rhs)
     vim.api.nvim_set_keymap("x", lhs, "<Cmd>" .. rhs .. "<CR>", { noremap = true, silent = true })
 end
 
+function M.toggle_qf()
+    for _, win in pairs(vim.fn.getwininfo()) do
+        if win["quickfix"] == 1 then
+            vim.cmd("cclose")
+            return
+        end
+    end
+
+    if not vim.tbl_isempty(vim.fn.getqflist()) then
+        vim.cmd("copen")
+    end
+end
+
 return M

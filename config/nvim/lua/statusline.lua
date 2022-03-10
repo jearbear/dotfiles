@@ -13,7 +13,7 @@ require("lualine").setup({
             {
                 "tabs",
                 max_length = vim.o.columns,
-                mode = 0,
+                mode = 0, -- show tab number only
                 cond = function()
                     return vim.fn.tabpagenr("$") > 1
                 end,
@@ -22,7 +22,7 @@ require("lualine").setup({
         lualine_c = {
             {
                 "filename",
-                path = 1,
+                path = 1, -- display relative path
                 symbols = {
                     modified = " [+]",
                     readonly = " [-]",

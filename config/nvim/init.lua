@@ -15,15 +15,22 @@ local plug = vim.fn["plug#"]
 vim.call("plug#begin", "~/.config/nvim/plugged")
 
 -- themes
-plug("sainnhe/everforest")
+plug("EdenEast/nightfox.nvim")
 plug("catppuccin/nvim", { as = "catppuccin" })
+plug("folke/tokyonight.nvim")
+plug("rose-pine/neovim")
+plug("sainnhe/everforest")
+plug("savq/melange")
 
 -- the basics
-plug("nvim-treesitter/nvim-treesitter", { ["do"] = ":TSUpdate" }) -- better syntax highlighting
 plug("nvim-lua/plenary.nvim") -- dependency for many lua-based plugins
 
--- statusline
-plug("rebelot/heirline.nvim")
+-- UI
+plug("nvim-treesitter/nvim-treesitter", { ["do"] = ":TSUpdate" }) -- better syntax highlighting
+plug("anuvyklack/pretty-fold.nvim") -- prettier fold markers and previews
+plug("andymass/vim-matchup") -- more extensive support for matching with `%`
+plug("nvim-lualine/lualine.nvim") -- statusline
+plug("kevinhwang91/nvim-bqf") -- enhanced qflist (previews, FZF integration)
 
 -- mappings
 plug("AndrewRadev/splitjoin.vim") -- language-aware splits and joins
@@ -44,23 +51,21 @@ plug("ruifm/gitlinker.nvim") -- create links to Github
 plug("lewis6991/gitsigns.nvim") -- VCS change indicators in the gutter
 plug("sindrets/diffview.nvim") -- git diff across multiple files
 
--- project management
-plug("romainl/vim-qf") -- slicker qf and loclist handling
-plug("tpope/vim-eunuch") -- unix shell commands in command mode
-
 -- completion
 plug("windwp/nvim-autopairs") -- automatically complete pairs
 plug("tpope/vim-endwise") -- automatically close everything else
 plug("RRethy/nvim-treesitter-endwise") -- automatically close everything else (tree-sitter)
-plug("dcampos/cmp-snippy")
-plug("dcampos/nvim-snippy")
-plug("hrsh7th/cmp-buffer")
-plug("hrsh7th/cmp-nvim-lsp")
-plug("hrsh7th/nvim-cmp")
+plug("hrsh7th/nvim-cmp") -- auto-completion
+plug("dcampos/nvim-snippy") -- snippets
+plug("hrsh7th/cmp-nvim-lsp") -- auto-completion + LSP integration
+plug("dcampos/cmp-snippy") -- auto-completion + snippets integration
+plug("hrsh7th/cmp-buffer") -- auto-completion when searching (`/` and `?`)
 
--- project navigation
+-- project navigation + management
 plug("justinmk/vim-dirvish") -- minimal file browser
 plug("mhinz/vim-grepper") -- slicker grep support
+plug("mhinz/vim-startify") -- start screen + session management
+plug("tpope/vim-eunuch") -- unix shell commands in command mode
 plug("wsdjeg/vim-fetch") -- support opening line and column numbers (e.g. foo.bar:13)
 
 -- LSP stuff
@@ -77,15 +82,6 @@ plug("junegunn/fzf")
 plug("junegunn/fzf.vim")
 
 -- trying out
-plug("mhinz/vim-startify")
-plug("anuvyklack/pretty-fold.nvim") -- prettier fold markers and previews
-plug("andymass/vim-matchup")
-plug("nvim-lualine/lualine.nvim")
-plug("savq/melange")
-plug("rose-pine/neovim")
-plug("EdenEast/nightfox.nvim")
-plug("folke/tokyonight.nvim")
-plug("kevinhwang91/nvim-bqf")
 plug("chentau/marks.nvim")
 
 vim.call("plug#end")
@@ -277,25 +273,26 @@ u.xmap("<Leader>p", '"+p')
 u.nmap("<Leader>P", '"+P')
 u.xmap("<Leader>P", '"+P')
 
--- repeat macro on selection
-u.xnoremap_c(".", "norm.")
-
 -- additional emacs mappings that vim-rsi doesn't cover
 u.inoremap("<C-k>", "<ESC><Right>C") -- kill the rest of the line
 u.cnoremap("<C-p>", "<Up>")
 u.cnoremap("<C-n>", "<Down>")
 
 -- edit config files
-u.nnoremap_c("<Leader>vev", "e ~/.config/nvim/init.lua")
-u.nnoremap_c("<Leader>vel", "e ~/.config/nvim/lua/lsp.lua")
-u.nnoremap_c("<Leader>vep", "e ~/.config/nvim/lua/plugins.lua")
-u.nnoremap_c("<Leader>ves", "e ~/.config/nvim/lua/statusline.lua")
+u.nnoremap_c("<Leader>vev", "edit ~/.config/nvim/init.lua")
+u.nnoremap_c("<Leader>vel", "edit ~/.config/nvim/lua/lsp.lua")
+u.nnoremap_c("<Leader>vep", "edit ~/.config/nvim/lua/plugins.lua")
+u.nnoremap_c("<Leader>ves", "edit ~/.config/nvim/lua/statusline.lua")
+u.nnoremap_c("<Leader>veu", "edit ~/.config/nvim/lua/utils.lua")
 
 -- copy the file with another name
 u.nnoremap("<Leader>cc", ":saveas %:h<C-z>")
 
 -- create a new file in the same directory
-u.nnoremap("<Leader>cn", ":e %:h<C-z>")
+u.nnoremap("<Leader>cn", ":edit %:h<C-z>")
+
+-- toggle qflist
+u.nnoremap_c("<Leader>qq", "lua require('utils').toggle_qf()")
 -- }}}
 
 require("statusline")

@@ -4,6 +4,7 @@ local u = require("utils")
 require("nvim-treesitter.configs").setup({
     ensure_installed = {
         "bash",
+        "comment",
         "go",
         "javascript",
         "json",
@@ -175,15 +176,6 @@ cmp.setup.cmdline("/", {
 })
 -- }}}
 
--- vim-qf {{{
-u.nmap("<Leader>qq", "<Plug>(qf_qf_toggle)")
-u.nmap("<Leader>ql", "<Plug>(qf_loc_toggle)")
-u.nmap("[q", "<Plug>(qf_qf_previous)")
-u.nmap("]q", "<Plug>(qf_qf_next)")
-u.nmap("[l", "<Plug>(qf_loc_previous)")
-u.nmap("]l", "<Plug>(qf_loc_next)")
--- }}}
-
 -- vim-grepper {{{
 vim.g.grepper = {
     prompt_text = "$t> ",
@@ -289,18 +281,19 @@ u.nnoremap_c("Q", "Bwipeout")
 -- }}}
 
 -- vim-startify {{{
-vim.g.startify_session_persistence = true
-vim.g.startify_session_delete_buffers = true
 vim.g.startify_change_to_dir = false
 vim.g.startify_relative_path = true
+vim.g.startify_session_delete_buffers = true
+vim.g.startify_session_persistence = true
+vim.g.startify_update_oldfiles = true
+
+vim.g.startify_custom_header = {}
+
 vim.g.startify_commands = {}
 vim.g.startify_bookmarks = {
-    { vv = "~/.config/nvim/init.vim" },
-    { vl = "~/.config/nvim/lua/lsp.lua" },
-    { vp = "~/.config/nvim/lua/plugins.lua" },
-    { vs = "~/.config/nvim/lua/statusline.lua" },
+    { df = "~/.dotfiles" },
+    { dp = "~/.dotfiles.pipe" },
 }
-vim.g.startify_fortune_use_unicode = true
 vim.g.startify_lists = {
     { type = "dir", header = { "   Latest Edits" } },
     { type = "bookmarks", header = { "   Bookmarks" } },

@@ -1,8 +1,9 @@
+local u = require("utils")
 local lspconfig = require("lspconfig")
 local null_ls = require("null-ls")
 local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
-function goimports() -- Copied from https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim-imports {{{
+function GoImports() -- Copied from https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim-imports {{{
     local context = { only = { "source.organizeImports" } }
     vim.validate({ context = { context, "t", true } })
 
@@ -34,36 +35,24 @@ end
 
 -- This function gets executed when the LSP is initiated successfully
 local on_attach = function(client, bufnr)
-    local function buf_set_keymap(...)
-        vim.api.nvim_buf_set_keymap(bufnr, ...)
-    end
-    local function buf_set_option(...)
-        vim.api.nvim_buf_set_option(bufnr, ...)
+    local function map(lhs, rhs)
+        u.buf_nnoremap_c(bufnr, lhs, rhs)
     end
 
     -- Enable completion triggered by <c-x><c-o>
-    buf_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
+    vim.bo.omnifunc = "v:lua.vim.lsp.omnifunc"
 
     -- Mappings
-    local opts = { noremap = true, silent = true }
-    buf_set_keymap("n", "<C-]>", "<cmd>lua vim.lsp.buf.definition()<CR>", opts)
-    buf_set_keymap("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
-    buf_set_keymap("n", "<Leader>R", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
-    buf_set_keymap(
-        "n",
-        "<C-k>",
-        '<cmd>lua vim.diagnostic.goto_prev({float = { border = "single" }, wrap = false})<CR>',
-        opts
-    )
-    buf_set_keymap(
-        "n",
-        "<C-j>",
-        '<cmd>lua vim.diagnostic.goto_next({float = { border = "single" }, wrap = false})<CR>',
-        opts
-    )
-    buf_set_keymap("n", "<Leader>gr", "<cmd>lua vim.lsp.buf.references()<CR>", opts)
-    buf_set_keymap("n", "<Leader>M", "<cmd>lua vim.diagnostic.setqflist()<CR>", opts)
-    buf_set_keymap("n", "<Leader>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
+    map("<C-]>", "lua vim.lsp.buf.definition()")
+    map("<C-]>", "lua vim.lsp.buf.definition()")
+    map("<C-]>", "lua vim.lsp.buf.definition()")
+    map("K", "lua vim.lsp.buf.hover()")
+    map("<Leader>R", "lua vim.lsp.buf.rename()")
+    map("<C-k>", 'lua vim.diagnostic.goto_prev({float = { border = "single" }, wrap = false})')
+    map("<C-j>", 'lua vim.diagnostic.goto_next({float = { border = "single" }, wrap = false})')
+    map("<Leader>gr", "lua vim.lsp.buf.references()")
+    map("<Leader>M", "lua vim.diagnostic.setqflist()")
+    map("<Leader>ca", "lua vim.lsp.buf.code_action()")
 
     -- Enable auto-formatting if it's provided
     if client.resolved_capabilities.document_formatting then
@@ -98,7 +87,7 @@ lspconfig.gopls.setup({
         on_attach(client, bufnr)
 
         -- Enable auto-formatting of imports
-        vim.cmd("autocmd BufWritePre <buffer> lua goimports()")
+        vim.cmd("autocmd BufWritePre <buffer> lua GoImports()")
     end,
     handlers = handlers,
     capabilities = capabilities,
