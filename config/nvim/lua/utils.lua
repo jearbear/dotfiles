@@ -24,8 +24,16 @@ function M.nnoremap(lhs, rhs)
     vim.api.nvim_set_keymap("n", lhs, rhs, { noremap = true })
 end
 
+function M.nnoremap_c(lhs, rhs)
+    vim.api.nvim_set_keymap("n", lhs, "<Cmd>" .. rhs .. "<CR>", { noremap = true, silent = true })
+end
+
 function M.buf_nnoremap(buf_number, lhs, rhs)
     vim.api.nvim_buf_set_keymap(buf_number, "n", lhs, rhs, { noremap = true })
+end
+
+function M.buf_nnoremap_c(buf_number, lhs, rhs)
+    vim.api.nvim_buf_set_keymap(buf_number, "n", lhs, "<Cmd>" .. rhs .. "<CR>", { noremap = true, silent = true })
 end
 
 function M.inoremap(lhs, rhs)
@@ -36,12 +44,8 @@ function M.cnoremap(lhs, rhs)
     vim.api.nvim_set_keymap("c", lhs, rhs, { noremap = true })
 end
 
-function M.nnoremap_c(lhs, rhs)
-    vim.api.nvim_set_keymap("n", lhs, "<Cmd>" .. rhs .. "<CR>", { noremap = true, silent = true })
-end
-
-function M.buf_nnoremap_c(buf_number, lhs, rhs)
-    vim.api.nvim_buf_set_keymap(buf_number, "n", lhs, "<Cmd>" .. rhs .. "<CR>", { noremap = true, silent = true })
+function M.cnoremap_c(lhs, rhs)
+    vim.api.nvim_set_keymap("c", lhs .. "<CR>", rhs .. "<CR>", { noremap = true })
 end
 
 function M.xnoremap_c(lhs, rhs)

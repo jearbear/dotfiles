@@ -3,32 +3,18 @@ local lspconfig = require("lspconfig")
 local null_ls = require("null-ls")
 local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
-function GoImports() -- Copied from https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim-imports {{{
-    local context = { only = { "source.organizeImports" } }
-    vim.validate({ context = { context, "t", true } })
-
+function OrgGoImports(wait_ms) -- Copied from https://github.com/golang/tools/blob/master/gopls/doc/vim.md#imports {{{
     local params = vim.lsp.util.make_range_params()
-    params.context = context
-
-    local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 1000)
-    if not result or next(result) == nil then
-        return
-    end
-    local actions = result[1].result
-    if not actions then
-        return
-    end
-    local action = actions[1]
-
-    if action.edit or type(action.command) == "table" then
-        if action.edit then
-            vim.lsp.util.apply_workspace_edit(action.edit)
+    params.context = { only = { "source.organizeImports" } }
+    local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, wait_ms)
+    for _, res in pairs(result or {}) do
+        for _, r in pairs(res.result or {}) do
+            if r.edit then
+                vim.lsp.util.apply_workspace_edit(r.edit)
+            else
+                vim.lsp.buf.execute_command(r.command)
+            end
         end
-        if type(action.command) == "table" then
-            vim.lsp.buf.execute_command(action.command)
-        end
-    else
-        vim.lsp.buf.execute_command(action)
     end
 end
 -- }}}
@@ -56,11 +42,11 @@ local on_attach = function(client, bufnr)
 
     -- Enable auto-formatting if it's provided
     if client.resolved_capabilities.document_formatting then
-        vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()")
+        vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync(nil, 5000)")
     end
 
     -- Update signs
-    local signs = { Error = "!!", Warn = "!!", Hint = "ii", Info = "ii" }
+    local signs = { Error = "┇", Warn = "┇", Hint = "┇", Info = "┇" }
     for type, icon in pairs(signs) do
         local hl = "DiagnosticSign" .. type
         vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
@@ -71,11 +57,6 @@ end
 local handlers = {
     ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" }),
     ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" }),
-    ["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-        virtual_text = {
-            prefix = "■",
-        },
-    }),
 }
 
 -- Add completion via cmp-nvim to the list of LSP capabilities available
@@ -87,7 +68,7 @@ lspconfig.gopls.setup({
         on_attach(client, bufnr)
 
         -- Enable auto-formatting of imports
-        vim.cmd("autocmd BufWritePre <buffer> lua GoImports()")
+        vim.cmd("autocmd BufWritePre <buffer> lua OrgGoImports(5000)")
     end,
     handlers = handlers,
     capabilities = capabilities,
@@ -159,8 +140,8 @@ lspconfig.rust_analyzer.setup({
 -- null-ls
 null_ls.setup({
     sources = {
+        null_ls.builtins.code_actions.eslint_d,
         null_ls.builtins.formatting.prettierd,
-        null_ls.builtins.formatting.eslint_d,
         null_ls.builtins.diagnostics.eslint_d,
         null_ls.builtins.diagnostics.golangci_lint.with({
             args = { "run", "--fix=false", "--out-format=json", "$DIRNAME", "--path-prefix", "$ROOT" },
@@ -172,4 +153,6 @@ null_ls.setup({
 
     on_attach = on_attach,
     handlers = handlers,
+
+    -- root_dir = lspconfig.util.root_pattern("tsconfig.json", "go.mod", ".git"),
 })

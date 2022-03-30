@@ -55,11 +55,12 @@ plug("sindrets/diffview.nvim") -- git diff across multiple files
 plug("windwp/nvim-autopairs") -- automatically complete pairs
 plug("tpope/vim-endwise") -- automatically close everything else
 plug("RRethy/nvim-treesitter-endwise") -- automatically close everything else (tree-sitter)
-plug("hrsh7th/nvim-cmp") -- auto-completion
 plug("dcampos/nvim-snippy") -- snippets
+plug("hrsh7th/nvim-cmp") -- auto-completion
 plug("hrsh7th/cmp-nvim-lsp") -- auto-completion + LSP integration
 plug("dcampos/cmp-snippy") -- auto-completion + snippets integration
 plug("hrsh7th/cmp-buffer") -- auto-completion when searching (`/` and `?`)
+plug("hrsh7th/cmp-nvim-lsp-signature-help") -- show signature information as you type using the completion window
 
 -- project navigation + management
 plug("justinmk/vim-dirvish") -- minimal file browser
@@ -83,6 +84,7 @@ plug("junegunn/fzf.vim")
 
 -- trying out
 plug("chentau/marks.nvim")
+plug("luukvbaal/stabilize.nvim")
 
 vim.call("plug#end")
 -- }}}
@@ -91,14 +93,22 @@ vim.call("plug#end")
 vim.opt.termguicolors = true
 
 require("catppuccin").setup({
+    -- TODO: the italics settings aren't being respected (https://github.com/catppuccin/nvim/issues/95)
+    styles = {
+        comments = "italic",
+        functions = "NONE",
+        keywords = "NONE",
+        strings = "italic",
+        variables = "NONE",
+    },
     integrations = {
         native_lsp = {
             enabled = true,
             virtual_text = {
-                errors = "italic",
-                hints = "italic",
-                warnings = "italic",
-                information = "italic",
+                errors = "NONE",
+                hints = "NONE",
+                warnings = "NONE",
+                information = "NONE",
             },
             underlines = {
                 errors = "underline",
@@ -177,7 +187,7 @@ vim.opt.wildignorecase = true -- perform case-insensitive completion of files in
 vim.opt.wildmode = { "full", "full" } -- complete the entire result in command mode
 
 vim.opt.shortmess:append("c") -- don't show messages when performing completion
-vim.opt.completeopt = { "menu", "menuone", "noselect" } -- when completing, show a menu even if there is only one result
+vim.opt.completeopt = { "menu", "menuone" } -- when completing, show a menu even if there is only one result
 
 vim.opt.showtabline = 0 -- disable the tab line (in favor of lualine's)
 
@@ -197,6 +207,14 @@ vim.opt.undodir = (vim.env.VIM_FILES .. "/undo//")
 vim.opt.swapfile = false -- disable swap files since they tend to be more annoying than not
 
 vim.g.is_bash = true -- default to bash filetype when `ft=sh`
+
+vim.diagnostic.config({
+    virtual_text = false,
+    signs = true,
+    underline = true,
+    update_in_insert = false,
+    severity_sort = true,
+})
 -- }}}
 
 -- AUTO COMMANDS {{{
@@ -293,6 +311,9 @@ u.nnoremap("<Leader>cn", ":edit %:h<C-z>")
 
 -- toggle qflist
 u.nnoremap_c("<Leader>qq", "lua require('utils').toggle_qf()")
+
+-- this is always a typo
+u.cnoremap_c("w'", "w")
 -- }}}
 
 require("statusline")

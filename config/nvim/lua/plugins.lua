@@ -10,6 +10,7 @@ require("nvim-treesitter.configs").setup({
         "json",
         "lua",
         "make",
+        "markdown",
         "python",
         "regex",
         "rust",
@@ -21,6 +22,10 @@ require("nvim-treesitter.configs").setup({
     indent = { enable = true },
     endwise = { enable = true },
 })
+-- }}}
+
+-- stabilize.nvim {{{
+require("stabilize").setup({})
 -- }}}
 
 -- pretty-fold.nvim {{{
@@ -73,6 +78,12 @@ require("nvim-autopairs").setup({
 -- nvim-bqf {{{
 require("bqf").setup({
     auto_resize_height = true,
+    func_map = {
+        ptogglemode = "Z",
+        stogglebuf = "`",
+        filter = "K",
+        filterr = "D",
+    },
 })
 -- }}}
 
@@ -101,15 +112,12 @@ require("snippy").setup({
 -- }}}
 
 -- nvim-cmp + friends {{{
-local has_words_before = function()
-    local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-    return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-end
-
 local cmp = require("cmp")
 local snippy = require("snippy")
 
 cmp.setup({
+    preselect = cmp.PreselectMode.None,
+
     snippet = {
         expand = function(args)
             snippy.expand_snippet(args.body)
@@ -117,32 +125,11 @@ cmp.setup({
     },
 
     mapping = {
-        ["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
-        ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
-        ["<C-e>"] = cmp.mapping({
-            i = cmp.mapping.abort(),
-            c = cmp.mapping.close(),
-        }),
-        ["<CR>"] = cmp.mapping(cmp.mapping.confirm({ select = false })),
-        ["<Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-                cmp.select_next_item()
-            elseif has_words_before() then
-                cmp.complete()
-            else
-                fallback()
-            end
-        end, { "i", "s" }),
-        ["<S-Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-                cmp.select_prev_item()
-            else
-                fallback()
-            end
-        end, { "i", "s" }),
         ["<C-l>"] = cmp.mapping(function(fallback)
             if snippy.can_expand_or_advance() then
                 snippy.expand_or_advance()
+            elseif cmp.visible() then
+                cmp.confirm()
             else
                 fallback()
             end
@@ -154,9 +141,15 @@ cmp.setup({
                 fallback()
             end
         end, { "i", "s" }),
+        ["<C-d>"] = cmp.config.disable,
+        ["<C-f>"] = cmp.config.disable,
+        ["<C-e>"] = cmp.config.disable,
+        ["<C-Space>"] = cmp.config.disable,
     },
 
     sources = cmp.config.sources({
+        { name = "nvim_lsp_signature_help" },
+    }, {
         { name = "nvim_lsp" },
         { name = "snippy" },
     }),
@@ -166,6 +159,7 @@ cmp.setup({
     },
 })
 
+-- properly insert braces after completing functions
 local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done({ map_char = { tex = "" } }))
 
@@ -204,7 +198,6 @@ vim.g.rsi_no_meta = true
 
 -- fzf.vim {{{
 vim.g.fzf_layout = { window = { width = 0.95, height = 0.95, border = "sharp" } }
-vim.g.fzf_history_dir = "~/.fzf-history"
 vim.g.fzf_action = {
     ["ctrl-t"] = "tab split",
     ["ctrl-s"] = "split",
@@ -293,6 +286,7 @@ vim.g.startify_commands = {}
 vim.g.startify_bookmarks = {
     { df = "~/.dotfiles" },
     { dp = "~/.dotfiles.pipe" },
+    { sn = "~/snippets.md" },
 }
 vim.g.startify_lists = {
     { type = "dir", header = { "   Latest Edits" } },
@@ -301,11 +295,43 @@ vim.g.startify_lists = {
     { type = "commands", header = { "   Commands" } },
 }
 
-u.nnoremap("<Leader>ss", ":SSave!<Space>")
-u.nnoremap("<Leader>sl", ":SLoad!<Space>")
-u.nnoremap("<Leader>sd", ":SDelete!<Space>")
 u.nnoremap_c("<Leader>S", "Startify")
 u.nnoremap_c("<Leader>sc", "SClose")
+
+local git_session_name = function()
+    if vim.g.gitsigns_head == nil or vim.g.gitsigns_head == "" then
+        return ""
+    end
+
+    return vim.g.gitsigns_head:gsub("^jerry%-", "")
+end
+
+SaveGitBranchSession = function()
+    local name = git_session_name()
+    if name == "" then
+        return
+    end
+    vim.api.nvim_command("SSave! " .. name)
+end
+u.nnoremap_c("<Leader>ss", "lua SaveGitBranchSession()")
+
+LoadGitBranchSession = function()
+    local name = git_session_name()
+    if name == "" then
+        return
+    end
+    vim.api.nvim_command("SLoad! " .. name)
+end
+u.nnoremap_c("<Leader>sl", "lua LoadGitBranchSession()")
+
+DeleteGitBranchSession = function()
+    local name = git_session_name()
+    if name == "" then
+        return
+    end
+    vim.api.nvim_command("SDelete! " .. name)
+end
+u.nnoremap_c("<Leader>sd", "lua DeleteGitBranchSession()")
 -- }}}
 
 -- vim-matchup {{{

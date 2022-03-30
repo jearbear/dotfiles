@@ -1,14 +1,24 @@
 require("lualine").setup({
     options = {
-        icons_enabled = true,
-        theme = "auto",
+        icons_enabled = false,
+        theme = "catppuccin",
         component_separators = { left = "", right = "" },
         section_separators = { left = "", right = "" },
         disabled_filetypes = {},
-        always_divide_middle = true,
+        always_divide_middle = false,
     },
     sections = {
-        lualine_a = { "mode" },
+        lualine_a = {
+            {
+                "mode",
+                fmt = function(str)
+                    if vim.fn.winwidth(0) < 120 then
+                        return str:sub(1, 1)
+                    end
+                    return str
+                end,
+            },
+        },
         lualine_b = {
             {
                 "tabs",
@@ -35,6 +45,9 @@ require("lualine").setup({
             {
                 "branch",
                 padding = 2,
+                cond = function()
+                    return vim.fn.winwidth(0) >= 120
+                end,
             },
         },
         lualine_y = {
@@ -49,8 +62,21 @@ require("lualine").setup({
     inactive_sections = {
         lualine_a = {},
         lualine_b = {},
-        lualine_c = { { "filename", path = 1 } },
-        lualine_x = { "%l:%L" },
+        lualine_c = {
+            {
+                "filename",
+                path = 1,
+                symbols = {
+                    modified = " [+]",
+                    readonly = " [-]",
+                    unnamed = "[No Name]",
+                },
+                padding = 2,
+            },
+        },
+        lualine_x = {
+            -- "%l:%L",
+        },
         lualine_y = {},
         lualine_z = {},
     },

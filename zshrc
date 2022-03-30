@@ -64,6 +64,7 @@ RPROMPT='${vcs_info_msg_0_}%f'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
+alias cdd='cd ~/.dotfiles'
 alias ls='ls -GF' # enable color and sigils depending on filetype
 alias n='nnn -CReor'
 alias pn='ping www.google.com -c 1'
@@ -74,7 +75,6 @@ alias sdots='dots --store-dir ~/.dotfiles.secret'
 alias t='TERM=xterm-256color tmux new-session -A -s main'
 alias vi='nvim'
 alias vim='nvim'
-alias vg='nvim +Git +only'
 alias watch='watch --color --interval 5'
 
 # determine if the CWD is within a git repo

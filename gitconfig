@@ -59,7 +59,7 @@
     com = checkout main
     cob = !"f() { set -e; BRANCH=$(git pick branch); git co $BRANCH; }; f"
 
-    get = !git fetch origin ${1?}:jerry-${1?} && git checkout jerry-${1?} && :
+    cor = !git fetch origin ${1?}:jerry-${1?} && git checkout jerry-${1?} && :
 
     update = fetch origin main:main
 
