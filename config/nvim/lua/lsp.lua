@@ -145,6 +145,15 @@ null_ls.setup({
         null_ls.builtins.diagnostics.eslint_d,
         null_ls.builtins.diagnostics.golangci_lint.with({
             args = { "run", "--fix=false", "--out-format=json", "$DIRNAME", "--path-prefix", "$ROOT" },
+            -- If the LSP catches errors, they will likely be compiler errors
+            -- which need to be resolved before golangci-lint returns anything
+            -- useful, so we shouldn't run it.
+            runtime_condition = function(params)
+                for _ in pairs(vim.diagnostic.get(params.bufnr)) do
+                    return false
+                end
+                return true
+            end,
         }),
         null_ls.builtins.formatting.stylua.with({
             extra_args = { "--indent-type", "Spaces" },
