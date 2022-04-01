@@ -93,6 +93,17 @@ lspconfig.tsserver.setup({
         client.resolved_capabilities.document_range_formatting = false
     end,
     handlers = handlers,
+    -- TODO: Figure out how to filter out deprecation warnings. Might need to
+    -- wait until vim can filter out diagnostics by severity.
+    -- handlers = {
+    --     ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" }),
+    --     ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" }),
+    --     ["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+    --         underline = { severity = { min = vim.diagnostic.severity.INFO } },
+    --         virtual_text = false,
+    --         signs = { severity = { min = vim.diagnostic.severity.INFO } },
+    --     }),
+    -- },
     capabilities = capabilities,
 })
 
@@ -139,16 +150,13 @@ lspconfig.rust_analyzer.setup({
 
 -- null-ls
 null_ls.setup({
-    debug = true,
-
     sources = {
-        null_ls.builtins.code_actions.eslint.with({
-            timeout = 1000,
-        }),
+        null_ls.builtins.code_actions.eslint_d,
+        -- Much faster than eslint_d at linting since it has to do less. Can
+        -- rely on code actions to fix up the things that eslint_d complains
+        -- about.
         null_ls.builtins.formatting.prettierd,
-        null_ls.builtins.diagnostics.eslint.with({
-            timeout = 10000, -- eslint is not fast
-        }),
+        null_ls.builtins.diagnostics.eslint_d,
         null_ls.builtins.diagnostics.golangci_lint.with({
             args = { "run", "--fix=false", "--out-format=json", "$DIRNAME", "--path-prefix", "$ROOT" },
             -- If the LSP catches errors, they will likely be compiler errors
