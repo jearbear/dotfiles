@@ -139,10 +139,16 @@ lspconfig.rust_analyzer.setup({
 
 -- null-ls
 null_ls.setup({
+    debug = true,
+
     sources = {
-        null_ls.builtins.code_actions.eslint_d,
+        null_ls.builtins.code_actions.eslint.with({
+            timeout = 1000,
+        }),
         null_ls.builtins.formatting.prettierd,
-        null_ls.builtins.diagnostics.eslint_d,
+        null_ls.builtins.diagnostics.eslint.with({
+            timeout = 10000, -- eslint is not fast
+        }),
         null_ls.builtins.diagnostics.golangci_lint.with({
             args = { "run", "--fix=false", "--out-format=json", "$DIRNAME", "--path-prefix", "$ROOT" },
             -- If the LSP catches errors, they will likely be compiler errors
@@ -163,5 +169,6 @@ null_ls.setup({
     on_attach = on_attach,
     handlers = handlers,
 
-    -- root_dir = lspconfig.util.root_pattern("tsconfig.json", "go.mod", ".git"),
+    -- Look for language-specific files first to better handle mono-repos.
+    root_dir = lspconfig.util.root_pattern("tsconfig.json", "go.mod", ".git"),
 })
