@@ -65,4 +65,28 @@ function M.toggle_qf()
     end
 end
 
+function M.keep_qf(pattern)
+    local all = vim.fn.getqflist()
+    local new = {}
+    for _, entry in pairs(all) do
+        if string.find(vim.fn.bufname(entry.bufnr), pattern) then
+            table.insert(new, entry)
+        end
+    end
+    vim.fn.setqflist(new)
+    vim.fn.setqflist({}, "a", { title = "Keep: `" .. pattern .. "`" })
+end
+
+function M.reject_qf(pattern)
+    local all = vim.fn.getqflist()
+    local new = {}
+    for _, entry in pairs(all) do
+        if not string.find(vim.fn.bufname(entry.bufnr), pattern) then
+            table.insert(new, entry)
+        end
+    end
+    vim.fn.setqflist(new)
+    vim.fn.setqflist({}, "a", { title = "Reject: `" .. pattern .. "`" })
+end
+
 return M

@@ -5,8 +5,11 @@ require("nvim-treesitter.configs").setup({
     ensure_installed = {
         "bash",
         "comment",
+        -- "eex",
+        -- "elixir", -- TODO: Uncomment once 0.7 fixes performance issues
         "go",
         "graphql",
+        -- "heex",
         "javascript",
         "json",
         "lua",
@@ -27,7 +30,7 @@ require("nvim-treesitter.configs").setup({
 -- }}}
 
 -- stabilize.nvim {{{
-require("stabilize").setup({})
+-- require("stabilize").setup({})
 -- }}}
 
 -- pretty-fold.nvim {{{
@@ -44,6 +47,7 @@ require("pretty-fold.preview").setup({
 -- gitlinker.nvim {{{
 require("gitlinker").setup({
     opts = {
+        remote = "origin",
         add_current_line_on_normal_mode = false,
         print_url = true,
     },

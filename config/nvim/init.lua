@@ -84,7 +84,6 @@ plug("junegunn/fzf.vim")
 
 -- trying out
 plug("chentau/marks.nvim")
-plug("luukvbaal/stabilize.nvim")
 
 vim.call("plug#end")
 -- }}}
@@ -162,6 +161,8 @@ vim.opt.gdefault = true -- default to global (within the line) substitution
 
 vim.opt.splitbelow = true -- default to opening splits below the current buffer
 vim.opt.splitright = true -- default to opening splits ot the right of the current buffer
+
+vim.opt.showmode = false -- don't show the mode below the status line
 
 vim.opt.virtualedit = "block" -- allow the cursor to move off the end of the line in visual block mode
 
