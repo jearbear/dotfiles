@@ -84,6 +84,7 @@ plug("junegunn/fzf.vim")
 
 -- trying out
 plug("chentau/marks.nvim")
+plug("vim-test/vim-test")
 
 vim.call("plug#end")
 -- }}}

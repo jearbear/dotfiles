@@ -345,5 +345,21 @@ vim.g.matchup_matchparen_offscreen = { method = "popup" }
 -- }}}
 
 -- diffview.nvim {{{
-u.nnoremap_c("<leader>gd", "DiffviewFileHistory")
+u.nnoremap_c("<Leader>gd", "DiffviewFileHistory")
+-- }}}
+
+-- vim-test {{{
+vim.cmd([[
+function! CopyStrategy(cmd) range
+    let @+ = a:cmd
+    echo a:cmd
+endfunction
+
+let g:test#custom_strategies = {'copy': function('CopyStrategy')}
+let g:test#strategy = 'copy'
+]])
+
+u.nnoremap_c("<Leader>tf", "TestFile")
+u.nnoremap_c("<Leader>tl", "TestNearest")
+u.nnoremap_c("<Leader>tt", "TestNearest -strategy=basic")
 -- }}}

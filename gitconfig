@@ -69,6 +69,7 @@
 
     rev = !"f() { set -e; COMMIT=$(git pick branch-commit); git revert $COMMIT; }; f"
     fix = !"f() { set -e; COMMIT=$(git pick branch-commit); git commit --fixup $COMMIT; }; f"
+    afix = !git aa && git fix
 
     stow = !"if [[ $(git log -1 --format=%B) == '[STOWED]' ]]; then git commit -a --amend --no-edit; else git add -A && git commit -m '[STOWED]'; fi"
     unstow = !"if [[ $(git log -1 --format=%B) == '[STOWED]' ]]; then git reset @^; else echo \"Nothing to unstow\"; fi"
