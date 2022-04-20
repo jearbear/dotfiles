@@ -14,8 +14,11 @@
     b = branch
     s = status
     c = commit
+    cm = commit -m
     p = push -u
     fp = push -f
+
+    nuke = clean -id
 
     aa = add -A
     ai = !"f() { set -e; FILES=$(git pick files); git add $FILES; }; f"

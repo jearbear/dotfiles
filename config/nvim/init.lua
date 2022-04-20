@@ -85,6 +85,7 @@ plug("junegunn/fzf.vim")
 -- trying out
 plug("chentau/marks.nvim")
 plug("vim-test/vim-test")
+plug("ziontee113/syntax-tree-surfer")
 
 vim.call("plug#end")
 -- }}}

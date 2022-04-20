@@ -130,6 +130,22 @@ cmp.setup({
         end,
     },
 
+    -- Sorting by kind leads to some weird choices, especially with gopls so we
+    -- disable it.
+    sorting = {
+        priority_weight = 2,
+        comparators = {
+            cmp.config.compare.offset,
+            cmp.config.compare.exact,
+            cmp.config.compare.score,
+            cmp.config.compare.recently_used,
+            -- cmp.config.compare.kind,
+            cmp.config.compare.sort_text,
+            cmp.config.compare.length,
+            cmp.config.compare.order,
+        },
+    },
+
     mapping = {
         ["<C-l>"] = cmp.mapping(function(fallback)
             if snippy.can_expand_or_advance() then
@@ -362,4 +378,44 @@ let g:test#strategy = 'copy'
 u.nnoremap_c("<Leader>tf", "TestFile")
 u.nnoremap_c("<Leader>tl", "TestNearest")
 u.nnoremap_c("<Leader>tt", "TestNearest -strategy=basic")
+-- }}}
+
+-- syntax-tree-surfer {{{
+vim.api.nvim_set_keymap(
+    "x",
+    "J",
+    '<cmd>lua require("syntax-tree-surfer").surf("next", "visual")<cr>',
+    { noremap = true, silent = true }
+)
+vim.api.nvim_set_keymap(
+    "x",
+    "K",
+    '<cmd>lua require("syntax-tree-surfer").surf("prev", "visual")<cr>',
+    { noremap = true, silent = true }
+)
+vim.api.nvim_set_keymap(
+    "x",
+    "H",
+    '<cmd>lua require("syntax-tree-surfer").surf("parent", "visual")<cr>',
+    { noremap = true, silent = true }
+)
+vim.api.nvim_set_keymap(
+    "x",
+    "L",
+    '<cmd>lua require("syntax-tree-surfer").surf("child", "visual")<cr>',
+    { noremap = true, silent = true }
+)
+
+vim.api.nvim_set_keymap(
+    "x",
+    "<C-j>",
+    '<cmd>lua require("syntax-tree-surfer").surf("next", "visual", true)<cr>',
+    { noremap = true, silent = true }
+)
+vim.api.nvim_set_keymap(
+    "x",
+    "<C-k>",
+    '<cmd>lua require("syntax-tree-surfer").surf("prev", "visual", true)<cr>',
+    { noremap = true, silent = true }
+)
 -- }}}

@@ -67,18 +67,23 @@ lspconfig.gopls.setup({
     on_attach = function(client, bufnr)
         on_attach(client, bufnr)
 
+        -- TODO: Disabling gopls's formatting and imports as it misses some situations when compared to goimports
+        client.resolved_capabilities.document_formatting = false
+        client.resolved_capabilities.document_range_formatting = false
+
         -- Enable auto-formatting of imports
-        vim.cmd("autocmd BufWritePre <buffer> lua OrgGoImports(5000)")
+        -- vim.cmd("autocmd BufWritePre <buffer> lua OrgGoImports(5000)")
     end,
     handlers = handlers,
     capabilities = capabilities,
 
     settings = {
         gopls = {
-            gofumpt = true,
             usePlaceholders = true,
+
             -- TODO: Put this into a Pipe-specific config
-            ["local"] = "github.com/pipe-technologies/pipe/backend",
+            -- gofumpt = true,
+            -- ["local"] = "github.com/pipe-technologies/pipe/backend",
         },
     },
 })
@@ -162,12 +167,19 @@ null_ls.setup({
             -- If the LSP catches errors, they will likely be compiler errors
             -- which need to be resolved before golangci-lint returns anything
             -- useful, so we shouldn't run it.
-            runtime_condition = function(params)
-                for _ in pairs(vim.diagnostic.get(params.bufnr)) do
-                    return false
-                end
-                return true
-            end,
+            -- TODO: Disabled this because if the buffer previously had a
+            -- golangcilint error and then a new diagnostic error popped up,
+            -- the old golangcilint errors would not get cleared out.
+            -- runtime_condition = function(params)
+            --     for _ in pairs(vim.diagnostic.get(params.bufnr)) do
+            --         return false
+            --     end
+            --     return true
+            -- end,
+        }),
+        null_ls.builtins.formatting.gofumpt,
+        null_ls.builtins.formatting.goimports.with({
+            extra_args = { "-local", "github.com/pipe-technologies/pipe/backend" },
         }),
         null_ls.builtins.formatting.stylua.with({
             extra_args = { "--indent-type", "Spaces" },
