@@ -163,10 +163,8 @@ cmp.setup({
                 fallback()
             end
         end, { "i", "s" }),
-        ["<C-d>"] = cmp.config.disable,
-        ["<C-f>"] = cmp.config.disable,
-        ["<C-e>"] = cmp.config.disable,
-        ["<C-Space>"] = cmp.config.disable,
+        ["<C-n>"] = cmp.mapping(cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }), { "i", "c" }),
+        ["<C-p>"] = cmp.mapping(cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }), { "i", "c" }),
     },
 
     sources = cmp.config.sources({
