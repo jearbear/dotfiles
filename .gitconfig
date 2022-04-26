@@ -3,7 +3,7 @@
     defaultBranch = main
 
 [core]
-    excludesfile = ~/.gitignore
+    excludesfile = ~/.gitignore.global
     pager = delta
 
 [alias]
@@ -142,9 +142,6 @@
 [stash]
     showPatch = true
 
-[include]
-    path = .gitconfig.local
-
 [interactive]
     ; make interactive commands such as `git add --patch` use delta to colorize
     diffFilter = delta --color-only
@@ -179,3 +176,9 @@
 [user]
     email = jerrytegno@gmail.com
     name = Jerry Tegno
+
+[includeIf "gitdir:~/.dotfiles"]
+    path = .gitconfig.dotfiles
+
+[includeIf "gitdir:~/.dotfiles.pipe"]
+    path = .gitconfig.dotfiles.pipe

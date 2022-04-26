@@ -71,7 +71,11 @@ alias pn='ping www.google.com -c 1'
 alias reload='source ~/.zshrc && source ~/.zshenv'
 alias rgm='rg --multiline --multiline-dotall'
 alias rgo='rg --no-heading --no-filename --no-line-number --only-matching'
+
+alias dots='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 alias sdots='dots --store-dir ~/.dotfiles.secret'
+alias sdots='dots --store-dir ~/.dotfiles.secret'
+
 alias t='TERM=xterm-256color tmux new-session -A -s main'
 alias vi='nvim'
 alias vim='nvim'
