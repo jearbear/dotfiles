@@ -2,52 +2,68 @@ snippet fori "for int loop"
 	for ${2:i} := 0; $2 < ${1:count}; $2${3:++} {
 		${0:${VISUAL}}
 	}
-
 snippet forr "for range loop"
 	for ${1:e} := range ${2:collection} {
 		${0:${VISUAL}}
 	}
-
 snippet fun "function"
 	func ${1:funcName}(${2}) ${3:error} {
 		${4}
 	}
 	${0}
-
 snippet fum "method"
 	func (${1:receiver} ${2:type}) ${3:funcName}(${4}) ${5:error} {
 		${6}
 	}
 	${0}
-
 snippet ife
 	if err != nil {
 		return err
 	}
 	${0}
-
+snippet ifenr
+	if err != nil && !errorz.Is(err, sql.ErrNoRows) {
+		return err
+	}
+	${0}
 snippet ifne
 	if err != nil {
 		return nil, err
 	}
 	${0}
-
 snippet ctx
-	ctx := context.Background()
-	${0}
-
+	ctx := context.Background()${0}
 snippet debug
-	fmt.Printf("[DEBUGGING]: %+v\n", ${1:val})
-	${0}
-
-snippet jdbg
+	fmt.Printf("\n\n[DEBUGGING]: %+v\n\n\n", ${1:val})${0}
+snippet jdebug
 	b, _ := json.MarshalIndent(${1:val}, "", "\t")
-	fmt.Printf("[DEBUGGING]: %+v\n", string(b))
+	fmt.Printf("\n\n[DEBUGGING]: %+v\n\n\n", string(b))
 	${0}
-
 snippet test
 	func Test${1:name}(t *testing.T) {
 		t.Parallel()
 
+		ctx := context.Background()
+		db := testdb.New(t)
+		tf := testfactory.New(t, db)
+		srv := services.TestServices(&services.Services{
+			DB: db,
+		})
+
 		${0}
 	}
+snippet rne "require.NoError"
+	require.NoError(t, err)
+	${0}
+snippet ree "require.EqualError"
+	require.EqualError(t, ${1:err}, ${2:expected})
+	${0}
+snippet req "require.Equal"
+	require.Equal(t, ${1:expected}, ${2:actual})
+	${0}
+snippet rt "require.True"
+	require.True(t, ${1:boolean})
+	${0}
+snippet rf "require.False"
+	require.False(t, ${1:boolean})
+	${0}

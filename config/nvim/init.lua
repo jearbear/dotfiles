@@ -63,10 +63,11 @@ plug("hrsh7th/cmp-buffer") -- auto-completion when searching (`/` and `?`)
 plug("hrsh7th/cmp-nvim-lsp-signature-help") -- show signature information as you type using the completion window
 
 -- project navigation + management
-plug("justinmk/vim-dirvish") -- minimal file browser
+plug("elihunter173/dirbuf.nvim") -- minimal file browser
 plug("mhinz/vim-grepper") -- slicker grep support
 plug("mhinz/vim-startify") -- start screen + session management
 plug("tpope/vim-eunuch") -- unix shell commands in command mode
+plug("vim-test/vim-test") -- test execution
 plug("wsdjeg/vim-fetch") -- support opening line and column numbers (e.g. foo.bar:13)
 
 -- LSP stuff
@@ -84,8 +85,7 @@ plug("junegunn/fzf.vim")
 
 -- trying out
 plug("chentau/marks.nvim")
-plug("vim-test/vim-test")
-plug("ziontee113/syntax-tree-surfer")
+plug("ThePrimeagen/harpoon")
 
 vim.call("plug#end")
 -- }}}
@@ -153,7 +153,7 @@ vim.opt.foldenable = false -- default to open folds
 vim.opt.conceallevel = 2 -- hide concealed text
 
 vim.opt.incsearch = true -- jump to search results as you type
-vim.opt.hlsearch = false -- don't highlight search results
+vim.opt.hlsearch = true -- highlight search results
 vim.opt.ignorecase = true -- perform case-insensitive search and replace
 vim.opt.smartcase = true -- override `ignorecase` if capital letters are involved
 
@@ -221,102 +221,96 @@ vim.diagnostic.config({
 -- }}}
 
 -- AUTO COMMANDS {{{
--- turn on search highlighting when midsearch and disable when done
-vim.cmd([[
-augroup HL_SEARCH
-    autocmd!
-    autocmd CmdlineEnter /,\? setlocal hlsearch
-    autocmd CmdlineLeave /,\? setlocal nohlsearch
-augroup END
-]])
-
 -- automatically create parent directories as needed when saving files
-vim.cmd([[
-augroup MKDIR
-    autocmd!
-    autocmd BufWritePre,FileWritePre * silent! call mkdir(expand('<afile>:p:h'), 'p')
-augroup END
-]])
+u.autocmd({ "BufWritePre", "FileWritePre" }, {
+    pattern = "*",
+    command = "silent! call mkdir(expand('<afile>:p:h'), 'p')",
+    group = u.augroup("MKDIR"),
+})
 
 -- check if the file has been updated when focusing the buffer
-vim.cmd([[
-augroup AUTO_RW
-    autocmd!
-    autocmd FocusGained,BufEnter * checktime
-augroup END
-]])
+u.autocmd({ "FocusGained", "BufEnter" }, {
+    pattern = "*",
+    command = "checktime",
+    group = u.augroup("AUTO_RW"),
+})
 
 -- treat pull request edit messages as markdown
-vim.cmd([[
-augroup PRS
-    autocmd!
-    autocmd BufEnter */PULLREQ_EDITMSG setlocal ft=markdown
-augroup END
-]])
+u.autocmd("BufEnter", {
+    pattern = "*/PULLREQ_EDITMSG",
+    callback = function()
+        vim.bo.filetype = "markdown"
+    end,
+    group = u.augroup("PRS"),
+})
 -- }}}
 
 -- MAPPINGS {{{
-u.map("Y", "y$")
-u.map("0", "^")
+u.map("", "Y", "y$")
+u.map("", "0", "^")
 
 -- scroll by larger increments
-u.nnoremap("<C-d>", "3<C-d>")
-u.nnoremap("<C-u>", "3<C-u>")
+u.map("n", "<C-d>", "3<C-d>")
+u.map("n", "<C-u>", "3<C-u>")
 
 -- navigate by visual lines when lines are wrapped
-u.nnoremap("j", "gj")
-u.nnoremap("k", "gk")
+u.map("n", "j", "gj")
+u.map("n", "k", "gk")
 
 -- buffer/tab navigation
-u.nnoremap("<BS>", "<C-^>")
-u.nnoremap_c("<Leader>[", "tabp")
-u.nnoremap_c("<Leader>]", "tabn")
+u.map("n", "<BS>", "<C-^>")
+u.map_c("<Leader>[", "tabp")
+u.map_c("<Leader>]", "tabn")
 
 -- faster renaming
-u.nnoremap("<Leader>r", "*``cgn")
+u.map("n", "<Leader>r", "*``cgn")
 
 -- load the word under the cursor into the search register
-u.nnoremap("<Leader>*", "*``")
+u.map("n", "<Leader>*", "*``")
 
 -- yank/paste to/from system clipboard
 -- (recursive mappings are intentionally used to preserve the benefits of
 -- preserving cursor position provided by vim-yoink)
-u.nmap("<Leader>d", '"+d')
-u.xmap("<Leader>d", '"+d')
-u.nmap("<Leader>D", '"+D')
-u.xmap("<Leader>D", '"+D')
-u.nmap("<Leader>y", '"+y')
-u.xmap("<Leader>y", '"+y')
-u.nmap("<Leader>Y", '"+Y')
-u.xmap("<Leader>Y", '"+Y')
-u.nmap("<Leader>p", '"+p')
-u.xmap("<Leader>p", '"+p')
-u.nmap("<Leader>P", '"+P')
-u.xmap("<Leader>P", '"+P')
+u.map({ "n", "x" }, "<Leader>d", '"+d', { remap = true })
+u.map({ "n", "x" }, "<Leader>D", '"+D', { remap = true })
+u.map({ "n", "x" }, "<Leader>y", '"+y', { remap = true })
+u.map({ "n", "x" }, "<Leader>Y", '"+Y', { remap = true })
+u.map({ "n", "x" }, "<Leader>p", '"+p', { remap = true })
+u.map({ "n", "x" }, "<Leader>P", '"+P', { remap = true })
 
 -- additional emacs mappings that vim-rsi doesn't cover
-u.inoremap("<C-k>", "<ESC><Right>C") -- kill the rest of the line
-u.cnoremap("<C-p>", "<Up>")
-u.cnoremap("<C-n>", "<Down>")
+u.map("i", "<C-k>", "<ESC><Right>C") -- kill the rest of the line
+u.map("c", "<C-p>", "<Up>")
+u.map("c", "<C-n>", "<Down>")
 
 -- edit config files
-u.nnoremap_c("<Leader>vev", "edit ~/.config/nvim/init.lua")
-u.nnoremap_c("<Leader>vel", "edit ~/.config/nvim/lua/lsp.lua")
-u.nnoremap_c("<Leader>vep", "edit ~/.config/nvim/lua/plugins.lua")
-u.nnoremap_c("<Leader>ves", "edit ~/.config/nvim/lua/statusline.lua")
-u.nnoremap_c("<Leader>veu", "edit ~/.config/nvim/lua/utils.lua")
+u.map_c("<Leader>vev", "edit ~/.config/nvim/init.lua")
+u.map_c("<Leader>vel", "edit ~/.config/nvim/lua/lsp.lua")
+u.map_c("<Leader>vep", "edit ~/.config/nvim/lua/plugins.lua")
+u.map_c("<Leader>ves", "edit ~/.config/nvim/lua/statusline.lua")
+u.map_c("<Leader>veu", "edit ~/.config/nvim/lua/utils.lua")
 
 -- copy the file with another name
-u.nnoremap("<Leader>cc", ":saveas %:h<C-z>")
+u.map("n", "<Leader>cc", ":saveas %:h<C-z>")
 
 -- create a new file in the same directory
-u.nnoremap("<Leader>cn", ":edit %:h<C-z>")
+u.map("n", "<Leader>cn", ":edit %:h<C-z>")
 
 -- toggle qflist
-u.nnoremap_c("<Leader>qq", "lua require('utils').toggle_qf()")
+u.map("n", "<Leader>qq", function()
+    for _, win in pairs(vim.fn.getwininfo()) do
+        if win["quickfix"] == 1 then
+            vim.cmd("cclose")
+            return
+        end
+    end
+    if not vim.tbl_isempty(vim.fn.getqflist()) then
+        vim.cmd("copen")
+    end
+end)
 
 -- this is always a typo
-u.cnoremap_c("w'", "w")
+u.map("c", "w'", "w")
 -- }}}
 
 require("statusline")

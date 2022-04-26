@@ -56,9 +56,10 @@ require("gitlinker").setup({
 -- }}}
 
 -- gitsigns.nvim {{{
-require("gitsigns").setup({
-    on_attach = function(buf_number)
-        u.buf_nnoremap_c(buf_number, "<Leader>gb", "lua require('gitsigns').blame_line()")
+local gitsigns = require("gitsigns")
+gitsigns.setup({
+    on_attach = function(bufnr)
+        u.map("n", "<Leader>gb", gitsigns.blame_line, { buffer = bufnr })
     end,
 })
 -- }}}
@@ -72,6 +73,9 @@ require("diffview").setup({
 
 -- Comment.nvim {{{
 require("Comment").setup({})
+
+u.map("n", "<Leader>/", "gcc", { remap = true })
+u.map("v", "<Leader>/", "gc", { remap = true })
 -- }}}
 
 -- nvim-autopairs {{{
@@ -98,10 +102,9 @@ require("marks").setup({
     default_mappings = false,
     mappings = {
         set_bookmark2 = "mm",
-        next_bookmark2 = "<Tab>",
-        prev_bookmark2 = "<S-Tab>",
-        delete_bookmark = "dm",
-        delete_bookmark2 = "dM",
+        next_bookmark2 = "`",
+        prev_bookmark2 = "<S-`>",
+        delete_bookmark2 = "dm",
     },
 })
 -- }}}
@@ -199,9 +202,8 @@ vim.g.grepper = {
     searchreg = 1, -- load query into search register (allows hitting `n` to navigate results in quickfix list)
 }
 
-u.nnoremap_c("<Bslash>", "Grepper")
-u.nmap("gs", "<Plug>(GrepperOperator)")
-u.xmap("gs", "<Plug>(GrepperOperator)")
+u.map_c("<Bslash>", "Grepper")
+u.map({ "n", "x" }, "gs", "<Plug>(GrepperOperator)")
 -- }}}
 
 -- targets.vim {{{
@@ -225,72 +227,45 @@ vim.g.fzf_action = {
 }
 vim.g.fzf_preview_window = { "up:80%,border-sharp", "ctrl-/" }
 
-u.nnoremap_c("<Leader>f", "Files")
-u.nnoremap_c("<Leader>F", "GFiles?")
-u.nnoremap_c("<Leader>l", "Buffers")
-u.nnoremap_c("<Leader>;", "BLines")
-u.nnoremap_c("<Leader>:", "History:")
-u.nnoremap_c("<Leader>k", "BTags")
-u.nnoremap_c("<Leader>h", "Help")
-u.nnoremap_c("<Leader>m", "Marks")
-u.nnoremap_c("<Bar>", "Rg")
-
--- TODO: Convert this to Lua
-vim.cmd([[
-function! DeleteBuffers()
-    function! s:delete_buffers(lines)
-        execute 'bwipeout' join(map(a:lines, {_, line -> matchstr(line, '\[\zs[0-9]*\ze\]')}))
-    endfunction
-
-    let sorted = fzf#vim#_buflisted_sorted()
-    let header_lines = '--header-lines=' . (bufnr('') == get(sorted, 0, 0) ? 1 : 0)
-    let tabstop = len(max(sorted)) >= 4 ? 9 : 8
-    return fzf#run(fzf#wrap(fzf#vim#with_preview({
-                \ 'source':  map(sorted, 'fzf#vim#_format_buffer(v:val)'),
-                \ 'sink*':   { lines -> s:delete_buffers(lines) },
-                \ 'options': ['+m', '-x', '--tiebreak=index', header_lines, '--ansi', '-d', '\t', '--with-nth', '3..', '-n', '2,1..2', '--prompt', 'BufDel> ', '--preview-window', '+{2}-/2', '--tabstop', tabstop, '--multi']
-                \})))
-endfunction
-]])
-
-u.nnoremap_c("<Leader>L", "call DeleteBuffers()")
+u.map_c("<Leader>f", "Files")
+u.map_c("<Leader>F", "GFiles?")
+u.map_c("<Leader>l", "Buffers")
+u.map_c("<Leader>;", "BLines")
+u.map_c("<Leader>:", "History:")
+u.map_c("<Leader>k", "BTags")
+u.map_c("<Leader>h", "Help")
+-- u.map_c("<Leader>m", "Marks")
+u.map_c("<Bar>", "Rg")
 -- }}}
 
 -- vim-yoink {{{
 vim.g.yoinkAutoFormatPaste = true
 vim.g.yoinkIncludeDeleteOperations = true
 
-u.nmap("<C-n>", "<Plug>(YoinkPostPasteSwapForward)")
-u.nmap("<C-p>", "<Plug>(YoinkPostPasteSwapBack)")
+u.map("n", "<C-n>", "<Plug>(YoinkPostPasteSwapForward)")
+u.map("n", "<C-p>", "<Plug>(YoinkPostPasteSwapBack)")
 
-u.nmap("P", "<Plug>(YoinkPaste_P)")
-u.nmap("p", "<Plug>(YoinkPaste_p)")
+u.map("n", "P", "<Plug>(YoinkPaste_P)")
+u.map("n", "p", "<Plug>(YoinkPaste_p)")
 
-u.nmap("[y", "<Plug>(YoinkRotateBack)")
-u.nmap("]y", "<Plug>(YoinkRotateForward)")
+u.map("n", "[y", "<Plug>(YoinkRotateBack)")
+u.map("n", "]y", "<Plug>(YoinkRotateForward)")
 
-u.nmap("y", "<Plug>(YoinkYankPreserveCursorPosition)")
-u.xmap("y", "<Plug>(YoinkYankPreserveCursorPosition)")
+u.map({ "n", "x" }, "y", "<Plug>(YoinkYankPreserveCursorPosition)")
 
-u.nmap("<C-[>", "<Plug>(YoinkPostPasteToggleFormat)")
+u.map("n", "<C-t>", "<Plug>(YoinkPostPasteToggleFormat)")
 -- }}}
 
 -- vim-subversive {{{
-u.nmap("S", "<Plug>(SubversiveSubstituteToEndOfLine)")
-u.nmap("s", "<Plug>(SubversiveSubstitute)")
-u.nmap("ss", "<Plug>(SubversiveSubstituteLine)")
-u.xmap("P", "<Plug>(SubversiveSubstitute)")
-u.xmap("p", "<Plug>(SubversiveSubstitute)")
-u.xmap("s", "<Plug>(SubversiveSubstitute)")
--- }}}
-
--- Comment.nvim {{{
-u.nmap("<Leader>/", "gcc")
-u.vmap("<Leader>/", "gc")
+u.map("n", "S", "<Plug>(SubversiveSubstituteToEndOfLine)")
+u.map({ "n", "x" }, "s", "<Plug>(SubversiveSubstitute)")
+u.map("n", "ss", "<Plug>(SubversiveSubstituteLine)")
+u.map("x", "P", "<Plug>(SubversiveSubstitute)")
+u.map("x", "p", "<Plug>(SubversiveSubstitute)")
 -- }}}
 
 -- vim-bbye {{{
-u.nnoremap_c("Q", "Bwipeout")
+u.map_c("Q", "Bwipeout")
 -- }}}
 
 -- vim-startify {{{
@@ -305,53 +280,18 @@ vim.g.startify_custom_header = {}
 vim.g.startify_commands = {}
 vim.g.startify_bookmarks = {
     { df = "~/.dotfiles" },
+    { dv = "~/.dotfiles/config/nvim" },
     { dp = "~/.dotfiles.pipe" },
     { sn = "~/snippets.md" },
 }
 vim.g.startify_lists = {
     { type = "dir", header = { "   Latest Edits" } },
     { type = "bookmarks", header = { "   Bookmarks" } },
-    { type = "sessions", header = { "   Sessions" } },
     { type = "commands", header = { "   Commands" } },
 }
 
-u.nnoremap_c("<Leader>S", "Startify")
-u.nnoremap_c("<Leader>sc", "SClose")
-
-local git_session_name = function()
-    if vim.g.gitsigns_head == nil or vim.g.gitsigns_head == "" then
-        return ""
-    end
-
-    return vim.g.gitsigns_head:gsub("^jerry%-", "")
-end
-
-SaveGitBranchSession = function()
-    local name = git_session_name()
-    if name == "" then
-        return
-    end
-    vim.api.nvim_command("SSave! " .. name)
-end
-u.nnoremap_c("<Leader>ss", "lua SaveGitBranchSession()")
-
-LoadGitBranchSession = function()
-    local name = git_session_name()
-    if name == "" then
-        return
-    end
-    vim.api.nvim_command("SLoad! " .. name)
-end
-u.nnoremap_c("<Leader>sl", "lua LoadGitBranchSession()")
-
-DeleteGitBranchSession = function()
-    local name = git_session_name()
-    if name == "" then
-        return
-    end
-    vim.api.nvim_command("SDelete! " .. name)
-end
-u.nnoremap_c("<Leader>sd", "lua DeleteGitBranchSession()")
+u.map_c("<Leader>S", "Startify")
+u.map_c("<Leader>sc", "SClose")
 -- }}}
 
 -- vim-matchup {{{
@@ -359,7 +299,7 @@ vim.g.matchup_matchparen_offscreen = { method = "popup" }
 -- }}}
 
 -- diffview.nvim {{{
-u.nnoremap_c("<Leader>gd", "DiffviewFileHistory")
+u.map_c("<Leader>gd", "DiffviewFileHistory")
 -- }}}
 
 -- vim-test {{{
@@ -373,47 +313,23 @@ let g:test#custom_strategies = {'copy': function('CopyStrategy')}
 let g:test#strategy = 'copy'
 ]])
 
-u.nnoremap_c("<Leader>tf", "TestFile")
-u.nnoremap_c("<Leader>tl", "TestNearest")
-u.nnoremap_c("<Leader>tt", "TestNearest -strategy=basic")
+u.map_c("<Leader>tf", "TestFile")
+u.map_c("<Leader>tl", "TestNearest")
+u.map_c("<Leader>tt", "TestNearest -strategy=basic")
 -- }}}
 
--- syntax-tree-surfer {{{
-vim.api.nvim_set_keymap(
-    "x",
-    "J",
-    '<cmd>lua require("syntax-tree-surfer").surf("next", "visual")<cr>',
-    { noremap = true, silent = true }
-)
-vim.api.nvim_set_keymap(
-    "x",
-    "K",
-    '<cmd>lua require("syntax-tree-surfer").surf("prev", "visual")<cr>',
-    { noremap = true, silent = true }
-)
-vim.api.nvim_set_keymap(
-    "x",
-    "H",
-    '<cmd>lua require("syntax-tree-surfer").surf("parent", "visual")<cr>',
-    { noremap = true, silent = true }
-)
-vim.api.nvim_set_keymap(
-    "x",
-    "L",
-    '<cmd>lua require("syntax-tree-surfer").surf("child", "visual")<cr>',
-    { noremap = true, silent = true }
-)
+-- harpoon {{{
+require("harpoon").setup({
+    global_settings = {
+        mark_branch = true,
+    },
+})
 
-vim.api.nvim_set_keymap(
-    "x",
-    "<C-j>",
-    '<cmd>lua require("syntax-tree-surfer").surf("next", "visual", true)<cr>',
-    { noremap = true, silent = true }
-)
-vim.api.nvim_set_keymap(
-    "x",
-    "<C-k>",
-    '<cmd>lua require("syntax-tree-surfer").surf("prev", "visual", true)<cr>',
-    { noremap = true, silent = true }
-)
+local harpoon_mark = require("harpoon.mark")
+local harpoon_ui = require("harpoon.ui")
+
+u.map("n", "<Leader>m", harpoon_mark.add_file)
+u.map("n", "<Leader>j", harpoon_ui.toggle_quick_menu)
+u.map("n", "<Tab>", harpoon_ui.nav_next)
+u.map("n", "<S-Tab>", harpoon_ui.nav_prev)
 -- }}}

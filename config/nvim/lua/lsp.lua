@@ -3,46 +3,32 @@ local lspconfig = require("lspconfig")
 local null_ls = require("null-ls")
 local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
-function OrgGoImports(wait_ms) -- Copied from https://github.com/golang/tools/blob/master/gopls/doc/vim.md#imports {{{
-    local params = vim.lsp.util.make_range_params()
-    params.context = { only = { "source.organizeImports" } }
-    local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, wait_ms)
-    for _, res in pairs(result or {}) do
-        for _, r in pairs(res.result or {}) do
-            if r.edit then
-                vim.lsp.util.apply_workspace_edit(r.edit)
-            else
-                vim.lsp.buf.execute_command(r.command)
-            end
-        end
-    end
-end
--- }}}
-
 -- This function gets executed when the LSP is initiated successfully
 local on_attach = function(client, bufnr)
-    local function map(lhs, rhs)
-        u.buf_nnoremap_c(bufnr, lhs, rhs)
-    end
-
-    -- Enable completion triggered by <c-x><c-o>
+    -- Provide LSP results to omni completion
     vim.bo.omnifunc = "v:lua.vim.lsp.omnifunc"
 
     -- Mappings
-    map("<C-]>", "lua vim.lsp.buf.definition()")
-    map("<C-]>", "lua vim.lsp.buf.definition()")
-    map("<C-]>", "lua vim.lsp.buf.definition()")
-    map("K", "lua vim.lsp.buf.hover()")
-    map("<Leader>R", "lua vim.lsp.buf.rename()")
-    map("<C-k>", 'lua vim.diagnostic.goto_prev({float = { border = "single" }, wrap = false})')
-    map("<C-j>", 'lua vim.diagnostic.goto_next({float = { border = "single" }, wrap = false})')
-    map("<Leader>gr", "lua vim.lsp.buf.references()")
-    map("<Leader>M", "lua vim.diagnostic.setqflist()")
-    map("<Leader>ca", "lua vim.lsp.buf.code_action()")
+    local function map(lhs, rhs)
+        u.map("n", lhs, rhs, { buffer = bufnr })
+    end
+
+    map("<C-]>", vim.lsp.buf.definition)
+    map("K", vim.lsp.buf.hover)
+    map("<Leader>R", vim.lsp.buf.rename)
+    map("<C-k>", function()
+        vim.diagnostic.goto_prev({ float = { border = "single" }, wrap = false })
+    end)
+    map("<C-j>", function()
+        vim.diagnostic.goto_next({ float = { border = "single" }, wrap = false })
+    end)
+    map("<Leader>gr", vim.lsp.buf.references)
+    map("<Leader>M", vim.diagnostic.setqflist)
+    map("<Leader>ca", vim.lsp.buf.code_action)
 
     -- Enable auto-formatting if it's provided
     if client.resolved_capabilities.document_formatting then
-        vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync(nil, 5000)")
+        u.autocmd("BufWritePre", { buffer = 0, callback = vim.lsp.buf.formatting_sync })
     end
 
     -- Update signs
@@ -67,12 +53,10 @@ lspconfig.gopls.setup({
     on_attach = function(client, bufnr)
         on_attach(client, bufnr)
 
-        -- TODO: Disabling gopls's formatting and imports as it misses some situations when compared to goimports
+        -- Disabling gopls's formatting and imports as it misses some
+        -- situations when compared to goimports
         client.resolved_capabilities.document_formatting = false
         client.resolved_capabilities.document_range_formatting = false
-
-        -- Enable auto-formatting of imports
-        -- vim.cmd("autocmd BufWritePre <buffer> lua OrgGoImports(5000)")
     end,
     handlers = handlers,
     capabilities = capabilities,
@@ -80,10 +64,6 @@ lspconfig.gopls.setup({
     settings = {
         gopls = {
             usePlaceholders = true,
-
-            -- TODO: Put this into a Pipe-specific config
-            -- gofumpt = true,
-            -- ["local"] = "github.com/pipe-technologies/pipe/backend",
         },
     },
 })
@@ -98,17 +78,6 @@ lspconfig.tsserver.setup({
         client.resolved_capabilities.document_range_formatting = false
     end,
     handlers = handlers,
-    -- TODO: Figure out how to filter out deprecation warnings. Might need to
-    -- wait until vim can filter out diagnostics by severity.
-    -- handlers = {
-    --     ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" }),
-    --     ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" }),
-    --     ["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-    --         underline = { severity = { min = vim.diagnostic.severity.INFO } },
-    --         virtual_text = false,
-    --         signs = { severity = { min = vim.diagnostic.severity.INFO } },
-    --     }),
-    -- },
     capabilities = capabilities,
 })
 
@@ -164,18 +133,6 @@ null_ls.setup({
         null_ls.builtins.diagnostics.eslint_d,
         null_ls.builtins.diagnostics.golangci_lint.with({
             args = { "run", "--fix=false", "--out-format=json", "$DIRNAME", "--path-prefix", "$ROOT" },
-            -- If the LSP catches errors, they will likely be compiler errors
-            -- which need to be resolved before golangci-lint returns anything
-            -- useful, so we shouldn't run it.
-            -- TODO: Disabled this because if the buffer previously had a
-            -- golangcilint error and then a new diagnostic error popped up,
-            -- the old golangcilint errors would not get cleared out.
-            -- runtime_condition = function(params)
-            --     for _ in pairs(vim.diagnostic.get(params.bufnr)) do
-            --         return false
-            --     end
-            --     return true
-            -- end,
         }),
         null_ls.builtins.formatting.gofumpt,
         null_ls.builtins.formatting.goimports.with({

@@ -1,10 +1,31 @@
 local u = require("utils")
 
-u.buf_nmap(0, "dd", "`D")
+u.map("n", "dd", "`D", { buffer = 0, remap = true })
 
-u.buf_nnoremap(0, "<BS>", "<Nop>")
-u.buf_nnoremap_c(0, "q", "q")
-u.buf_nnoremap_c(0, "Q", "q")
+u.map("n", "<BS>", "<Nop>", { buffer = 0 })
+u.map_c("q", "q", { buffer = 0 })
+u.map_c("Q", "q", { buffer = 0 })
 
-vim.cmd("command! -nargs=1 Reject lua require('utils').reject_qf(<q-args>)")
-vim.cmd("command! -nargs=1 Keep lua require('utils').keep_qf(<q-args>)")
+u.buf_command(0, "Reject", function(args)
+    local all = vim.fn.getqflist()
+    local new = {}
+    for _, entry in pairs(all) do
+        if not string.find(vim.fn.bufname(entry.bufnr), args.args) then
+            table.insert(new, entry)
+        end
+    end
+    vim.fn.setqflist(new)
+    vim.fn.setqflist({}, "a", { title = "Reject: `" .. args.args .. "`" })
+end, { nargs = 1 })
+
+u.buf_command(0, "Keep", function(args)
+    local all = vim.fn.getqflist()
+    local new = {}
+    for _, entry in pairs(all) do
+        if string.find(vim.fn.bufname(entry.bufnr), args.args) then
+            table.insert(new, entry)
+        end
+    end
+    vim.fn.setqflist(new)
+    vim.fn.setqflist({}, "a", { title = "Keep: `" .. args.args .. "`" })
+end, { nargs = 1 })
