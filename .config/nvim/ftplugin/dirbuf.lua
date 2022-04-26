@@ -1,1 +1,3 @@
-/Users/jerry/.dotfiles/config/nvim/ftplugin/dirvish.lua
+local u = require("utils")
+
+u.map_c("q", "DirbufQuit", { buffer = 0 })
