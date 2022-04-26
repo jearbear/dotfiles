@@ -36,8 +36,8 @@
     newb = !git co -b jerry-${1?} ${2:-HEAD} && :
     backup = !git co -b $(git branch-name)-backup && git co - && :
 
-    save = !"f() { git add -A && git commit -m \"${1:-$(shuf -n 1 ~/.word_list.txt)}\"; git push; }; f"
-    resave = !git add -A && git recommit && git push -f && :
+    save = !"f() { git aa && git commit -m \"${1:-$(shuf -n 1 ~/.word_list.txt)}\"; git push; }; f"
+    resave = !git aa && git recommit && git push -f && :
 
     cleanup = !"f() { set -e; BRANCHES=$(git pick branches-without-main); git branch -D $BRANCHES; }; f"
 
@@ -54,7 +54,7 @@
     rim = !git update && git rebase --interactive main && :
     rib = !git rebase --interactive $(git base) && :
     rom = !git update && git rebase main && :
-    recon = !git add -A && git rebase --continue
+    recon = !git aa && git rebase --continue
 
     bmerge = !"f() { set -e; BRANCH=$(git pick branch); git merge --squash $BRANCH && git commit -m \"[MERGED] $BRANCH\"; }; f"
 
@@ -74,7 +74,7 @@
     fix = !"f() { set -e; COMMIT=$(git pick branch-commit); git commit --fixup $COMMIT; }; f"
     afix = !git aa && git fix
 
-    stow = !"if [[ $(git log -1 --format=%B) == '[STOWED]' ]]; then git commit -a --amend --no-edit; else git add -A && git commit -m '[STOWED]'; fi"
+    stow = !"if [[ $(git log -1 --format=%B) == '[STOWED]' ]]; then git commit -a --amend --no-edit; else git aa && git commit -m '[STOWED]'; fi"
     unstow = !"if [[ $(git log -1 --format=%B) == '[STOWED]' ]]; then git reset @^; else echo \"Nothing to unstow\"; fi"
 
     ci = !gh pr checks

@@ -1,0 +1,1 @@
+/Users/jerry/.dotfiles/config/nvim/ftplugin/dirvish.lua
