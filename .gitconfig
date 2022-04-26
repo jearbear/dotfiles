@@ -180,5 +180,8 @@
 [includeIf "gitdir:~/.dotfiles"]
     path = .gitconfig.dotfiles
 
+[includeIf "gitdir:~/.dotfiles.secret"]
+    path = .gitconfig.dotfiles.secret
+
 [includeIf "gitdir:~/.dotfiles.pipe"]
     path = .gitconfig.dotfiles.pipe

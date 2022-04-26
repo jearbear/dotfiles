@@ -64,7 +64,6 @@ RPROMPT='${vcs_info_msg_0_}%f'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
-alias cdd='cd ~/.dotfiles'
 alias ls='ls -GF' # enable color and sigils depending on filetype
 alias n='nnn -CReor'
 alias pn='ping www.google.com -c 1'
@@ -73,8 +72,7 @@ alias rgm='rg --multiline --multiline-dotall'
 alias rgo='rg --no-heading --no-filename --no-line-number --only-matching'
 
 alias dots='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-alias sdots='dots --store-dir ~/.dotfiles.secret'
-alias sdots='dots --store-dir ~/.dotfiles.secret'
+alias sdots='git --git-dir=$HOME/.dotfiles.secret/ --work-tree=$HOME'
 
 alias t='TERM=xterm-256color tmux new-session -A -s main'
 alias vi='nvim'
@@ -105,9 +103,6 @@ function __vim_with_session() {
         nvim -c "SaveSession"
     fi
 }
-
-# directory shortcuts
-hash -d dots=$HOME/.dotfiles
 
 # fzf
 [ -r ~/.fzf.zsh ] && . ~/.fzf.zsh
