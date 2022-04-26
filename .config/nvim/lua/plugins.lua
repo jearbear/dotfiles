@@ -291,7 +291,10 @@ vim.g.startify_lists = {
 
 u.map_c("<Leader>S", "Startify")
 u.map_c("<Leader>sc", "SClose")
-u.map_c("<Leader>sd", "SDelete!")
+u.map("n", "<Leader>sd", function()
+    vim.cmd("SDelete!")
+    vim.cmd("SClose")
+end)
 -- }}}
 
 -- vim-matchup {{{
