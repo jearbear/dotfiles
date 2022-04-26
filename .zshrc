@@ -72,7 +72,9 @@ alias rgm='rg --multiline --multiline-dotall'
 alias rgo='rg --no-heading --no-filename --no-line-number --only-matching'
 
 alias dots='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+compdef dots='git' # enable completion for ^
 alias sdots='git --git-dir=$HOME/.dotfiles.secret/ --work-tree=$HOME'
+compdef sdots='git' # enable completion for ^
 
 alias t='TERM=xterm-256color tmux new-session -A -s main'
 alias vi='nvim'
