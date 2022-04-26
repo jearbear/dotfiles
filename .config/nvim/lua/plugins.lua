@@ -279,9 +279,7 @@ vim.g.startify_custom_header = {}
 
 vim.g.startify_commands = {}
 vim.g.startify_bookmarks = {
-    { df = "~/.dotfiles" },
-    { dv = "~/.dotfiles/config/nvim" },
-    { dp = "~/.dotfiles.pipe" },
+    { dv = "~/.config/nvim" },
     { sn = "~/snippets.md" },
 }
 vim.g.startify_lists = {
