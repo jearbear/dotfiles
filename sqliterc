@@ -1,5 +1,0 @@
-.headers on
-.mode table
-.nullvalue NULL
-.prompt "» "
-.timer on
