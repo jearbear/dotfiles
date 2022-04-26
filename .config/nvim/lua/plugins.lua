@@ -274,6 +274,7 @@ vim.g.startify_relative_path = true
 vim.g.startify_session_delete_buffers = true
 vim.g.startify_session_persistence = true
 vim.g.startify_update_oldfiles = true
+vim.g.startify_session_dir = "~/.config/nvim/sessions"
 
 vim.g.startify_custom_header = {}
 
@@ -290,6 +291,7 @@ vim.g.startify_lists = {
 
 u.map_c("<Leader>S", "Startify")
 u.map_c("<Leader>sc", "SClose")
+u.map_c("<Leader>sd", "SDelete!")
 -- }}}
 
 -- vim-matchup {{{

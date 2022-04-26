@@ -285,6 +285,7 @@ u.map("c", "<C-n>", "<Down>")
 
 -- edit config files
 u.map_c("<Leader>vev", "edit ~/.config/nvim/init.lua")
+u.map_c("<Leader>vef", "edit ~/.config/nvim/ftplugin")
 u.map_c("<Leader>vel", "edit ~/.config/nvim/lua/lsp.lua")
 u.map_c("<Leader>vep", "edit ~/.config/nvim/lua/plugins.lua")
 u.map_c("<Leader>ves", "edit ~/.config/nvim/lua/statusline.lua")

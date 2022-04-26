@@ -76,7 +76,6 @@ compdef dots='git' # enable completion for ^
 alias sdots='git --git-dir=$HOME/.dotfiles.secret/ --work-tree=$HOME'
 compdef sdots='git' # enable completion for ^
 
-alias t='TERM=xterm-256color tmux new-session -A -s main'
 alias vi='nvim'
 alias vim='nvim'
 alias watch='watch --color --interval 5'
@@ -90,20 +89,36 @@ __is_in_git_repo() {
 alias vs='__vim_with_session'
 function __vim_with_session() {
     sessions_dir="$HOME/.config/nvim/sessions"
+    [ ! -d "$sessions_dir" ] && mkdir "$sessions_dir"
+
     if __is_in_git_repo; then
         session_id="${PWD//\//_}@$(git branch-name).vim"
-        [ ! -d "$sessions_dir" ] && mkdir "$sessions_dir"
     else
         session_id="${PWD//\//_}.vim"
     fi;
 
     session_file="${sessions_dir}/${session_id}"
     if [ -f "${session_file}" ]; then
-        nvim -S "${session_file}"
+        nvim -c "SLoad ${session_id}"
     else
-        touch "${session_file}"
-        nvim -c "SaveSession"
-    fi
+        touch "${sessions_dir}/${session_id}"
+        nvim -c "SSave! ${session_id}"
+    fi;
+}
+
+# quickly delete the relevant vim session
+alias vd='__delete_vim_session'
+function __delete_vim_session() {
+    sessions_dir="$HOME/.config/nvim/sessions"
+    [ ! -d "$sessions_dir" ] && mkdir "$sessions_dir"
+
+    if __is_in_git_repo; then
+        session_id="${PWD//\//_}@$(git branch-name).vim"
+    else
+        session_id="${PWD//\//_}.vim"
+    fi;
+
+    rm "${sessions_dir}/${session_id}"
 }
 
 # fzf
