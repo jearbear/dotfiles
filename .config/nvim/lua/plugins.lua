@@ -5,11 +5,11 @@ require("nvim-treesitter.configs").setup({
     ensure_installed = {
         "bash",
         "comment",
-        -- "eex",
-        -- "elixir", -- TODO: Uncomment once 0.7 fixes performance issues
+        "eex",
+        "elixir",
         "go",
         "graphql",
-        -- "heex",
+        "heex",
         "javascript",
         "json",
         "lua",
@@ -151,8 +151,10 @@ cmp.setup({
 
     mapping = {
         ["<C-l>"] = cmp.mapping(function(fallback)
-            if snippy.can_expand_or_advance() then
-                snippy.expand_or_advance()
+            if snippy.can_jump(1) then
+                snippy.next()
+            elseif snippy.can_expand() then
+                snippy.expand()
             elseif cmp.visible() then
                 cmp.confirm()
             else

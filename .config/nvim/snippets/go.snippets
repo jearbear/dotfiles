@@ -1,9 +1,9 @@
-snippet fori "for int loop"
-	for ${2:i} := 0; $2 < ${1:count}; $2${3:++} {
+snippet for "for range loop"
+	for _, ${1:e} := range ${2:collection} {
 		${0:${VISUAL}}
 	}
-snippet forr "for range loop"
-	for ${1:e} := range ${2:collection} {
+snippet fori "for int loop"
+	for ${2:i} := 0; $2 < ${1:count}; $2${3:++} {
 		${0:${VISUAL}}
 	}
 snippet fun "function"
@@ -53,17 +53,14 @@ snippet test
 		${0}
 	}
 snippet rne "require.NoError"
-	require.NoError(t, err)
-	${0}
+	require.NoError(t, err)${0}
 snippet ree "require.EqualError"
-	require.EqualError(t, ${1:err}, ${2:expected})
-	${0}
+	require.EqualError(t, err, ${1:expected})${0}
+snippet rei "require.ErrorIs"
+	require.EqualError(t, err, ${1:sql.ErrNoRows})${0}
 snippet req "require.Equal"
-	require.Equal(t, ${1:expected}, ${2:actual})
-	${0}
-snippet rt "require.True"
-	require.True(t, ${1:boolean})
-	${0}
-snippet rf "require.False"
-	require.False(t, ${1:boolean})
-	${0}
+	require.Equal(t, ${1:expected}, ${2:actual})${0}
+snippet ret "require.True"
+	require.True(t, ${1:boolean})${0}
+snippet ref "require.False"
+	require.False(t, ${1:boolean})${0}
