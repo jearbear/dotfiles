@@ -57,6 +57,16 @@ require("gitlinker").setup({
 
 -- gitsigns.nvim {{{
 local gitsigns = require("gitsigns")
+
+-- Default to .dotfiles if there is no other git directory
+-- See: https://github.com/lewis6991/gitsigns.nvim/issues/397
+local jid = vim.fn.jobstart({ "git", "rev-parse", "--git-dir" })
+local ret = vim.fn.jobwait({ jid })[1]
+if ret > 0 then
+    vim.env.GIT_DIR = vim.fn.expand("~/.dotfiles")
+    vim.env.GIT_WORK_TREE = vim.fn.expand("~")
+end
+
 gitsigns.setup({
     on_attach = function(bufnr)
         u.map("n", "<Leader>gb", gitsigns.blame_line, { buffer = bufnr })
@@ -101,12 +111,18 @@ require("bqf").setup({
 require("marks").setup({
     default_mappings = false,
     mappings = {
-        set_bookmark2 = "mm",
-        next_bookmark2 = "`",
-        prev_bookmark2 = "<S-`>",
-        delete_bookmark2 = "dm",
+        set_bookmark0 = "m",
+        next_bookmark0 = "'",
+        prev_bookmark0 = '"',
+        delete_bookmark = "M",
+        delete_bookmark0 = "dm",
+    },
+    bookmark_0 = {
+        sign = "*",
     },
 })
+
+u.map_c("<Leader>j", "BookmarksQFList 0")
 -- }}}
 
 -- nvim-snippy {{{
@@ -220,24 +236,48 @@ vim.g.targets_seekRanges = "cc cr cb cB lc ac Ac" -- ranges on the cursor
 vim.g.rsi_no_meta = true
 -- }}}
 
--- fzf.vim {{{
-vim.g.fzf_layout = { window = { width = 0.95, height = 0.95, border = "sharp" } }
-vim.g.fzf_action = {
-    ["ctrl-t"] = "tab split",
-    ["ctrl-s"] = "split",
-    ["ctrl-v"] = "vsplit",
-}
-vim.g.fzf_preview_window = { "up:80%,border-sharp", "ctrl-/" }
+-- fzf-lua {{{
+local fzf_lua = require("fzf-lua")
+fzf_lua.setup({
+    winopts = {
+        height = 0.80,
+        width = 1,
+        border = "single",
+        hl = {
+            border = "Keyword",
+        },
+        preview = {
+            vertical = "up:75%",
+            border = "sharp",
+            winopts = {
+                number = false,
+            },
+        },
+    },
+    grep = {
+        rg_glob = true,
+    },
+})
 
-u.map_c("<Leader>f", "Files")
-u.map_c("<Leader>F", "GFiles?")
-u.map_c("<Leader>l", "Buffers")
-u.map_c("<Leader>;", "BLines")
-u.map_c("<Leader>:", "History:")
-u.map_c("<Leader>k", "BTags")
-u.map_c("<Leader>h", "Help")
--- u.map_c("<Leader>m", "Marks")
-u.map_c("<Bar>", "Rg")
+u.map_c("<Leader><Space>", "FzfLua")
+u.map("n", "<Leader>f", function()
+    if vim.loop.cwd() == vim.fn.expand("~") then
+        fzf_lua.git_files({ git_dir = "~/.dotfiles", git_worktree = "~" })
+    else
+        fzf_lua.files()
+    end
+end)
+u.map_c("<Leader>F", "FzfLua git_status")
+u.map_c("<Leader>l", "FzfLua buffers")
+u.map_c("<Leader>;", "FzfLua buffer_lines")
+u.map_c("<Leader>:", "FzfLua command_history")
+u.map_c("<Leader>g", "FzfLua lsp_live_workspace_symbols")
+u.map("n", "<Leader>k", function()
+    -- Remove filename from results since it's not useful
+    fzf_lua.lsp_document_symbols({ fzf_cli_args = "--with-nth 2.." })
+end)
+u.map_c("<Leader>h", "FzfLua help_tags")
+u.map_c("<Bar>", "FzfLua grep_project")
 -- }}}
 
 -- vim-yoink {{{
@@ -321,20 +361,4 @@ let g:test#strategy = 'copy'
 u.map_c("<Leader>tf", "TestFile")
 u.map_c("<Leader>tl", "TestNearest")
 u.map_c("<Leader>tt", "TestNearest -strategy=basic")
--- }}}
-
--- harpoon {{{
-require("harpoon").setup({
-    global_settings = {
-        mark_branch = true,
-    },
-})
-
-local harpoon_mark = require("harpoon.mark")
-local harpoon_ui = require("harpoon.ui")
-
-u.map("n", "<Leader>m", harpoon_mark.add_file)
-u.map("n", "<Leader>j", harpoon_ui.toggle_quick_menu)
-u.map("n", "<Tab>", harpoon_ui.nav_next)
-u.map("n", "<S-Tab>", harpoon_ui.nav_prev)
 -- }}}

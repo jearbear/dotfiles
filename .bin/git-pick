@@ -19,7 +19,7 @@ __fzf-git-commit() {
 }
 
 __fzf-git-branch() {
-    __fzf-git --preview='git log --oneline --color main..{1}' "$@"
+    __fzf-git --preview='git log --oneline --color main..{1}; echo; git diff --color=always $(git base {1}) {1} --stat' "$@"
 }
 
 

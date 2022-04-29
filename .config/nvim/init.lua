@@ -77,15 +77,13 @@ plug("jose-elias-alvarez/null-ls.nvim") -- integrates gofumports, prettier, etc 
 -- language support for those not covered by tree-sitter
 plug("fladson/vim-kitty")
 plug("google/vim-jsonnet")
-plug("elixir-editors/vim-elixir")
 
 -- fzf
-plug("junegunn/fzf")
-plug("junegunn/fzf.vim")
+plug("ibhagwan/fzf-lua", { branch = "main" })
 
 -- trying out
 plug("chentau/marks.nvim")
-plug("ThePrimeagen/harpoon")
+plug("romainl/vim-cool") -- disable hl on cursor move (neovim is not supported so this may act up)
 
 vim.call("plug#end")
 -- }}}
