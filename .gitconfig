@@ -13,8 +13,8 @@
 
     b = branch
     s = status
-    c = commit
-    cm = commit -m
+    c = !"f() { git commit -m \"${1:-$(shuf -n 1 ~/.word_list.txt)}\"; }; f"
+    ac = !"f() { git aa; git commit -m \"${1:-$(shuf -n 1 ~/.word_list.txt)}\"; }; f"
     p = push -u
     fp = push -f
 
@@ -74,7 +74,7 @@
     fix = !"f() { set -e; COMMIT=$(git pick branch-commit); git commit --fixup $COMMIT; }; f"
     afix = !git aa && git fix
 
-    stow = !"if [[ $(git log -1 --format=%B) == '[STOWED]' ]]; then git commit -a --amend --no-edit; else git aa && git commit -m '[STOWED]'; fi"
+    stow = !"if [[ $(git log -1 --format=%B) == '[STOWED]' ]]; then git aa && git commit --amend --no-edit; else git aa && git commit -m '[STOWED]'; fi"
     unstow = !"if [[ $(git log -1 --format=%B) == '[STOWED]' ]]; then git reset @^; else echo \"Nothing to unstow\"; fi"
 
     ci = !gh pr checks
@@ -162,7 +162,7 @@
     line-numbers-minus-style = reverse bold red
     line-numbers-plus-style = reverse bold green
 
-    features = side-by-side
+    ; features = side-by-side
     navigate = true
 
 ; Allow commands like `git clone gh:jearbear/dotfiles`

@@ -10,82 +10,83 @@ vim.g.maplocalleader = " "
 -- }}}
 
 -- PLUGINS {{{
-local plug = vim.fn["plug#"]
+require("paq")({
+    "savq/paq-nvim", -- package manager
 
-vim.call("plug#begin", "~/.config/nvim/plugged")
+    -- themes
+    "EdenEast/nightfox.nvim",
+    { "catppuccin/nvim", as = "catppuccin" },
+    "folke/tokyonight.nvim",
+    "rose-pine/neovim",
+    "sainnhe/everforest",
+    "savq/melange",
 
--- themes
-plug("EdenEast/nightfox.nvim")
-plug("catppuccin/nvim", { as = "catppuccin" })
-plug("folke/tokyonight.nvim")
-plug("rose-pine/neovim")
-plug("sainnhe/everforest")
-plug("savq/melange")
+    -- the basics
+    "nvim-lua/plenary.nvim", -- dependency for many lua-based plugins
 
--- the basics
-plug("nvim-lua/plenary.nvim") -- dependency for many lua-based plugins
+    -- UI
+    { "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" }, -- better syntax highlighting
+    "nvim-treesitter/nvim-treesitter-textobjects", -- better text object support
+    "anuvyklack/pretty-fold.nvim", -- prettier fold markers and previews
+    "anuvyklack/nvim-keymap-amend", -- required for ^
+    "andymass/vim-matchup", -- more extensive support for matching with `%`
+    "nvim-lualine/lualine.nvim", -- statusline
+    "kevinhwang91/nvim-bqf", -- enhanced qflist (previews, FZF integration)
 
--- UI
-plug("nvim-treesitter/nvim-treesitter", { ["do"] = ":TSUpdate" }) -- better syntax highlighting
-plug("anuvyklack/pretty-fold.nvim") -- prettier fold markers and previews
-plug("andymass/vim-matchup") -- more extensive support for matching with `%`
-plug("nvim-lualine/lualine.nvim") -- statusline
-plug("kevinhwang91/nvim-bqf") -- enhanced qflist (previews, FZF integration)
+    -- mappings
+    "AndrewRadev/splitjoin.vim", -- language-aware splits and joins
+    "numToStr/Comment.nvim", -- key bindings for commenting
+    "tpope/vim-rsi", -- Emacs bindings in command mode
+    "tpope/vim-surround", -- additional mappings to manipulate brackets
+    "tpope/vim-repeat", -- allow `.` to repeate vim-surround actions
+    "tpope/vim-unimpaired", -- mostly use for [<Space> and ]<Space>
+    "wellle/targets.vim", -- additional text objects
+    "moll/vim-bbye", -- delete buffers without closing the window
 
--- mappings
-plug("AndrewRadev/splitjoin.vim") -- language-aware splits and joins
-plug("numToStr/Comment.nvim") -- key bindings for commenting
-plug("tpope/vim-rsi") -- Emacs bindings in command mode
-plug("tpope/vim-surround") -- additional mappings to manipulate brackets
-plug("tpope/vim-repeat") -- allow `.` to repeate vim-surround actions
-plug("tpope/vim-unimpaired") -- mostly use for [<Space> and ]<Space>
-plug("wellle/targets.vim") -- additional text objects
-plug("moll/vim-bbye") -- delete buffers without closing the window
+    -- copy pasta
+    "svermeulen/vim-yoink", -- better handling of yanks (yank rings, auto-formatting)
+    "svermeulen/vim-subversive", -- mappings to substitute text
 
--- copy pasta
-plug("svermeulen/vim-yoink") -- better handling of yanks (yank rings, auto-formatting)
-plug("svermeulen/vim-subversive") -- mappings to substitute text
+    -- version control
+    "ruifm/gitlinker.nvim", -- create links to Github
+    "lewis6991/gitsigns.nvim", -- VCS change indicators in the gutter
+    "sindrets/diffview.nvim", -- git diff across multiple files
 
--- version control
-plug("ruifm/gitlinker.nvim") -- create links to Github
-plug("lewis6991/gitsigns.nvim") -- VCS change indicators in the gutter
-plug("sindrets/diffview.nvim") -- git diff across multiple files
+    -- completion
+    "windwp/nvim-autopairs", -- automatically complete pairs
+    "tpope/vim-endwise", -- automatically close everything else
+    "RRethy/nvim-treesitter-endwise", -- automatically close everything else (tree-sitter)
+    "dcampos/nvim-snippy", -- snippets
+    "hrsh7th/nvim-cmp", -- auto-completion
+    "hrsh7th/cmp-nvim-lsp", -- auto-completion + LSP integration
+    "dcampos/cmp-snippy", -- auto-completion + snippets integration
+    "hrsh7th/cmp-buffer", -- auto-completion when searching (`/` and `?`)
+    "hrsh7th/cmp-nvim-lsp-signature-help", -- show signature information as you type using the completion window
 
--- completion
-plug("windwp/nvim-autopairs") -- automatically complete pairs
-plug("tpope/vim-endwise") -- automatically close everything else
-plug("RRethy/nvim-treesitter-endwise") -- automatically close everything else (tree-sitter)
-plug("dcampos/nvim-snippy") -- snippets
-plug("hrsh7th/nvim-cmp") -- auto-completion
-plug("hrsh7th/cmp-nvim-lsp") -- auto-completion + LSP integration
-plug("dcampos/cmp-snippy") -- auto-completion + snippets integration
-plug("hrsh7th/cmp-buffer") -- auto-completion when searching (`/` and `?`)
-plug("hrsh7th/cmp-nvim-lsp-signature-help") -- show signature information as you type using the completion window
+    -- project navigation + management
+    "elihunter173/dirbuf.nvim", -- minimal file browser
+    "mhinz/vim-grepper", -- slicker grep support
+    "mhinz/vim-startify", -- start screen + session management
+    "tpope/vim-eunuch", -- unix shell commands in command mode
+    "vim-test/vim-test", -- test execution
+    "wsdjeg/vim-fetch", -- support opening line and column numbers (e.g. foo.bar:13)
 
--- project navigation + management
-plug("elihunter173/dirbuf.nvim") -- minimal file browser
-plug("mhinz/vim-grepper") -- slicker grep support
-plug("mhinz/vim-startify") -- start screen + session management
-plug("tpope/vim-eunuch") -- unix shell commands in command mode
-plug("vim-test/vim-test") -- test execution
-plug("wsdjeg/vim-fetch") -- support opening line and column numbers (e.g. foo.bar:13)
+    -- LSP stuff
+    "neovim/nvim-lspconfig", -- defines configs for various LSP servers for me
+    "jose-elias-alvarez/null-ls.nvim", -- integrates gofumports, prettier, etc with the LSP support
 
--- LSP stuff
-plug("neovim/nvim-lspconfig") -- defines configs for various LSP servers for me
-plug("jose-elias-alvarez/null-ls.nvim") -- integrates gofumports, prettier, etc with the LSP support
+    -- language support for those not covered by tree-sitter
+    "fladson/vim-kitty",
+    "google/vim-jsonnet",
 
--- language support for those not covered by tree-sitter
-plug("fladson/vim-kitty")
-plug("google/vim-jsonnet")
+    -- fzf
+    { "ibhagwan/fzf-lua", branch = "main" },
 
--- fzf
-plug("ibhagwan/fzf-lua", { branch = "main" })
-
--- trying out
-plug("chentau/marks.nvim")
-plug("romainl/vim-cool") -- disable hl on cursor move (neovim is not supported so this may act up)
-
-vim.call("plug#end")
+    -- trying out
+    "chentoast/marks.nvim",
+    "romainl/vim-cool", -- disable hl on cursor move (neovim is not supported so this may act up)
+    "echasnovski/mini.nvim",
+})
 -- }}}
 
 -- THEME {{{

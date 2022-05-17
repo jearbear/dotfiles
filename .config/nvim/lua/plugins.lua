@@ -26,6 +26,27 @@ require("nvim-treesitter.configs").setup({
     highlight = { enable = true },
     indent = { enable = true },
     endwise = { enable = true },
+    textobjects = {
+        select = {
+            enable = true,
+            lookahead = true,
+
+            keymaps = {
+                ["aa"] = "@parameter.outer",
+                ["ia"] = "@parameter.inner",
+                ["af"] = "@function.outer",
+                ["if"] = "@function.inner",
+                ["ac"] = "@class.outer",
+                ["ic"] = "@class.inner",
+            },
+        },
+
+        swap = {
+            enable = true,
+            swap_previous = { ["<Leader>9"] = "@parameter.inner" },
+            swap_next = { ["<Leader>0"] = "@parameter.inner" },
+        },
+    },
 })
 -- }}}
 
@@ -128,7 +149,7 @@ u.map_c("<Leader>j", "BookmarksQFList 0")
 -- nvim-snippy {{{
 require("snippy").setup({
     mappings = {
-        is = {
+        [{ "i", "s" }] = {
             ["<C-l>"] = "expand_or_advance",
             ["<C-h>"] = "previous",
         },
@@ -167,10 +188,8 @@ cmp.setup({
 
     mapping = {
         ["<C-l>"] = cmp.mapping(function(fallback)
-            if snippy.can_jump(1) then
-                snippy.next()
-            elseif snippy.can_expand() then
-                snippy.expand()
+            if snippy.can_expand_or_advance() then
+                snippy.expand_or_advance()
             elseif cmp.visible() then
                 cmp.confirm()
             else
@@ -271,7 +290,7 @@ u.map_c("<Leader>F", "FzfLua git_status")
 u.map_c("<Leader>l", "FzfLua buffers")
 u.map_c("<Leader>;", "FzfLua buffer_lines")
 u.map_c("<Leader>:", "FzfLua command_history")
-u.map_c("<Leader>g", "FzfLua lsp_live_workspace_symbols")
+u.map_c("<Leader>G", "FzfLua lsp_live_workspace_symbols")
 u.map("n", "<Leader>k", function()
     -- Remove filename from results since it's not useful
     fzf_lua.lsp_document_symbols({ fzf_cli_args = "--with-nth 2.." })
@@ -360,5 +379,18 @@ let g:test#strategy = 'copy'
 
 u.map_c("<Leader>tf", "TestFile")
 u.map_c("<Leader>tl", "TestNearest")
+u.map_c("<Leader>tT", "TestFile -strategy=basic")
 u.map_c("<Leader>tt", "TestNearest -strategy=basic")
+-- }}}
+
+-- mini.jump {{{
+local mini_jump = require("mini.jump")
+mini_jump.setup({})
+
+u.map({ "n", "v" }, ";", function()
+    mini_jump.smart_jump(false, false)
+end)
+u.map({ "n", "v" }, ",", function()
+    mini_jump.smart_jump(true, false)
+end)
 -- }}}

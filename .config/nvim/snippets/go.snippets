@@ -6,7 +6,7 @@ snippet fori "for int loop"
 	for ${2:i} := 0; $2 < ${1:count}; $2${3:++} {
 		${0:${VISUAL}}
 	}
-snippet fun "function"
+snippet func "function"
 	func ${1:funcName}(${2}) ${3:error} {
 		${4}
 	}
@@ -14,6 +14,11 @@ snippet fun "function"
 snippet fum "method"
 	func (${1:receiver} ${2:type}) ${3:funcName}(${4}) ${5:error} {
 		${6}
+	}
+	${0}
+snippet afunc "anonymous function"
+	${1:funcName} := func(${2}) ${3:}{
+		${4}
 	}
 	${0}
 snippet ife
@@ -52,6 +57,10 @@ snippet test
 
 		${0}
 	}
+snippet trun
+	t.Run("${1:testName}", func(t *testing.T) {
+		${0}
+	})
 snippet rne "require.NoError"
 	require.NoError(t, err)${0}
 snippet ree "require.EqualError"
@@ -64,3 +73,19 @@ snippet ret "require.True"
 	require.True(t, ${1:boolean})${0}
 snippet ref "require.False"
 	require.False(t, ${1:boolean})${0}
+snippet ebce
+	exec boil.ContextExecutor${0}
+snippet bce
+	boil.ContextExecutor${0}
+snippet mv
+	models.Vendor${0}
+snippet amv
+	vendor *models.Vendor${0}
+snippet mvr
+	models.VendorRating${0}
+snippet amvr
+	*models.VendorRating${0}
+snippet mvar
+	models.VendorActiveRating${0}
+snippet amavr
+	${1:activeRating} *models.VendorActiveRating${0}
