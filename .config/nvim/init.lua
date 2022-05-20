@@ -39,7 +39,6 @@ require("paq")({
     "tpope/vim-rsi", -- Emacs bindings in command mode
     "tpope/vim-surround", -- additional mappings to manipulate brackets
     "tpope/vim-repeat", -- allow `.` to repeate vim-surround actions
-    "tpope/vim-unimpaired", -- mostly use for [<Space> and ]<Space>
     "wellle/targets.vim", -- additional text objects
     "moll/vim-bbye", -- delete buffers without closing the window
 
@@ -67,7 +66,6 @@ require("paq")({
     "elihunter173/dirbuf.nvim", -- minimal file browser
     "mhinz/vim-grepper", -- slicker grep support
     "mhinz/vim-startify", -- start screen + session management
-    "tpope/vim-eunuch", -- unix shell commands in command mode
     "vim-test/vim-test", -- test execution
     "wsdjeg/vim-fetch", -- support opening line and column numbers (e.g. foo.bar:13)
 
@@ -255,6 +253,10 @@ u.map("n", "<C-u>", "3<C-u>")
 -- navigate by visual lines when lines are wrapped
 u.map("n", "j", "gj")
 u.map("n", "k", "gk")
+
+-- insert blank lines
+u.map_c("]<Space>", "call append(line('.'), '')")
+u.map_c("[<Space>", "call append(line('.') - 1, '')")
 
 -- buffer/tab navigation
 u.map("n", "<BS>", "<C-^>")

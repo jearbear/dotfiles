@@ -38,6 +38,8 @@ snippet ifne
 	${0}
 snippet ctx
 	ctx := context.Background()${0}
+snippet actx
+	ctx context.Context${0}
 snippet debug
 	fmt.Printf("\n\n[DEBUGGING]: %+v\n\n\n", ${1:val})${0}
 snippet jdebug
@@ -73,19 +75,19 @@ snippet ret "require.True"
 	require.True(t, ${1:boolean})${0}
 snippet ref "require.False"
 	require.False(t, ${1:boolean})${0}
-snippet ebce
+snippet abce
 	exec boil.ContextExecutor${0}
 snippet bce
 	boil.ContextExecutor${0}
 snippet mv
-	models.Vendor${0}
+	*models.Vendor${0}
 snippet amv
 	vendor *models.Vendor${0}
 snippet mvr
-	models.VendorRating${0}
-snippet amvr
 	*models.VendorRating${0}
+snippet amvr
+	vendorRating *models.VendorRating${0}
 snippet mvar
-	models.VendorActiveRating${0}
+	*models.VendorActiveRating${0}
 snippet amavr
 	${1:activeRating} *models.VendorActiveRating${0}
