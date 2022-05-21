@@ -415,3 +415,8 @@ u.map({ "n", "v" }, ",", function()
     mini_jump.smart_jump(true, false)
 end)
 -- }}}
+
+-- dirbuf.nvim {{{
+vim.g.loaded_netrwPlugin = true
+vim.g.loaded_netrw = true
+-- }}}
