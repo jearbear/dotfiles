@@ -112,6 +112,11 @@ end
 gitsigns.setup({
     on_attach = function(bufnr)
         u.map("n", "<Leader>gb", gitsigns.blame_line, { buffer = bufnr })
+        u.map("n", "<Leader>gs", gitsigns.stage_hunk, { buffer = bufnr })
+        u.map("n", "<Leader>gu", gitsigns.undo_stage_hunk, { buffer = bufnr })
+        u.map("n", "<Leader>gS", gitsigns.reset_hunk, { buffer = bufnr })
+        u.map("n", "<Leader>gn", gitsigns.next_hunk, { buffer = bufnr })
+        u.map("n", "<Leader>gp", gitsigns.prev_hunk, { buffer = bufnr })
     end,
 })
 -- }}}
@@ -150,21 +155,29 @@ require("bqf").setup({
 -- }}}
 
 -- marks.nvim {{{
-require("marks").setup({
+local marks = require("marks")
+marks.setup({
     default_mappings = false,
     mappings = {
         set_bookmark0 = "m",
-        next_bookmark0 = "'",
-        prev_bookmark0 = '"',
-        delete_bookmark = "M",
-        delete_bookmark0 = "dm",
+        next_bookmark0 = ")",
+        prev_bookmark0 = "(",
+        delete_bookmark = "dm",
+        delete_bookmark0 = "dM",
     },
     bookmark_0 = {
         sign = "*",
     },
 })
 
-u.map_c("<Leader>j", "BookmarksQFList 0")
+u.map("n", "<Leader>j", function()
+    marks.bookmark_state:to_list("loclist", 0)
+    if vim.tbl_isempty(vim.fn.getloclist(0)) then
+        print("No marks set!")
+    else
+        vim.cmd("lopen")
+    end
+end)
 -- }}}
 
 -- nvim-snippy {{{
@@ -309,7 +322,7 @@ u.map("n", "<Leader>f", function()
 end)
 u.map_c("<Leader>F", "FzfLua git_status")
 u.map_c("<Leader>l", "FzfLua buffers")
-u.map_c("<Leader>;", "FzfLua buffer_lines")
+u.map_c("<Leader>;", "FzfLua blines")
 u.map_c("<Leader>:", "FzfLua command_history")
 u.map_c("<Leader>G", "FzfLua lsp_live_workspace_symbols")
 u.map("n", "<Leader>k", function()

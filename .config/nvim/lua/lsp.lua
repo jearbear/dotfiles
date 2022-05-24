@@ -23,8 +23,16 @@ local on_attach = function(client, bufnr)
         vim.diagnostic.goto_next({ float = { border = "single" }, wrap = false })
     end)
     map("<Leader>gr", vim.lsp.buf.references)
-    map("<Leader>M", vim.diagnostic.setqflist)
     map("<Leader>ca", vim.lsp.buf.code_action)
+
+    u.map("n", "<Leader>m", function()
+        vim.diagnostic.setqflist({ open = false })
+        if not vim.tbl_isempty(vim.fn.getqflist()) then
+            vim.cmd("copen")
+        else
+            print("No diagnostic errors!")
+        end
+    end, { buffer = bufnr })
 
     -- Enable auto-formatting if it's provided
     if client.resolved_capabilities.document_formatting then
