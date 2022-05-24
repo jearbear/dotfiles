@@ -71,10 +71,6 @@ require("nvim-treesitter.configs").setup({
 })
 -- }}}
 
--- stabilize.nvim {{{
--- require("stabilize").setup({})
--- }}}
-
 -- pretty-fold.nvim {{{
 require("pretty-fold").setup({
     fill_char = "·",
@@ -255,6 +251,10 @@ cmp.setup({
 
 -- when deleting text, enter insert mode instead of bailing out to normal mode
 u.map("s", "<BS>", "<BS>i")
+u.map("s", "<C-d>", "<BS>i")
+u.map("s", "<C-f>", "<Right>")
+u.map("s", "<C-b>", "<Left>")
+u.map("s", "<C-o>", "<C-o>o")
 
 -- properly insert braces after completing functions
 local cmp_autopairs = require("nvim-autopairs.completion.cmp")
@@ -421,15 +421,15 @@ u.map_c("<Leader>tt", "TestNearest -strategy=basic")
 -- }}}
 
 -- mini.jump {{{
-local mini_jump = require("mini.jump")
-mini_jump.setup({})
-
-u.map({ "n", "v" }, ";", function()
-    mini_jump.smart_jump(false, false)
-end)
-u.map({ "n", "v" }, ",", function()
-    mini_jump.smart_jump(true, false)
-end)
+-- local mini_jump = require("mini.jump")
+-- mini_jump.setup({})
+--
+-- u.map({ "n", "v" }, ";", function()
+--     mini_jump.smart_jump(false, false)
+-- end)
+-- u.map({ "n", "v" }, ",", function()
+--     mini_jump.smart_jump(true, false)
+-- end)
 -- }}}
 
 -- dirbuf.nvim {{{
