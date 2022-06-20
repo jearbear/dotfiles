@@ -23,9 +23,12 @@ require("nvim-treesitter.configs").setup({
         "vim",
         "yaml",
     },
+
     highlight = { enable = true },
     indent = { enable = true },
     endwise = { enable = true },
+    autotag = { enable = true },
+
     textobjects = {
         select = {
             enable = true,
@@ -155,11 +158,11 @@ local marks = require("marks")
 marks.setup({
     default_mappings = false,
     mappings = {
-        set_bookmark0 = "m",
+        set_bookmark0 = "+",
         next_bookmark0 = ")",
         prev_bookmark0 = "(",
-        delete_bookmark = "dm",
-        delete_bookmark0 = "dM",
+        delete_bookmark = "_",
+        delete_bookmark0 = "<Leader>_",
     },
     bookmark_0 = {
         sign = "*",
@@ -169,7 +172,7 @@ marks.setup({
 u.map("n", "<Leader>j", function()
     marks.bookmark_state:to_list("loclist", 0)
     if vim.tbl_isempty(vim.fn.getloclist(0)) then
-        print("No marks set!")
+        vim.notify("No marks set!")
     else
         vim.cmd("lopen")
     end
@@ -376,7 +379,9 @@ vim.g.startify_session_dir = "~/.config/nvim/sessions"
 
 vim.g.startify_custom_header = {}
 
-vim.g.startify_commands = {}
+vim.g.startify_commands = {
+    { ps = { "sync packages", "PaqSync" } },
+}
 vim.g.startify_bookmarks = {
     { dv = "~/.config/nvim" },
     { sn = "~/snippets.md" },
@@ -435,4 +440,43 @@ u.map_c("<Leader>tt", "TestNearest -strategy=basic")
 -- dirbuf.nvim {{{
 vim.g.loaded_netrwPlugin = true
 vim.g.loaded_netrw = true
+-- }}}
+
+-- git-conflict.nvim {{{
+require("git-conflict").setup({
+    default_mappings = false,
+    disable_diagnostics = true,
+})
+
+u.autocmd("User", {
+    pattern = "GitConflictDetected",
+    callback = function()
+        vim.notify("Conflicts detected! Enabling git conflict mappings...")
+
+        u.map_c("[n", "GitConflictPrevConflict", { buffer = 0 })
+        u.map_c("]n", "GitConflictNextConflict", { buffer = 0 })
+        u.map_c("<Leader>co", "GitConflictChooseOurs", { buffer = 0 })
+        u.map_c("<Leader>ct", "GitConflictChooseTheirs", { buffer = 0 })
+        u.map_c("<Leader>cb", "GitConflictChooseBase", { buffer = 0 })
+    end,
+    group = u.augroup("GIT_CONFLICT"),
+})
+-- }}}
+
+-- cybu.nvim {{{
+require("cybu").setup({
+    style = {
+        devicons = {
+            enabled = false,
+        },
+    },
+})
+
+u.map("n", "<S-Tab>", "<Plug>(CybuPrev)")
+u.map("n", "<Tab>", "<Plug>(CybuNext)")
+-- }}}
+
+-- nvim-code-action-menu {{{
+vim.g.code_action_menu_show_details = false
+vim.g.code_action_menu_show_diff = true
 -- }}}

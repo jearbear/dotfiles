@@ -130,15 +130,50 @@ lspconfig.rust_analyzer.setup({
     capabilities = capabilities,
 })
 
+-- Emmet
+lspconfig.emmet_ls.setup({
+    on_attach = on_attach,
+    handlers = handlers,
+    capabilities = capabilities,
+    filetypes = { "html", "typescriptreact", "heex", "elixir" },
+})
+
+-- Tailwind
+lspconfig.tailwindcss.setup({
+    on_attach = on_attach,
+    handlers = handlers,
+    capabilities = capabilities,
+
+    filetypes = {
+        "html",
+        "heex",
+        "elixir",
+    },
+
+    init_options = {
+        userLanguages = {
+            heex = "html-eex",
+            elixir = "html-eex",
+        },
+    },
+})
+
 -- null-ls
 null_ls.setup({
     sources = {
+        -- shellcheck
+        null_ls.builtins.diagnostics.shellcheck,
+        null_ls.builtins.code_actions.shellcheck,
+
+        -- javascript, typescript
         null_ls.builtins.code_actions.eslint_d,
         -- Much faster than eslint_d at linting since it has to do less. Can
         -- rely on code actions to fix up the things that eslint_d complains
         -- about.
         null_ls.builtins.formatting.prettierd,
         null_ls.builtins.diagnostics.eslint_d,
+
+        -- golang
         null_ls.builtins.diagnostics.golangci_lint.with({
             args = { "run", "--fix=false", "--out-format=json", "$DIRNAME", "--path-prefix", "$ROOT" },
         }),
@@ -146,6 +181,8 @@ null_ls.setup({
         null_ls.builtins.formatting.goimports.with({
             extra_args = { "-local", "github.com/pipe-technologies/pipe/backend" },
         }),
+
+        -- lua
         null_ls.builtins.formatting.stylua.with({
             extra_args = { "--indent-type", "Spaces" },
         }),

@@ -44,8 +44,6 @@
     rename = branch -m
 
     l = log --oneline main..
-    ls = log --oneline --graph --since='1 month ago' --simplify-by-decoration --branches
-    lsa = log --oneline --graph --simplify-by-decoration --branches
 
     mm = !git update && git merge main --no-edit
     mt = mergetool

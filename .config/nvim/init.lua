@@ -84,6 +84,8 @@ require("paq")({
     "chentoast/marks.nvim",
     "romainl/vim-cool", -- disable hl on cursor move (neovim is not supported so this may act up)
     "echasnovski/mini.nvim",
+    "akinsho/git-conflict.nvim", -- better git conflict resolution
+    "ghillb/cybu.nvim", -- preview when cycling through buffers
 })
 -- }}}
 
@@ -255,13 +257,25 @@ u.map("n", "j", "gj")
 u.map("n", "k", "gk")
 
 -- insert blank lines
-u.map_c("]<Space>", "call append(line('.'), '')")
-u.map_c("[<Space>", "call append(line('.') - 1, '')")
+u.map_c("<CR>", "call append(line('.'), '')")
+u.map_c("<S-CR>", "call append(line('.') - 1, '')")
 
 -- buffer/tab navigation
 u.map("n", "<BS>", "<C-^>")
 u.map_c("<Leader>[", "tabp")
 u.map_c("<Leader>]", "tabn")
+
+-- navigate quickfix list
+u.map("n", "[q", function()
+    if not pcall(vim.cmd, "cprevious") then
+        vim.cmd("clast")
+    end
+end)
+u.map("n", "]q", function()
+    if not pcall(vim.cmd, "cnext") then
+        vim.cmd("cfirst")
+    end
+end)
 
 -- faster renaming
 u.map("n", "<Leader>r", "*``cgn")
