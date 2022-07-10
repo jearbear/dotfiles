@@ -74,17 +74,6 @@ require("nvim-treesitter.configs").setup({
 })
 -- }}}
 
--- pretty-fold.nvim {{{
-require("pretty-fold").setup({
-    fill_char = "·",
-})
-
-require("pretty-fold.preview").setup({
-    key = "l",
-    border = "single",
-})
--- }}}
-
 -- gitlinker.nvim {{{
 require("gitlinker").setup({
     opts = {
@@ -201,6 +190,11 @@ cmp.setup({
         expand = function(args)
             snippy.expand_snippet(args.body)
         end,
+    },
+
+    window = {
+        completion = cmp.config.window.bordered(),
+        documentation = cmp.config.window.bordered(),
     },
 
     -- Sorting by kind leads to some weird choices, especially with gopls so we
@@ -354,7 +348,7 @@ u.map("n", "]y", "<Plug>(YoinkRotateForward)")
 
 u.map({ "n", "x" }, "y", "<Plug>(YoinkYankPreserveCursorPosition)")
 
-u.map("n", "<C-t>", "<Plug>(YoinkPostPasteToggleFormat)")
+u.map("n", "<C-=>", "<Plug>(YoinkPostPasteToggleFormat)")
 -- }}}
 
 -- vim-subversive {{{
@@ -465,18 +459,92 @@ u.autocmd("User", {
 
 -- cybu.nvim {{{
 require("cybu").setup({
+    position = {
+        max_win_height = 7,
+    },
     style = {
+        path = "tail",
+        border = "single",
+        padding = 1,
         devicons = {
             enabled = false,
         },
     },
+    behavior = {
+        mode = {
+            last_used = {
+                switch = "immediate",
+                view = "rolling",
+            },
+        },
+    },
 })
 
-u.map("n", "<S-Tab>", "<Plug>(CybuPrev)")
-u.map("n", "<Tab>", "<Plug>(CybuNext)")
+u.map("n", "<S-Tab>", "<Plug>(CybuLastusedPrev)")
+u.map("n", "<Tab>", "<Plug>(CybuLastusedNext)")
 -- }}}
 
--- nvim-code-action-menu {{{
-vim.g.code_action_menu_show_details = false
-vim.g.code_action_menu_show_diff = true
+-- smart-splits.nvim {{{
+local smart_splits = require("smart-splits")
+smart_splits.setup({})
+-- }}}
+
+-- hydra.nvim {{{
+local hydra = require("hydra")
+
+hydra({
+    name = "window management",
+    mode = "n",
+    body = "<Leader><C-w>",
+    config = {
+        invoke_on_body = true,
+        hint = {
+            position = "bottom",
+            border = "single",
+        },
+    },
+    heads = {
+        { "h", "<C-w>h" },
+        { "l", "<C-w>l" },
+        { "j", "<C-w>j" },
+        { "k", "<C-w>k" },
+
+        { "v", "<C-w>v" },
+        { "s", "<C-w>s" },
+
+        { "H", "<C-w>H" },
+        { "L", "<C-w>L" },
+        { "J", "<C-w>J" },
+        { "K", "<C-w>K" },
+
+        {
+            "<C-h>",
+            function()
+                smart_splits.resize_left(3)
+            end,
+        },
+        {
+            "<C-j>",
+            function()
+                smart_splits.resize_down(2)
+            end,
+        },
+        {
+            "<C-k>",
+            function()
+                smart_splits.resize_up(2)
+            end,
+        },
+        {
+            "<C-l>",
+            function()
+                smart_splits.resize_right(3)
+            end,
+        },
+
+        { "=", "<C-w>=" },
+
+        { "q", ":q<CR>" },
+    },
+})
 -- }}}

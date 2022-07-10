@@ -4,7 +4,7 @@
 
 [core]
     excludesfile = ~/.gitignore.global
-    pager = delta
+    pager = "delta"
 
 [alias]
     ; `&& :` is appended to aliases to stop them from using extra arguments
@@ -86,19 +86,6 @@
 [color]
     ui = true
 
-[color "diff-highlight"]
-    oldNormal = red
-    oldHighlight = red bold reverse
-    newNormal = green
-    newHighlight = green bold reverse
-
-[color "diff"]
-    meta = white
-    frag = magenta bold
-    old = red
-    new = green
-    whitespace = red reverse
-
 [help]
     autocorrect = 1
 
@@ -106,7 +93,7 @@
     date = relative
 
 [diff]
-    algorithm = patience
+    algorithm = histogram
     indentheuristic = true
     tool = nvimdiff
 
@@ -145,22 +132,16 @@
     diffFilter = delta --color-only
 
 [delta]
-    minus-style = red bold
-    minus-emph-style = bold underline red
-    minus-non-emph-style = red bold
-    minus-empty-line-marker-style = normal
-    plus-style = green bold
-    plus-emph-style = bold underline green
-    plus-non-emph-style = green bold
-    plus-empty-line-marker-style = normal
+    plus-style = "syntax #34493e"
+    minus-style = "syntax #4b3648"
+    plus-emph-style = "syntax #206e41"
+    minus-emph-style = "syntax #803648"
 
-    commit-decoration-style = bold yellow box ul
     file-style = bold yellow ul
 
-    line-numbers-minus-style = reverse bold red
-    line-numbers-plus-style = reverse bold green
+    line-numbers-minus-style = bold red
+    line-numbers-plus-style = bold green
 
-    ; features = side-by-side
     navigate = true
 
 ; Allow commands like `git clone gh:jearbear/dotfiles`

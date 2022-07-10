@@ -163,6 +163,20 @@ __git-pick-files() {
 zle -N __git-pick-files
 bindkey '^G^F' __git-pick-files
 
+
+# enable side-by-side mode for git diff output if the terminal is wide enough
+__preexec_function () {
+    local columns=$(tput cols)
+    if [ $columns -ge 200 ]; then
+        export GIT_PAGER="delta --side-by-side"
+    else
+        export GIT_PAGER="delta"
+    fi
+}
+typeset -ag preexec_functions;
+preexec_functions=( __preexec_function ${preexec_functions[@]} )
+
+
 [ -r ~/.zshrc.git ] && . ~/.zshrc.git
 
 # source local configs

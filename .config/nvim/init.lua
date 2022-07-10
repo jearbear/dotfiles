@@ -27,7 +27,6 @@ require("paq")({
     -- UI
     { "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" }, -- better syntax highlighting
     "nvim-treesitter/nvim-treesitter-textobjects", -- better text object support
-    "anuvyklack/pretty-fold.nvim", -- prettier fold markers and previews
     "anuvyklack/nvim-keymap-amend", -- required for ^
     "andymass/vim-matchup", -- more extensive support for matching with `%`
     "nvim-lualine/lualine.nvim", -- statusline
@@ -86,6 +85,10 @@ require("paq")({
     "echasnovski/mini.nvim",
     "akinsho/git-conflict.nvim", -- better git conflict resolution
     "ghillb/cybu.nvim", -- preview when cycling through buffers
+    -- "kevinhwang91/nvim-ufo",
+    -- "kevinhwang91/promise-async",
+    "anuvyklack/hydra.nvim",
+    "mrjones2014/smart-splits.nvim",
 })
 -- }}}
 
@@ -148,7 +151,17 @@ vim.opt.showbreak = ".." -- indent wrapped lines with `..`
 -- TODO: checkout other options
 vim.opt.fillchars:append({ diff = "╱" }) -- prettier filler characters for empty diff blocks
 
+function _G.custom_fold_text()
+    local line = vim.fn.getline(vim.v.foldstart)
+    line = string.sub(line, 0, -4) -- remove fold marker
+    return line
+end
+
 vim.opt.foldenable = false -- default to open folds
+vim.opt.foldcolumn = "auto:2" -- show fold indicators in the gutter
+vim.opt.foldtext = "v:lua.custom_fold_text()"
+vim.opt.fillchars:append({ fold = "-" })
+
 vim.opt.conceallevel = 2 -- hide concealed text
 
 vim.opt.incsearch = true -- jump to search results as you type
@@ -305,12 +318,6 @@ u.map_c("<Leader>vel", "edit ~/.config/nvim/lua/lsp.lua")
 u.map_c("<Leader>vep", "edit ~/.config/nvim/lua/plugins.lua")
 u.map_c("<Leader>ves", "edit ~/.config/nvim/lua/statusline.lua")
 u.map_c("<Leader>veu", "edit ~/.config/nvim/lua/utils.lua")
-
--- copy the file with another name
-u.map("n", "<Leader>cc", ":saveas %:h<C-z>")
-
--- create a new file in the same directory
-u.map("n", "<Leader>cn", ":edit %:h<C-z>")
 
 -- toggle qflist
 u.map("n", "<Leader>qq", function()
