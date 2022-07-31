@@ -32,6 +32,7 @@ require("packer").startup(function(use)
     use("romainl/vim-cool") -- disable hl on cursor move (neovim is not supported so this may act up)
 
     -- tree-sitter
+    use("RRethy/nvim-treesitter-endwise") -- automatically close everything else (tree-sitter)
     use("RRethy/nvim-treesitter-textsubjects") -- context-aware expansion of selection
     use({ "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" })
 
@@ -45,8 +46,8 @@ require("packer").startup(function(use)
     use("tpope/vim-rsi") -- Emacs bindings in command mode
 
     -- copy pasta
-    use("svermeulen/vim-yoink") -- better handling of yanks (yank rings, auto-formatting)
-    use("svermeulen/vim-subversive") -- mappings to substitute text
+    use("gbprod/substitute.nvim") -- mappings to substitute text
+    use("gbprod/yanky.nvim") -- better handling of yanks (yank rings, auto-formatting)
 
     -- version control
     use("akinsho/git-conflict.nvim") -- better git conflict resolution
@@ -57,7 +58,6 @@ require("packer").startup(function(use)
     -- completion
     use("windwp/nvim-autopairs") -- automatically complete pairs
     use("tpope/vim-endwise") -- automatically close everything else
-    use("RRethy/nvim-treesitter-endwise") -- automatically close everything else (tree-sitter)
     use("dcampos/nvim-snippy") -- snippets
     use("hrsh7th/nvim-cmp") -- auto-completion
     use("hrsh7th/cmp-nvim-lsp") -- auto-completion + LSP integration

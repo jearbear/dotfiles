@@ -310,32 +310,6 @@ u.map_c("<Leader>h", "FzfLua help_tags")
 u.map_c("<Bar>", "FzfLua grep_project")
 -- }}}
 
--- vim-yoink {{{
-vim.g.yoinkAutoFormatPaste = true
-vim.g.yoinkIncludeDeleteOperations = true
-
-u.map("n", "<C-n>", "<Plug>(YoinkPostPasteSwapForward)")
-u.map("n", "<C-p>", "<Plug>(YoinkPostPasteSwapBack)")
-
-u.map("n", "P", "<Plug>(YoinkPaste_P)")
-u.map("n", "p", "<Plug>(YoinkPaste_p)")
-
-u.map("n", "[y", "<Plug>(YoinkRotateBack)")
-u.map("n", "]y", "<Plug>(YoinkRotateForward)")
-
-u.map({ "n", "x" }, "y", "<Plug>(YoinkYankPreserveCursorPosition)")
-
-u.map("n", "<C-=>", "<Plug>(YoinkPostPasteToggleFormat)")
--- }}}
-
--- vim-subversive {{{
-u.map("n", "S", "<Plug>(SubversiveSubstituteToEndOfLine)")
-u.map({ "n", "x" }, "s", "<Plug>(SubversiveSubstitute)")
-u.map("n", "ss", "<Plug>(SubversiveSubstituteLine)")
-u.map("x", "P", "<Plug>(SubversiveSubstitute)")
-u.map("x", "p", "<Plug>(SubversiveSubstitute)")
--- }}}
-
 -- vim-bbye {{{
 u.map_c("Q", "Bwipeout")
 -- }}}
@@ -519,4 +493,47 @@ require("nvim-surround").setup({})
 
 -- mini.ai {{{
 require("mini.ai").setup({})
+-- }}}
+
+-- yank.nvim {{{
+local yanky = require("yanky")
+yanky.setup({
+    ring = {
+        storage = "memory",
+    },
+    highlight = {
+        timer = 150,
+        -- on_put = false,
+        -- on_yank = true,
+    },
+})
+
+u.map({ "n", "x" }, "y", "<Plug>(YankyYank)")
+
+u.map({ "n", "x" }, "p", "<Plug>(YankyPutAfter)")
+u.map({ "n", "x" }, "P", "<Plug>(YankyPutBefore)")
+u.map({ "n", "x" }, "gp", "<Plug>(YankyGPutAfter)")
+u.map({ "n", "x" }, "gP", "<Plug>(YankyGPutBefore)")
+
+u.map("n", "]p", "<Plug>(YankyPutIndentAfterLinewise)")
+u.map("n", "[p", "<Plug>(YankyPutIndentBeforeLinewise)")
+u.map("n", "]P", "<Plug>(YankyPutIndentAfterLinewise)")
+u.map("n", "[P", "<Plug>(YankyPutIndentBeforeLinewise)")
+
+u.map("n", "<C-n>", "<Plug>(YankyCycleForward)")
+u.map("n", "<C-p>", "<Plug>(YankyCycleBackward)")
+-- }}}
+
+-- substitute.nvim {{{
+local substitute = require("substitute")
+substitute.setup({
+    on_substitute = function(event)
+        yanky.init_ring("p", event.register, event.count, event.vmode:match("[vV�]"))
+    end,
+})
+
+u.map("n", "s", substitute.operator)
+u.map("n", "ss", substitute.line)
+u.map("n", "S", substitute.eol)
+u.map("x", "s", substitute.visual)
 -- }}}
