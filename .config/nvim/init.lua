@@ -10,121 +10,94 @@ vim.g.maplocalleader = " "
 -- }}}
 
 -- PLUGINS {{{
-require("paq")({
-    "savq/paq-nvim", -- package manager
+require("packer").startup(function(use)
+    use("wbthomason/packer.nvim") -- package manager
 
     -- themes
-    "EdenEast/nightfox.nvim",
-    { "catppuccin/nvim", as = "catppuccin" },
-    "folke/tokyonight.nvim",
-    "rose-pine/neovim",
-    "sainnhe/everforest",
-    "savq/melange",
+    use("EdenEast/nightfox.nvim")
+    use({ "catppuccin/nvim", as = "catppuccin" })
+    use("folke/tokyonight.nvim")
+    use("rose-pine/neovim")
+    use("sainnhe/everforest")
+    use("savq/melange")
 
     -- the basics
-    "nvim-lua/plenary.nvim", -- dependency for many lua-based plugins
+    use("nvim-lua/plenary.nvim") -- dependency for many lua-based plugins
 
     -- UI
-    { "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" }, -- better syntax highlighting
-    "nvim-treesitter/nvim-treesitter-textobjects", -- better text object support
-    "anuvyklack/nvim-keymap-amend", -- required for ^
-    "andymass/vim-matchup", -- more extensive support for matching with `%`
-    "nvim-lualine/lualine.nvim", -- statusline
-    "kevinhwang91/nvim-bqf", -- enhanced qflist (previews, FZF integration)
+    use("andymass/vim-matchup") -- more extensive support for matching with `%`
+    use("anuvyklack/nvim-keymap-amend") -- required for ^
+    use("kevinhwang91/nvim-bqf") -- enhanced qflist (previews FZF integration)
+    use("nvim-lualine/lualine.nvim") -- statusline
+    use("romainl/vim-cool") -- disable hl on cursor move (neovim is not supported so this may act up)
+
+    -- tree-sitter
+    use("RRethy/nvim-treesitter-textsubjects") -- context-aware expansion of selection
+    use({ "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" })
 
     -- mappings
-    "AndrewRadev/splitjoin.vim", -- language-aware splits and joins
-    "numToStr/Comment.nvim", -- key bindings for commenting
-    "tpope/vim-rsi", -- Emacs bindings in command mode
-    "tpope/vim-surround", -- additional mappings to manipulate brackets
-    "tpope/vim-repeat", -- allow `.` to repeate vim-surround actions
-    "wellle/targets.vim", -- additional text objects
-    "moll/vim-bbye", -- delete buffers without closing the window
+    use("AndrewRadev/splitjoin.vim") -- language-aware splits and joins
+    use("anuvyklack/hydra.nvim") -- chain mappings together under a common prefix
+    use("moll/vim-bbye") -- delete buffers without closing the window
+    use("mrjones2014/smart-splits.nvim") -- more sane resizing behavior
+    use("numToStr/Comment.nvim") -- key bindings for commenting
+    use("tpope/vim-repeat") -- allow `.` to repeate vim-surround actions
+    use("tpope/vim-rsi") -- Emacs bindings in command mode
 
     -- copy pasta
-    "svermeulen/vim-yoink", -- better handling of yanks (yank rings, auto-formatting)
-    "svermeulen/vim-subversive", -- mappings to substitute text
+    use("svermeulen/vim-yoink") -- better handling of yanks (yank rings, auto-formatting)
+    use("svermeulen/vim-subversive") -- mappings to substitute text
 
     -- version control
-    "ruifm/gitlinker.nvim", -- create links to Github
-    "lewis6991/gitsigns.nvim", -- VCS change indicators in the gutter
-    "sindrets/diffview.nvim", -- git diff across multiple files
+    use("akinsho/git-conflict.nvim") -- better git conflict resolution
+    use("lewis6991/gitsigns.nvim") -- VCS change indicators in the gutter
+    use("ruifm/gitlinker.nvim") -- create links to Github
+    use("sindrets/diffview.nvim") -- git diff across multiple files
 
     -- completion
-    "windwp/nvim-autopairs", -- automatically complete pairs
-    "tpope/vim-endwise", -- automatically close everything else
-    "RRethy/nvim-treesitter-endwise", -- automatically close everything else (tree-sitter)
-    "dcampos/nvim-snippy", -- snippets
-    "hrsh7th/nvim-cmp", -- auto-completion
-    "hrsh7th/cmp-nvim-lsp", -- auto-completion + LSP integration
-    "dcampos/cmp-snippy", -- auto-completion + snippets integration
-    "hrsh7th/cmp-buffer", -- auto-completion when searching (`/` and `?`)
-    "hrsh7th/cmp-nvim-lsp-signature-help", -- show signature information as you type using the completion window
+    use("windwp/nvim-autopairs") -- automatically complete pairs
+    use("tpope/vim-endwise") -- automatically close everything else
+    use("RRethy/nvim-treesitter-endwise") -- automatically close everything else (tree-sitter)
+    use("dcampos/nvim-snippy") -- snippets
+    use("hrsh7th/nvim-cmp") -- auto-completion
+    use("hrsh7th/cmp-nvim-lsp") -- auto-completion + LSP integration
+    use("dcampos/cmp-snippy") -- auto-completion + snippets integration
+    use("hrsh7th/cmp-buffer") -- auto-completion when searching (`/` and `?`)
+    use("hrsh7th/cmp-nvim-lsp-signature-help") -- show signature information as you type using the completion window
 
     -- project navigation + management
-    "elihunter173/dirbuf.nvim", -- minimal file browser
-    "mhinz/vim-grepper", -- slicker grep support
-    "mhinz/vim-startify", -- start screen + session management
-    "vim-test/vim-test", -- test execution
-    "wsdjeg/vim-fetch", -- support opening line and column numbers (e.g. foo.bar:13)
+    use("elihunter173/dirbuf.nvim") -- minimal file browser
+    use("ghillb/cybu.nvim") -- preview when cycling through buffers
+    use("mhinz/vim-grepper") -- slicker grep support
+    use("mhinz/vim-startify") -- start screen + session management
+    use("vim-test/vim-test") -- test execution
+    use("wsdjeg/vim-fetch") -- support opening line and column numbers (e.g. foo.bar:13)
 
     -- LSP stuff
-    "neovim/nvim-lspconfig", -- defines configs for various LSP servers for me
-    "jose-elias-alvarez/null-ls.nvim", -- integrates gofumports, prettier, etc with the LSP support
+    use("neovim/nvim-lspconfig") -- defines configs for various LSP servers for me
+    use("jose-elias-alvarez/null-ls.nvim") -- integrates gofumports, prettier, etc with the LSP support
 
     -- language support for those not covered by tree-sitter
-    "fladson/vim-kitty",
-    "google/vim-jsonnet",
+    use("fladson/vim-kitty")
+    use("google/vim-jsonnet")
 
     -- fzf
-    { "ibhagwan/fzf-lua", branch = "main" },
+    use({ "ibhagwan/fzf-lua", branch = "main" })
 
     -- trying out
-    "chentoast/marks.nvim",
-    "romainl/vim-cool", -- disable hl on cursor move (neovim is not supported so this may act up)
-    "echasnovski/mini.nvim",
-    "akinsho/git-conflict.nvim", -- better git conflict resolution
-    "ghillb/cybu.nvim", -- preview when cycling through buffers
-    -- "kevinhwang91/nvim-ufo",
-    -- "kevinhwang91/promise-async",
-    "anuvyklack/hydra.nvim",
-    "mrjones2014/smart-splits.nvim",
-})
+    use("chentoast/marks.nvim")
+    use("kylechui/nvim-surround") -- add delete and change enclosing text
+    use("jinh0/eyeliner.nvim") -- highlight suggested targets for `f` and `t`
+    use("folke/lua-dev.nvim") -- setup the Lua LSP for neovim development
+    use("echasnovski/mini.nvim") -- used for mini.ai (enhanced text objects)
+end)
 -- }}}
 
 -- THEME {{{
 vim.opt.termguicolors = true
+vim.g.catppuccin_flavour = "mocha"
 
-require("catppuccin").setup({
-    -- TODO: the italics settings aren't being respected (https://github.com/catppuccin/nvim/issues/95)
-    styles = {
-        comments = "italic",
-        functions = "NONE",
-        keywords = "NONE",
-        strings = "italic",
-        variables = "NONE",
-    },
-    integrations = {
-        native_lsp = {
-            enabled = true,
-            virtual_text = {
-                errors = "NONE",
-                hints = "NONE",
-                warnings = "NONE",
-                information = "NONE",
-            },
-            underlines = {
-                errors = "underline",
-                hints = "underline",
-                warnings = "underline",
-                information = "underline",
-            },
-        },
-        cmp = true,
-        gitsigns = true,
-        markdown = true,
-    },
-})
+require("catppuccin").setup({})
 
 vim.cmd("colorscheme catppuccin")
 -- }}}

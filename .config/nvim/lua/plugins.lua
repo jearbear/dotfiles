@@ -1,6 +1,22 @@
 local u = require("utils")
 
+-- packer.nvim {{{
+local packer = require("packer")
+
+vim.api.nvim_create_user_command("PS", function(input)
+    packer.compile()
+    packer.clean()
+    packer.install()
+    if input.bang then
+        packer.update()
+    end
+end, { bang = true })
+-- }}}
+
 -- nvim-treesitter {{{
+-- work around compiler issues on Mac OS
+require("nvim-treesitter.install").compilers = { "gcc-11" }
+
 require("nvim-treesitter.configs").setup({
     ensure_installed = {
         "bash",
@@ -15,9 +31,11 @@ require("nvim-treesitter.configs").setup({
         "lua",
         "make",
         "markdown",
+        "markdown_inline",
         "python",
         "regex",
         "rust",
+        -- "sql", -- this doesn't work very well at the moment
         "tsx",
         "typescript",
         "vim",
@@ -29,46 +47,13 @@ require("nvim-treesitter.configs").setup({
     endwise = { enable = true },
     autotag = { enable = true },
 
-    textobjects = {
-        select = {
-            enable = true,
-            lookahead = true,
-
-            keymaps = {
-                ["aa"] = "@parameter.outer",
-                ["ia"] = "@parameter.inner",
-                ["af"] = "@function.outer",
-                ["if"] = "@function.inner",
-                ["ac"] = "@class.outer",
-                ["ic"] = "@class.inner",
-            },
-        },
-
-        swap = {
-            enable = true,
-            swap_previous = { ["<Leader>9"] = "@parameter.inner" },
-            swap_next = { ["<Leader>0"] = "@parameter.inner" },
-        },
-
-        move = {
-            enable = true,
-            set_jumps = true,
-            goto_next_start = {
-                ["]m"] = "@function.outer",
-                ["]]"] = "@class.outer",
-            },
-            goto_next_end = {
-                ["]M"] = "@function.outer",
-                ["]["] = "@class.outer",
-            },
-            goto_previous_start = {
-                ["[m"] = "@function.outer",
-                ["[["] = "@class.outer",
-            },
-            goto_previous_end = {
-                ["[M"] = "@function.outer",
-                ["[]"] = "@class.outer",
-            },
+    textsubjects = {
+        enable = true,
+        prev_selection = ",",
+        keymaps = {
+            ["."] = "textsubjects-smart",
+            [";"] = "textsubjects-container-outer",
+            ["i;"] = "textsubjects-container-inner",
         },
     },
 })
@@ -277,14 +262,6 @@ u.map_c("<Bslash>", "Grepper")
 u.map({ "n", "x" }, "gs", "<Plug>(GrepperOperator)")
 -- }}}
 
--- targets.vim {{{
-vim.g.targets_seekRanges = "cc cr cb cB lc ac Ac" -- ranges on the cursor
-    .. " lr" -- range around the cursor, fully contained on the same line
-    .. " rr" -- range ahead of the cursor, fully contained on the same line
-    .. " lb ar ab lB Ar aB Ab AB" -- ranges around the cursor, multiline
-    .. " ll" -- ranges behind the cursor, fully contained on the same line
--- }}}
-
 -- vim-rsi {{{
 vim.g.rsi_no_meta = true
 -- }}}
@@ -373,9 +350,7 @@ vim.g.startify_session_dir = "~/.config/nvim/sessions"
 
 vim.g.startify_custom_header = {}
 
-vim.g.startify_commands = {
-    { ps = { "sync packages", "PaqSync" } },
-}
+vim.g.startify_commands = {}
 vim.g.startify_bookmarks = {
     { dv = "~/.config/nvim" },
     { sn = "~/snippets.md" },
@@ -419,18 +394,6 @@ u.map_c("<Leader>tT", "TestFile -strategy=basic")
 u.map_c("<Leader>tt", "TestNearest -strategy=basic")
 -- }}}
 
--- mini.jump {{{
--- local mini_jump = require("mini.jump")
--- mini_jump.setup({})
---
--- u.map({ "n", "v" }, ";", function()
---     mini_jump.smart_jump(false, false)
--- end)
--- u.map({ "n", "v" }, ",", function()
---     mini_jump.smart_jump(true, false)
--- end)
--- }}}
-
 -- dirbuf.nvim {{{
 vim.g.loaded_netrwPlugin = true
 vim.g.loaded_netrw = true
@@ -463,7 +426,7 @@ require("cybu").setup({
         max_win_height = 7,
     },
     style = {
-        path = "tail",
+        path = "relative",
         border = "single",
         padding = 1,
         devicons = {
@@ -478,6 +441,7 @@ require("cybu").setup({
             },
         },
     },
+    display_time = 1500,
 })
 
 u.map("n", "<S-Tab>", "<Plug>(CybuLastusedPrev)")
@@ -547,4 +511,12 @@ hydra({
         { "q", ":q<CR>" },
     },
 })
+-- }}}
+
+-- nvim-surround {{{
+require("nvim-surround").setup({})
+-- }}}
+
+-- mini.ai {{{
+require("mini.ai").setup({})
 -- }}}

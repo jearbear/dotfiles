@@ -8,6 +8,9 @@ local on_attach = function(client, bufnr)
     -- Provide LSP results to omni completion
     vim.bo.omnifunc = "v:lua.vim.lsp.omnifunc"
 
+    -- New files tend to break the LSP so make a shorter command to make this easier to manage
+    vim.api.nvim_create_user_command("LR", "LspRestart", {})
+
     -- Mappings
     local function map(lhs, rhs)
         u.map("n", lhs, rhs, { buffer = bufnr })
@@ -22,7 +25,9 @@ local on_attach = function(client, bufnr)
     map("<C-j>", function()
         vim.diagnostic.goto_next({ float = { border = "single" }, wrap = false })
     end)
-    map("<Leader>gr", vim.lsp.buf.references)
+    map("<Leader>gr", function()
+        vim.lsp.buf.references({ includeDeclaration = false })
+    end)
     map("<Leader>ca", vim.lsp.buf.code_action)
 
     u.map("n", "<Leader>m", function()
@@ -36,7 +41,12 @@ local on_attach = function(client, bufnr)
 
     -- Enable auto-formatting if it's provided
     if client.resolved_capabilities.document_formatting then
-        u.autocmd("BufWritePre", { buffer = 0, callback = vim.lsp.buf.formatting_sync })
+        u.autocmd("BufWritePre", {
+            buffer = 0,
+            callback = function()
+                vim.lsp.buf.formatting_sync({}, 5000)
+            end,
+        })
     end
 
     -- Update signs
@@ -51,6 +61,19 @@ end
 local handlers = {
     ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" }),
     ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" }),
+    -- Filter out some annoying results
+    -- See: https://github.com/typescript-language-server/typescript-language-server/issues/216#issuecomment-1005272952
+    ["textDocument/definition"] = function(err, results, method, ...)
+        if not vim.tbl_islist(results) or #results <= 1 then
+            return vim.lsp.handlers["textDocument/definition"](err, results, method, ...)
+        end
+
+        local filtered_results = u.filter(results, function(v)
+            -- Filter out TS type annotations
+            return string.match(v.uri, "d.ts") == nil
+        end)
+        return vim.lsp.handlers["textDocument/definition"](err, filtered_results, method, ...)
+    end,
 }
 
 -- Add completion via cmp-nvim to the list of LSP capabilities available
@@ -106,22 +129,14 @@ lspconfig.vimls.setup({
 })
 
 -- Lua
-lspconfig.sumneko_lua.setup({
-    on_attach = on_attach,
-    handlers = handlers,
-    capabilities = capabilities,
-
-    settings = {
-        Lua = {
-            diagnostics = {
-                globals = { "vim" },
-            },
-            workspace = {
-                library = vim.api.nvim_get_runtime_file("", true),
-            },
-        },
+lspconfig.sumneko_lua.setup(require("lua-dev").setup({
+    runtime_path = true, -- enable completions for `require`
+    lspconfig = {
+        on_attach = on_attach,
+        handlers = handlers,
+        capabilities = capabilities,
     },
-})
+}))
 
 -- Rust
 lspconfig.rust_analyzer.setup({

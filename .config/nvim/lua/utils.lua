@@ -4,6 +4,21 @@ function M.augroup(name)
     vim.api.nvim_create_augroup(name, { clear = true })
 end
 
+function M.filter(arr, fn)
+    if type(arr) ~= "table" then
+        return arr
+    end
+
+    local filtered = {}
+    for k, v in pairs(arr) do
+        if fn(v, k, arr) then
+            table.insert(filtered, v)
+        end
+    end
+
+    return filtered
+end
+
 M.autocmd = vim.api.nvim_create_autocmd
 
 M.command = vim.api.nvim_create_user_command
