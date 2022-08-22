@@ -55,13 +55,13 @@ __git-pick-branch() {
 }
 
 __git-pick-branch-without-main() {
-    git branch                   |
-        rg --invert-match '^\*'  |
-        rg --invert-match 'main' |
-        awk '{$1=$1};1'          |
-        __fzf-git-branch         |
-        cut -f 1 -d ' '          |
-        head -n 1                |
+    git branch                     |
+        rg --invert-match '^\*'    |
+        rg --invert-match ' main$' |
+        awk '{$1=$1};1'            |
+        __fzf-git-branch           |
+        cut -f 1 -d ' '            |
+        head -n 1                  |
         tr -d '\n'
 }
 
@@ -74,11 +74,11 @@ __git-pick-branches() {
 }
 
 __git-pick-branches-without-main() {
-    git branch                   |
-        rg --invert-match '^\*'  |
-        rg --invert-match 'main' |
-        awk '{$1=$1};1'          |
-        __fzf-git-branch --multi |
+    git branch                     |
+        rg --invert-match '^\*'    |
+        rg --invert-match ' main$' |
+        awk '{$1=$1};1'            |
+        __fzf-git-branch --multi   |
         tr '\n' ' '
 }
 
@@ -97,6 +97,6 @@ case $subcommand in
         ;;
     *)
         shift
-        __git-pick-${subcommand} $@
+        __git-pick-"${subcommand}" "$@"
         ;;
 esac

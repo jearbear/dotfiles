@@ -5,6 +5,7 @@
 
 export KEYTIMEOUT=1
 export EDITOR='nvim'
+export VISUAL='nvim'
 export PAGER='less'
 export GPG_TTY=$(tty)
 

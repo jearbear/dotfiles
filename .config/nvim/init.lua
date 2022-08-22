@@ -131,9 +131,9 @@ function _G.custom_fold_text()
 end
 
 vim.opt.foldenable = false -- default to open folds
-vim.opt.foldcolumn = "auto:2" -- show fold indicators in the gutter
+-- vim.opt.foldcolumn = "auto:2" -- show fold indicators in the gutter
 vim.opt.foldtext = "v:lua.custom_fold_text()"
-vim.opt.fillchars:append({ fold = "-" })
+vim.opt.fillchars:append({ fold = " " })
 
 vim.opt.conceallevel = 2 -- hide concealed text
 
@@ -203,6 +203,19 @@ vim.diagnostic.config({
     update_in_insert = false,
     severity_sort = true,
 })
+
+-- use ripgrep for `grep` command
+vim.opt.grepprg = "rg --vimgrep --smart-case --hidden"
+vim.opt.grepformat = "%f:%l:%c:%m"
+
+u.command("Grep", function(input)
+    vim.cmd("silent grep! " .. input.args)
+    if not vim.tbl_isempty(vim.fn.getqflist()) then
+        vim.cmd("copen")
+    else
+        vim.notify("No results found!")
+    end
+end, { nargs = "+", complete = "file" })
 -- }}}
 
 -- AUTO COMMANDS {{{
@@ -307,6 +320,16 @@ end)
 
 -- this is always a typo
 u.map("c", "w'", "w")
+
+-- always use uppercase marks since they're usually what I want and don't get
+-- deleted if the line it's on does like lower case ones
+-- for i = string.byte("a"), string.byte("z"), 1 do
+--     local key = string.char(i)
+--     u.map("n", "m" .. key, "m" .. string.upper(key))
+--     u.map("n", "'" .. key, "'" .. string.upper(key))
+--     u.map("n", "`" .. key, "`" .. string.upper(key))
+-- end
+
 -- }}}
 
 require("statusline")

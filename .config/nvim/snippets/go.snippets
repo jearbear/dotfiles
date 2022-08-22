@@ -43,11 +43,10 @@ snippet ctx
 snippet actx
 	ctx context.Context${0}
 snippet debug
-	fmt.Printf("\n\n[DEBUGGING]: %+v\n\n\n", ${1:val})${0}
+	fmt.Printf("\n\n[${1:DEBUGGING}]: %+v\n\n\n", ${2:val})${0}
 snippet jdebug
-	b, _ := json.MarshalIndent(${1:val}, "", "\t")
-	fmt.Printf("\n\n[DEBUGGING]: %+v\n\n\n", string(b))
-	${0}
+	b, _ := json.MarshalIndent(${2:val}, "", "\t")
+	fmt.Printf("\n\n[${1:DEBUGGING}]: %+v\n\n\n", string(b))${0}
 snippet test
 	func Test${1:name}(t *testing.T) {
 		t.Parallel()
@@ -68,8 +67,6 @@ snippet trun
 snippet rne
 	require.NoError(t, err)${0}
 snippet ree
-	require.EqualError(t, err, ${1:expected})${0}
-snippet rei
 	require.EqualError(t, err, ${1:sql.ErrNoRows})${0}
 snippet req
 	require.Equal(t, ${1:expected}, ${2:actual})${0}
@@ -77,17 +74,13 @@ snippet ret
 	require.True(t, ${1:boolean})${0}
 snippet ref
 	require.False(t, ${1:boolean})${0}
-snippet abc
-	exec boil.ContextExecutor${0}
 snippet bc
 	boil.ContextExecutor${0}
-snippet am
-	*models.${1|Vendor,VendorRating,VendorActiveRating|}${0}
-snippet cus
+snippet usd
 	models.CurrencyUsd
-snippet ceu
+snippet eur
 	models.CurrencyEur
-snippet cuk
+snippet gbp
 	models.CurrencyGBP
 snippet diff
 	ignoreFields := cmpopts.IgnoreFields(models.${1:modelName}{}, "ID", "PublicID", "CreatedAt", "UpdatedAt")
@@ -95,3 +88,23 @@ snippet diff
 		t.Fatalf("(-want +got):\n%s", diff)
 	}
 	${0}
+snippet rexec
+	_, err := ${1:exec}.ExecContext(ctx, \`
+		${0}
+	\`)
+snippet evd
+	enums.VendorDecision${1|Approved,OnHold,Declined|}${0}
+snippet *mv
+	*models.Vendor${0}
+snippet mv
+	models.Vendor${0}
+snippet *mvr
+	*models.VendorRating${0}
+snippet mvr
+	models.VendorRating${0}
+snippet *mvar
+	*models.VendorActiveRating${0}
+snippet mvar
+	models.VendorActiveRating${0}
+snippet query
+	${1:vendors}, err := models.${2:Vendors}(${3}).${4:All}(ctx, exec)${0}

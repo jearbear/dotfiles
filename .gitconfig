@@ -77,6 +77,7 @@
 
     ci = !gh pr checks
     pr = !hub pull-request --draft --edit --browse --push && :
+    prb = !hub pull-request --labels bypass --browse --push && :
     open = !"gh pr view --web || open https://$(git remote get-url origin | sed 's/git@//; s/.git//; s/:/\\//')/pull/new/$(git branch-name)"
 
 [commit]

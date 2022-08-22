@@ -130,27 +130,21 @@ require("bqf").setup({
 -- marks.nvim {{{
 local marks = require("marks")
 marks.setup({
-    default_mappings = false,
+    default_mappings = true,
     mappings = {
-        set_bookmark0 = "+",
-        next_bookmark0 = ")",
-        prev_bookmark0 = "(",
-        delete_bookmark = "_",
-        delete_bookmark0 = "<Leader>_",
-    },
-    bookmark_0 = {
-        sign = "*",
+        next = ")",
+        prev = "(",
     },
 })
 
-u.map("n", "<Leader>j", function()
-    marks.bookmark_state:to_list("loclist", 0)
-    if vim.tbl_isempty(vim.fn.getloclist(0)) then
-        vim.notify("No marks set!")
-    else
-        vim.cmd("lopen")
-    end
-end)
+-- u.map("n", "<Leader>j", function()
+--     marks.mark_state:to_list("loclist", 0)
+--     if vim.tbl_isempty(vim.fn.getloclist(0)) then
+--         vim.notify("No marks set!")
+--     else
+--         vim.cmd("lopen")
+--     end
+-- end)
 -- }}}
 
 -- nvim-snippy {{{
@@ -252,7 +246,18 @@ cmp.setup.cmdline("/", {
 -- vim-grepper {{{
 vim.g.grepper = {
     prompt_text = "$t> ",
-    tools = { "rg" },
+    tools = { "rg", "go", "migrations" },
+    rg = {
+        grepprg = "rg --vimgrep --smart-case --with-filename",
+    },
+    go = {
+        grepprg = "rg --vimgrep --smart-case --with-filename -t go",
+    },
+    migrations = {
+        escape = "\\^$.*+?()[]{}|",
+        grepformat = "%f:%l:%c:%m,%f",
+        grepprg = "rg --vimgrep --smart-case --with-filename --sortr path -t sql $* ~/code/pipe/backend/migrations",
+    },
     stop = 1000,
     prompt_quote = 2, -- populate prompt with single quotes
     searchreg = 1, -- load query into search register (allows hitting `n` to navigate results in quickfix list)
@@ -415,7 +420,7 @@ require("cybu").setup({
             },
         },
     },
-    display_time = 1500,
+    display_time = 750,
 })
 
 u.map("n", "<S-Tab>", "<Plug>(CybuLastusedPrev)")
@@ -495,7 +500,7 @@ require("nvim-surround").setup({})
 require("mini.ai").setup({})
 -- }}}
 
--- yank.nvim {{{
+-- yanky.nvim {{{
 local yanky = require("yanky")
 yanky.setup({
     ring = {
@@ -510,15 +515,10 @@ yanky.setup({
 
 u.map({ "n", "x" }, "y", "<Plug>(YankyYank)")
 
-u.map({ "n", "x" }, "p", "<Plug>(YankyPutAfter)")
-u.map({ "n", "x" }, "P", "<Plug>(YankyPutBefore)")
-u.map({ "n", "x" }, "gp", "<Plug>(YankyGPutAfter)")
-u.map({ "n", "x" }, "gP", "<Plug>(YankyGPutBefore)")
-
-u.map("n", "]p", "<Plug>(YankyPutIndentAfterLinewise)")
-u.map("n", "[p", "<Plug>(YankyPutIndentBeforeLinewise)")
-u.map("n", "]P", "<Plug>(YankyPutIndentAfterLinewise)")
-u.map("n", "[P", "<Plug>(YankyPutIndentBeforeLinewise)")
+u.map({ "n", "x" }, "p", "<Plug>(YankyPutIndentAfter)")
+u.map({ "n", "x" }, "P", "<Plug>(YankyPutIndentBefore)")
+u.map({ "n", "x" }, "gp", "<Plug>(YankyPutAfter)")
+u.map({ "n", "x" }, "gP", "<Plug>(YankyPutBefore)")
 
 u.map("n", "<C-n>", "<Plug>(YankyCycleForward)")
 u.map("n", "<C-p>", "<Plug>(YankyCycleBackward)")
