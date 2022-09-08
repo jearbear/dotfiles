@@ -1,0 +1,20 @@
+snippet <div
+	<div>
+	    ${0}
+	</div>
+snippet <div.
+	<div class="${1}">
+	    ${0}
+	</div>
+snippet <flex
+	<div class="flex ${1|flex-row,flex-col,flex-row-reverse,flex-col-reverse|}">
+	    ${0}
+	</div>
+snippet <grid
+	<div class="grid${1: other-class...}">
+	    ${0}
+	</div>
+snippet <tag
+	<${1} ${2:attributes}>
+	    ${0}
+	</$1>

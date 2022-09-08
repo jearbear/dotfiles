@@ -36,10 +36,11 @@ require("nvim-treesitter.configs").setup({
         "regex",
         "rust",
         -- "sql", -- this doesn't work very well at the moment
+        "surface",
         "tsx",
         "typescript",
         "vim",
-        "yaml",
+        -- "yaml",
     },
 
     highlight = { enable = true },
@@ -340,12 +341,12 @@ vim.g.startify_lists = {
     { type = "commands", header = { "   Commands" } },
 }
 
-u.map_c("<Leader>S", "Startify")
-u.map_c("<Leader>sc", "SClose")
-u.map("n", "<Leader>sd", function()
-    vim.cmd("SDelete!")
-    vim.cmd("SClose")
-end)
+-- u.map_c("<Leader>S", "Startify")
+-- u.map_c("<Leader>sc", "SClose")
+-- u.map("n", "<Leader>sd", function()
+--     vim.cmd("SDelete!")
+--     vim.cmd("SClose")
+-- end)
 -- }}}
 
 -- vim-matchup {{{
@@ -492,12 +493,12 @@ hydra({
 })
 -- }}}
 
--- nvim-surround {{{
-require("nvim-surround").setup({})
--- }}}
-
 -- mini.ai {{{
 require("mini.ai").setup({})
+-- }}}
+
+-- nvim-surround {{{
+require("nvim-surround").setup({})
 -- }}}
 
 -- yanky.nvim {{{
@@ -508,8 +509,6 @@ yanky.setup({
     },
     highlight = {
         timer = 150,
-        -- on_put = false,
-        -- on_yank = true,
     },
 })
 
@@ -534,6 +533,5 @@ substitute.setup({
 
 u.map("n", "s", substitute.operator)
 u.map("n", "ss", substitute.line)
-u.map("n", "S", substitute.eol)
 u.map("x", "s", substitute.visual)
 -- }}}

@@ -1,0 +1,24 @@
+snippet ct
+	CREATE TABLE ${1:table_name} (
+	    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	    public_id  TEXT UNIQUE NOT NULL DEFAULT gen_public_id('${2:tn}'),
+	    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+	    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+	    vendor_id INT NOT NULL REFERENCES vendors (id) ON DELETE CASCADE,
+
+	    ${0}
+	);
+
+	CREATE TRIGGER updated_at BEFORE UPDATE ON $1 FOR EACH ROW EXECUTE PROCEDURE updated_at();
+	CREATE INDEX ON $1 (vendor_id);
+snippet ci
+	CREATE INDEX ON ${1:table_name} (${2});${0}
+snippet fk
+	${1:column_name} BIGINT NOT NULL REFERENCES ${2:table_name} (id),${0}
+snippet ref
+	REFERENCES ${1:table_name} (${2})${0}
+snippet nn
+	NOT NULL${0}
+snippet bi
+	BIGINT ${0}

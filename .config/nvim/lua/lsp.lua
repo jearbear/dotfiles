@@ -145,14 +145,6 @@ lspconfig.rust_analyzer.setup({
     capabilities = capabilities,
 })
 
--- Emmet
-lspconfig.emmet_ls.setup({
-    on_attach = on_attach,
-    handlers = handlers,
-    capabilities = capabilities,
-    filetypes = { "html", "typescriptreact", "heex", "elixir" },
-})
-
 -- Tailwind
 lspconfig.tailwindcss.setup({
     on_attach = on_attach,
@@ -188,6 +180,10 @@ null_ls.setup({
         null_ls.builtins.formatting.prettierd,
         null_ls.builtins.diagnostics.eslint_d,
 
+        -- elixir
+        -- null_ls.builtins.formatting.mix,
+        null_ls.builtins.diagnostics.credo,
+
         -- golang
         null_ls.builtins.diagnostics.golangci_lint.with({
             args = { "run", "--fix=false", "--out-format=json", "$DIRNAME", "--path-prefix", "$ROOT" },
@@ -195,11 +191,6 @@ null_ls.setup({
         null_ls.builtins.formatting.gofumpt,
         null_ls.builtins.formatting.goimports.with({
             extra_args = { "-local", "github.com/pipe-technologies/pipe/backend" },
-        }),
-
-        -- lua
-        null_ls.builtins.formatting.stylua.with({
-            extra_args = { "--indent-type", "Spaces" },
         }),
     },
 

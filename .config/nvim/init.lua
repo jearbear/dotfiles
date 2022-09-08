@@ -35,6 +35,7 @@ require("packer").startup(function(use)
     use("RRethy/nvim-treesitter-endwise") -- automatically close everything else (tree-sitter)
     use("RRethy/nvim-treesitter-textsubjects") -- context-aware expansion of selection
     use({ "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" })
+    use("windwp/nvim-ts-autotag") -- automatically close tags
 
     -- mappings
     use("AndrewRadev/splitjoin.vim") -- language-aware splits and joins
@@ -86,10 +87,10 @@ require("packer").startup(function(use)
 
     -- trying out
     use("chentoast/marks.nvim")
-    use("kylechui/nvim-surround") -- add delete and change enclosing text
     use("jinh0/eyeliner.nvim") -- highlight suggested targets for `f` and `t`
     use("folke/lua-dev.nvim") -- setup the Lua LSP for neovim development
-    use("echasnovski/mini.nvim") -- used for mini.ai (enhanced text objects)
+    use("kylechui/nvim-surround") -- add delete and change enclosing text
+    use("echasnovski/mini.nvim") -- used for mini.ai (enhanced text objects) and mini.surround
 end)
 -- }}}
 
@@ -278,9 +279,17 @@ end)
 
 -- faster renaming
 u.map("n", "<Leader>r", "*``cgn")
+u.map("n", "<Leader>R", "g*``cgn")
+
+-- faster substitution
+u.map("n", "<Leader>s", ":%s/")
+u.map("v", "<Leader>s", '"ay/<C-R>a<CR>``:%s//')
 
 -- load the word under the cursor into the search register
 u.map("n", "<Leader>*", "*``")
+
+-- load the selection into the seach register
+u.map("v", "*", '"ay/<C-R>a<CR>``')
 
 -- yank/paste to/from system clipboard
 -- (recursive mappings are intentionally used to preserve the benefits of

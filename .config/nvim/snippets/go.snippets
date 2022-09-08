@@ -43,10 +43,10 @@ snippet ctx
 snippet actx
 	ctx context.Context${0}
 snippet debug
-	fmt.Printf("\n\n[${1:DEBUGGING}]: %+v\n\n\n", ${2:val})${0}
+	fmt.Printf("\n\n[$1]: %+v\n\n\n", ${1:val})${0}
 snippet jdebug
-	b, _ := json.MarshalIndent(${2:val}, "", "\t")
-	fmt.Printf("\n\n[${1:DEBUGGING}]: %+v\n\n\n", string(b))${0}
+	b, _ := json.MarshalIndent(${1:val}, "", "\t")
+	fmt.Printf("\n\n[$1]: %+v\n\n\n", string(b))${0}
 snippet test
 	func Test${1:name}(t *testing.T) {
 		t.Parallel()

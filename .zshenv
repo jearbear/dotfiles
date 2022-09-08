@@ -29,5 +29,7 @@ export PATH
 
 export BAT_THEME='base16'
 
+export ERL_AFLAGS="-kernel shell_history enabled"
+
 # system-specific
 [ -f ~/.zshenv.local ] && source ~/.zshenv.local
