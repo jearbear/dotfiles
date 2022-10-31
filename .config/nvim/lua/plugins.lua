@@ -528,7 +528,3 @@ u.map("n", "S", substitute.eol)
 -- neodev.nvim {{{
 require("neodev").setup({})
 -- }}}
-
--- lsp-format.nvim {{{
-require("lsp-format").setup({})
--- }}}
