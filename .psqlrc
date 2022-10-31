@@ -21,4 +21,7 @@
 -- display timing information
 \timing
 
+-- disable the pager as it's buggy and annoying
+\pset pager 0
+
 \unset QUIET

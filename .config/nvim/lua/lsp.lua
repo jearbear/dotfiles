@@ -2,13 +2,18 @@ local u = require("utils")
 local lspconfig = require("lspconfig")
 local null_ls = require("null-ls")
 local cmp_nvim_lsp = require("cmp_nvim_lsp")
+local fzf = require("fzf-lua")
 
 -- This function gets executed when the LSP is initiated successfully
 local on_attach = function(client, bufnr)
     -- Provide LSP results to omni completion
     vim.bo.omnifunc = "v:lua.vim.lsp.omnifunc"
 
-    -- New files tend to break the LSP so make a shorter command to make this easier to manage
+    -- I use gq mostly to wrap long lines, I don't care about LSP niceties
+    vim.bo.formatexpr = ""
+
+    -- New files tend to break the LSP so make a shorter command to make this
+    -- easier to manage
     vim.api.nvim_create_user_command("LR", "LspRestart", {})
 
     -- Mappings
@@ -16,7 +21,6 @@ local on_attach = function(client, bufnr)
         u.map("n", lhs, rhs, { buffer = bufnr })
     end
 
-    map("<C-]>", vim.lsp.buf.definition)
     map("K", vim.lsp.buf.hover)
     map("<Leader>R", vim.lsp.buf.rename)
     map("<C-k>", function()
@@ -28,23 +32,24 @@ local on_attach = function(client, bufnr)
     map("<Leader>gr", function()
         vim.lsp.buf.references({ includeDeclaration = false })
     end)
-    map("<Leader>ca", vim.lsp.buf.code_action)
+    map("<Leader>gi", vim.lsp.buf.implementation)
+    map("<Leader>ca", fzf.lsp_code_actions)
 
-    u.map("n", "<Leader>m", function()
+    map("<Leader>m", function()
         vim.diagnostic.setqflist({ open = false })
         if not vim.tbl_isempty(vim.fn.getqflist()) then
             vim.cmd("copen")
         else
-            print("No diagnostic errors!")
+            print("No diagnostic errors.")
         end
-    end, { buffer = bufnr })
+    end)
 
     -- Enable auto-formatting if it's provided
-    if client.resolved_capabilities.document_formatting then
+    if client.server_capabilities.documentFormattingProvider then
         u.autocmd("BufWritePre", {
             buffer = 0,
             callback = function()
-                vim.lsp.buf.formatting_sync({}, 5000)
+                vim.lsp.buf.format({ timeout_ms = 5000, async = false })
             end,
         })
     end
@@ -77,7 +82,12 @@ local handlers = {
 }
 
 -- Add completion via cmp-nvim to the list of LSP capabilities available
-local capabilities = cmp_nvim_lsp.update_capabilities(vim.lsp.protocol.make_client_capabilities())
+local capabilities = cmp_nvim_lsp.default_capabilities()
+
+local override_formatting_capability = function(client, override)
+    client.server_capabilities.documentFormattingProvider = override
+    client.server_capabilities.documentRangeFormattingProvider = override
+end
 
 -- Golang
 lspconfig.gopls.setup({
@@ -86,8 +96,7 @@ lspconfig.gopls.setup({
 
         -- Disabling gopls's formatting and imports as it misses some
         -- situations when compared to goimports
-        client.resolved_capabilities.document_formatting = false
-        client.resolved_capabilities.document_range_formatting = false
+        override_formatting_capability(client, false)
     end,
     handlers = handlers,
     capabilities = capabilities,
@@ -104,9 +113,22 @@ lspconfig.tsserver.setup({
     on_attach = function(client, bufnr)
         on_attach(client, bufnr)
 
-        -- Leave formatting up to eslint_d and prettierd provided by null-ls
-        client.resolved_capabilities.document_formatting = false
-        client.resolved_capabilities.document_range_formatting = false
+        -- Leave formatting up to eslint language server
+        override_formatting_capability(client, false)
+    end,
+    handlers = handlers,
+    capabilities = capabilities,
+})
+
+-- Eslint
+lspconfig.eslint.setup({
+    on_attach = function(client, bufnr)
+        on_attach(client, bufnr)
+
+        -- This LS doesn't broadcast formatting support initially and Neovim
+        -- doesn't support dynamic registration so force broadcasting
+        -- formatting capabilities.
+        override_formatting_capability(client, true)
     end,
     handlers = handlers,
     capabilities = capabilities,
@@ -129,14 +151,16 @@ lspconfig.vimls.setup({
 })
 
 -- Lua
-lspconfig.sumneko_lua.setup(require("lua-dev").setup({
-    runtime_path = true, -- enable completions for `require`
-    lspconfig = {
-        on_attach = on_attach,
-        handlers = handlers,
-        capabilities = capabilities,
-    },
-}))
+lspconfig.sumneko_lua.setup({
+    on_attach = function(client, bufnr)
+        on_attach(client, bufnr)
+
+        -- Leave formatting up to stylua provided by null-ls
+        override_formatting_capability(client, false)
+    end,
+    handlers = handlers,
+    capabilities = capabilities,
+})
 
 -- Rust
 lspconfig.rust_analyzer.setup({
@@ -165,6 +189,15 @@ lspconfig.tailwindcss.setup({
     },
 })
 
+-- Jsonnet (for gmailctl)
+lspconfig.jsonnet_ls.setup({
+    on_attach = on_attach,
+    handlers = handlers,
+    capabilities = capabilities,
+
+    single_file_support = true,
+})
+
 -- null-ls
 null_ls.setup({
     sources = {
@@ -172,16 +205,7 @@ null_ls.setup({
         null_ls.builtins.diagnostics.shellcheck,
         null_ls.builtins.code_actions.shellcheck,
 
-        -- javascript, typescript
-        null_ls.builtins.code_actions.eslint_d,
-        -- Much faster than eslint_d at linting since it has to do less. Can
-        -- rely on code actions to fix up the things that eslint_d complains
-        -- about.
-        null_ls.builtins.formatting.prettierd,
-        null_ls.builtins.diagnostics.eslint_d,
-
         -- elixir
-        -- null_ls.builtins.formatting.mix,
         null_ls.builtins.diagnostics.credo,
 
         -- golang
@@ -191,6 +215,12 @@ null_ls.setup({
         null_ls.builtins.formatting.gofumpt,
         null_ls.builtins.formatting.goimports.with({
             extra_args = { "-local", "github.com/pipe-technologies/pipe/backend" },
+        }),
+
+        -- lua
+        -- Using stylua instead of LSP formatter since it's more opinionated.
+        null_ls.builtins.formatting.stylua.with({
+            extra_args = { "--indent-type", "Spaces" },
         }),
     },
 

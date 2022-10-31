@@ -54,9 +54,7 @@ snippet test
 		ctx := context.Background()
 		db := testdb.New(t)
 		tf := testfactory.New(t, db)
-		srv := services.TestServices(&services.Services{
-			DB: db,
-		})
+		srv := services.TestServicesWithDB(t, db)
 
 		${0}
 	}
@@ -70,10 +68,14 @@ snippet ree
 	require.EqualError(t, err, ${1:sql.ErrNoRows})${0}
 snippet req
 	require.Equal(t, ${1:expected}, ${2:actual})${0}
+snippet reqv
+	require.EqualValues(t, ${1:expected}, ${2:actual})${0}
 snippet ret
 	require.True(t, ${1:boolean})${0}
 snippet ref
 	require.False(t, ${1:boolean})${0}
+snippet rel
+	require.Len(t, ${1:enumerable}, ${2:len})${0}
 snippet bc
 	boil.ContextExecutor${0}
 snippet usd
@@ -108,3 +110,11 @@ snippet mvar
 	models.VendorActiveRating${0}
 snippet query
 	${1:vendors}, err := models.${2:Vendors}(${3}).${4:All}(ctx, exec)${0}
+snippet backfill
+	func backfill${1:Name}(ctx context.Context, _ logrus.FieldLogger, srv *services.Services) error {
+		db := srv.DB
+
+		${0}
+	
+		return nil
+	}

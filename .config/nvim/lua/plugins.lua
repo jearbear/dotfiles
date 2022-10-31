@@ -28,6 +28,7 @@ require("nvim-treesitter.configs").setup({
         "heex",
         "javascript",
         "json",
+        "jsonnet",
         "lua",
         "make",
         "markdown",
@@ -40,7 +41,7 @@ require("nvim-treesitter.configs").setup({
         "tsx",
         "typescript",
         "vim",
-        -- "yaml",
+        "yaml",
     },
 
     highlight = { enable = true },
@@ -87,8 +88,8 @@ gitsigns.setup({
     on_attach = function(bufnr)
         u.map("n", "<Leader>gb", gitsigns.blame_line, { buffer = bufnr })
         u.map("n", "<Leader>gs", gitsigns.stage_hunk, { buffer = bufnr })
-        u.map("n", "<Leader>gu", gitsigns.undo_stage_hunk, { buffer = bufnr })
-        u.map("n", "<Leader>gS", gitsigns.reset_hunk, { buffer = bufnr })
+        u.map("n", "<Leader>gS", gitsigns.undo_stage_hunk, { buffer = bufnr })
+        u.map("n", "<Leader>gu", gitsigns.reset_hunk, { buffer = bufnr })
         u.map("n", "<Leader>gn", gitsigns.next_hunk, { buffer = bufnr })
         u.map("n", "<Leader>gp", gitsigns.prev_hunk, { buffer = bufnr })
     end,
@@ -100,6 +101,10 @@ require("diffview").setup({
     use_icons = false,
     enhanced_diff_hl = true,
 })
+
+u.map_c("<Leader>gs", "DiffviewOpen")
+u.map_c("<Leader>gd", "DiffviewFileHistory %")
+u.map_c("<Leader>gD", "DiffviewFileHistory")
 -- }}}
 
 -- Comment.nvim {{{
@@ -137,15 +142,6 @@ marks.setup({
         prev = "(",
     },
 })
-
--- u.map("n", "<Leader>j", function()
---     marks.mark_state:to_list("loclist", 0)
---     if vim.tbl_isempty(vim.fn.getloclist(0)) then
---         vim.notify("No marks set!")
---     else
---         vim.cmd("lopen")
---     end
--- end)
 -- }}}
 
 -- nvim-snippy {{{
@@ -277,16 +273,17 @@ local fzf_lua = require("fzf-lua")
 fzf_lua.setup({
     winopts = {
         height = 0.80,
-        width = 1,
+        width = 0.90,
         border = "single",
         hl = {
             border = "Keyword",
         },
         preview = {
             vertical = "up:75%",
+            layout = "vertical",
             border = "sharp",
             winopts = {
-                number = false,
+                number = true,
             },
         },
     },
@@ -295,7 +292,7 @@ fzf_lua.setup({
     },
 })
 
-u.map_c("<Leader><Space>", "FzfLua")
+u.map_c("<Leader><Leader>", "FzfLua")
 u.map("n", "<Leader>f", function()
     if vim.loop.cwd() == vim.fn.expand("~") then
         fzf_lua.git_files({ git_dir = "~/.dotfiles", git_worktree = "~" })
@@ -316,10 +313,6 @@ u.map_c("<Leader>h", "FzfLua help_tags")
 u.map_c("<Bar>", "FzfLua grep_project")
 -- }}}
 
--- vim-bbye {{{
-u.map_c("Q", "Bwipeout")
--- }}}
-
 -- vim-startify {{{
 vim.g.startify_change_to_dir = false
 vim.g.startify_relative_path = true
@@ -332,8 +325,7 @@ vim.g.startify_custom_header = {}
 
 vim.g.startify_commands = {}
 vim.g.startify_bookmarks = {
-    { dv = "~/.config/nvim" },
-    { sn = "~/snippets.md" },
+    { sn = "~/.config/nvim/snippets" },
 }
 vim.g.startify_lists = {
     { type = "dir", header = { "   Latest Edits" } },
@@ -341,20 +333,11 @@ vim.g.startify_lists = {
     { type = "commands", header = { "   Commands" } },
 }
 
--- u.map_c("<Leader>S", "Startify")
--- u.map_c("<Leader>sc", "SClose")
--- u.map("n", "<Leader>sd", function()
---     vim.cmd("SDelete!")
---     vim.cmd("SClose")
--- end)
+u.map_c("<Leader>S", "Startify")
 -- }}}
 
 -- vim-matchup {{{
 vim.g.matchup_matchparen_offscreen = { method = "popup" }
--- }}}
-
--- diffview.nvim {{{
-u.map_c("<Leader>gd", "DiffviewFileHistory")
 -- }}}
 
 -- vim-test {{{
@@ -413,19 +396,11 @@ require("cybu").setup({
             enabled = false,
         },
     },
-    behavior = {
-        mode = {
-            last_used = {
-                switch = "immediate",
-                view = "rolling",
-            },
-        },
-    },
-    display_time = 750,
+    display_time = 500,
 })
 
-u.map("n", "<S-Tab>", "<Plug>(CybuLastusedPrev)")
-u.map("n", "<Tab>", "<Plug>(CybuLastusedNext)")
+u.map("n", "<S-Tab>", "<Plug>(CybuPrev)")
+u.map("n", "<Tab>", "<Plug>(CybuNext)")
 -- }}}
 
 -- smart-splits.nvim {{{
@@ -439,11 +414,14 @@ local hydra = require("hydra")
 hydra({
     name = "window management",
     mode = "n",
+
     body = "<Leader><C-w>",
     config = {
         invoke_on_body = true,
         hint = {
+            type = "window",
             position = "bottom",
+            offset = 1,
             border = "single",
         },
     },
@@ -497,6 +475,16 @@ hydra({
 require("mini.ai").setup({})
 -- }}}
 
+-- mini.bufremove {{{
+require("mini.bufremove").setup({})
+
+u.map("n", "Q", MiniBufremove.wipeout)
+-- }}}
+
+-- mini.align {{{
+require("mini.align").setup({})
+-- }}}
+
 -- nvim-surround {{{
 require("nvim-surround").setup({})
 -- }}}
@@ -519,8 +507,8 @@ u.map({ "n", "x" }, "P", "<Plug>(YankyPutIndentBefore)")
 u.map({ "n", "x" }, "gp", "<Plug>(YankyPutAfter)")
 u.map({ "n", "x" }, "gP", "<Plug>(YankyPutBefore)")
 
-u.map("n", "<C-n>", "<Plug>(YankyCycleForward)")
-u.map("n", "<C-p>", "<Plug>(YankyCycleBackward)")
+u.map("n", "<C-p>", "<Plug>(YankyCycleForward)")
+u.map("n", "<C-n>", "<Plug>(YankyCycleBackward)")
 -- }}}
 
 -- substitute.nvim {{{
@@ -534,4 +522,13 @@ substitute.setup({
 u.map("n", "s", substitute.operator)
 u.map("n", "ss", substitute.line)
 u.map("x", "s", substitute.visual)
+u.map("n", "S", substitute.eol)
+-- }}}
+
+-- neodev.nvim {{{
+require("neodev").setup({})
+-- }}}
+
+-- lsp-format.nvim {{{
+require("lsp-format").setup({})
 -- }}}

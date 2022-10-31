@@ -10,88 +10,79 @@ vim.g.maplocalleader = " "
 -- }}}
 
 -- PLUGINS {{{
-require("packer").startup(function(use)
-    use("wbthomason/packer.nvim") -- package manager
+require("packer").startup({
+    function(use)
+        use("wbthomason/packer.nvim") -- package manager
 
-    -- themes
-    use("EdenEast/nightfox.nvim")
-    use({ "catppuccin/nvim", as = "catppuccin" })
-    use("folke/tokyonight.nvim")
-    use("rose-pine/neovim")
-    use("sainnhe/everforest")
-    use("savq/melange")
+        -- themes
+        use({ "catppuccin/nvim", as = "catppuccin" })
 
-    -- the basics
-    use("nvim-lua/plenary.nvim") -- dependency for many lua-based plugins
+        -- UI
+        use({ "andymass/vim-matchup", requires = "anuvyklack/nvim-keymap-amend" }) -- more extensive support for matching with `%`
+        use("kevinhwang91/nvim-bqf") -- enhanced qflist (previews FZF integration)
+        use("nvim-lualine/lualine.nvim") -- statusline
+        use("romainl/vim-cool") -- disable hl on cursor move (neovim is not supported so this may act up)
 
-    -- UI
-    use("andymass/vim-matchup") -- more extensive support for matching with `%`
-    use("anuvyklack/nvim-keymap-amend") -- required for ^
-    use("kevinhwang91/nvim-bqf") -- enhanced qflist (previews FZF integration)
-    use("nvim-lualine/lualine.nvim") -- statusline
-    use("romainl/vim-cool") -- disable hl on cursor move (neovim is not supported so this may act up)
+        -- tree-sitter
+        use("RRethy/nvim-treesitter-endwise") -- automatically close everything else (tree-sitter)
+        use("RRethy/nvim-treesitter-textsubjects") -- context-aware expansion of selection
+        use({ "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" })
+        use("windwp/nvim-ts-autotag") -- automatically close tags
 
-    -- tree-sitter
-    use("RRethy/nvim-treesitter-endwise") -- automatically close everything else (tree-sitter)
-    use("RRethy/nvim-treesitter-textsubjects") -- context-aware expansion of selection
-    use({ "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" })
-    use("windwp/nvim-ts-autotag") -- automatically close tags
+        -- mappings
+        use("AndrewRadev/splitjoin.vim") -- language-aware splits and joins
+        use("anuvyklack/hydra.nvim") -- chain mappings together under a common prefix
+        use("mrjones2014/smart-splits.nvim") -- more sane resizing behavior
+        use("numToStr/Comment.nvim") -- key bindings for commenting
+        use("tpope/vim-rsi") -- Emacs bindings in command mode
 
-    -- mappings
-    use("AndrewRadev/splitjoin.vim") -- language-aware splits and joins
-    use("anuvyklack/hydra.nvim") -- chain mappings together under a common prefix
-    use("moll/vim-bbye") -- delete buffers without closing the window
-    use("mrjones2014/smart-splits.nvim") -- more sane resizing behavior
-    use("numToStr/Comment.nvim") -- key bindings for commenting
-    use("tpope/vim-repeat") -- allow `.` to repeate vim-surround actions
-    use("tpope/vim-rsi") -- Emacs bindings in command mode
+        -- copy pasta
+        use("gbprod/substitute.nvim") -- mappings to substitute text
+        use("gbprod/yanky.nvim") -- better handling of yanks (yank rings, auto-formatting)
 
-    -- copy pasta
-    use("gbprod/substitute.nvim") -- mappings to substitute text
-    use("gbprod/yanky.nvim") -- better handling of yanks (yank rings, auto-formatting)
+        -- version control
+        use("akinsho/git-conflict.nvim") -- better git conflict resolution
+        use("lewis6991/gitsigns.nvim") -- VCS change indicators in the gutter
+        use({ "ruifm/gitlinker.nvim", requires = "nvim-lua/plenary.nvim" }) -- create links to Github
+        use("sindrets/diffview.nvim") -- git diff across multiple files
 
-    -- version control
-    use("akinsho/git-conflict.nvim") -- better git conflict resolution
-    use("lewis6991/gitsigns.nvim") -- VCS change indicators in the gutter
-    use("ruifm/gitlinker.nvim") -- create links to Github
-    use("sindrets/diffview.nvim") -- git diff across multiple files
+        -- completion
+        use("windwp/nvim-autopairs") -- automatically complete pairs
+        use("tpope/vim-endwise") -- automatically close everything else
+        use("dcampos/nvim-snippy") -- snippets
+        use("hrsh7th/nvim-cmp") -- auto-completion
+        use("hrsh7th/cmp-nvim-lsp") -- auto-completion + LSP integration
+        use("dcampos/cmp-snippy") -- auto-completion + snippets integration
+        use("hrsh7th/cmp-buffer") -- auto-completion when searching (`/` and `?`)
+        use("hrsh7th/cmp-nvim-lsp-signature-help") -- show signature information as you type using the completion window
 
-    -- completion
-    use("windwp/nvim-autopairs") -- automatically complete pairs
-    use("tpope/vim-endwise") -- automatically close everything else
-    use("dcampos/nvim-snippy") -- snippets
-    use("hrsh7th/nvim-cmp") -- auto-completion
-    use("hrsh7th/cmp-nvim-lsp") -- auto-completion + LSP integration
-    use("dcampos/cmp-snippy") -- auto-completion + snippets integration
-    use("hrsh7th/cmp-buffer") -- auto-completion when searching (`/` and `?`)
-    use("hrsh7th/cmp-nvim-lsp-signature-help") -- show signature information as you type using the completion window
+        -- project navigation + management
+        use("elihunter173/dirbuf.nvim") -- minimal file browser
+        use("ghillb/cybu.nvim") -- preview when cycling through buffers
+        use("mhinz/vim-grepper") -- slicker grep support
+        use("mhinz/vim-startify") -- start screen + session management
+        use("vim-test/vim-test") -- test execution
+        use("wsdjeg/vim-fetch") -- support opening line and column numbers (e.g. foo.bar:13)
 
-    -- project navigation + management
-    use("elihunter173/dirbuf.nvim") -- minimal file browser
-    use("ghillb/cybu.nvim") -- preview when cycling through buffers
-    use("mhinz/vim-grepper") -- slicker grep support
-    use("mhinz/vim-startify") -- start screen + session management
-    use("vim-test/vim-test") -- test execution
-    use("wsdjeg/vim-fetch") -- support opening line and column numbers (e.g. foo.bar:13)
+        -- LSP stuff
+        use("neovim/nvim-lspconfig") -- defines configs for various LSP servers for me
+        use("jose-elias-alvarez/null-ls.nvim") -- integrates gofumports, prettier, etc with the LSP support
 
-    -- LSP stuff
-    use("neovim/nvim-lspconfig") -- defines configs for various LSP servers for me
-    use("jose-elias-alvarez/null-ls.nvim") -- integrates gofumports, prettier, etc with the LSP support
+        -- language support for those not covered by tree-sitter
+        use("fladson/vim-kitty")
 
-    -- language support for those not covered by tree-sitter
-    use("fladson/vim-kitty")
-    use("google/vim-jsonnet")
+        -- fzf
+        use({ "ibhagwan/fzf-lua", branch = "main" })
 
-    -- fzf
-    use({ "ibhagwan/fzf-lua", branch = "main" })
-
-    -- trying out
-    use("chentoast/marks.nvim")
-    use("jinh0/eyeliner.nvim") -- highlight suggested targets for `f` and `t`
-    use("folke/lua-dev.nvim") -- setup the Lua LSP for neovim development
-    use("kylechui/nvim-surround") -- add delete and change enclosing text
-    use("echasnovski/mini.nvim") -- used for mini.ai (enhanced text objects) and mini.surround
-end)
+        -- trying out
+        use("chentoast/marks.nvim") -- show marks in the gutter and provide better mappings to manipulate them
+        use("jinh0/eyeliner.nvim") -- highlight suggested targets for `f` and `t`
+        use("folke/neodev.nvim") -- setup the Lua LSP for neovim development
+        use("kylechui/nvim-surround") -- add delete and change enclosing text
+        use("echasnovski/mini.nvim") -- used for mini.bufremove, mini.ai (enhanced text objects), mini.align
+    end,
+    config = { autoremove = true },
+})
 -- }}}
 
 -- THEME {{{
@@ -127,12 +118,15 @@ vim.opt.fillchars:append({ diff = "╱" }) -- prettier filler characters for emp
 
 function _G.custom_fold_text()
     local line = vim.fn.getline(vim.v.foldstart)
-    line = string.sub(line, 0, -4) -- remove fold marker
+    local marker = string.rep("{", 3)
+    if string.sub(line, -#marker) == marker then
+        line = string.sub(line, 0, -4) -- remove fold marker
+    end
     return line
 end
 
 vim.opt.foldenable = false -- default to open folds
--- vim.opt.foldcolumn = "auto:2" -- show fold indicators in the gutter
+vim.wo.foldnestmax = 1
 vim.opt.foldtext = "v:lua.custom_fold_text()"
 vim.opt.fillchars:append({ fold = " " })
 
@@ -330,15 +324,31 @@ end)
 -- this is always a typo
 u.map("c", "w'", "w")
 
--- always use uppercase marks since they're usually what I want and don't get
--- deleted if the line it's on does like lower case ones
--- for i = string.byte("a"), string.byte("z"), 1 do
---     local key = string.char(i)
---     u.map("n", "m" .. key, "m" .. string.upper(key))
---     u.map("n", "'" .. key, "'" .. string.upper(key))
---     u.map("n", "`" .. key, "`" .. string.upper(key))
--- end
+-- https://github.com/neovim/neovim/pull/17932#issue-1188088238
+u.map("n", "<C-i>", "<C-i>")
 
+-- Navigate search results with Tab/S-Tab
+u.map("c", "<Tab>", function()
+    local cmdtype = vim.fn.getcmdtype()
+    if cmdtype == "/" then
+        return "<C-g>"
+    elseif cmdtype == "?" then
+        return "<C-t>"
+    else
+        return "<C-z>"
+    end
+end, { expr = true })
+
+u.map("c", "<S-Tab>", function()
+    local cmdtype = vim.fn.getcmdtype()
+    if cmdtype == "/" then
+        return "<C-t>"
+    elseif cmdtype == "?" then
+        return "<C-g>"
+    else
+        return "<S-Tab>"
+    end
+end, { expr = true })
 -- }}}
 
 require("statusline")

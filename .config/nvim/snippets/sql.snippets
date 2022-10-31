@@ -12,13 +12,41 @@ snippet ct
 
 	CREATE TRIGGER updated_at BEFORE UPDATE ON $1 FOR EACH ROW EXECUTE PROCEDURE updated_at();
 	CREATE INDEX ON $1 (vendor_id);
-snippet ci
-	CREATE INDEX ON ${1:table_name} (${2});${0}
 snippet fk
-	${1:column_name} BIGINT NOT NULL REFERENCES ${2:table_name} (id),${0}
+	${1/s$//}_id BIGINT NOT NULL REFERENCES ${1:table_name} (id),${0}
 snippet ref
 	REFERENCES ${1:table_name} (${2})${0}
 snippet nn
 	NOT NULL${0}
 snippet bi
 	BIGINT ${0}
+snippet ci
+	CREATE INDEX ON ${1:table_name} (${2});${0}
+snippet cui
+	CREATE UNIQUE INDEX ON ${1:table_name} (${2});${0}
+snippet cic
+	CREATE INDEX -- CONCURRENTLY
+	    IF NOT EXISTS ${1/.*/\0}_${2/, /_/g}_idx
+	    ON ${1:table_name} (${2});${0}
+snippet cuic
+	CREATE UNIQUE INDEX -- CONCURRENTLY
+	    IF NOT EXISTS ${1/.*/\0}_${2/, /_/g}_key
+	    ON ${1:table_name} (${2});${0}
+snippet di
+	DROP INDEX ${1:index_name};${0}
+snippet dic
+	DROP INDEX -- CONCURRENTLY
+	    IF EXISTS ${1:index_name};${0}
+snippet at
+	ALTER TABLE ${1:table_name}
+	    ${0};
+snippet ac
+	ADD COLUMN ${1:column_name},${0}
+snippet drop
+	DROP ${1|COLUMN,CONSTRAINT|} ${2:name},${0}
+snippet acheck
+	ADD CONSTRAINT ${1:constraint_name} CHECK (${2:constraint_check}),${0}
+snippet aunique
+	ADD UNIQUE (${1}) USING ${2:table_name}_${1/, /_/g}_key,${0}
+snippet com
+	COMMENT ON ${1|COLUMN,TABLE,VIEW,INDEX,CONSTRAINT|} ${2:name} IS '${3:comment goes here...}';${0}

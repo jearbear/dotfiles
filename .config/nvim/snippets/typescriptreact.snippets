@@ -1,0 +1,17 @@
+snippet if
+	if (${1}) {
+	    ${0}
+	}
+snippet type
+	type ${1} = {
+	    ${0}
+	};
+snippet comp
+	type I${1/.*/\0}Props = {
+	};
+
+	export const ${1}: React.FC<I${1/.*/\0}Props> = (props) => {
+	      ${0}
+	};
+snippet tag
+	<${1} ${2:attributes...}>${0}</${1}>

@@ -23,9 +23,9 @@
     aa = add -A
     ai = !"f() { set -e; FILES=$(git pick files); git add $FILES; }; f"
 
-    d = diff
-    ds = diff --staged HEAD
-    db = !git diff $(git base) && :
+    d = difftool
+    ds = difftool --staged HEAD
+    db = !git difftool $(git base) && :
     dbs = !git diff $(git base) --stat && :
 
     base = !git merge-base ${1:-HEAD} main && :
@@ -35,6 +35,8 @@
     new = !git co -b jerry-${1?} main && :
     newb = !git co -b jerry-${1?} ${2:-HEAD} && :
     backup = !git co -b $(git branch-name)-backup && git co - && :
+
+    get = !git fetch origin ${1}:${1} && git checkout ${1} -- && :
 
     save = !"f() { git aa && git commit -m \"${1:-$(shuf -n 1 ~/.word_list.txt)}\"; git push; }; f"
     resave = !git aa && git recommit && git push -f && :
@@ -93,13 +95,19 @@
 [log]
     date = relative
 
+[pager]
+    difftool = true
+
 [diff]
     algorithm = histogram
     indentheuristic = true
-    tool = nvimdiff
+    tool = difftastic
 
 [difftool]
-    prompt = true
+    prompt = false
+
+[difftool "difftastic"]
+    cmd = difft "$LOCAL" "$REMOTE"
 
 [difftool "nvimdiff"]
     cmd = nvim -d $LOCAL $MERGED -c 'wincmd w'
