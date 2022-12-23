@@ -3,7 +3,7 @@ snippet for
 		${0:${VISUAL}}
 	}
 snippet fori
-	for ${2:i} := 0; $2 < ${1:count}; $2${3:++} {
+	for i := 0; i < ${1:count}; i++ {
 		${0:${VISUAL}}
 	}
 snippet func
@@ -118,3 +118,10 @@ snippet backfill
 	
 		return nil
 	}
+snippet rawq
+	query := \`\`
+	var resp []struct{}
+	if err := queries.Raw(query).Bind(ctx, exec, &resp); err != nil {
+		return err
+	}
+	${0}

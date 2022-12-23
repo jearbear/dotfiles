@@ -10,79 +10,79 @@ vim.g.maplocalleader = " "
 -- }}}
 
 -- PLUGINS {{{
-require("packer").startup({
-    function(use)
-        use("wbthomason/packer.nvim") -- package manager
+local plug = vim.fn["plug#"]
+vim.call("plug#begin", "~/.config/nvim/plugged")
 
-        -- themes
-        use({ "catppuccin/nvim", as = "catppuccin" })
+-- themes
+plug("catppuccin/nvim", { as = "catppuccin" })
 
-        -- UI
-        use({ "andymass/vim-matchup", requires = "anuvyklack/nvim-keymap-amend" }) -- more extensive support for matching with `%`
-        use("kevinhwang91/nvim-bqf") -- enhanced qflist (previews FZF integration)
-        use("nvim-lualine/lualine.nvim") -- statusline
-        use("romainl/vim-cool") -- disable hl on cursor move (neovim is not supported so this may act up)
+-- UI
+plug("andymass/vim-matchup") -- more extensive support for matching with `%`
+plug("anuvyklack/nvim-keymap-amend") -- dependency for vim-matchup
+plug("kevinhwang91/nvim-bqf") -- enhanced qflist (previews FZF integration)
+plug("nvim-lualine/lualine.nvim") -- statusline
 
-        -- tree-sitter
-        use("RRethy/nvim-treesitter-endwise") -- automatically close everything else (tree-sitter)
-        use("RRethy/nvim-treesitter-textsubjects") -- context-aware expansion of selection
-        use({ "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" })
-        use("windwp/nvim-ts-autotag") -- automatically close tags
+-- tree-sitter
+plug("RRethy/nvim-treesitter-endwise") -- automatically close everything else (tree-sitter)
+plug("RRethy/nvim-treesitter-textsubjects") -- context-aware expansion of selection
+plug("nvim-treesitter/nvim-treesitter", { ["do"] = ":TSUpdate" })
+plug("windwp/nvim-ts-autotag") -- automatically close tags
 
-        -- mappings
-        use("AndrewRadev/splitjoin.vim") -- language-aware splits and joins
-        use("anuvyklack/hydra.nvim") -- chain mappings together under a common prefix
-        use("mrjones2014/smart-splits.nvim") -- more sane resizing behavior
-        use("numToStr/Comment.nvim") -- key bindings for commenting
-        use("tpope/vim-rsi") -- Emacs bindings in command mode
+-- mappings
+plug("AndrewRadev/splitjoin.vim") -- language-aware splits and joins
+plug("anuvyklack/hydra.nvim") -- chain mappings together under a common prefix
+plug("mrjones2014/smart-splits.nvim") -- more sane resizing behavior
+plug("tpope/vim-rsi") -- Emacs bindings in command mode
 
-        -- copy pasta
-        use("gbprod/substitute.nvim") -- mappings to substitute text
-        use("gbprod/yanky.nvim") -- better handling of yanks (yank rings, auto-formatting)
+-- copy pasta
+plug("gbprod/substitute.nvim") -- mappings to substitute text
+plug("gbprod/yanky.nvim") -- better handling of yanks (yank rings, auto-formatting)
 
-        -- version control
-        use("akinsho/git-conflict.nvim") -- better git conflict resolution
-        use("lewis6991/gitsigns.nvim") -- VCS change indicators in the gutter
-        use({ "ruifm/gitlinker.nvim", requires = "nvim-lua/plenary.nvim" }) -- create links to Github
-        use("sindrets/diffview.nvim") -- git diff across multiple files
+-- version control
+plug("akinsho/git-conflict.nvim", { tag = "*" }) -- better git conflict resolution
+plug("lewis6991/gitsigns.nvim") -- VCS change indicators in the gutter
+plug("ruifm/gitlinker.nvim") -- create links to Github
+plug("nvim-lua/plenary.nvim") -- dependency for gitlinker.nvim
 
-        -- completion
-        use("windwp/nvim-autopairs") -- automatically complete pairs
-        use("tpope/vim-endwise") -- automatically close everything else
-        use("dcampos/nvim-snippy") -- snippets
-        use("hrsh7th/nvim-cmp") -- auto-completion
-        use("hrsh7th/cmp-nvim-lsp") -- auto-completion + LSP integration
-        use("dcampos/cmp-snippy") -- auto-completion + snippets integration
-        use("hrsh7th/cmp-buffer") -- auto-completion when searching (`/` and `?`)
-        use("hrsh7th/cmp-nvim-lsp-signature-help") -- show signature information as you type using the completion window
+-- completion
+plug("windwp/nvim-autopairs") -- automatically complete pairs
+plug("tpope/vim-endwise") -- automatically close everything else
+plug("dcampos/nvim-snippy") -- snippets
+plug("hrsh7th/nvim-cmp") -- auto-completion
+plug("hrsh7th/cmp-nvim-lsp") -- auto-completion + LSP integration
+plug("dcampos/cmp-snippy") -- auto-completion + snippets integration
+plug("hrsh7th/cmp-buffer") -- auto-completion when searching (`/` and `?`)
+plug("hrsh7th/cmp-nvim-lsp-signature-help") -- show signature information as you type using the completion window
 
-        -- project navigation + management
-        use("elihunter173/dirbuf.nvim") -- minimal file browser
-        use("ghillb/cybu.nvim") -- preview when cycling through buffers
-        use("mhinz/vim-grepper") -- slicker grep support
-        use("mhinz/vim-startify") -- start screen + session management
-        use("vim-test/vim-test") -- test execution
-        use("wsdjeg/vim-fetch") -- support opening line and column numbers (e.g. foo.bar:13)
+-- project navigation + management
+plug("elihunter173/dirbuf.nvim") -- minimal file browser
+plug("vim-test/vim-test") -- test execution
+plug("wsdjeg/vim-fetch") -- support opening line and column numbers (e.g. foo.bar:13)
 
-        -- LSP stuff
-        use("neovim/nvim-lspconfig") -- defines configs for various LSP servers for me
-        use("jose-elias-alvarez/null-ls.nvim") -- integrates gofumports, prettier, etc with the LSP support
+-- LSP stuff
+plug("neovim/nvim-lspconfig") -- defines configs for various LSP servers for me
+plug("jose-elias-alvarez/null-ls.nvim") -- integrates gofumports, prettier, etc with the LSP support
 
-        -- language support for those not covered by tree-sitter
-        use("fladson/vim-kitty")
+-- language support for those not covered by tree-sitter
+plug("fladson/vim-kitty")
 
-        -- fzf
-        use({ "ibhagwan/fzf-lua", branch = "main" })
+-- fzf
+plug("ibhagwan/fzf-lua", { branch = "main" })
 
-        -- trying out
-        use("chentoast/marks.nvim") -- show marks in the gutter and provide better mappings to manipulate them
-        use("jinh0/eyeliner.nvim") -- highlight suggested targets for `f` and `t`
-        use("folke/neodev.nvim") -- setup the Lua LSP for neovim development
-        use("kylechui/nvim-surround") -- add delete and change enclosing text
-        use("echasnovski/mini.nvim") -- used for mini.bufremove, mini.ai (enhanced text objects), mini.align
-    end,
-    config = { autoremove = true },
-})
+-- trying out
+plug("chentoast/marks.nvim") -- show marks in the gutter and provide better mappings to manipulate them
+plug("jinh0/eyeliner.nvim") -- highlight suggested targets for `f` and `t`
+plug("folke/neodev.nvim") -- setup the Lua LSP for neovim development
+plug("kylechui/nvim-surround") -- add delete and change enclosing text
+plug("echasnovski/mini.nvim") -- used for mini.bufremove, mini.ai (enhanced text objects), mini.align
+plug("kristijanhusak/vim-dadbod-ui")
+plug("tpope/vim-dadbod") -- dependency for vim-dadbod-ui
+plug("kristijanhusak/vim-dadbod-completion")
+plug("ThePrimeagen/harpoon")
+plug("ghillb/cybu.nvim")
+plug("johmsalas/text-case.nvim") -- case-aware substitution
+
+vim.call("plug#end")
 -- }}}
 
 -- THEME {{{
@@ -95,6 +95,8 @@ vim.cmd("colorscheme catppuccin")
 -- }}}
 
 -- SETTINGS {{{
+vim.opt.mouse = "" -- disable mouse
+
 vim.opt.lazyredraw = true -- don't redraw the screen while executing macros and registers
 
 vim.opt.hidden = true -- allow switching buffers without saving
@@ -133,8 +135,8 @@ vim.opt.fillchars:append({ fold = " " })
 vim.opt.conceallevel = 2 -- hide concealed text
 
 vim.opt.incsearch = true -- jump to search results as you type
-vim.opt.hlsearch = true -- highlight search results
-vim.opt.ignorecase = true -- perform case-insensitive search and replace
+vim.opt.hlsearch = false -- highlight search results
+vim.opt.ignorecase = false -- perform case-insensitive search and replace
 vim.opt.smartcase = true -- override `ignorecase` if capital letters are involved
 
 vim.opt.inccommand = "nosplit" -- display incremental results of substitution commands in the buffer
@@ -172,6 +174,8 @@ vim.opt.wildmode = { "full", "full" } -- complete the entire result in command m
 vim.opt.shortmess:append("c") -- don't show messages when performing completion
 vim.opt.completeopt = { "menu", "menuone" } -- when completing, show a menu even if there is only one result
 
+vim.opt.shortmess:append("I") -- don't show vim start screen
+
 vim.opt.showtabline = 0 -- disable the tab line (in favor of lualine's)
 
 vim.opt.dictionary:append("/usr/share/dict/words") -- use this for keyword completion (<C-x><C-k>)
@@ -200,7 +204,7 @@ vim.diagnostic.config({
 })
 
 -- use ripgrep for `grep` command
-vim.opt.grepprg = "rg --vimgrep --smart-case --hidden"
+vim.opt.grepprg = "rg --vimgrep --smart-case --hidden --sort path --glob '!schema.sql' --glob '!pkg/database/models'"
 vim.opt.grepformat = "%f:%l:%c:%m"
 
 u.command("Grep", function(input)
@@ -211,6 +215,8 @@ u.command("Grep", function(input)
         vim.notify("No results found!")
     end
 end, { nargs = "+", complete = "file" })
+
+u.map("n", "<Bslash>", ":Grep ''<Left>")
 -- }}}
 
 -- AUTO COMMANDS {{{
@@ -236,6 +242,22 @@ u.autocmd("BufEnter", {
     end,
     group = u.augroup("PRS"),
 })
+
+-- highlight all results while searching
+u.autocmd("CmdlineEnter", {
+    pattern = "/,?",
+    callback = function()
+        vim.opt.hlsearch = true
+    end,
+    group = u.augroup("HLSEARCH_START"),
+})
+u.autocmd("CmdlineLeave", {
+    pattern = "/,?",
+    callback = function()
+        vim.opt.hlsearch = false
+    end,
+    group = u.augroup("HLSEARCH_END"),
+})
 -- }}}
 
 -- MAPPINGS {{{
@@ -243,12 +265,19 @@ u.map("", "Y", "y$")
 u.map("", "0", "^")
 
 -- scroll by larger increments
-u.map("n", "<C-d>", "3<C-d>")
-u.map("n", "<C-u>", "3<C-u>")
+u.map("n", "<C-d>", "3<C-d>zz")
+u.map("n", "<C-u>", "3<C-u>zz")
 
 -- navigate by visual lines when lines are wrapped
 u.map("n", "j", "gj")
 u.map("n", "k", "gk")
+
+-- move selected lines around
+u.map("v", "<C-j>", ":m '>+1<CR>gv=gv")
+u.map("v", "<C-k>", ":m '<-2<CR>gv=gv")
+
+-- preserve cursor position when joining
+u.map("n", "J", "mzJ`z")
 
 -- insert blank lines
 u.map_c("<CR>", "call append(line('.'), '')")
@@ -276,7 +305,7 @@ u.map("n", "<Leader>r", "*``cgn")
 u.map("n", "<Leader>R", "g*``cgn")
 
 -- faster substitution
-u.map("n", "<Leader>s", ":%s/")
+u.map("n", "<Leader>s", ":%s/<C-r><C-w>/")
 u.map("v", "<Leader>s", '"ay/<C-R>a<CR>``:%s//')
 
 -- load the word under the cursor into the search register
@@ -305,7 +334,7 @@ u.map_c("<Leader>vev", "edit ~/.config/nvim/init.lua")
 u.map_c("<Leader>vef", "edit ~/.config/nvim/ftplugin")
 u.map_c("<Leader>vel", "edit ~/.config/nvim/lua/lsp.lua")
 u.map_c("<Leader>vep", "edit ~/.config/nvim/lua/plugins.lua")
-u.map_c("<Leader>ves", "edit ~/.config/nvim/lua/statusline.lua")
+u.map_c("<Leader>ves", "edit ~/.config/nvim/snippets")
 u.map_c("<Leader>veu", "edit ~/.config/nvim/lua/utils.lua")
 
 -- toggle qflist
@@ -349,6 +378,20 @@ u.map("c", "<S-Tab>", function()
         return "<S-Tab>"
     end
 end, { expr = true })
+
+-- center results when jumping to results
+u.map("c", "<CR>", function()
+    local cmdtype = vim.fn.getcmdtype()
+    if cmdtype == "/" then
+        return "<CR>zz"
+    elseif cmdtype == "?" then
+        return "<CR>zz"
+    else
+        return "<CR>"
+    end
+end, { expr = true })
+u.map("n", "n", "nzzzv")
+u.map("n", "N", "Nzzzv")
 -- }}}
 
 require("statusline")

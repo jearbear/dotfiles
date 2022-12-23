@@ -1,5 +1,5 @@
 .headers on
-.mode table
+.mode box --wrap 25
 .nullvalue NULL
 .prompt "» "
 .timer on

@@ -11,7 +11,7 @@ __fzf-git() {
 
 __fzf-git-file() {
     # `--nth 2..,..` ignores status modifiers when filtering if present
-    __fzf-git --preview='git diff --color=always {-1}' --nth 2..,.. "$@"
+    __fzf-git --preview='git diff --color=always {-1} | delta' --nth 2..,.. "$@"
 }
 
 __fzf-git-commit() {

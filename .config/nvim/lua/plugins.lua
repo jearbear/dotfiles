@@ -1,18 +1,5 @@
 local u = require("utils")
 
--- packer.nvim {{{
-local packer = require("packer")
-
-vim.api.nvim_create_user_command("PS", function(input)
-    packer.compile()
-    packer.clean()
-    packer.install()
-    if input.bang then
-        packer.update()
-    end
-end, { bang = true })
--- }}}
-
 -- nvim-treesitter {{{
 -- work around compiler issues on Mac OS
 require("nvim-treesitter.install").compilers = { "gcc-11" }
@@ -20,12 +7,12 @@ require("nvim-treesitter.install").compilers = { "gcc-11" }
 require("nvim-treesitter.configs").setup({
     ensure_installed = {
         "bash",
-        "comment",
         "eex",
         "elixir",
         "go",
         "graphql",
         "heex",
+        "help",
         "javascript",
         "json",
         "jsonnet",
@@ -50,7 +37,7 @@ require("nvim-treesitter.configs").setup({
     autotag = { enable = true },
 
     textsubjects = {
-        enable = true,
+        enable = false,
         prev_selection = ",",
         keymaps = {
             ["."] = "textsubjects-smart",
@@ -96,24 +83,6 @@ gitsigns.setup({
 })
 -- }}}
 
--- diffview.nvim {{{
-require("diffview").setup({
-    use_icons = false,
-    enhanced_diff_hl = true,
-})
-
-u.map_c("<Leader>gs", "DiffviewOpen")
-u.map_c("<Leader>gd", "DiffviewFileHistory %")
-u.map_c("<Leader>gD", "DiffviewFileHistory")
--- }}}
-
--- Comment.nvim {{{
-require("Comment").setup({})
-
-u.map("n", "<Leader>/", "gcc", { remap = true })
-u.map("v", "<Leader>/", "gc", { remap = true })
--- }}}
-
 -- nvim-autopairs {{{
 require("nvim-autopairs").setup({
     disable_in_macro = true,
@@ -134,13 +103,20 @@ require("bqf").setup({
 -- }}}
 
 -- marks.nvim {{{
-local marks = require("marks")
-marks.setup({
-    default_mappings = true,
-    mappings = {
-        next = ")",
-        prev = "(",
+require("marks").setup({
+    default_mappings = false,
+    bookmark_0 = {
+        sign = "•",
+        virt_text = "<<- bookmark ->>",
     },
+    mappings = {
+        set_bookmark0 = "m;",
+        next_bookmark0 = ")",
+        prev_bookmark0 = "(",
+        delete_bookmark = "dm",
+        delete_bookmark0 = "dM",
+    },
+    sign_priority = 100,
 })
 -- }}}
 
@@ -233,35 +209,11 @@ u.map("s", "<C-o>", "<C-o>o")
 local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done({ map_char = { tex = "" } }))
 
-cmp.setup.cmdline("/", {
+cmp.setup.cmdline({ "/", "?" }, {
     sources = {
         { name = "buffer" },
     },
 })
--- }}}
-
--- vim-grepper {{{
-vim.g.grepper = {
-    prompt_text = "$t> ",
-    tools = { "rg", "go", "migrations" },
-    rg = {
-        grepprg = "rg --vimgrep --smart-case --with-filename",
-    },
-    go = {
-        grepprg = "rg --vimgrep --smart-case --with-filename -t go",
-    },
-    migrations = {
-        escape = "\\^$.*+?()[]{}|",
-        grepformat = "%f:%l:%c:%m,%f",
-        grepprg = "rg --vimgrep --smart-case --with-filename --sortr path -t sql $* ~/code/pipe/backend/migrations",
-    },
-    stop = 1000,
-    prompt_quote = 2, -- populate prompt with single quotes
-    searchreg = 1, -- load query into search register (allows hitting `n` to navigate results in quickfix list)
-}
-
-u.map_c("<Bslash>", "Grepper")
-u.map({ "n", "x" }, "gs", "<Plug>(GrepperOperator)")
 -- }}}
 
 -- vim-rsi {{{
@@ -290,6 +242,9 @@ fzf_lua.setup({
     grep = {
         rg_glob = true,
     },
+    -- blines = {
+    --     previewer = true,
+    -- },
 })
 
 u.map_c("<Leader><Leader>", "FzfLua")
@@ -310,30 +265,7 @@ u.map("n", "<Leader>k", function()
     fzf_lua.lsp_document_symbols({ fzf_cli_args = "--with-nth 2.." })
 end)
 u.map_c("<Leader>h", "FzfLua help_tags")
-u.map_c("<Bar>", "FzfLua grep_project")
--- }}}
-
--- vim-startify {{{
-vim.g.startify_change_to_dir = false
-vim.g.startify_relative_path = true
-vim.g.startify_session_delete_buffers = true
-vim.g.startify_session_persistence = true
-vim.g.startify_update_oldfiles = true
-vim.g.startify_session_dir = "~/.config/nvim/sessions"
-
-vim.g.startify_custom_header = {}
-
-vim.g.startify_commands = {}
-vim.g.startify_bookmarks = {
-    { sn = "~/.config/nvim/snippets" },
-}
-vim.g.startify_lists = {
-    { type = "dir", header = { "   Latest Edits" } },
-    { type = "bookmarks", header = { "   Bookmarks" } },
-    { type = "commands", header = { "   Commands" } },
-}
-
-u.map_c("<Leader>S", "Startify")
+u.map_c("<Bar>", "FzfLua live_grep_native")
 -- }}}
 
 -- vim-matchup {{{
@@ -349,6 +281,13 @@ endfunction
 
 let g:test#custom_strategies = {'copy': function('CopyStrategy')}
 let g:test#strategy = 'copy'
+
+function! GoTestTransform(cmd) abort
+    return 'be test' . a:cmd[7:]
+endfunction
+
+let g:test#custom_transformations = {'go': function('GoTestTransform')}
+let g:test#transformation = 'go'
 ]])
 
 u.map_c("<Leader>tf", "TestFile")
@@ -377,30 +316,13 @@ u.autocmd("User", {
         u.map_c("]n", "GitConflictNextConflict", { buffer = 0 })
         u.map_c("<Leader>co", "GitConflictChooseOurs", { buffer = 0 })
         u.map_c("<Leader>ct", "GitConflictChooseTheirs", { buffer = 0 })
-        u.map_c("<Leader>cb", "GitConflictChooseBase", { buffer = 0 })
+        u.map_c("<Leader>cb", "GitConflictChooseBoth", { buffer = 0 })
+        u.map_c("<Leader>cB", "GitConflictChooseBase", { buffer = 0 })
     end,
     group = u.augroup("GIT_CONFLICT"),
 })
--- }}}
 
--- cybu.nvim {{{
-require("cybu").setup({
-    position = {
-        max_win_height = 7,
-    },
-    style = {
-        path = "relative",
-        border = "single",
-        padding = 1,
-        devicons = {
-            enabled = false,
-        },
-    },
-    display_time = 500,
-})
-
-u.map("n", "<S-Tab>", "<Plug>(CybuPrev)")
-u.map("n", "<Tab>", "<Plug>(CybuNext)")
+u.map_c("<Leader>cq", "GitConflictListQf")
 -- }}}
 
 -- smart-splits.nvim {{{
@@ -410,6 +332,23 @@ smart_splits.setup({})
 
 -- hydra.nvim {{{
 local hydra = require("hydra")
+
+hydra({
+    name = "buffer switching",
+    mode = "n",
+
+    body = "<Leader>",
+    config = {
+        invoke_on_body = false,
+        hint = false,
+        timeout = 5000,
+    },
+
+    heads = {
+        { "<C-j>", "<Plug>(CybuNext)" },
+        { "<C-k>", "<Plug>(CybuPrev)" },
+    },
+})
 
 hydra({
     name = "window management",
@@ -486,7 +425,27 @@ require("mini.align").setup({})
 -- }}}
 
 -- nvim-surround {{{
-require("nvim-surround").setup({})
+require("nvim-surround").setup({
+    keymaps = {
+        normal = "ys",
+        normal_cur = "yss",
+        visual = "S",
+        delete = "ds",
+        change = "cs",
+    },
+    surrounds = {
+        ["F"] = {
+            add = function()
+                return { { "null.Float64From(" }, { ")" } }
+            end,
+        },
+        ["I"] = {
+            add = function()
+                return { { "null.Int64From(" }, { ")" } }
+            end,
+        },
+    },
+})
 -- }}}
 
 -- yanky.nvim {{{
@@ -527,4 +486,43 @@ u.map("n", "S", substitute.eol)
 
 -- neodev.nvim {{{
 require("neodev").setup({})
+-- }}}
+
+-- dadbod.vim {{{
+vim.g.db = "postgresql://postgres:password@0.0.0.0:5432/pipe"
+-- }}}
+
+-- harpoon {{{
+local harpoon_ui = require("harpoon.ui")
+local harpoon_mark = require("harpoon.mark")
+
+u.map("n", "<Leader>8", harpoon_mark.add_file)
+u.map("n", "<Leader>j", harpoon_ui.toggle_quick_menu)
+u.map("n", "<S-Tab>", harpoon_ui.nav_prev)
+u.map("n", "<Tab>", harpoon_ui.nav_next)
+-- }}}
+
+-- mini.comment {{{
+require("mini.comment").setup({})
+
+u.map("n", "<Leader>/", "gcc", { remap = true })
+u.map("v", "<Leader>/", "gc", { remap = true })
+-- }}}
+
+-- cybu.nvim {{{
+require("cybu").setup({
+    position = {
+        max_win_height = 7,
+    },
+    style = {
+        devicons = {
+            enabled = false,
+        },
+    },
+    display_time = 0,
+})
+-- }}}
+
+-- text-case.nvim {{{
+-- require("textcase").setup({})
 -- }}}

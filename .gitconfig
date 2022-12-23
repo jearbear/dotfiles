@@ -23,16 +23,17 @@
     aa = add -A
     ai = !"f() { set -e; FILES=$(git pick files); git add $FILES; }; f"
 
-    d = difftool
-    ds = difftool --staged HEAD
-    db = !git difftool $(git base) && :
+    d = diff
+    ds = diff --staged HEAD
+    db = !git diff $(git base) && :
     dbs = !git diff $(git base) --stat && :
+    dt = difftool
 
     base = !git merge-base ${1:-HEAD} main && :
     branch-name = rev-parse --abbrev-ref HEAD
     head = rev-parse HEAD
 
-    new = !git co -b jerry-${1?} main && :
+    new = !git update && git co -b jerry-${1?} main && :
     newb = !git co -b jerry-${1?} ${2:-HEAD} && :
     backup = !git co -b $(git branch-name)-backup && git co - && :
 
@@ -95,9 +96,6 @@
 [log]
     date = relative
 
-[pager]
-    difftool = true
-
 [diff]
     algorithm = histogram
     indentheuristic = true
@@ -108,9 +106,6 @@
 
 [difftool "difftastic"]
     cmd = difft "$LOCAL" "$REMOTE"
-
-[difftool "nvimdiff"]
-    cmd = nvim -d $LOCAL $MERGED -c 'wincmd w'
 
 [merge]
     conflictstyle = diff3

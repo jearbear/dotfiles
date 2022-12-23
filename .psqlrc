@@ -19,7 +19,7 @@
 \set HISTCONTROL ignoredups
 
 -- display timing information
-\timing
+-- \timing
 
 -- disable the pager as it's buggy and annoying
 \pset pager 0

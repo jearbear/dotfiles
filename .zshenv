@@ -29,6 +29,7 @@ export PATH
 
 export BAT_THEME='base16'
 
+# enable history in iex
 export ERL_AFLAGS="-kernel shell_history enabled"
 
 # system-specific

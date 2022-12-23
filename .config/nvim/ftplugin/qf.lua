@@ -1,5 +1,8 @@
 local u = require("utils")
 
+-- move QF window to the bottom-most position of the screen
+vim.cmd("wincmd J")
+
 u.map("n", "dd", "`D", { buffer = 0, remap = true })
 
 u.map("n", "<BS>", "<Nop>", { buffer = 0 })

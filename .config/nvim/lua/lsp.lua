@@ -198,6 +198,27 @@ lspconfig.jsonnet_ls.setup({
     single_file_support = true,
 })
 
+-- Python
+lspconfig.pylsp.setup({
+    on_attach = on_attach,
+    handlers = handlers,
+    capabilities = capabilities,
+
+    settings = {
+        pylsp = {
+            plugins = {
+                black = {
+                    enabled = true,
+                },
+                ["pylsp-mypy"] = {
+                    enabled = true,
+                    live_mode = true,
+                },
+            },
+        },
+    },
+})
+
 -- null-ls
 null_ls.setup({
     sources = {
@@ -222,6 +243,13 @@ null_ls.setup({
         null_ls.builtins.formatting.stylua.with({
             extra_args = { "--indent-type", "Spaces" },
         }),
+
+        null_ls.builtins.formatting.prettierd.with({
+            filetypes = { "html", "css", "json", "yaml", "markdown", "graphql" },
+        }),
+
+        -- git
+        null_ls.builtins.code_actions.gitsigns,
     },
 
     on_attach = on_attach,
