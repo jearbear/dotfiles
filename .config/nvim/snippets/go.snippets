@@ -85,8 +85,13 @@ snippet eur
 snippet gbp
 	models.CurrencyGBP
 snippet diff
-	ignoreFields := cmpopts.IgnoreFields(models.${1:modelName}{}, "ID", "PublicID", "CreatedAt", "UpdatedAt")
-	if diff := cmp.Diff(want, got, ignoreFields); diff != "" {
+	if diff := cmp.Diff(${1:want}, ${2:got}); diff != "" {
+		t.Fatalf("(-want +got):\n%s", diff)
+	}
+	${0}
+snippet diffi
+	ignoreFields := cmpopts.IgnoreFields(${1:models.modelName}{}, ${2:"ID", "PublicID", "CreatedAt", "UpdatedAt"})
+	if diff := cmp.Diff(${3:want}, ${4:got}, ignoreFields); diff != "" {
 		t.Fatalf("(-want +got):\n%s", diff)
 	}
 	${0}

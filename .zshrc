@@ -31,11 +31,14 @@ setopt extendedglob no_CASE_GLOB
 setopt notify
 unsetopt beep
 
+# completion for sd
+fpath=(~/src/sd $fpath)
+
 # completion
 zstyle ':completion:*' menu select
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z-_}={A-Za-z_-}'
-setopt completealiases completeinword
+setopt completeinword
 autoload -Uz compinit promptinit
 compinit
 

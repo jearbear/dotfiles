@@ -211,7 +211,7 @@ cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done({ map_char = { tex = 
 
 cmp.setup.cmdline({ "/", "?" }, {
     sources = {
-        { name = "buffer" },
+        { name = "buffer", keyword_length = 5 },
     },
 })
 -- }}}
@@ -287,7 +287,6 @@ function! GoTestTransform(cmd) abort
 endfunction
 
 let g:test#custom_transformations = {'go': function('GoTestTransform')}
-let g:test#transformation = 'go'
 ]])
 
 u.map_c("<Leader>tf", "TestFile")
@@ -493,6 +492,10 @@ vim.g.db = "postgresql://postgres:password@0.0.0.0:5432/pipe"
 -- }}}
 
 -- harpoon {{{
+require("harpoon").setup({
+    mark_branch = true,
+})
+
 local harpoon_ui = require("harpoon.ui")
 local harpoon_mark = require("harpoon.mark")
 

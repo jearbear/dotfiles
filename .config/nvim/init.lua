@@ -136,10 +136,8 @@ vim.opt.conceallevel = 2 -- hide concealed text
 
 vim.opt.incsearch = true -- jump to search results as you type
 vim.opt.hlsearch = false -- highlight search results
-vim.opt.ignorecase = false -- perform case-insensitive search and replace
+vim.opt.ignorecase = true -- perform case-insensitive search and replace
 vim.opt.smartcase = true -- override `ignorecase` if capital letters are involved
-
-vim.opt.inccommand = "nosplit" -- display incremental results of substitution commands in the buffer
 
 vim.opt.gdefault = true -- default to global (within the line) substitution
 
@@ -249,14 +247,14 @@ u.autocmd("CmdlineEnter", {
     callback = function()
         vim.opt.hlsearch = true
     end,
-    group = u.augroup("HLSEARCH_START"),
+    group = u.augroup("SEARCH_START"),
 })
 u.autocmd("CmdlineLeave", {
     pattern = "/,?",
     callback = function()
         vim.opt.hlsearch = false
     end,
-    group = u.augroup("HLSEARCH_END"),
+    group = u.augroup("SEARCH_END"),
 })
 -- }}}
 
@@ -265,8 +263,8 @@ u.map("", "Y", "y$")
 u.map("", "0", "^")
 
 -- scroll by larger increments
-u.map("n", "<C-d>", "3<C-d>zz")
-u.map("n", "<C-u>", "3<C-u>zz")
+u.map("n", "<C-d>", "3<C-d>")
+u.map("n", "<C-u>", "3<C-u>")
 
 -- navigate by visual lines when lines are wrapped
 u.map("n", "j", "gj")
@@ -302,7 +300,7 @@ end)
 
 -- faster renaming
 u.map("n", "<Leader>r", "*``cgn")
-u.map("n", "<Leader>R", "g*``cgn")
+u.map("n", "g<Leader>r", "g*``cgn")
 
 -- faster substitution
 u.map("n", "<Leader>s", ":%s/<C-r><C-w>/")
@@ -356,6 +354,10 @@ u.map("c", "w'", "w")
 -- https://github.com/neovim/neovim/pull/17932#issue-1188088238
 u.map("n", "<C-i>", "<C-i>")
 
+-- -- Default to case-insensitive search
+-- u.map("n", "/", "/\\c<Left><Left>")
+-- u.map("n", "?", "?\\c<Left><Left>")
+
 -- Navigate search results with Tab/S-Tab
 u.map("c", "<Tab>", function()
     local cmdtype = vim.fn.getcmdtype()
@@ -390,8 +392,6 @@ u.map("c", "<CR>", function()
         return "<CR>"
     end
 end, { expr = true })
-u.map("n", "n", "nzzzv")
-u.map("n", "N", "Nzzzv")
 -- }}}
 
 require("statusline")

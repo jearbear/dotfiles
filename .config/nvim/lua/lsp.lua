@@ -249,7 +249,7 @@ null_ls.setup({
         }),
 
         -- git
-        null_ls.builtins.code_actions.gitsigns,
+        -- null_ls.builtins.code_actions.gitsigns,
     },
 
     on_attach = on_attach,
