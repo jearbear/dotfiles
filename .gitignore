@@ -1,2 +1,3 @@
+# Ignore everything by default to avoid accidents. This will require using `-f`
+# to add files.
 *
-.dotfiles
