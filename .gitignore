@@ -1,3 +1,4 @@
 # Ignore everything by default to avoid accidents. This will require using `-f`
-# to add files.
+# to add files. Note that this applies to all repos using the home directory as
+# their work tree.
 *
