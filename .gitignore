@@ -3,5 +3,6 @@
 # their work tree.
 /*
 
-!/.config/nvim/**
-!/sd/**
+!/.bin/
+!/.config/nvim/
+!/sd/
