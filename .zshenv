@@ -22,7 +22,6 @@ path=(
     "$HOME/.bin"
     "$HOME/.cargo/bin" # Rust
     "$HOME/go/bin" # Golang
-    "/usr/local/bin" # Mac stuff
     "$path[@]"
 )
 export PATH
