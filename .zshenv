@@ -26,6 +26,9 @@ path=(
 )
 export PATH
 
+# completion for sd
+fpath=(~/src/sd $fpath)
+
 export BAT_THEME='base16'
 
 # enable history in iex

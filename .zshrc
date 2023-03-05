@@ -32,7 +32,7 @@ setopt notify
 unsetopt beep
 
 # completion for sd
-fpath=(~/src/sd $fpath)
+fpath=(~/.completions $fpath)
 
 # completion
 zstyle ':completion:*' menu select
