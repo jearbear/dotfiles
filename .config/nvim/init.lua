@@ -81,6 +81,9 @@ plug("kristijanhusak/vim-dadbod-completion")
 plug("ThePrimeagen/harpoon")
 plug("ghillb/cybu.nvim")
 plug("johmsalas/text-case.nvim") -- case-aware substitution
+plug("SmiteshP/nvim-navic") -- provide context on where you are
+plug("SmiteshP/nvim-navbuddy") -- provide context on where you are
+plug("MunifTanjim/nui.nvim")
 
 vim.call("plug#end")
 -- }}}
@@ -213,8 +216,6 @@ u.command("Grep", function(input)
         vim.notify("No results found!")
     end
 end, { nargs = "+", complete = "file" })
-
-u.map("n", "<Bslash>", ":Grep ''<Left>")
 -- }}}
 
 -- AUTO COMMANDS {{{

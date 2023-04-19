@@ -1,3 +1,6 @@
+local navic = require("nvim-navic")
+local utils = require("utils")
+
 require("lualine").setup({
     options = {
         icons_enabled = false,
@@ -76,6 +79,22 @@ require("lualine").setup({
         lualine_y = {},
         lualine_z = {},
     },
-    tabline = {},
+    winbar = {
+        lualine_a = {},
+        lualine_b = {},
+        lualine_c = {},
+        lualine_x = {
+            {
+                function()
+                    return navic.get_location()
+                end,
+                cond = function()
+                    return utils.table.contains({ "json", "yaml", "python" }, vim.bo.filetype) and navic.is_available()
+                end,
+            },
+        },
+        lualine_y = {},
+        lualine_z = {},
+    },
     extensions = { "quickfix" },
 })

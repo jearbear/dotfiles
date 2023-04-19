@@ -3,6 +3,8 @@ local lspconfig = require("lspconfig")
 local null_ls = require("null-ls")
 local cmp_nvim_lsp = require("cmp_nvim_lsp")
 local fzf = require("fzf-lua")
+local navic = require("nvim-navic")
+local navbuddy = require("nvim-navbuddy")
 
 -- This function gets executed when the LSP is initiated successfully
 local on_attach = function(client, bufnr)
@@ -59,6 +61,12 @@ local on_attach = function(client, bufnr)
     for type, icon in pairs(signs) do
         local hl = "DiagnosticSign" .. type
         vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+    end
+
+    -- Enable navic
+    if client.server_capabilities.documentSymbolProvider then
+        navic.attach(client, bufnr)
+        navbuddy.attach(client, bufnr)
     end
 end
 
@@ -199,6 +207,8 @@ lspconfig.tailwindcss.setup({
 
     filetypes = {
         "html",
+        "javascriptreact",
+        "typescriptreact",
         "heex",
         "elixir",
     },
@@ -228,9 +238,23 @@ lspconfig.pylsp.setup({
 
     settings = {
         pylsp = {
+            configurationSources = { "flake8" },
             plugins = {
-                black = {
+                pycodestyle = { enabled = false },
+                pylint = { enabled = false },
+                flake8 = { enabled = true },
+                yapf = { enabled = true },
+                autopep8 = { enabled = false },
+                black = { enabled = false },
+                ruff = { enabled = false },
+                rope = {
                     enabled = true,
+                },
+                rope_autoimport = {
+                    enabled = false,
+                },
+                rope_completion = {
+                    enabled = false,
                 },
                 ["pylsp-mypy"] = {
                     enabled = true,
@@ -240,6 +264,13 @@ lspconfig.pylsp.setup({
         },
     },
 })
+
+-- jsonls
+-- lspconfig.jsonls.setup({
+--     on_attach = on_attach,
+--     handlers = handlers,
+--     capabilities = capabilities,
+-- })
 
 -- null-ls
 null_ls.setup({
@@ -267,7 +298,14 @@ null_ls.setup({
         }),
 
         null_ls.builtins.formatting.prettierd.with({
-            filetypes = { "html", "css", "json", "yaml", "markdown", "graphql" },
+            filetypes = {
+                -- "html",
+                "css",
+                "json",
+                "yaml",
+                "markdown",
+                "graphql",
+            },
         }),
 
         -- git

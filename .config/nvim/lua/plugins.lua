@@ -35,6 +35,7 @@ require("nvim-treesitter.configs").setup({
     indent = { enable = true },
     endwise = { enable = true },
     autotag = { enable = true },
+    matchup = { enable = true },
 
     textsubjects = {
         enable = false,
@@ -239,6 +240,11 @@ fzf_lua.setup({
             },
         },
     },
+    keymap = {
+        fzf = {
+            ["ctrl-q"] = "select-all+accept",
+        },
+    },
     grep = {
         rg_glob = true,
     },
@@ -265,7 +271,8 @@ u.map("n", "<Leader>k", function()
     fzf_lua.lsp_document_symbols({ fzf_cli_args = "--with-nth 2.." })
 end)
 u.map_c("<Leader>h", "FzfLua help_tags")
-u.map_c("<Bar>", "FzfLua live_grep_native")
+u.map_c("<Bslash>", "FzfLua grep_project")
+u.map_c("<Bar>", "FzfLua grep_cword")
 -- }}}
 
 -- vim-matchup {{{
@@ -287,6 +294,7 @@ function! GoTestTransform(cmd) abort
 endfunction
 
 let g:test#custom_transformations = {'go': function('GoTestTransform')}
+let g:test#python#runner = 'pytest'
 ]])
 
 u.map_c("<Leader>tf", "TestFile")
@@ -528,4 +536,71 @@ require("cybu").setup({
 
 -- text-case.nvim {{{
 -- require("textcase").setup({})
+-- }}}
+
+-- nvim-navic {{{
+require("nvim-navic").setup({
+    separator = " • ",
+    icons = {
+        File = "",
+        Module = "",
+        Namespace = "",
+        Package = "",
+        Class = "",
+        Method = "",
+        Property = "",
+        Field = "",
+        Constructor = "",
+        Enum = "",
+        Interface = "",
+        Function = "",
+        Variable = "",
+        Constant = "",
+        String = "",
+        Number = "",
+        Boolean = "",
+        Array = "",
+        Object = "",
+        Key = "",
+        Null = "",
+        EnumMember = "",
+        Struct = "",
+        Event = "",
+        Operator = "",
+        TypeParameter = "",
+    },
+})
+-- }}}
+
+-- nvim-navbuddy {{{
+require("nvim-navbuddy").setup({
+    icons = {
+        File = "",
+        Module = "",
+        Namespace = "",
+        Package = "",
+        Class = "",
+        Method = "",
+        Property = "",
+        Field = "",
+        Constructor = "",
+        Enum = "",
+        Interface = "",
+        Function = "",
+        Variable = "",
+        Constant = "",
+        String = "",
+        Number = "",
+        Boolean = "",
+        Array = "",
+        Object = "",
+        Key = "",
+        Null = "",
+        EnumMember = "",
+        Struct = "",
+        Event = "",
+        Operator = "",
+        TypeParameter = "",
+    },
+})
 -- }}}

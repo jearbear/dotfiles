@@ -74,6 +74,8 @@ alias reload='source ~/.zshrc && source ~/.zshenv'
 alias rgm='rg --multiline --multiline-dotall'
 alias rgo='rg --no-heading --no-filename --no-line-number --only-matching'
 
+alias cdg='cd ~/Projects/giga'
+
 alias dots='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 compdef dots='git' # enable completion for ^
 alias sdots='git --git-dir=$HOME/.dotfiles.secret/ --work-tree=$HOME'
@@ -83,46 +85,13 @@ alias vi='nvim'
 alias vim='nvim'
 alias watch='watch --color --interval 5'
 
+alias kssh='kitty +kitten ssh'
+
 # determine if the CWD is within a git repo
 __is_in_git_repo() {
     git rev-parse HEAD > /dev/null 2>&1
 }
 
-# quickly load the relevant vim session
-alias vs='__vim_with_session'
-function __vim_with_session() {
-    sessions_dir="$HOME/.config/nvim/sessions"
-    [ ! -d "$sessions_dir" ] && mkdir "$sessions_dir"
-
-    if __is_in_git_repo; then
-        session_id="${PWD//\//_}@$(git branch-name).vim"
-    else
-        session_id="${PWD//\//_}.vim"
-    fi;
-
-    session_file="${sessions_dir}/${session_id}"
-    if [ -f "${session_file}" ]; then
-        nvim -c "SLoad ${session_id}"
-    else
-        touch "${sessions_dir}/${session_id}"
-        nvim -c "SSave! ${session_id}"
-    fi;
-}
-
-# quickly delete the relevant vim session
-alias vd='__delete_vim_session'
-function __delete_vim_session() {
-    sessions_dir="$HOME/.config/nvim/sessions"
-    [ ! -d "$sessions_dir" ] && mkdir "$sessions_dir"
-
-    if __is_in_git_repo; then
-        session_id="${PWD//\//_}@$(git branch-name).vim"
-    else
-        session_id="${PWD//\//_}.vim"
-    fi;
-
-    rm "${sessions_dir}/${session_id}"
-}
 
 # fzf
 [ -r ~/.fzf.zsh ] && . ~/.fzf.zsh
@@ -179,8 +148,6 @@ __preexec_function () {
 typeset -ag preexec_functions;
 preexec_functions=( __preexec_function ${preexec_functions[@]} )
 
-
-[ -r ~/.zshrc.git ] && . ~/.zshrc.git
 
 # source local configs
 [ -r ~/.zshrc.local ] && . ~/.zshrc.local

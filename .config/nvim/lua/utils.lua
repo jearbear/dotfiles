@@ -32,4 +32,15 @@ M.map_c = function(lhs, rhs, opts)
     end, opts)
 end
 
+M.table = {}
+
+M.table.contains = function(table, element)
+    for _, value in pairs(table) do
+        if value == element then
+            return true
+        end
+    end
+    return false
+end
+
 return M
