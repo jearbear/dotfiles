@@ -10,89 +10,115 @@ vim.g.maplocalleader = " "
 -- }}}
 
 -- PLUGINS {{{
-local plug = vim.fn["plug#"]
-vim.call("plug#begin", "~/.config/nvim/plugged")
+-- bootstrap lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+    vim.fn.system({
+        "git",
+        "clone",
+        "--filter=blob:none",
+        "https://github.com/folke/lazy.nvim.git",
+        "--branch=stable", -- latest stable release
+        lazypath,
+    })
+end
+vim.opt.rtp:prepend(lazypath)
 
--- themes
-plug("catppuccin/nvim", { as = "catppuccin" })
+require("lazy").setup({
+    { "catppuccin/nvim", name = "catppuccin" },
 
--- UI
-plug("andymass/vim-matchup") -- more extensive support for matching with `%`
-plug("anuvyklack/nvim-keymap-amend") -- dependency for vim-matchup
-plug("kevinhwang91/nvim-bqf") -- enhanced qflist (previews FZF integration)
-plug("nvim-lualine/lualine.nvim") -- statusline
+    -- UI
+    { "andymass/vim-matchup" }, -- more extensive support for matching with `%`
+    { "anuvyklack/nvim-keymap-amend" }, -- dependency for vim-matchup
+    { "kevinhwang91/nvim-bqf" }, -- enhanced qflist (previews FZF integration)
+    { "nvim-lualine/lualine.nvim" }, -- statusline
 
--- tree-sitter
-plug("RRethy/nvim-treesitter-endwise") -- automatically close everything else (tree-sitter)
-plug("RRethy/nvim-treesitter-textsubjects") -- context-aware expansion of selection
-plug("nvim-treesitter/nvim-treesitter", { ["do"] = ":TSUpdate" })
-plug("windwp/nvim-ts-autotag") -- automatically close tags
+    -- tree-sitter
+    { "RRethy/nvim-treesitter-endwise" }, -- automatically close everything else (tree-sitter)
+    { "nvim-treesitter/nvim-treesitter" },
+    { "nvim-treesitter/nvim-treesitter-refactor" },
+    { "nvim-treesitter/nvim-treesitter-context" }, -- provide context into where you are
+    { "windwp/nvim-ts-autotag" }, -- automatically close tags
 
--- mappings
-plug("AndrewRadev/splitjoin.vim") -- language-aware splits and joins
-plug("anuvyklack/hydra.nvim") -- chain mappings together under a common prefix
-plug("mrjones2014/smart-splits.nvim") -- more sane resizing behavior
-plug("tpope/vim-rsi") -- Emacs bindings in command mode
+    -- mappings
+    -- plug("AndrewRadev/splitjoin.vim"), -- language-aware splits and joins
+    { "anuvyklack/hydra.nvim" }, -- chain mappings together under a common prefix
+    { "mrjones2014/smart-splits.nvim" }, -- more sane resizing behavior
+    { "linty-org/readline.nvim" }, -- provides functions I use to provide readline bindings in insert and command mode
 
--- copy pasta
-plug("gbprod/substitute.nvim") -- mappings to substitute text
-plug("gbprod/yanky.nvim") -- better handling of yanks (yank rings, auto-formatting)
+    -- copy pasta
+    { "gbprod/substitute.nvim" }, -- mappings to substitute text
+    { "gbprod/yanky.nvim" }, -- better handling of yanks (yank rings, auto-formatting)
 
--- version control
-plug("akinsho/git-conflict.nvim", { tag = "*" }) -- better git conflict resolution
-plug("lewis6991/gitsigns.nvim") -- VCS change indicators in the gutter
-plug("ruifm/gitlinker.nvim") -- create links to Github
-plug("nvim-lua/plenary.nvim") -- dependency for gitlinker.nvim
+    -- version control
+    { "akinsho/git-conflict.nvim", version = "*" }, -- better git conflict resolution
+    { "lewis6991/gitsigns.nvim" }, -- VCS change indicators in the gutter
+    { "ruifm/gitlinker.nvim" }, -- create links to Github
+    { "nvim-lua/plenary.nvim" }, -- dependency for gitlinker.nvim
 
--- completion
-plug("windwp/nvim-autopairs") -- automatically complete pairs
-plug("tpope/vim-endwise") -- automatically close everything else
-plug("dcampos/nvim-snippy") -- snippets
-plug("hrsh7th/nvim-cmp") -- auto-completion
-plug("hrsh7th/cmp-nvim-lsp") -- auto-completion + LSP integration
-plug("dcampos/cmp-snippy") -- auto-completion + snippets integration
-plug("hrsh7th/cmp-buffer") -- auto-completion when searching (`/` and `?`)
-plug("hrsh7th/cmp-nvim-lsp-signature-help") -- show signature information as you type using the completion window
+    -- completion
+    { "windwp/nvim-autopairs" }, -- automatically complete pairs
+    { "tpope/vim-endwise" }, -- automatically close everything else
+    { "dcampos/nvim-snippy" }, -- snippets
+    { "hrsh7th/nvim-cmp" }, -- auto-completion
+    { "hrsh7th/cmp-nvim-lsp" }, -- auto-completion + LSP integration
+    { "dcampos/cmp-snippy" }, -- auto-completion + snippets integration
+    { "hrsh7th/cmp-buffer" }, -- auto-completion when searching (`/` and `?`)
+    { "hrsh7th/cmp-nvim-lsp-signature-help" }, -- show signature information as you type using the completion window
 
--- project navigation + management
-plug("elihunter173/dirbuf.nvim") -- minimal file browser
-plug("vim-test/vim-test") -- test execution
-plug("wsdjeg/vim-fetch") -- support opening line and column numbers (e.g. foo.bar:13)
+    -- project navigation + management
+    { "elihunter173/dirbuf.nvim" }, -- minimal file browser
+    { "vim-test/vim-test" }, -- test execution
+    { "wsdjeg/vim-fetch" }, -- support opening line and column numbers (e.g. foo.bar:13)
 
--- LSP stuff
-plug("neovim/nvim-lspconfig") -- defines configs for various LSP servers for me
-plug("jose-elias-alvarez/null-ls.nvim") -- integrates gofumports, prettier, etc with the LSP support
+    -- LSP stuff
+    { "neovim/nvim-lspconfig" }, -- defines configs for various LSP servers for me
+    { "jose-elias-alvarez/null-ls.nvim" }, -- integrates gofumports, prettier, etc with the LSP support
+    { "jose-elias-alvarez/typescript.nvim" }, -- extra code actions for typescript
 
--- language support for those not covered by tree-sitter
-plug("fladson/vim-kitty")
+    -- language support for those not covered by tree-sitter
+    { "fladson/vim-kitty" },
 
--- fzf
-plug("ibhagwan/fzf-lua", { branch = "main" })
+    -- fzf
+    { "ibhagwan/fzf-lua", branch = "main" },
 
--- trying out
-plug("chentoast/marks.nvim") -- show marks in the gutter and provide better mappings to manipulate them
-plug("jinh0/eyeliner.nvim") -- highlight suggested targets for `f` and `t`
-plug("folke/neodev.nvim") -- setup the Lua LSP for neovim development
-plug("kylechui/nvim-surround") -- add delete and change enclosing text
-plug("echasnovski/mini.nvim") -- used for mini.bufremove, mini.ai (enhanced text objects), mini.align
-plug("kristijanhusak/vim-dadbod-ui")
-plug("tpope/vim-dadbod") -- dependency for vim-dadbod-ui
-plug("kristijanhusak/vim-dadbod-completion")
-plug("ThePrimeagen/harpoon")
-plug("ghillb/cybu.nvim")
-plug("johmsalas/text-case.nvim") -- case-aware substitution
-plug("SmiteshP/nvim-navic") -- provide context on where you are
-plug("SmiteshP/nvim-navbuddy") -- provide context on where you are
-plug("MunifTanjim/nui.nvim")
-
-vim.call("plug#end")
+    -- trying out
+    { "chentoast/marks.nvim" }, -- show marks in the gutter and provide better mappings to manipulate them
+    { "jinh0/eyeliner.nvim" }, -- highlight suggested targets for `f` and `t`
+    { "folke/neodev.nvim" }, -- setup the Lua LSP for neovim development
+    { "kylechui/nvim-surround" }, -- add delete and change enclosing text
+    { "echasnovski/mini.nvim" }, -- used for mini.bufremove, mini.ai (enhanced text objects), mini.align
+    { "lukas-reineke/indent-blankline.nvim" }, -- indent guides
+    { "Wansmer/treesj" }, -- treesitter-powered splits and joins
+    { "cbochs/grapple.nvim" }, -- mark files so you can quickly jump to them
+})
 -- }}}
 
 -- THEME {{{
 vim.opt.termguicolors = true
-vim.g.catppuccin_flavour = "mocha"
 
-require("catppuccin").setup({})
+require("catppuccin").setup({
+    flavour = "mocha",
+    transparent_background = false,
+    integrations = {
+        cmp = true,
+        gitsigns = true,
+        indent_blankline = { enabled = true },
+        markdown = true,
+        mini = true,
+        native_lsp = {
+            enabled = true,
+            underlines = {
+                errors = { "undercurl" },
+                hints = { "undercurl" },
+                warnings = { "undercurl" },
+                information = { "undercurl" },
+            },
+        },
+        treesitter_context = true,
+        which_key = true,
+    },
+})
 
 vim.cmd("colorscheme catppuccin")
 -- }}}
@@ -323,10 +349,12 @@ u.map({ "n", "x" }, "<Leader>Y", '"+Y', { remap = true })
 u.map({ "n", "x" }, "<Leader>p", '"+p', { remap = true })
 u.map({ "n", "x" }, "<Leader>P", '"+P', { remap = true })
 
--- additional emacs mappings that vim-rsi doesn't cover
-u.map("i", "<C-k>", "<ESC><Right>C") -- kill the rest of the line
+-- basic readline mappings ("!" maps both insert and command mode)
+u.map("!", "<C-d>", "<Delete>")
 u.map("c", "<C-p>", "<Up>")
 u.map("c", "<C-n>", "<Down>")
+u.map("!", "<C-f>", "<Right>")
+u.map("!", "<C-b>", "<Left>")
 
 -- edit config files
 u.map_c("<Leader>vev", "edit ~/.config/nvim/init.lua")
@@ -349,8 +377,9 @@ u.map("n", "<Leader>qq", function()
     end
 end)
 
--- this is always a typo
+-- these are always typos
 u.map("c", "w'", "w")
+u.map("n", "<C-w>-", "<C-w>=")
 
 -- https://github.com/neovim/neovim/pull/17932#issue-1188088238
 u.map("n", "<C-i>", "<C-i>")

@@ -13,7 +13,7 @@ u.buf_command(0, "Reject", function(args)
     local all = vim.fn.getqflist()
     local new = {}
     for _, entry in pairs(all) do
-        if not string.find(vim.fn.bufname(entry.bufnr), args.args) then
+        if not string.find(vim.fn.bufname(entry.bufnr), args.args) and not string.find(entry.text, args.args) then
             table.insert(new, entry)
         end
     end
@@ -25,7 +25,7 @@ u.buf_command(0, "Keep", function(args)
     local all = vim.fn.getqflist()
     local new = {}
     for _, entry in pairs(all) do
-        if string.find(vim.fn.bufname(entry.bufnr), args.args) then
+        if string.find(vim.fn.bufname(entry.bufnr), args.args) or string.find(entry.text, args.args) then
             table.insert(new, entry)
         end
     end

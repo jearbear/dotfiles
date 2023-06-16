@@ -1,4 +1,5 @@
 local u = require("utils")
+local lualine = require("lualine")
 
 -- nvim-treesitter {{{
 -- work around compiler issues on Mac OS
@@ -12,7 +13,6 @@ require("nvim-treesitter.configs").setup({
         "go",
         "graphql",
         "heex",
-        "help",
         "javascript",
         "json",
         "jsonnet",
@@ -36,16 +36,45 @@ require("nvim-treesitter.configs").setup({
     endwise = { enable = true },
     autotag = { enable = true },
     matchup = { enable = true },
-
-    textsubjects = {
-        enable = false,
-        prev_selection = ",",
+    incremental_selection = {
+        enable = true,
         keymaps = {
-            ["."] = "textsubjects-smart",
-            [";"] = "textsubjects-container-outer",
-            ["i;"] = "textsubjects-container-inner",
+            node_incremental = "<CR>",
+            node_decremental = "<S-CR>",
         },
     },
+    refactor = {
+        highlight_definitions = {
+            enable = true,
+            clear_on_cursor_move = true,
+        },
+    },
+})
+-- }}}
+
+-- nvim-treesitter-context {{{
+local treesitter_context = require("treesitter-context")
+treesitter_context.setup({
+    enable = true,
+    line_numbers = false,
+})
+
+vim.cmd("highlight TreesitterContext guibg=#313244")
+vim.cmd("highlight TreesitterContextBottom guibg=#313244 guisp=#51576d gui=underline")
+
+u.map("n", "[c", treesitter_context.go_to_context)
+
+-- Workaround until this gets resolved:
+-- https://github.com/nvim-treesitter/nvim-treesitter-context/issues/281
+u.autocmd({ "FileType" }, {
+    pattern = "dirbuf",
+    command = "TSContextDisable",
+    group = u.augroup("DIRBUF"),
+})
+u.autocmd({ "BufLeave" }, {
+    pattern = "*",
+    command = "TSContextEnable",
+    group = u.augroup("DIRBUF"),
 })
 -- }}}
 
@@ -62,16 +91,6 @@ require("gitlinker").setup({
 
 -- gitsigns.nvim {{{
 local gitsigns = require("gitsigns")
-
--- Default to .dotfiles if there is no other git directory
--- See: https://github.com/lewis6991/gitsigns.nvim/issues/397
-local jid = vim.fn.jobstart({ "git", "rev-parse", "--git-dir" })
-local ret = vim.fn.jobwait({ jid })[1]
-if ret > 0 then
-    vim.env.GIT_DIR = vim.fn.expand("~/.dotfiles")
-    vim.env.GIT_WORK_TREE = vim.fn.expand("~")
-end
-
 gitsigns.setup({
     on_attach = function(bufnr)
         u.map("n", "<Leader>gb", gitsigns.blame_line, { buffer = bufnr })
@@ -81,6 +100,22 @@ gitsigns.setup({
         u.map("n", "<Leader>gn", gitsigns.next_hunk, { buffer = bufnr })
         u.map("n", "<Leader>gp", gitsigns.prev_hunk, { buffer = bufnr })
     end,
+
+    signs = {
+        add = { text = "│" },
+        change = { text = "│" },
+        delete = { text = "_" },
+        topdelete = { text = "‾" },
+        changedelete = { text = "~" },
+        untracked = { text = "┆" },
+    },
+
+    worktrees = {
+        {
+            toplevel = vim.env.HOME,
+            gitdir = vim.env.HOME .. "/.dotfiles",
+        },
+    },
 })
 -- }}}
 
@@ -88,6 +123,7 @@ gitsigns.setup({
 require("nvim-autopairs").setup({
     disable_in_macro = true,
     disable_in_visualblock = true,
+    -- ignored_next_char = "[^%s]", -- don't auto-pair if next char is not whitespace
 })
 -- }}}
 
@@ -99,6 +135,11 @@ require("bqf").setup({
         stogglebuf = "`",
         filter = "K",
         filterr = "D",
+    },
+    preview = {
+        win_height = 25,
+        win_vheight = 25,
+        winblend = 0,
     },
 })
 -- }}}
@@ -195,7 +236,7 @@ cmp.setup({
     }),
 
     experimental = {
-        ghost_text = true,
+        ghost_text = false,
     },
 })
 
@@ -248,6 +289,7 @@ fzf_lua.setup({
     grep = {
         rg_glob = true,
     },
+
     -- blines = {
     --     previewer = true,
     -- },
@@ -261,22 +303,24 @@ u.map("n", "<Leader>f", function()
         fzf_lua.files()
     end
 end)
-u.map_c("<Leader>F", "FzfLua git_status")
-u.map_c("<Leader>l", "FzfLua buffers")
-u.map_c("<Leader>;", "FzfLua blines")
-u.map_c("<Leader>:", "FzfLua command_history")
-u.map_c("<Leader>G", "FzfLua lsp_live_workspace_symbols")
+u.map("n", "<Leader>F", fzf_lua.git_status)
+u.map("n", "<Leader>l", fzf_lua.buffers)
+u.map("n", "<Leader>;", fzf_lua.blines)
+u.map("n", "<Leader>:", fzf_lua.command_history)
+u.map("n", "<Leader>G", fzf_lua.lsp_live_workspace_symbols)
 u.map("n", "<Leader>k", function()
     -- Remove filename from results since it's not useful
     fzf_lua.lsp_document_symbols({ fzf_cli_args = "--with-nth 2.." })
 end)
-u.map_c("<Leader>h", "FzfLua help_tags")
-u.map_c("<Bslash>", "FzfLua grep_project")
-u.map_c("<Bar>", "FzfLua grep_cword")
+u.map("n", "<Leader>h", fzf_lua.help_tags)
+u.map("n", "<Bslash>", fzf_lua.live_grep_native)
+u.map("n", "<Leader><Bslash>", fzf_lua.live_grep_resume)
+u.map("n", "<Bar>", fzf_lua.grep_cword)
+u.map("v", "<Bar>", fzf_lua.grep_visual)
 -- }}}
 
 -- vim-matchup {{{
-vim.g.matchup_matchparen_offscreen = { method = "popup" }
+vim.g.matchup_matchparen_offscreen = {}
 -- }}}
 
 -- vim-test {{{
@@ -339,23 +383,6 @@ smart_splits.setup({})
 
 -- hydra.nvim {{{
 local hydra = require("hydra")
-
-hydra({
-    name = "buffer switching",
-    mode = "n",
-
-    body = "<Leader>",
-    config = {
-        invoke_on_body = false,
-        hint = false,
-        timeout = 5000,
-    },
-
-    heads = {
-        { "<C-j>", "<Plug>(CybuNext)" },
-        { "<C-k>", "<Plug>(CybuPrev)" },
-    },
-})
 
 hydra({
     name = "window management",
@@ -440,18 +467,6 @@ require("nvim-surround").setup({
         delete = "ds",
         change = "cs",
     },
-    surrounds = {
-        ["F"] = {
-            add = function()
-                return { { "null.Float64From(" }, { ")" } }
-            end,
-        },
-        ["I"] = {
-            add = function()
-                return { { "null.Int64From(" }, { ")" } }
-            end,
-        },
-    },
 })
 -- }}}
 
@@ -495,24 +510,6 @@ u.map("n", "S", substitute.eol)
 require("neodev").setup({})
 -- }}}
 
--- dadbod.vim {{{
-vim.g.db = "postgresql://postgres:password@0.0.0.0:5432/pipe"
--- }}}
-
--- harpoon {{{
-require("harpoon").setup({
-    mark_branch = true,
-})
-
-local harpoon_ui = require("harpoon.ui")
-local harpoon_mark = require("harpoon.mark")
-
-u.map("n", "<Leader>8", harpoon_mark.add_file)
-u.map("n", "<Leader>j", harpoon_ui.toggle_quick_menu)
-u.map("n", "<S-Tab>", harpoon_ui.nav_prev)
-u.map("n", "<Tab>", harpoon_ui.nav_next)
--- }}}
-
 -- mini.comment {{{
 require("mini.comment").setup({})
 
@@ -520,87 +517,57 @@ u.map("n", "<Leader>/", "gcc", { remap = true })
 u.map("v", "<Leader>/", "gc", { remap = true })
 -- }}}
 
--- cybu.nvim {{{
-require("cybu").setup({
-    position = {
-        max_win_height = 7,
-    },
-    style = {
-        devicons = {
-            enabled = false,
-        },
-    },
-    display_time = 0,
+-- indent-blankline.nvim {{{
+require("indent_blankline").setup({
+    show_current_context = true,
+    show_current_context_start = true,
 })
+-- vim.g.indent_blankline_char = ""
+vim.g.indent_blankline_filetype = { "python", "yaml", "json", "typescript", "typescriptreact" }
+vim.cmd("highlight IndentBlanklineContextChar guifg=#51576d gui=nocombine")
+-- vim.cmd("highlight IndentBlanklineContextChar guifg=#313244 gui=nocombine")
+vim.cmd("highlight IndentBlanklineContextStart guibg=#313244 guisp=#51576d gui=underline")
 -- }}}
 
--- text-case.nvim {{{
--- require("textcase").setup({})
+-- treesj {{{
+local treesj = require("treesj")
+treesj.setup({
+    use_default_keymaps = false,
+})
+u.map("n", "gJ", treesj.join)
+u.map("n", "gS", treesj.split)
 -- }}}
 
--- nvim-navic {{{
-require("nvim-navic").setup({
-    separator = " • ",
-    icons = {
-        File = "",
-        Module = "",
-        Namespace = "",
-        Package = "",
-        Class = "",
-        Method = "",
-        Property = "",
-        Field = "",
-        Constructor = "",
-        Enum = "",
-        Interface = "",
-        Function = "",
-        Variable = "",
-        Constant = "",
-        String = "",
-        Number = "",
-        Boolean = "",
-        Array = "",
-        Object = "",
-        Key = "",
-        Null = "",
-        EnumMember = "",
-        Struct = "",
-        Event = "",
-        Operator = "",
-        TypeParameter = "",
-    },
-})
+-- readline.nvim {{{
+local readline = require("readline")
+u.map("!", "<C-k>", readline.kill_line)
+u.map("!", "<C-u>", readline.backward_kill_line)
+u.map("!", "<M-d>", readline.kill_word)
+u.map("!", "<M-BS>", readline.backward_kill_word)
+u.map("!", "<C-w>", readline.unix_word_rubout)
+u.map("!", "<C-a>", readline.beginning_of_line)
+u.map("!", "<C-e>", readline.end_of_line)
+u.map("!", "<M-f>", readline.forward_word)
+u.map("!", "<M-b>", readline.backward_word)
 -- }}}
 
--- nvim-navbuddy {{{
-require("nvim-navbuddy").setup({
-    icons = {
-        File = "",
-        Module = "",
-        Namespace = "",
-        Package = "",
-        Class = "",
-        Method = "",
-        Property = "",
-        Field = "",
-        Constructor = "",
-        Enum = "",
-        Interface = "",
-        Function = "",
-        Variable = "",
-        Constant = "",
-        String = "",
-        Number = "",
-        Boolean = "",
-        Array = "",
-        Object = "",
-        Key = "",
-        Null = "",
-        EnumMember = "",
-        Struct = "",
-        Event = "",
-        Operator = "",
-        TypeParameter = "",
+-- grapple.nvim {{{
+local grapple = require("grapple")
+grapple.setup({
+    scope = grapple.resolvers.git_branch,
+    popup_options = {
+        width = 150,
     },
 })
+
+u.map("n", "<Leader>8", function()
+    grapple.toggle()
+    lualine.refresh()
+end)
+u.map("n", "<Leader>j", function()
+    grapple.popup_tags()
+    lualine.refresh()
+end)
+u.map("n", "<S-Tab>", grapple.cycle_forward)
+u.map("n", "<Tab>", grapple.cycle_backward)
 -- }}}

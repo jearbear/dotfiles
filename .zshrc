@@ -63,6 +63,15 @@ setopt prompt_subst
 PROMPT='%1/ %F{magenta}%(1j.[%j] .)//%f '
 RPROMPT='${vcs_info_msg_0_}%f'
 
+# if a virtualenv is activated by direnv, we need to maually update the prompt
+show_virtual_env() {
+  if [[ -n "$VIRTUAL_ENV" && -n "$DIRENV_DIR" ]]; then
+    echo "[$(basename $VIRTUAL_ENV)] "
+  fi
+}
+PROMPT='$(show_virtual_env)'$PROMPT
+
+
 # aliases
 alias ..='cd ..'
 alias ...='cd ../..'
@@ -134,6 +143,10 @@ __git-pick-files() {
 }
 zle -N __git-pick-files
 bindkey '^G^F' __git-pick-files
+
+
+# enable direnv
+eval "$(direnv hook zsh)"
 
 
 # enable side-by-side mode for git diff output if the terminal is wide enough

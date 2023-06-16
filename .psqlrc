@@ -19,9 +19,13 @@
 \set HISTCONTROL ignoredups
 
 -- display timing information
--- \timing
+\timing
 
 -- disable the pager as it's buggy and annoying
 \pset pager 0
+
+-- default to read-only
+-- use `SET SESSION CHARACTERISTICS AS TRANSACTION READ WRITE`
+-- SET SESSION CHARACTERISTICS AS TRANSACTION READ ONLY;
 
 \unset QUIET

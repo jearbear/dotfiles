@@ -1,5 +1,5 @@
-local navic = require("nvim-navic")
 local utils = require("utils")
+local grapple = require("grapple")
 
 require("lualine").setup({
     options = {
@@ -23,11 +23,10 @@ require("lualine").setup({
         },
         lualine_b = {
             {
-                "tabs",
-                mode = 0, -- show tab number only
-                cond = function()
-                    return vim.fn.tabpagenr("$") > 1
+                function()
+                    return "*"
                 end,
+                cond = grapple.exists,
             },
         },
         lualine_c = {
@@ -58,7 +57,7 @@ require("lualine").setup({
                 symbols = { error = "", warn = "", info = "", hint = "" },
             },
         },
-        lualine_z = { "%l:%L" },
+        lualine_z = { "%l" },
     },
     inactive_sections = {
         lualine_a = {},
@@ -79,22 +78,20 @@ require("lualine").setup({
         lualine_y = {},
         lualine_z = {},
     },
-    winbar = {
+    tabline = {
         lualine_a = {},
         lualine_b = {},
         lualine_c = {},
-        lualine_x = {
+        lualine_x = {},
+        lualine_y = {},
+        lualine_z = {
             {
-                function()
-                    return navic.get_location()
-                end,
-                cond = function()
-                    return utils.table.contains({ "json", "yaml", "python" }, vim.bo.filetype) and navic.is_available()
-                end,
+                "tabs",
+                mode = 2,
             },
         },
-        lualine_y = {},
-        lualine_z = {},
     },
     extensions = { "quickfix" },
 })
+
+vim.o.showtabline = 1

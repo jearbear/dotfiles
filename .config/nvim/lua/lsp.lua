@@ -3,15 +3,14 @@ local lspconfig = require("lspconfig")
 local null_ls = require("null-ls")
 local cmp_nvim_lsp = require("cmp_nvim_lsp")
 local fzf = require("fzf-lua")
-local navic = require("nvim-navic")
-local navbuddy = require("nvim-navbuddy")
 
 -- This function gets executed when the LSP is initiated successfully
 local on_attach = function(client, bufnr)
     -- Provide LSP results to omni completion
     vim.bo.omnifunc = "v:lua.vim.lsp.omnifunc"
 
-    -- I use gq mostly to wrap long lines, I don't care about LSP niceties
+    -- I use gq mostly to wrap long lines, I don't need a mapping for it since
+    -- I almost always do it on save
     vim.bo.formatexpr = ""
 
     -- New files tend to break the LSP so make a shorter command to make this
@@ -31,6 +30,7 @@ local on_attach = function(client, bufnr)
     map("<C-j>", function()
         vim.diagnostic.goto_next({ float = { border = "single" }, wrap = false })
     end)
+    -- TODO: Make this automatically filter out references coming from imports
     map("<Leader>gr", function()
         vim.lsp.buf.references({ includeDeclaration = false })
     end)
@@ -51,22 +51,22 @@ local on_attach = function(client, bufnr)
         u.autocmd("BufWritePre", {
             buffer = 0,
             callback = function()
-                vim.lsp.buf.format({ timeout_ms = 5000, async = false })
+                -- yapf is slow AF
+                if vim.bo.filetype == "python" then
+                    vim.lsp.buf.format({ async = true })
+                else
+                    vim.lsp.buf.format({ timeout_ms = 5000, async = false })
+                end
             end,
         })
     end
 
     -- Update signs
-    local signs = { Error = "┇", Warn = "┇", Hint = "┇", Info = "┇" }
+    local sign = ""
+    local signs = { Error = sign, Warn = sign, Hint = sign, Info = sign }
     for type, icon in pairs(signs) do
         local hl = "DiagnosticSign" .. type
         vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-    end
-
-    -- Enable navic
-    if client.server_capabilities.documentSymbolProvider then
-        navic.attach(client, bufnr)
-        navbuddy.attach(client, bufnr)
     end
 end
 
@@ -74,19 +74,6 @@ end
 local handlers = {
     ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" }),
     ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" }),
-    -- Filter out some annoying results
-    -- See: https://github.com/typescript-language-server/typescript-language-server/issues/216#issuecomment-1005272952
-    ["textDocument/definition"] = function(err, results, method, ...)
-        if not vim.tbl_islist(results) or #results <= 1 then
-            return vim.lsp.handlers["textDocument/definition"](err, results, method, ...)
-        end
-
-        local filtered_results = u.filter(results, function(v)
-            -- Filter out TS type annotations
-            return string.match(v.uri, "d.ts") == nil
-        end)
-        return vim.lsp.handlers["textDocument/definition"](err, filtered_results, method, ...)
-    end,
 }
 
 -- Add completion via cmp-nvim to the list of LSP capabilities available
@@ -117,15 +104,37 @@ lspconfig.gopls.setup({
 })
 
 -- Typescript
-lspconfig.tsserver.setup({
-    on_attach = function(client, bufnr)
-        on_attach(client, bufnr)
+local typescript = require("typescript")
+typescript.setup({
+    go_to_source_definition = {
+        fallback = true,
+    },
+    server = {
+        on_attach = function(client, bufnr)
+            on_attach(client, bufnr)
 
-        -- Leave formatting up to eslint language server
-        override_formatting_capability(client, false)
-    end,
-    handlers = handlers,
-    capabilities = capabilities,
+            u.map_c("<C-]>", "TypescriptGoToSourceDefinition", { buffer = bufnr })
+
+            u.buf_command(bufnr, "TRF", function(_)
+                vim.cmd("TypescriptRenameFile")
+            end, { nargs = 0 })
+            u.buf_command(bufnr, "TAMI", typescript.actions.addMissingImports, { nargs = 0 })
+            u.buf_command(bufnr, "TRU", typescript.actions.removeUnused, { nargs = 0 })
+
+            -- Leave formatting up to eslint language server
+            override_formatting_capability(client, false)
+        end,
+        handlers = handlers,
+        capabilities = capabilities,
+        --     settings = {
+        --         typescript = {
+        --             preferences = {}
+        --         }
+        --         typescript.preferences.autoImportFileExcludePatterns= {
+        --   "**/node_modules/@types/node"
+        -- },
+        --     },
+    },
 })
 
 -- Eslint
@@ -266,11 +275,14 @@ lspconfig.pylsp.setup({
 })
 
 -- jsonls
--- lspconfig.jsonls.setup({
---     on_attach = on_attach,
---     handlers = handlers,
---     capabilities = capabilities,
--- })
+lspconfig.jsonls.setup({
+    on_attach = on_attach,
+    handlers = handlers,
+    capabilities = capabilities,
+    init_options = {
+        provideFormatter = false,
+    },
+})
 
 -- null-ls
 null_ls.setup({
@@ -310,6 +322,9 @@ null_ls.setup({
 
         -- git
         -- null_ls.builtins.code_actions.gitsigns,
+
+        -- typescript
+        -- null_ls.builtins.diagnostics.tsc,
     },
 
     on_attach = on_attach,
