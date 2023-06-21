@@ -19,6 +19,8 @@
     fp = push -f
 
     nuke = clean -id
+    ; useful for listing all dotfiles that aren't being managed
+    ignored = status --ignored -- .*
 
     aa = add -A
     ai = !"f() { set -e; FILES=$(git pick files); git add $FILES; }; f"

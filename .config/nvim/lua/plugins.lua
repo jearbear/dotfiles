@@ -63,19 +63,6 @@ vim.cmd("highlight TreesitterContext guibg=#313244")
 vim.cmd("highlight TreesitterContextBottom guibg=#313244 guisp=#51576d gui=underline")
 
 u.map("n", "[c", treesitter_context.go_to_context)
-
--- Workaround until this gets resolved:
--- https://github.com/nvim-treesitter/nvim-treesitter-context/issues/281
-u.autocmd({ "FileType" }, {
-    pattern = "dirbuf",
-    command = "TSContextDisable",
-    group = u.augroup("DIRBUF"),
-})
-u.autocmd({ "BufLeave" }, {
-    pattern = "*",
-    command = "TSContextEnable",
-    group = u.augroup("DIRBUF"),
-})
 -- }}}
 
 -- gitlinker.nvim {{{
@@ -570,4 +557,8 @@ u.map("n", "<Leader>j", function()
 end)
 u.map("n", "<S-Tab>", grapple.cycle_forward)
 u.map("n", "<Tab>", grapple.cycle_backward)
+-- }}}
+
+-- vim-slime {{{
+vim.g.slime_target = "kitty"
 -- }}}

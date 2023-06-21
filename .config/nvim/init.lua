@@ -84,13 +84,14 @@ require("lazy").setup({
 
     -- trying out
     { "chentoast/marks.nvim" }, -- show marks in the gutter and provide better mappings to manipulate them
-    { "jinh0/eyeliner.nvim" }, -- highlight suggested targets for `f` and `t`
+    -- { "jinh0/eyeliner.nvim" }, -- highlight suggested targets for `f` and `t`
     { "folke/neodev.nvim" }, -- setup the Lua LSP for neovim development
     { "kylechui/nvim-surround" }, -- add delete and change enclosing text
     { "echasnovski/mini.nvim" }, -- used for mini.bufremove, mini.ai (enhanced text objects), mini.align
     { "lukas-reineke/indent-blankline.nvim" }, -- indent guides
     { "Wansmer/treesj" }, -- treesitter-powered splits and joins
     { "cbochs/grapple.nvim" }, -- mark files so you can quickly jump to them
+    { "jpalardy/vim-slime" },
 })
 -- }}}
 
@@ -312,6 +313,7 @@ u.map_c("<S-CR>", "call append(line('.') - 1, '')")
 u.map("n", "<BS>", "<C-^>")
 u.map_c("<Leader>[", "tabp")
 u.map_c("<Leader>]", "tabn")
+u.map_c("<Leader>T", "tabe")
 
 -- navigate quickfix list
 u.map("n", "[q", function()

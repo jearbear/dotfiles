@@ -1,8 +1,6 @@
 # vim: set ft=gitignore
 
-tags
-tags.lock
-tags.temp
+node_modules/
 
 # Personal files that I don't want checked in 
-.me/
+!.me/
