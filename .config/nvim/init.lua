@@ -28,20 +28,22 @@ require("lazy").setup({
     { "catppuccin/nvim", name = "catppuccin" },
 
     -- UI
-    { "andymass/vim-matchup" }, -- more extensive support for matching with `%`
-    { "anuvyklack/nvim-keymap-amend" }, -- dependency for vim-matchup
+    { "andymass/vim-matchup", dependencies = { "anuvyklack/nvim-keymap-amend" } }, -- more extensive support for matching with `%`
     { "kevinhwang91/nvim-bqf" }, -- enhanced qflist (previews FZF integration)
     { "nvim-lualine/lualine.nvim" }, -- statusline
 
     -- tree-sitter
-    { "RRethy/nvim-treesitter-endwise" }, -- automatically close everything else (tree-sitter)
-    { "nvim-treesitter/nvim-treesitter" },
-    { "nvim-treesitter/nvim-treesitter-refactor" },
-    { "nvim-treesitter/nvim-treesitter-context" }, -- provide context into where you are
-    { "windwp/nvim-ts-autotag" }, -- automatically close tags
+    {
+        "nvim-treesitter/nvim-treesitter",
+        dependencies = {
+            "RRethy/nvim-treesitter-endwise", -- automatically close everything else (tree-sitter)
+            "nvim-treesitter/nvim-treesitter-context", -- provide context into where you are
+            "windwp/nvim-ts-autotag", -- automatically close tags
+            "IndianBoy42/tree-sitter-just", -- support for justfiles
+        },
+    },
 
     -- mappings
-    -- plug("AndrewRadev/splitjoin.vim"), -- language-aware splits and joins
     { "anuvyklack/hydra.nvim" }, -- chain mappings together under a common prefix
     { "mrjones2014/smart-splits.nvim" }, -- more sane resizing behavior
     { "linty-org/readline.nvim" }, -- provides functions I use to provide readline bindings in insert and command mode
@@ -53,12 +55,10 @@ require("lazy").setup({
     -- version control
     { "akinsho/git-conflict.nvim", version = "*" }, -- better git conflict resolution
     { "lewis6991/gitsigns.nvim" }, -- VCS change indicators in the gutter
-    { "ruifm/gitlinker.nvim" }, -- create links to Github
-    { "nvim-lua/plenary.nvim" }, -- dependency for gitlinker.nvim
+    { "ruifm/gitlinker.nvim", dependencies = { "nvim-lua/plenary.nvim" } }, -- create links to Github
 
     -- completion
     { "windwp/nvim-autopairs" }, -- automatically complete pairs
-    { "tpope/vim-endwise" }, -- automatically close everything else
     { "dcampos/nvim-snippy" }, -- snippets
     { "hrsh7th/nvim-cmp" }, -- auto-completion
     { "hrsh7th/cmp-nvim-lsp" }, -- auto-completion + LSP integration
@@ -84,14 +84,19 @@ require("lazy").setup({
 
     -- trying out
     { "chentoast/marks.nvim" }, -- show marks in the gutter and provide better mappings to manipulate them
-    -- { "jinh0/eyeliner.nvim" }, -- highlight suggested targets for `f` and `t`
     { "folke/neodev.nvim" }, -- setup the Lua LSP for neovim development
     { "kylechui/nvim-surround" }, -- add delete and change enclosing text
     { "echasnovski/mini.nvim" }, -- used for mini.bufremove, mini.ai (enhanced text objects), mini.align
     { "lukas-reineke/indent-blankline.nvim" }, -- indent guides
     { "Wansmer/treesj" }, -- treesitter-powered splits and joins
     { "cbochs/grapple.nvim" }, -- mark files so you can quickly jump to them
-    { "jpalardy/vim-slime" },
+    { "jpalardy/vim-slime" }, -- send text to other terminal windows (useful for REPLs)
+    { "dmmulroy/tsc.nvim" }, -- typecheck entire typescript project
+    { "pmizio/typescript-tools.nvim", dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" } }, -- more performant typescript LSP
+    { "lukas-reineke/lsp-format.nvim" }, -- auto-formatting
+    { "ray-x/lsp_signature.nvim" }, -- signature help
+    { "luukvbaal/nnn.nvim" },
+    { "sustech-data/wildfire.nvim" },
 })
 -- }}}
 
@@ -145,7 +150,6 @@ vim.opt.linebreak = true -- enable line wrapping on word boundaries only
 vim.opt.breakindent = true -- indent wrapped lines
 vim.opt.showbreak = ".." -- indent wrapped lines with `..`
 
--- TODO: checkout other options
 vim.opt.fillchars:append({ diff = "╱" }) -- prettier filler characters for empty diff blocks
 
 function _G.custom_fold_text()
@@ -204,6 +208,8 @@ vim.opt.completeopt = { "menu", "menuone" } -- when completing, show a menu even
 
 vim.opt.shortmess:append("I") -- don't show vim start screen
 
+vim.opt.signcolumn = "yes"
+
 vim.opt.showtabline = 0 -- disable the tab line (in favor of lualine's)
 
 vim.opt.dictionary:append("/usr/share/dict/words") -- use this for keyword completion (<C-x><C-k>)
@@ -211,25 +217,17 @@ vim.opt.dictionary:append("/usr/share/dict/words") -- use this for keyword compl
 vim.opt.isfname:remove(":") -- don't consider `:` as part of the filename to allow jumping to filename:linenum
 
 -- store backup files in their own directory
-vim.fn.mkdir(vim.env.VIM_FILES .. "/backup//", "p")
-vim.opt.backupdir = (vim.env.VIM_FILES .. "/backup//")
+vim.fn.mkdir(vim.env.VIM_FILES .. "/.backup//", "p")
+vim.opt.backupdir = (vim.env.VIM_FILES .. "/.backup//")
 
 -- enable undo files and store them in their own directory
-vim.fn.mkdir(vim.env.VIM_FILES .. "/undo//", "p")
+vim.fn.mkdir(vim.env.VIM_FILES .. "/.undo//", "p")
 vim.opt.undofile = true
-vim.opt.undodir = (vim.env.VIM_FILES .. "/undo//")
+vim.opt.undodir = (vim.env.VIM_FILES .. "/.undo//")
 
 vim.opt.swapfile = false -- disable swap files since they tend to be more annoying than not
 
 vim.g.is_bash = true -- default to bash filetype when `ft=sh`
-
-vim.diagnostic.config({
-    virtual_text = false,
-    signs = true,
-    underline = true,
-    update_in_insert = false,
-    severity_sort = true,
-})
 
 -- use ripgrep for `grep` command
 vim.opt.grepprg = "rg --vimgrep --smart-case --hidden --sort path --glob '!schema.sql' --glob '!pkg/database/models'"
@@ -253,11 +251,35 @@ u.autocmd({ "BufWritePre", "FileWritePre" }, {
     group = u.augroup("MKDIR"),
 })
 
--- check if the file has been updated when focusing the buffer
+local lualine = require("lualine")
+
+-- automatically read the file on focus (relies on autoread being set)
 u.autocmd({ "FocusGained", "BufEnter" }, {
     pattern = "*",
-    command = "checktime",
-    group = u.augroup("AUTO_RW"),
+    callback = function()
+        if vim.bo.modified and not vim.bo.readonly and vim.fn.expand("%") ~= "" and vim.bo.buftype == "" then
+            vim.cmd([[checktime]])
+            lualine.refresh()
+        end
+    end,
+    group = u.augroup("AUTO_READ"),
+})
+
+-- automatically write the file on focus lost
+u.autocmd({ "BufLeave", "FocusLost" }, {
+    callback = function()
+        if vim.bo.modified and not vim.bo.readonly and vim.fn.expand("%") ~= "" and vim.bo.buftype == "" then
+            vim.cmd([[silent update]])
+            lualine.refresh()
+        end
+    end,
+    group = u.augroup("AUTO_WRITE"),
+})
+
+u.autocmd({ "BufWritePost" }, {
+    pattern = "*",
+    callback = lualine.refresh,
+    group = u.augroup("WRITE_REFRESH_LUALINE"),
 })
 
 -- treat pull request edit messages as markdown
@@ -283,6 +305,15 @@ u.autocmd("CmdlineLeave", {
         vim.opt.hlsearch = false
     end,
     group = u.augroup("SEARCH_END"),
+})
+
+-- treat .json.tftpl files as json
+u.autocmd({ "BufEnter", "BufNew" }, {
+    pattern = "*.json.tftpl",
+    callback = function()
+        vim.bo.filetype = "json"
+    end,
+    group = u.augroup("JSON_TFTPL"),
 })
 -- }}}
 
@@ -351,6 +382,9 @@ u.map({ "n", "x" }, "<Leader>Y", '"+Y', { remap = true })
 u.map({ "n", "x" }, "<Leader>p", '"+p', { remap = true })
 u.map({ "n", "x" }, "<Leader>P", '"+P', { remap = true })
 
+-- select content that was just pasted
+u.map("n", "gp", "`[v`]")
+
 -- basic readline mappings ("!" maps both insert and command mode)
 u.map("!", "<C-d>", "<Delete>")
 u.map("c", "<C-p>", "<Up>")
@@ -386,10 +420,6 @@ u.map("n", "<C-w>-", "<C-w>=")
 -- https://github.com/neovim/neovim/pull/17932#issue-1188088238
 u.map("n", "<C-i>", "<C-i>")
 
--- -- Default to case-insensitive search
--- u.map("n", "/", "/\\c<Left><Left>")
--- u.map("n", "?", "?\\c<Left><Left>")
-
 -- Navigate search results with Tab/S-Tab
 u.map("c", "<Tab>", function()
     local cmdtype = vim.fn.getcmdtype()
@@ -410,18 +440,6 @@ u.map("c", "<S-Tab>", function()
         return "<C-g>"
     else
         return "<S-Tab>"
-    end
-end, { expr = true })
-
--- center results when jumping to results
-u.map("c", "<CR>", function()
-    local cmdtype = vim.fn.getcmdtype()
-    if cmdtype == "/" then
-        return "<CR>zz"
-    elseif cmdtype == "?" then
-        return "<CR>zz"
-    else
-        return "<CR>"
     end
 end, { expr = true })
 -- }}}

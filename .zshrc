@@ -82,8 +82,10 @@ alias pn='ping www.google.com -c 1'
 alias reload='source ~/.zshrc && source ~/.zshenv'
 alias rgm='rg --multiline --multiline-dotall'
 alias rgo='rg --no-heading --no-filename --no-line-number --only-matching'
+alias j='just'
 
 alias cdg='cd ~/Projects/giga'
+alias cds='cd ~/Projects/sugo'
 
 alias dots='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 compdef dots='git' # enable completion for ^

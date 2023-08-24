@@ -3,6 +3,17 @@ local lspconfig = require("lspconfig")
 local null_ls = require("null-ls")
 local cmp_nvim_lsp = require("cmp_nvim_lsp")
 local fzf = require("fzf-lua")
+local lsp_format = require("lsp-format")
+
+local min_severity = { min = vim.diagnostic.severity.INFO }
+
+vim.diagnostic.config({
+    virtual_text = false,
+    signs = { severity = min_severity },
+    underline = true,
+    update_in_insert = false,
+    severity_sort = true,
+})
 
 -- This function gets executed when the LSP is initiated successfully
 local on_attach = function(client, bufnr)
@@ -25,10 +36,18 @@ local on_attach = function(client, bufnr)
     map("K", vim.lsp.buf.hover)
     map("<Leader>R", vim.lsp.buf.rename)
     map("<C-k>", function()
-        vim.diagnostic.goto_prev({ float = { border = "single" }, wrap = false })
+        vim.diagnostic.goto_prev({
+            float = { border = "single" },
+            wrap = false,
+            severity = min_severity,
+        })
     end)
     map("<C-j>", function()
-        vim.diagnostic.goto_next({ float = { border = "single" }, wrap = false })
+        vim.diagnostic.goto_next({
+            float = { border = "single" },
+            wrap = false,
+            severity = min_severity,
+        })
     end)
     -- TODO: Make this automatically filter out references coming from imports
     map("<Leader>gr", function()
@@ -38,7 +57,10 @@ local on_attach = function(client, bufnr)
     map("<Leader>ca", fzf.lsp_code_actions)
 
     map("<Leader>m", function()
-        vim.diagnostic.setqflist({ open = false })
+        vim.diagnostic.setqflist({
+            open = false,
+            severity = min_severity,
+        })
         if not vim.tbl_isempty(vim.fn.getqflist()) then
             vim.cmd("copen")
         else
@@ -62,7 +84,7 @@ local on_attach = function(client, bufnr)
     end
 
     -- Update signs
-    local sign = ""
+    local sign = "⏵"
     local signs = { Error = sign, Warn = sign, Hint = sign, Info = sign }
     for type, icon in pairs(signs) do
         local hl = "DiagnosticSign" .. type
@@ -95,7 +117,6 @@ lspconfig.gopls.setup({
     end,
     handlers = handlers,
     capabilities = capabilities,
-
     settings = {
         gopls = {
             usePlaceholders = true,
@@ -122,18 +143,10 @@ typescript.setup({
             u.buf_command(bufnr, "TRU", typescript.actions.removeUnused, { nargs = 0 })
 
             -- Leave formatting up to eslint language server
-            override_formatting_capability(client, false)
+            -- override_formatting_capability(client, false)
         end,
         handlers = handlers,
         capabilities = capabilities,
-        --     settings = {
-        --         typescript = {
-        --             preferences = {}
-        --         }
-        --         typescript.preferences.autoImportFileExcludePatterns= {
-        --   "**/node_modules/@types/node"
-        -- },
-        --     },
     },
 })
 
@@ -156,7 +169,6 @@ lspconfig.elixirls.setup({
     on_attach = on_attach,
     handlers = handlers,
     capabilities = capabilities,
-
     cmd = { "/opt/homebrew/bin/elixir-ls" },
 })
 
@@ -177,7 +189,6 @@ lspconfig.lua_ls.setup({
     end,
     handlers = handlers,
     capabilities = capabilities,
-
     settings = {
         Lua = {
             runtime = {
@@ -213,7 +224,6 @@ lspconfig.tailwindcss.setup({
     on_attach = on_attach,
     handlers = handlers,
     capabilities = capabilities,
-
     filetypes = {
         "html",
         "javascriptreact",
@@ -221,7 +231,6 @@ lspconfig.tailwindcss.setup({
         "heex",
         "elixir",
     },
-
     init_options = {
         userLanguages = {
             heex = "html-eex",
@@ -235,40 +244,24 @@ lspconfig.jsonnet_ls.setup({
     on_attach = on_attach,
     handlers = handlers,
     capabilities = capabilities,
-
     single_file_support = true,
 })
 
 -- Python
-lspconfig.pylsp.setup({
-    on_attach = on_attach,
+lspconfig.pyright.setup({
+    on_attach = function(client, bufnr)
+        on_attach(client, bufnr)
+
+        u.buf_command(bufnr, "PO", function(_)
+            vim.cmd("PyrightOrganizeImports")
+        end, { nargs = 0 })
+    end,
     handlers = handlers,
     capabilities = capabilities,
-
     settings = {
-        pylsp = {
-            configurationSources = { "flake8" },
-            plugins = {
-                pycodestyle = { enabled = false },
-                pylint = { enabled = false },
-                flake8 = { enabled = true },
-                yapf = { enabled = true },
-                autopep8 = { enabled = false },
-                black = { enabled = false },
-                ruff = { enabled = false },
-                rope = {
-                    enabled = true,
-                },
-                rope_autoimport = {
-                    enabled = false,
-                },
-                rope_completion = {
-                    enabled = false,
-                },
-                ["pylsp-mypy"] = {
-                    enabled = true,
-                    live_mode = true,
-                },
+        python = {
+            analysis = {
+                typeCheckingMode = "off",
             },
         },
     },
@@ -284,6 +277,13 @@ lspconfig.jsonls.setup({
     },
 })
 
+-- terraforml-ls
+lspconfig.terraformls.setup({
+    on_attach = on_attach,
+    handlers = handlers,
+    capabilities = capabilities,
+})
+
 -- null-ls
 null_ls.setup({
     sources = {
@@ -291,17 +291,12 @@ null_ls.setup({
         null_ls.builtins.diagnostics.shellcheck,
         null_ls.builtins.code_actions.shellcheck,
 
-        -- elixir
-        null_ls.builtins.diagnostics.credo,
-
         -- golang
         null_ls.builtins.diagnostics.golangci_lint.with({
             args = { "run", "--fix=false", "--out-format=json", "$DIRNAME", "--path-prefix", "$ROOT" },
         }),
         null_ls.builtins.formatting.gofumpt,
-        null_ls.builtins.formatting.goimports.with({
-            extra_args = { "-local", "github.com/pipe-technologies/pipe/backend" },
-        }),
+        null_ls.builtins.formatting.goimports,
 
         -- lua
         -- Using stylua instead of LSP formatter since it's more opinionated.
@@ -320,16 +315,13 @@ null_ls.setup({
             },
         }),
 
-        -- git
-        -- null_ls.builtins.code_actions.gitsigns,
-
-        -- typescript
-        -- null_ls.builtins.diagnostics.tsc,
+        -- python
+        null_ls.builtins.diagnostics.flake8, -- lint
+        null_ls.builtins.formatting.yapf, -- auto-format
+        null_ls.builtins.formatting.autoflake, -- auto-remove unused imports
     },
-
     on_attach = on_attach,
     handlers = handlers,
-
     -- Look for language-specific files first to better handle mono-repos.
     root_dir = lspconfig.util.root_pattern("tsconfig.json", "go.mod", ".git"),
 })

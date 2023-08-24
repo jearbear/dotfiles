@@ -1,7 +1,8 @@
-local utils = require("utils")
+local u = require("utils")
 local grapple = require("grapple")
+local lualine = require("lualine")
 
-require("lualine").setup({
+lualine.setup({
     options = {
         icons_enabled = false,
         component_separators = { left = "", right = "" },
@@ -54,14 +55,22 @@ require("lualine").setup({
             {
                 "diagnostics",
                 sources = { "nvim_diagnostic" },
-                symbols = { error = "", warn = "", info = "", hint = "" },
+                sections = { "error", "warn", "info" },
+                symbols = { error = "E", warn = "W", info = "I" },
             },
         },
         lualine_z = { "%l" },
     },
     inactive_sections = {
         lualine_a = {},
-        lualine_b = {},
+        lualine_b = {
+            {
+                function()
+                    return "*"
+                end,
+                cond = grapple.exists,
+            },
+        },
         lualine_c = {
             {
                 "filename",
@@ -75,7 +84,7 @@ require("lualine").setup({
             },
         },
         lualine_x = {},
-        lualine_y = {},
+        lualine_y = { "%l" },
         lualine_z = {},
     },
     tabline = {
@@ -87,6 +96,7 @@ require("lualine").setup({
         lualine_z = {
             {
                 "tabs",
+                max_length = vim.o.columns,
                 mode = 2,
             },
         },

@@ -19,6 +19,8 @@
     fp = push -f
 
     nuke = clean -id
+    restart = !git restore -- . && git clean -fd && :
+
     ; useful for listing all dotfiles that aren't being managed
     ignored = status --ignored -- .*
 

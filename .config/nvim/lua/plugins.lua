@@ -22,6 +22,7 @@ require("nvim-treesitter.configs").setup({
         "markdown_inline",
         "python",
         "regex",
+        "terraform",
         "rust",
         -- "sql", -- this doesn't work very well at the moment
         "surface",
@@ -30,25 +31,18 @@ require("nvim-treesitter.configs").setup({
         "vim",
         "yaml",
     },
-
     highlight = { enable = true },
     indent = { enable = true },
     endwise = { enable = true },
     autotag = { enable = true },
     matchup = { enable = true },
-    incremental_selection = {
-        enable = true,
-        keymaps = {
-            node_incremental = "<CR>",
-            node_decremental = "<S-CR>",
-        },
-    },
-    refactor = {
-        highlight_definitions = {
-            enable = true,
-            clear_on_cursor_move = true,
-        },
-    },
+    -- incremental_selection = {
+    --     enable = false,
+    --     keymaps = {
+    --         node_incremental = "<CR>",
+    --         node_decremental = "<S-CR>",
+    --     },
+    -- },
 })
 -- }}}
 
@@ -63,6 +57,10 @@ vim.cmd("highlight TreesitterContext guibg=#313244")
 vim.cmd("highlight TreesitterContextBottom guibg=#313244 guisp=#51576d gui=underline")
 
 u.map("n", "[c", treesitter_context.go_to_context)
+-- }}}
+
+-- tree-sitter-just {{{
+require("tree-sitter-just").setup({})
 -- }}}
 
 -- gitlinker.nvim {{{
@@ -87,7 +85,6 @@ gitsigns.setup({
         u.map("n", "<Leader>gn", gitsigns.next_hunk, { buffer = bufnr })
         u.map("n", "<Leader>gp", gitsigns.prev_hunk, { buffer = bufnr })
     end,
-
     signs = {
         add = { text = "│" },
         change = { text = "│" },
@@ -96,7 +93,6 @@ gitsigns.setup({
         changedelete = { text = "~" },
         untracked = { text = "┆" },
     },
-
     worktrees = {
         {
             toplevel = vim.env.HOME,
@@ -110,7 +106,6 @@ gitsigns.setup({
 require("nvim-autopairs").setup({
     disable_in_macro = true,
     disable_in_visualblock = true,
-    -- ignored_next_char = "[^%s]", -- don't auto-pair if next char is not whitespace
 })
 -- }}}
 
@@ -166,18 +161,15 @@ local snippy = require("snippy")
 
 cmp.setup({
     preselect = cmp.PreselectMode.None,
-
     snippet = {
         expand = function(args)
             snippy.expand_snippet(args.body)
         end,
     },
-
     window = {
         completion = cmp.config.window.bordered(),
         documentation = cmp.config.window.bordered(),
     },
-
     -- Sorting by kind leads to some weird choices, especially with gopls so we
     -- disable it.
     sorting = {
@@ -193,7 +185,6 @@ cmp.setup({
             cmp.config.compare.order,
         },
     },
-
     mapping = {
         ["<C-l>"] = cmp.mapping(function(fallback)
             if snippy.can_expand_or_advance() then
@@ -214,14 +205,12 @@ cmp.setup({
         ["<C-n>"] = cmp.mapping(cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }), { "i", "c" }),
         ["<C-p>"] = cmp.mapping(cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }), { "i", "c" }),
     },
-
     sources = cmp.config.sources({
-        { name = "nvim_lsp_signature_help" },
+        -- { name = "nvim_lsp_signature_help" },
     }, {
         { name = "nvim_lsp" },
         { name = "snippy" },
     }),
-
     experimental = {
         ghost_text = false,
     },
@@ -258,6 +247,10 @@ fzf_lua.setup({
         border = "single",
         hl = {
             border = "Keyword",
+            preview_border = "Keyword",
+            header_text = "Error",
+            buf_flag_cur = "Error",
+            buf_flag_alt = "Constant",
         },
         preview = {
             vertical = "up:75%",
@@ -276,10 +269,6 @@ fzf_lua.setup({
     grep = {
         rg_glob = true,
     },
-
-    -- blines = {
-    --     previewer = true,
-    -- },
 })
 
 u.map_c("<Leader><Leader>", "FzfLua")
@@ -320,18 +309,19 @@ endfunction
 let g:test#custom_strategies = {'copy': function('CopyStrategy')}
 let g:test#strategy = 'copy'
 
-function! GoTestTransform(cmd) abort
-    return 'be test' . a:cmd[7:]
+function! PytestTransform(cmd) abort
+    return 'watchexec --restart --exts py --clear -- pytest -n0' . a:cmd[16:]
 endfunction
 
-let g:test#custom_transformations = {'go': function('GoTestTransform')}
 let g:test#python#runner = 'pytest'
+let g:test#custom_transformations = {'python': function('PytestTransform')}
+let g:test#transformation = 'python'
 ]])
 
 u.map_c("<Leader>tf", "TestFile")
 u.map_c("<Leader>tl", "TestNearest")
-u.map_c("<Leader>tT", "TestFile -strategy=basic")
-u.map_c("<Leader>tt", "TestNearest -strategy=basic")
+u.map_c("<Leader>tT", "TestFile -strategy=kitty")
+u.map_c("<Leader>tt", "TestNearest -strategy=kitty")
 -- }}}
 
 -- dirbuf.nvim {{{
@@ -374,7 +364,6 @@ local hydra = require("hydra")
 hydra({
     name = "window management",
     mode = "n",
-
     body = "<Leader><C-w>",
     config = {
         invoke_on_body = true,
@@ -472,8 +461,6 @@ u.map({ "n", "x" }, "y", "<Plug>(YankyYank)")
 
 u.map({ "n", "x" }, "p", "<Plug>(YankyPutIndentAfter)")
 u.map({ "n", "x" }, "P", "<Plug>(YankyPutIndentBefore)")
-u.map({ "n", "x" }, "gp", "<Plug>(YankyPutAfter)")
-u.map({ "n", "x" }, "gP", "<Plug>(YankyPutBefore)")
 
 u.map("n", "<C-p>", "<Plug>(YankyCycleForward)")
 u.map("n", "<C-n>", "<Plug>(YankyCycleBackward)")
@@ -530,7 +517,7 @@ local readline = require("readline")
 u.map("!", "<C-k>", readline.kill_line)
 u.map("!", "<C-u>", readline.backward_kill_line)
 u.map("!", "<M-d>", readline.kill_word)
-u.map("!", "<M-BS>", readline.backward_kill_word)
+u.map("!", "<C-BS>", readline.backward_kill_word)
 u.map("!", "<C-w>", readline.unix_word_rubout)
 u.map("!", "<C-a>", readline.beginning_of_line)
 u.map("!", "<C-e>", readline.end_of_line)
@@ -561,4 +548,40 @@ u.map("n", "<Tab>", grapple.cycle_backward)
 
 -- vim-slime {{{
 vim.g.slime_target = "kitty"
+vim.g.slime_python_ipython = true
+-- }}}
+
+-- tsc.nvim {{{
+require("tsc").setup({})
+-- }}}
+
+-- lsp_signature.nvim {{{
+require("lsp_signature").setup({
+    hi_parameter = "VisualNOS",
+    hint_enable = false,
+})
+-- }}}
+
+-- nnn.nvim {{{
+require("nnn").setup({
+    picker = {
+        cmd = "nnn -CReorA",
+        width = 0.8,
+        height = 0.7,
+        xoffset = 0.5,
+        yoffset = 0.5,
+        border = "single",
+    },
+})
+u.map_c("_", "NnnPicker %:p:h")
+-- }}}
+
+-- wildfire.nvim {{{
+require("wildfire").setup({
+    keymaps = {
+        init_selection = "<C-CR>",
+        node_incremental = "<CR>",
+        node_decremental = "<S-CR>",
+    },
+})
 -- }}}
