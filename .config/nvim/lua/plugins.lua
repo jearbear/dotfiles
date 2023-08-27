@@ -168,6 +168,20 @@ fzf_lua.setup({
     },
     grep = {
         rg_glob = true,
+        fzf_opts = {
+            ["--delimiter"] = "[:]",
+            ["--with-nth"] = "1,3..",
+            ["--nth"] = "2..",
+            ["--tiebreak"] = "index",
+            ["--history"] = vim.fn.stdpath("data") .. "/fzf-lua-grep-history",
+        },
+    },
+    blines = {
+        fzf_opts = {
+            ["--delimiter"] = "[:]",
+            ["--with-nth"] = "3..",
+            ["--tiebreak"] = "index",
+        },
     },
 })
 
@@ -254,7 +268,9 @@ u.map_c("<Leader>cq", "GitConflictListQf")
 -- }}}
 
 -- mini.ai {{{
-require("mini.ai").setup({})
+require("mini.ai").setup({
+    silent = false,
+})
 -- }}}
 
 -- mini.bufremove {{{
@@ -314,27 +330,20 @@ require("mini.completion").setup({
 vim.cmd([[highlight MiniCompletionActiveParameter cterm=bold gui=bold guibg=#45475a]])
 -- }}}
 
--- mini.surround {{{
-require("mini.surround").setup({
-    mappings = {
-        add = "<Leader>sa",
+-- nvim-surround {{{
+-- Reasons I prefer this over mini.surround:
+-- - supports tags really well
+-- - has a mapping to affect the entire line
+-- - supports modifying tags
+require("nvim-surround").setup({
+    keymaps = {
+        normal = "<Leader>sa",
+        normal_cur = "<Leader>ss",
+        visual = "<Leader>sa",
         delete = "<Leader>sd",
-        replace = "<Leader>sc",
-
-        find = "",
-        find_left = "",
-        highlight = "",
-        update_n_lines = "",
-        suffix_last = "",
-        suffix_next = "",
+        change = "<Leader>sc",
     },
-
-    n_lines = 20,
-    respect_selection_type = true,
-    search_method = "cover",
-    silent = false,
 })
-
 -- }}}
 
 -- yanky.nvim {{{

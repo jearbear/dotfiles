@@ -46,6 +46,7 @@ require("lazy").setup({
 
     -- mappings
     { "linty-org/readline.nvim" }, -- provides functions I use to provide readline bindings in insert and command mode
+    { "kylechui/nvim-surround" }, -- manipulate surrounds (works with treesitter unlike mini.surround and highlights selections automatically)
 
     -- copy pasta
     { "gbprod/substitute.nvim" }, -- mappings to substitute text
