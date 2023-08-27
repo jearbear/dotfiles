@@ -36,13 +36,9 @@ require("nvim-treesitter.configs").setup({
     endwise = { enable = true },
     autotag = { enable = true },
     matchup = { enable = true },
-    -- incremental_selection = {
-    --     enable = false,
-    --     keymaps = {
-    --         node_incremental = "<CR>",
-    --         node_decremental = "<S-CR>",
-    --     },
-    -- },
+    -- we use this just for the library of text objects that it provides, but
+    -- the actual selection is handled by mini.ai
+    textobjects = { select = { enable = false } },
 })
 -- }}}
 
@@ -82,8 +78,8 @@ gitsigns.setup({
         u.map("n", "<Leader>gs", gitsigns.stage_hunk, { buffer = bufnr })
         u.map("n", "<Leader>gS", gitsigns.undo_stage_hunk, { buffer = bufnr })
         u.map("n", "<Leader>gu", gitsigns.reset_hunk, { buffer = bufnr })
-        u.map("n", "<Leader>gn", gitsigns.next_hunk, { buffer = bufnr })
-        u.map("n", "<Leader>gp", gitsigns.prev_hunk, { buffer = bufnr })
+        u.map("n", "<C-S-j>", gitsigns.next_hunk, { buffer = bufnr })
+        u.map("n", "<C-S-k>", gitsigns.prev_hunk, { buffer = bufnr })
     end,
     signs = {
         add = { text = "│" },
@@ -100,13 +96,7 @@ gitsigns.setup({
         },
     },
 })
--- }}}
 
--- nvim-autopairs {{{
-require("nvim-autopairs").setup({
-    disable_in_macro = true,
-    disable_in_visualblock = true,
-})
 -- }}}
 
 -- nvim-bqf {{{
@@ -141,96 +131,6 @@ require("marks").setup({
         delete_bookmark0 = "dM",
     },
     sign_priority = 100,
-})
--- }}}
-
--- nvim-snippy {{{
-require("snippy").setup({
-    mappings = {
-        [{ "i", "s" }] = {
-            ["<C-l>"] = "expand_or_advance",
-            ["<C-h>"] = "previous",
-        },
-    },
-})
--- }}}
-
--- nvim-cmp + friends {{{
-local cmp = require("cmp")
-local snippy = require("snippy")
-
-cmp.setup({
-    preselect = cmp.PreselectMode.None,
-    snippet = {
-        expand = function(args)
-            snippy.expand_snippet(args.body)
-        end,
-    },
-    window = {
-        completion = cmp.config.window.bordered(),
-        documentation = cmp.config.window.bordered(),
-    },
-    -- Sorting by kind leads to some weird choices, especially with gopls so we
-    -- disable it.
-    sorting = {
-        priority_weight = 2,
-        comparators = {
-            cmp.config.compare.offset,
-            cmp.config.compare.exact,
-            cmp.config.compare.score,
-            cmp.config.compare.recently_used,
-            -- cmp.config.compare.kind,
-            cmp.config.compare.sort_text,
-            cmp.config.compare.length,
-            cmp.config.compare.order,
-        },
-    },
-    mapping = {
-        ["<C-l>"] = cmp.mapping(function(fallback)
-            if snippy.can_expand_or_advance() then
-                snippy.expand_or_advance()
-            elseif cmp.visible() then
-                cmp.confirm()
-            else
-                fallback()
-            end
-        end, { "i", "s" }),
-        ["<C-h>"] = cmp.mapping(function(fallback)
-            if snippy.can_jump(-1) then
-                snippy.previous()
-            else
-                fallback()
-            end
-        end, { "i", "s" }),
-        ["<C-n>"] = cmp.mapping(cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }), { "i", "c" }),
-        ["<C-p>"] = cmp.mapping(cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }), { "i", "c" }),
-    },
-    sources = cmp.config.sources({
-        -- { name = "nvim_lsp_signature_help" },
-    }, {
-        { name = "nvim_lsp" },
-        { name = "snippy" },
-    }),
-    experimental = {
-        ghost_text = false,
-    },
-})
-
--- when deleting text, enter insert mode instead of bailing out to normal mode
-u.map("s", "<BS>", "<BS>i")
-u.map("s", "<C-d>", "<BS>i")
-u.map("s", "<C-f>", "<Right>")
-u.map("s", "<C-b>", "<Left>")
-u.map("s", "<C-o>", "<C-o>o")
-
--- properly insert braces after completing functions
-local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done({ map_char = { tex = "" } }))
-
-cmp.setup.cmdline({ "/", "?" }, {
-    sources = {
-        { name = "buffer", keyword_length = 5 },
-    },
 })
 -- }}}
 
@@ -353,73 +253,6 @@ u.autocmd("User", {
 u.map_c("<Leader>cq", "GitConflictListQf")
 -- }}}
 
--- smart-splits.nvim {{{
-local smart_splits = require("smart-splits")
-smart_splits.setup({})
--- }}}
-
--- hydra.nvim {{{
-local hydra = require("hydra")
-
-hydra({
-    name = "window management",
-    mode = "n",
-    body = "<Leader><C-w>",
-    config = {
-        invoke_on_body = true,
-        hint = {
-            type = "window",
-            position = "bottom",
-            offset = 1,
-            border = "single",
-        },
-    },
-    heads = {
-        { "h", "<C-w>h" },
-        { "l", "<C-w>l" },
-        { "j", "<C-w>j" },
-        { "k", "<C-w>k" },
-
-        { "v", "<C-w>v" },
-        { "s", "<C-w>s" },
-
-        { "H", "<C-w>H" },
-        { "L", "<C-w>L" },
-        { "J", "<C-w>J" },
-        { "K", "<C-w>K" },
-
-        {
-            "<C-h>",
-            function()
-                smart_splits.resize_left(3)
-            end,
-        },
-        {
-            "<C-j>",
-            function()
-                smart_splits.resize_down(2)
-            end,
-        },
-        {
-            "<C-k>",
-            function()
-                smart_splits.resize_up(2)
-            end,
-        },
-        {
-            "<C-l>",
-            function()
-                smart_splits.resize_right(3)
-            end,
-        },
-
-        { "=", "<C-w>=" },
-
-        { "q", ":q<CR>" },
-    },
-})
--- }}}
-
 -- mini.ai {{{
 require("mini.ai").setup({})
 -- }}}
@@ -434,16 +267,74 @@ u.map("n", "Q", MiniBufremove.wipeout)
 require("mini.align").setup({})
 -- }}}
 
--- nvim-surround {{{
-require("nvim-surround").setup({
-    keymaps = {
-        normal = "ys",
-        normal_cur = "yss",
-        visual = "S",
-        delete = "ds",
-        change = "cs",
+-- mini.pairs {{{
+require("mini.pairs").setup({
+    mappings = {
+        ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\]." },
+        ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\]." },
+        ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\]." },
+        ["<"] = { action = "open", pair = "<>", neigh_pattern = "[^\\]." },
+
+        [")"] = { action = "close", pair = "()", neigh_pattern = "[^\\]." },
+        ["]"] = { action = "close", pair = "[]", neigh_pattern = "[^\\]." },
+        ["}"] = { action = "close", pair = "{}", neigh_pattern = "[^\\]." },
+        [">"] = { action = "close", pair = "<>", neigh_pattern = "[^\\]." },
+
+        ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^\\].", register = { cr = false } },
+        ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^%a\\].", register = { cr = false } },
+        ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\].", register = { cr = false } },
     },
 })
+-- }}}
+
+-- mini.completion {{{
+require("mini.completion").setup({
+    delay = { completion = 0, info = 0, signature = 0 },
+
+    window = {
+        info = { border = "single" },
+        signature = { border = "single" },
+    },
+
+    lsp_completion = {
+        source_func = "completefunc",
+        auto_setup = true,
+    },
+
+    fallback_action = "<C-x><C-n>",
+
+    mappings = {
+        force_twostep = "",
+        force_fallback = "",
+    },
+
+    set_vim_settings = false, -- I've set this on my own
+})
+-- Copied from VisualNOS
+vim.cmd([[highlight MiniCompletionActiveParameter cterm=bold gui=bold guibg=#45475a]])
+-- }}}
+
+-- mini.surround {{{
+require("mini.surround").setup({
+    mappings = {
+        add = "<Leader>sa",
+        delete = "<Leader>sd",
+        replace = "<Leader>sc",
+
+        find = "",
+        find_left = "",
+        highlight = "",
+        update_n_lines = "",
+        suffix_last = "",
+        suffix_next = "",
+    },
+
+    n_lines = 20,
+    respect_selection_type = true,
+    search_method = "cover",
+    silent = false,
+})
+
 -- }}}
 
 -- yanky.nvim {{{
@@ -555,13 +446,6 @@ vim.g.slime_python_ipython = true
 require("tsc").setup({})
 -- }}}
 
--- lsp_signature.nvim {{{
-require("lsp_signature").setup({
-    hi_parameter = "VisualNOS",
-    hint_enable = false,
-})
--- }}}
-
 -- nnn.nvim {{{
 require("nnn").setup({
     picker = {
@@ -574,14 +458,4 @@ require("nnn").setup({
     },
 })
 u.map_c("_", "NnnPicker %:p:h")
--- }}}
-
--- wildfire.nvim {{{
-require("wildfire").setup({
-    keymaps = {
-        init_selection = "<C-CR>",
-        node_incremental = "<CR>",
-        node_decremental = "<S-CR>",
-    },
-})
 -- }}}

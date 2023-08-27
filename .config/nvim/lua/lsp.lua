@@ -1,9 +1,7 @@
 local u = require("utils")
 local lspconfig = require("lspconfig")
 local null_ls = require("null-ls")
-local cmp_nvim_lsp = require("cmp_nvim_lsp")
 local fzf = require("fzf-lua")
-local lsp_format = require("lsp-format")
 
 local min_severity = { min = vim.diagnostic.severity.INFO }
 
@@ -39,14 +37,12 @@ local on_attach = function(client, bufnr)
         vim.diagnostic.goto_prev({
             float = { border = "single" },
             wrap = false,
-            severity = min_severity,
         })
     end)
     map("<C-j>", function()
         vim.diagnostic.goto_next({
             float = { border = "single" },
             wrap = false,
-            severity = min_severity,
         })
     end)
     -- TODO: Make this automatically filter out references coming from imports
@@ -97,9 +93,6 @@ local handlers = {
     ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" }),
     ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" }),
 }
-
--- Add completion via cmp-nvim to the list of LSP capabilities available
-local capabilities = cmp_nvim_lsp.default_capabilities()
 
 local override_formatting_capability = function(client, override)
     client.server_capabilities.documentFormattingProvider = override
@@ -319,6 +312,9 @@ null_ls.setup({
         null_ls.builtins.diagnostics.flake8, -- lint
         null_ls.builtins.formatting.yapf, -- auto-format
         null_ls.builtins.formatting.autoflake, -- auto-remove unused imports
+
+        -- elixir
+        null_ls.builtins.diagnostics.credo,
     },
     on_attach = on_attach,
     handlers = handlers,

@@ -36,6 +36,7 @@ require("lazy").setup({
     {
         "nvim-treesitter/nvim-treesitter",
         dependencies = {
+            "nvim-treesitter/nvim-treesitter-textobjects", -- provides treesitter-powered text objects
             "RRethy/nvim-treesitter-endwise", -- automatically close everything else (tree-sitter)
             "nvim-treesitter/nvim-treesitter-context", -- provide context into where you are
             "windwp/nvim-ts-autotag", -- automatically close tags
@@ -44,8 +45,6 @@ require("lazy").setup({
     },
 
     -- mappings
-    { "anuvyklack/hydra.nvim" }, -- chain mappings together under a common prefix
-    { "mrjones2014/smart-splits.nvim" }, -- more sane resizing behavior
     { "linty-org/readline.nvim" }, -- provides functions I use to provide readline bindings in insert and command mode
 
     -- copy pasta
@@ -56,15 +55,6 @@ require("lazy").setup({
     { "akinsho/git-conflict.nvim", version = "*" }, -- better git conflict resolution
     { "lewis6991/gitsigns.nvim" }, -- VCS change indicators in the gutter
     { "ruifm/gitlinker.nvim", dependencies = { "nvim-lua/plenary.nvim" } }, -- create links to Github
-
-    -- completion
-    { "windwp/nvim-autopairs" }, -- automatically complete pairs
-    { "dcampos/nvim-snippy" }, -- snippets
-    { "hrsh7th/nvim-cmp" }, -- auto-completion
-    { "hrsh7th/cmp-nvim-lsp" }, -- auto-completion + LSP integration
-    { "dcampos/cmp-snippy" }, -- auto-completion + snippets integration
-    { "hrsh7th/cmp-buffer" }, -- auto-completion when searching (`/` and `?`)
-    { "hrsh7th/cmp-nvim-lsp-signature-help" }, -- show signature information as you type using the completion window
 
     -- project navigation + management
     { "elihunter173/dirbuf.nvim" }, -- minimal file browser
@@ -85,7 +75,6 @@ require("lazy").setup({
     -- trying out
     { "chentoast/marks.nvim" }, -- show marks in the gutter and provide better mappings to manipulate them
     { "folke/neodev.nvim" }, -- setup the Lua LSP for neovim development
-    { "kylechui/nvim-surround" }, -- add delete and change enclosing text
     { "echasnovski/mini.nvim" }, -- used for mini.bufremove, mini.ai (enhanced text objects), mini.align
     { "lukas-reineke/indent-blankline.nvim" }, -- indent guides
     { "Wansmer/treesj" }, -- treesitter-powered splits and joins
@@ -93,10 +82,8 @@ require("lazy").setup({
     { "jpalardy/vim-slime" }, -- send text to other terminal windows (useful for REPLs)
     { "dmmulroy/tsc.nvim" }, -- typecheck entire typescript project
     { "pmizio/typescript-tools.nvim", dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" } }, -- more performant typescript LSP
-    { "lukas-reineke/lsp-format.nvim" }, -- auto-formatting
-    { "ray-x/lsp_signature.nvim" }, -- signature help
     { "luukvbaal/nnn.nvim" },
-    { "sustech-data/wildfire.nvim" },
+    { "nvim-treesitter/playground" },
 })
 -- }}}
 
@@ -204,7 +191,7 @@ vim.opt.wildignorecase = true -- perform case-insensitive completion of files in
 vim.opt.wildmode = { "full", "full" } -- complete the entire result in command mode
 
 vim.opt.shortmess:append("c") -- don't show messages when performing completion
-vim.opt.completeopt = { "menu", "menuone" } -- when completing, show a menu even if there is only one result
+vim.opt.completeopt = { "menu", "menuone", "noinsert", "noselect" } -- when completing, show a menu even if there is only one result
 
 vim.opt.shortmess:append("I") -- don't show vim start screen
 
@@ -363,8 +350,8 @@ u.map("n", "<Leader>r", "*``cgn")
 u.map("n", "g<Leader>r", "g*``cgn")
 
 -- faster substitution
-u.map("n", "<Leader>s", ":%s/<C-r><C-w>/")
-u.map("v", "<Leader>s", '"ay/<C-R>a<CR>``:%s//')
+u.map("n", "<Leader>%", ":%s/<C-r><C-w>/")
+u.map("v", "<Leader>%", '"ay/<C-R>a<CR>``:%s//')
 
 -- load the word under the cursor into the search register
 u.map("n", "<Leader>*", "*``")
