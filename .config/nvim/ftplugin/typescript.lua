@@ -9,7 +9,7 @@ vim.b.minicompletion_config = {
             for _, item in ipairs(items) do
                 local new_text = (item.textEdit or {}).newText
                 if type(new_text) == "string" then
-                    item.textEdit.newText = new_text:gsub("^%.+", "")
+                    item.textEdit.newText = new_text:gsub("^[%.?]+", "")
                 end
             end
 
