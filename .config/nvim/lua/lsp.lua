@@ -15,8 +15,7 @@ vim.diagnostic.config({
 
 -- This function gets executed when the LSP is initiated successfully
 local on_attach = function(client, bufnr)
-    -- Provide LSP results to omni completion
-    vim.bo.omnifunc = "v:lua.vim.lsp.omnifunc"
+    vim.bo.omnifunc = "v:lua.MiniCompletion.completefunc_lsp"
 
     -- I use gq mostly to wrap long lines, I don't need a mapping for it since
     -- I almost always do it on save
@@ -37,12 +36,14 @@ local on_attach = function(client, bufnr)
         vim.diagnostic.goto_prev({
             float = { border = "single" },
             wrap = false,
+            severity = min_severity,
         })
     end)
     map("<C-j>", function()
         vim.diagnostic.goto_next({
             float = { border = "single" },
             wrap = false,
+            severity = min_severity,
         })
     end)
     -- TODO: Make this automatically filter out references coming from imports

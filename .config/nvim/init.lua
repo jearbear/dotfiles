@@ -150,6 +150,7 @@ function _G.custom_fold_text()
 end
 
 vim.opt.foldenable = false -- default to open folds
+vim.opt.foldopen = { "hor", "jump", "mark", "quickfix", "search", "tag", "undo" } -- always open folds when navigated through
 vim.wo.foldnestmax = 1
 vim.opt.foldtext = "v:lua.custom_fold_text()"
 vim.opt.fillchars:append({ fold = " " })
@@ -165,6 +166,7 @@ vim.opt.gdefault = true -- default to global (within the line) substitution
 
 vim.opt.splitbelow = true -- default to opening splits below the current buffer
 vim.opt.splitright = true -- default to opening splits ot the right of the current buffer
+vim.opt.equalalways = true -- default to equalizing all windows when splits are created and closed
 
 vim.opt.showmode = false -- don't show the mode below the status line
 
@@ -237,6 +239,13 @@ u.autocmd({ "BufWritePre", "FileWritePre" }, {
     pattern = "*",
     command = "silent! call mkdir(expand('<afile>:p:h'), 'p')",
     group = u.augroup("MKDIR"),
+})
+
+-- automatically resize splits when vim window is resized
+u.autocmd({ "VimResized" }, {
+    pattern = "*",
+    command = "wincmd =",
+    group = u.augroup("RESIZE"),
 })
 
 local lualine = require("lualine")
@@ -353,9 +362,6 @@ u.map("n", "g<Leader>r", "g*``cgn")
 -- faster substitution
 u.map("n", "<Leader>%", ":%s/<C-r><C-w>/")
 u.map("v", "<Leader>%", '"ay/<C-R>a<CR>``:%s//')
-
--- load the word under the cursor into the search register
-u.map("n", "<Leader>*", "*``")
 
 -- load the selection into the seach register
 u.map("v", "*", '"ay/<C-R>a<CR>``')

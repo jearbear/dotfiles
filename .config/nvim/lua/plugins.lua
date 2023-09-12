@@ -49,8 +49,8 @@ treesitter_context.setup({
     line_numbers = false,
 })
 
-vim.cmd("highlight TreesitterContext guibg=#313244")
-vim.cmd("highlight TreesitterContextBottom guibg=#313244 guisp=#51576d gui=underline")
+vim.cmd([[highlight TreesitterContext guibg=#313244]])
+vim.cmd([[highlight TreesitterContextBottom guibg=#313244 guisp=#51576d gui=underline]])
 
 u.map("n", "[c", treesitter_context.go_to_context)
 -- }}}
@@ -74,12 +74,17 @@ require("gitlinker").setup({
 local gitsigns = require("gitsigns")
 gitsigns.setup({
     on_attach = function(bufnr)
+        u.map("n", "<Leader>gp", gitsigns.preview_hunk, { buffer = bufnr })
         u.map("n", "<Leader>gb", gitsigns.blame_line, { buffer = bufnr })
         u.map("n", "<Leader>gs", gitsigns.stage_hunk, { buffer = bufnr })
         u.map("n", "<Leader>gS", gitsigns.undo_stage_hunk, { buffer = bufnr })
         u.map("n", "<Leader>gu", gitsigns.reset_hunk, { buffer = bufnr })
-        u.map("n", "<C-S-j>", gitsigns.next_hunk, { buffer = bufnr })
-        u.map("n", "<C-S-k>", gitsigns.prev_hunk, { buffer = bufnr })
+        u.map("n", "<C-S-j>", function()
+            gitsigns.next_hunk({ wrap = false })
+        end, { buffer = bufnr })
+        u.map("n", "<C-S-k>", function()
+            gitsigns.prev_hunk({ wrap = false })
+        end, { buffer = bufnr })
     end,
     signs = {
         add = { text = "│" },
@@ -166,6 +171,11 @@ fzf_lua.setup({
             ["ctrl-q"] = "select-all+accept",
         },
     },
+    files = {
+        fzf_opts = {
+            ["--history"] = vim.fn.stdpath("data") .. "/fzf-lua-files-history",
+        },
+    },
     grep = {
         rg_glob = true,
         fzf_opts = {
@@ -181,6 +191,7 @@ fzf_lua.setup({
             ["--delimiter"] = "[:]",
             ["--with-nth"] = "3..",
             ["--tiebreak"] = "index",
+            ["--history"] = vim.fn.stdpath("data") .. "/fzf-lua-blines-history",
         },
     },
 })
@@ -207,6 +218,7 @@ u.map("n", "<Bslash>", fzf_lua.live_grep_native)
 u.map("n", "<Leader><Bslash>", fzf_lua.live_grep_resume)
 u.map("n", "<Bar>", fzf_lua.grep_cword)
 u.map("v", "<Bar>", fzf_lua.grep_visual)
+u.map("n", "<Leader>o", fzf_lua.oldfiles)
 -- }}}
 
 -- vim-matchup {{{
@@ -269,7 +281,7 @@ u.map_c("<Leader>cq", "GitConflictListQf")
 
 -- mini.ai {{{
 require("mini.ai").setup({
-    silent = false,
+    silent = true,
 })
 -- }}}
 
@@ -286,10 +298,10 @@ require("mini.align").setup({})
 -- mini.pairs {{{
 require("mini.pairs").setup({
     mappings = {
-        ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\]." },
-        ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\]." },
-        ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\]." },
-        ["<"] = { action = "open", pair = "<>", neigh_pattern = "[^\\]." },
+        ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\][%s]" },
+        ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\][%s]" },
+        ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\][%s]" },
+        ["<"] = { action = "open", pair = "<>", neigh_pattern = "[^\\][%s]" },
 
         [")"] = { action = "close", pair = "()", neigh_pattern = "[^\\]." },
         ["]"] = { action = "close", pair = "[]", neigh_pattern = "[^\\]." },
@@ -313,14 +325,14 @@ require("mini.completion").setup({
     },
 
     lsp_completion = {
-        source_func = "completefunc",
-        auto_setup = true,
+        source_func = "omnifunc",
+        auto_setup = false, -- we will set this up when the LSP attaches only
     },
 
     fallback_action = "<C-x><C-n>",
 
     mappings = {
-        force_twostep = "",
+        force_twostep = "<C-x><C-o>",
         force_fallback = "",
     },
 
@@ -394,13 +406,12 @@ u.map("v", "<Leader>/", "gc", { remap = true })
 -- indent-blankline.nvim {{{
 require("indent_blankline").setup({
     show_current_context = true,
-    show_current_context_start = true,
+    -- show_current_context_start = true,
 })
 -- vim.g.indent_blankline_char = ""
-vim.g.indent_blankline_filetype = { "python", "yaml", "json", "typescript", "typescriptreact" }
-vim.cmd("highlight IndentBlanklineContextChar guifg=#51576d gui=nocombine")
--- vim.cmd("highlight IndentBlanklineContextChar guifg=#313244 gui=nocombine")
-vim.cmd("highlight IndentBlanklineContextStart guibg=#313244 guisp=#51576d gui=underline")
+vim.g.indent_blankline_filetype = { "python", "yaml", "json", "typescript", "typescriptreact", "elixir" }
+vim.cmd([[highlight IndentBlanklineContextChar guifg=#51576d gui=nocombine]])
+vim.cmd([[highlight IndentBlanklineContextStart guibg=#313244 guisp=#51576d gui=underline]])
 -- }}}
 
 -- treesj {{{
@@ -442,8 +453,8 @@ u.map("n", "<Leader>j", function()
     grapple.popup_tags()
     lualine.refresh()
 end)
-u.map("n", "<S-Tab>", grapple.cycle_forward)
-u.map("n", "<Tab>", grapple.cycle_backward)
+u.map("n", "<S-Tab>", grapple.cycle_backward)
+u.map("n", "<Tab>", grapple.cycle_forward)
 -- }}}
 
 -- vim-slime {{{

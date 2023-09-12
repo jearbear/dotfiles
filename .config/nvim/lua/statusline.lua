@@ -56,14 +56,13 @@ lualine.setup({
                 "diagnostics",
                 sources = { "nvim_diagnostic" },
                 sections = { "error", "warn", "info" },
-                symbols = { error = "E", warn = "W", info = "I" },
+                symbols = { error = "E/", warn = "W/", info = "I/" },
             },
         },
         lualine_z = { "%l" },
     },
     inactive_sections = {
-        lualine_a = {},
-        lualine_b = {
+        lualine_a = {
             {
                 function()
                     return "*"
@@ -71,7 +70,7 @@ lualine.setup({
                 cond = grapple.exists,
             },
         },
-        lualine_c = {
+        lualine_b = {
             {
                 "filename",
                 path = 1,
@@ -83,6 +82,7 @@ lualine.setup({
                 padding = 2,
             },
         },
+        lualine_c = {},
         lualine_x = {},
         lualine_y = { "%l" },
         lualine_z = {},
