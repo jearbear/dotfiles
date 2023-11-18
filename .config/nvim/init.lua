@@ -25,24 +25,20 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-    { "catppuccin/nvim", name = "catppuccin" },
-
     -- UI
+    { "catppuccin/nvim", name = "catppuccin" }, -- theme
     { "andymass/vim-matchup", dependencies = { "anuvyklack/nvim-keymap-amend" } }, -- more extensive support for matching with `%`
     { "kevinhwang91/nvim-bqf" }, -- enhanced qflist (previews FZF integration)
     { "nvim-lualine/lualine.nvim" }, -- statusline
 
     -- tree-sitter
-    {
-        "nvim-treesitter/nvim-treesitter",
-        dependencies = {
-            "nvim-treesitter/nvim-treesitter-textobjects", -- provides treesitter-powered text objects
-            "RRethy/nvim-treesitter-endwise", -- automatically close everything else (tree-sitter)
-            "nvim-treesitter/nvim-treesitter-context", -- provide context into where you are
-            "windwp/nvim-ts-autotag", -- automatically close tags
-            "IndianBoy42/tree-sitter-just", -- support for justfiles
-        },
-    },
+    { "nvim-treesitter/nvim-treesitter" },
+    { "nvim-treesitter/nvim-treesitter-textobjects" }, -- provides treesitter-powered text objects
+    { "nvim-treesitter/nvim-treesitter-context" }, -- provide context into where you are
+    { "windwp/nvim-ts-autotag" }, -- automatically close tags
+    { "RRethy/nvim-treesitter-endwise" }, -- automatically close everything else
+    { "IndianBoy42/tree-sitter-just" }, -- support for justfiles
+    { "Wansmer/treesj" }, -- treesitter-powered splits and joins
 
     -- mappings
     { "linty-org/readline.nvim" }, -- provides functions I use to provide readline bindings in insert and command mode
@@ -58,14 +54,20 @@ require("lazy").setup({
     { "ruifm/gitlinker.nvim", dependencies = { "nvim-lua/plenary.nvim" } }, -- create links to Github
 
     -- project navigation + management
-    { "elihunter173/dirbuf.nvim" }, -- minimal file browser
-    { "vim-test/vim-test" }, -- test execution
+    { "stevearc/oil.nvim" }, -- minimal file browser
+    { "vim-test/vim-test" }, -- run tests and copy test runner commands
     { "wsdjeg/vim-fetch" }, -- support opening line and column numbers (e.g. foo.bar:13)
+    { "chentoast/marks.nvim" }, -- show marks in the gutter and provide better mappings to manipulate them
+    { "jpalardy/vim-slime" }, -- send text to other terminal windows (useful for REPLs)
 
     -- LSP stuff
     { "neovim/nvim-lspconfig" }, -- defines configs for various LSP servers for me
-    { "jose-elias-alvarez/null-ls.nvim" }, -- integrates gofumports, prettier, etc with the LSP support
-    { "jose-elias-alvarez/typescript.nvim" }, -- extra code actions for typescript
+    { "pmizio/typescript-tools.nvim" }, -- better/faster typescript support
+    { "folke/neodev.nvim" }, -- setup the Lua LSP for neovim development
+
+    -- linting + formatting
+    { "mfussenegger/nvim-lint" }, -- integrate linters that aren't provided by LSPs
+    { "stevearc/conform.nvim" }, -- integrate formatters that aren't provided by LSPs
 
     -- language support for those not covered by tree-sitter
     { "fladson/vim-kitty" },
@@ -73,18 +75,13 @@ require("lazy").setup({
     -- fzf
     { "ibhagwan/fzf-lua", branch = "main" },
 
-    -- trying out
-    { "chentoast/marks.nvim" }, -- show marks in the gutter and provide better mappings to manipulate them
-    { "folke/neodev.nvim" }, -- setup the Lua LSP for neovim development
+    -- mini
     { "echasnovski/mini.nvim" }, -- used for mini.bufremove, mini.ai (enhanced text objects), mini.align
-    { "lukas-reineke/indent-blankline.nvim" }, -- indent guides
-    { "Wansmer/treesj" }, -- treesitter-powered splits and joins
-    { "cbochs/grapple.nvim" }, -- mark files so you can quickly jump to them
-    { "jpalardy/vim-slime" }, -- send text to other terminal windows (useful for REPLs)
-    { "dmmulroy/tsc.nvim" }, -- typecheck entire typescript project
-    { "pmizio/typescript-tools.nvim", dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" } }, -- more performant typescript LSP
-    { "luukvbaal/nnn.nvim" },
+
+    -- trying out
     { "nvim-treesitter/playground" },
+    { "altermo/ultimate-autopair.nvim" },
+    { "L3MON4D3/LuaSnip" },
 })
 -- }}}
 
@@ -97,7 +94,7 @@ require("catppuccin").setup({
     integrations = {
         cmp = true,
         gitsigns = true,
-        indent_blankline = { enabled = true },
+        indent_blankline = false,
         markdown = true,
         mini = true,
         native_lsp = {
@@ -112,6 +109,11 @@ require("catppuccin").setup({
         treesitter_context = true,
         which_key = true,
     },
+    custom_highlights = function(colors)
+        return {
+            Whitespace = { fg = "#313244" },
+        }
+    end,
 })
 
 vim.cmd("colorscheme catppuccin")
@@ -142,7 +144,7 @@ vim.opt.fillchars:append({ diff = "╱" }) -- prettier filler characters for emp
 
 function _G.custom_fold_text()
     local line = vim.fn.getline(vim.v.foldstart)
-    local marker = string.rep("{", 3)
+    local marker = "{{{"
     if string.sub(line, -#marker) == marker then
         line = string.sub(line, 0, -4) -- remove fold marker
     end
@@ -194,7 +196,10 @@ vim.opt.wildignorecase = true -- perform case-insensitive completion of files in
 vim.opt.wildmode = { "full", "full" } -- complete the entire result in command mode
 
 vim.opt.shortmess:append("c") -- don't show messages when performing completion
-vim.opt.completeopt = { "menu", "menuone", "noinsert", "noselect" } -- when completing, show a menu even if there is only one result
+-- vim.opt.completeopt = { "menu", "menuone" } -- when completing, show a menu even if there is only one result
+vim.opt.complete = { ".", "w", "b" } -- source keyword and line completions from current buffer, open windows, and other loaded buffers
+
+vim.opt.pumheight = 10 -- limit the number of completion results to show at a time
 
 vim.opt.shortmess:append("I") -- don't show vim start screen
 
@@ -237,7 +242,12 @@ end, { nargs = "+", complete = "file" })
 -- automatically create parent directories as needed when saving files
 u.autocmd({ "BufWritePre", "FileWritePre" }, {
     pattern = "*",
-    command = "silent! call mkdir(expand('<afile>:p:h'), 'p')",
+    -- command = "silent! call mkdir(expand('<afile>:p:h'), 'p')",
+    callback = function()
+        if vim.bo.filetype ~= "oil" then
+            vim.cmd([[silent! call mkdir(expand('<afile>:p:h'), 'p')]])
+        end
+    end,
     group = u.augroup("MKDIR"),
 })
 
@@ -260,17 +270,6 @@ u.autocmd({ "FocusGained", "BufEnter" }, {
         end
     end,
     group = u.augroup("AUTO_READ"),
-})
-
--- automatically write the file on focus lost
-u.autocmd({ "BufLeave", "FocusLost" }, {
-    callback = function()
-        if vim.bo.modified and not vim.bo.readonly and vim.fn.expand("%") ~= "" and vim.bo.buftype == "" then
-            vim.cmd([[silent update]])
-            lualine.refresh()
-        end
-    end,
-    group = u.augroup("AUTO_WRITE"),
 })
 
 u.autocmd({ "BufWritePost" }, {
@@ -319,12 +318,12 @@ u.map("", "Y", "y$")
 u.map("", "0", "^")
 
 -- scroll by larger increments
-u.map("n", "<C-d>", "3<C-d>")
-u.map("n", "<C-u>", "3<C-u>")
+u.map({ "n", "v" }, "<C-d>", "10<C-d>")
+u.map({ "n", "v" }, "<C-u>", "10<C-u>")
 
 -- navigate by visual lines when lines are wrapped
-u.map("n", "j", "gj")
-u.map("n", "k", "gk")
+u.map({ "n", "v" }, "j", "gj")
+u.map({ "n", "v" }, "k", "gk")
 
 -- move selected lines around
 u.map("v", "<C-j>", ":m '>+1<CR>gv=gv")
@@ -339,9 +338,9 @@ u.map_c("<S-CR>", "call append(line('.') - 1, '')")
 
 -- buffer/tab navigation
 u.map("n", "<BS>", "<C-^>")
-u.map_c("<Leader>[", "tabp")
-u.map_c("<Leader>]", "tabn")
-u.map_c("<Leader>T", "tabe")
+u.map_c("<S-Tab>", "tabp")
+u.map_c("<Tab>", "tabn")
+u.map_c("<Leader><Tab>", "tabe")
 
 -- navigate quickfix list
 u.map("n", "[q", function()
@@ -354,6 +353,9 @@ u.map("n", "]q", function()
         vim.cmd("cfirst")
     end
 end)
+
+-- I never use the stock behavior so this makes omni completion faster
+u.map("i", "<C-o>", "<C-x><C-o>")
 
 -- faster renaming
 u.map("n", "<Leader>r", "*``cgn")

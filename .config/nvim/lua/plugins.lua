@@ -13,6 +13,7 @@ require("nvim-treesitter.configs").setup({
         "go",
         "graphql",
         "heex",
+        "css",
         "javascript",
         "json",
         "jsonnet",
@@ -47,6 +48,8 @@ local treesitter_context = require("treesitter-context")
 treesitter_context.setup({
     enable = true,
     line_numbers = false,
+    max_lines = 5,
+    trim_scope = "inner",
 })
 
 vim.cmd([[highlight TreesitterContext guibg=#313244]])
@@ -111,7 +114,7 @@ require("bqf").setup({
         ptogglemode = "Z",
         stogglebuf = "`",
         filter = "K",
-        filterr = "D",
+        filterr = "R",
     },
     preview = {
         win_height = 25,
@@ -125,11 +128,10 @@ require("bqf").setup({
 require("marks").setup({
     default_mappings = false,
     bookmark_0 = {
-        sign = "•",
-        virt_text = "<<- bookmark ->>",
+        sign = "*",
     },
     mappings = {
-        set_bookmark0 = "m;",
+        toggle_bookmark0 = "m;",
         next_bookmark0 = ")",
         prev_bookmark0 = "(",
         delete_bookmark = "dm",
@@ -159,11 +161,15 @@ fzf_lua.setup({
         },
         preview = {
             vertical = "up:75%",
-            layout = "vertical",
+            horizontal = "right:66%",
+            layout = "flex",
             border = "sharp",
             winopts = {
                 number = true,
             },
+            title = false,
+            delay = 0,
+            scrollbar = false,
         },
     },
     keymap = {
@@ -172,6 +178,7 @@ fzf_lua.setup({
         },
     },
     files = {
+        -- previewer = "bat",
         fzf_opts = {
             ["--history"] = vim.fn.stdpath("data") .. "/fzf-lua-files-history",
         },
@@ -196,6 +203,12 @@ fzf_lua.setup({
     },
 })
 
+local with_history = function(fn, name)
+    return function()
+        fn({ fzf_opts = { ["--history"] = vim.fn.stdpath("data") .. "/fzf-lua-" .. name } })
+    end
+end
+
 u.map_c("<Leader><Leader>", "FzfLua")
 u.map("n", "<Leader>f", function()
     if vim.loop.cwd() == vim.fn.expand("~") then
@@ -208,7 +221,7 @@ u.map("n", "<Leader>F", fzf_lua.git_status)
 u.map("n", "<Leader>l", fzf_lua.buffers)
 u.map("n", "<Leader>;", fzf_lua.blines)
 u.map("n", "<Leader>:", fzf_lua.command_history)
-u.map("n", "<Leader>G", fzf_lua.lsp_live_workspace_symbols)
+u.map("n", "<Leader>G", with_history(fzf_lua.lsp_live_workspace_symbols, "live-workspace-symbols"))
 u.map("n", "<Leader>k", function()
     -- Remove filename from results since it's not useful
     fzf_lua.lsp_document_symbols({ fzf_cli_args = "--with-nth 2.." })
@@ -219,6 +232,7 @@ u.map("n", "<Leader><Bslash>", fzf_lua.live_grep_resume)
 u.map("n", "<Bar>", fzf_lua.grep_cword)
 u.map("v", "<Bar>", fzf_lua.grep_visual)
 u.map("n", "<Leader>o", fzf_lua.oldfiles)
+u.map("n", "<Leader>j", fzf_lua.jumps)
 -- }}}
 
 -- vim-matchup {{{
@@ -236,7 +250,7 @@ let g:test#custom_strategies = {'copy': function('CopyStrategy')}
 let g:test#strategy = 'copy'
 
 function! PytestTransform(cmd) abort
-    return 'watchexec --restart --exts py --clear -- pytest -n0' . a:cmd[16:]
+    return 'watchexec --restart --exts py --clear -- pytest -n0' . a:cmd[17:]
 endfunction
 
 let g:test#python#runner = 'pytest'
@@ -248,11 +262,6 @@ u.map_c("<Leader>tf", "TestFile")
 u.map_c("<Leader>tl", "TestNearest")
 u.map_c("<Leader>tT", "TestFile -strategy=kitty")
 u.map_c("<Leader>tt", "TestNearest -strategy=kitty")
--- }}}
-
--- dirbuf.nvim {{{
-vim.g.loaded_netrwPlugin = true
-vim.g.loaded_netrw = true
 -- }}}
 
 -- git-conflict.nvim {{{
@@ -280,8 +289,14 @@ u.map_c("<Leader>cq", "GitConflictListQf")
 -- }}}
 
 -- mini.ai {{{
+local gen_ai_spec = require("mini.extra").gen_ai_spec
 require("mini.ai").setup({
     silent = true,
+    custom_textobjects = {
+        g = gen_ai_spec.buffer(),
+        i = gen_ai_spec.indent(),
+        N = gen_ai_spec.number(),
+    },
 })
 -- }}}
 
@@ -295,26 +310,6 @@ u.map("n", "Q", MiniBufremove.wipeout)
 require("mini.align").setup({})
 -- }}}
 
--- mini.pairs {{{
-require("mini.pairs").setup({
-    mappings = {
-        ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\][%s]" },
-        ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\][%s]" },
-        ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\][%s]" },
-        ["<"] = { action = "open", pair = "<>", neigh_pattern = "[^\\][%s]" },
-
-        [")"] = { action = "close", pair = "()", neigh_pattern = "[^\\]." },
-        ["]"] = { action = "close", pair = "[]", neigh_pattern = "[^\\]." },
-        ["}"] = { action = "close", pair = "{}", neigh_pattern = "[^\\]." },
-        [">"] = { action = "close", pair = "<>", neigh_pattern = "[^\\]." },
-
-        ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^\\].", register = { cr = false } },
-        ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^%a\\].", register = { cr = false } },
-        ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\].", register = { cr = false } },
-    },
-})
--- }}}
-
 -- mini.completion {{{
 require("mini.completion").setup({
     delay = { completion = 0, info = 0, signature = 0 },
@@ -324,22 +319,13 @@ require("mini.completion").setup({
         signature = { border = "single" },
     },
 
-    lsp_completion = {
-        source_func = "omnifunc",
-        auto_setup = false, -- we will set this up when the LSP attaches only
-    },
-
-    fallback_action = "<C-x><C-n>",
+    fallback_action = "<C-x><C-p>",
 
     mappings = {
         force_twostep = "<C-x><C-o>",
         force_fallback = "",
     },
-
-    set_vim_settings = false, -- I've set this on my own
 })
--- Copied from VisualNOS
-vim.cmd([[highlight MiniCompletionActiveParameter cterm=bold gui=bold guibg=#45475a]])
 -- }}}
 
 -- nvim-surround {{{
@@ -403,17 +389,6 @@ u.map("n", "<Leader>/", "gcc", { remap = true })
 u.map("v", "<Leader>/", "gc", { remap = true })
 -- }}}
 
--- indent-blankline.nvim {{{
-require("indent_blankline").setup({
-    show_current_context = true,
-    -- show_current_context_start = true,
-})
--- vim.g.indent_blankline_char = ""
-vim.g.indent_blankline_filetype = { "python", "yaml", "json", "typescript", "typescriptreact", "elixir" }
-vim.cmd([[highlight IndentBlanklineContextChar guifg=#51576d gui=nocombine]])
-vim.cmd([[highlight IndentBlanklineContextStart guibg=#313244 guisp=#51576d gui=underline]])
--- }}}
-
 -- treesj {{{
 local treesj = require("treesj")
 treesj.setup({
@@ -436,46 +411,79 @@ u.map("!", "<M-f>", readline.forward_word)
 u.map("!", "<M-b>", readline.backward_word)
 -- }}}
 
--- grapple.nvim {{{
-local grapple = require("grapple")
-grapple.setup({
-    scope = grapple.resolvers.git_branch,
-    popup_options = {
-        width = 150,
-    },
-})
-
-u.map("n", "<Leader>8", function()
-    grapple.toggle()
-    lualine.refresh()
-end)
-u.map("n", "<Leader>j", function()
-    grapple.popup_tags()
-    lualine.refresh()
-end)
-u.map("n", "<S-Tab>", grapple.cycle_backward)
-u.map("n", "<Tab>", grapple.cycle_forward)
--- }}}
-
 -- vim-slime {{{
 vim.g.slime_target = "kitty"
 vim.g.slime_python_ipython = true
 -- }}}
 
--- tsc.nvim {{{
-require("tsc").setup({})
+-- nvim-lint {{{
+require("lint").linters_by_ft = {
+    sh = { "shellcheck" },
+    bash = { "shellcheck" },
+    python = { "flake8" },
+    elixir = { "credo" },
+}
+
+u.autocmd({ "BufRead", "BufWritePost" }, {
+    callback = function()
+        require("lint").try_lint()
+    end,
+    group = u.augroup("LINT"),
+})
 -- }}}
 
--- nnn.nvim {{{
-require("nnn").setup({
-    picker = {
-        cmd = "nnn -CReorA",
-        width = 0.8,
-        height = 0.7,
-        xoffset = 0.5,
-        yoffset = 0.5,
-        border = "single",
+-- conform.nvim {{{
+local conform = require("conform")
+
+require("conform.formatters.stylua").args =
+    { "--search-parent-directories", "--indent-type", "Spaces", "--stdin-filepath", "$FILENAME", "-" }
+
+conform.setup({
+    formatters_by_ft = {
+        lua = { "stylua" },
+        python = { "autoflake", "isort", "yapf" },
+        css = { "prettierd" },
+        json = { "prettierd" },
+        yaml = { "prettierd" },
     },
+    notify_on_error = false,
 })
-u.map_c("_", "NnnPicker %:p:h")
+
+u.autocmd("BufWritePre", {
+    pattern = { "*.lua", "*.css", "*.json", "*.yaml", "*.yml" },
+    callback = function(args)
+        conform.format({ bufnr = args.buf, async = false })
+    end,
+    group = u.augroup("FORMAT_SYNC"),
+})
+
+u.autocmd("BufWritePost", {
+    pattern = { "*.py" },
+    callback = function(args)
+        conform.format({ bufnr = args.buf, async = true }, function(err)
+            if not err then
+                vim.cmd([[update]])
+            end
+        end)
+    end,
+    group = u.augroup("FORMAT_ASYNC"),
+})
+-- }}}
+
+-- ultimate-autopair {{{
+require("ultimate-autopair").setup({})
+-- }}}
+
+-- oil.nvim {{{
+require("oil").setup({
+    columns = {},
+    keymaps = {
+        ["q"] = "actions.close",
+        ["<C-v>"] = "actions.select_vsplit",
+        ["<C-s>"] = "actions.select_split",
+    },
+    skip_confirm_for_simple_edits = true,
+})
+
+u.map_c("-", "Oil")
 -- }}}

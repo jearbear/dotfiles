@@ -43,11 +43,10 @@
     get = !git fetch origin ${1}:${1} && git checkout ${1} -- && :
 
     save = !"f() { git aa && git commit --message \"${1:-$(shuf -n 1 ~/.word_list.txt)}\"; git push; }; f"
+    fsave = !"f() { git aa && git commit --message \"${1:-$(shuf -n 1 ~/.word_list.txt)}\" --no-verify; git push; }; f"
     resave = !git aa && git recommit && git push -f && :
 
     cleanup = !"f() { set -e; BRANCHES=$(git pick branches-without-main); git branch -D $BRANCHES; }; f"
-
-    rename = branch --move
 
     l = log --oneline main..
 
@@ -58,6 +57,7 @@
     rim = !git update && git rebase --interactive main && :
     rib = !git rebase --interactive $(git base) && :
     rom = !git update && git rebase main && :
+    romp = !git update && git rebase main && git push -f && :
     recon = !git aa && git rebase --continue
 
     bmerge = !"f() { set -e; BRANCH=$(git pick branch); git merge --squash $BRANCH && git commit -m \"[MERGED] $BRANCH\"; }; f"

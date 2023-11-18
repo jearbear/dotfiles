@@ -2,12 +2,13 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-python manage.py makemigrations --noinput --check --dry-run > /dev/null
-git ls-files -o --exclude-standard | grep migrations | xargs git add || true
-
-edited_files="$(git diff HEAD --staged --diff-filter=d --name-only | grep .py$)"
-echo "$edited_files"
-echo "$edited_files" | xargs autoflake
-echo "$edited_files" | xargs isort
-echo "$edited_files" | xargs yapf -i
-echo "$edited_files" | xargs git add
+# python manage.py makemigrations --noinput --check --dry-run > /dev/null
+# git ls-files -o --exclude-standard | grep migrations | xargs git add || true
+#
+# edited_files="$(git diff HEAD --staged --diff-filter=d --name-only | grep .py$ || true)"
+# if [[ "$edited_files" ]]; then
+#     echo "$edited_files" | xargs autoflake
+#     echo "$edited_files" | xargs isort
+#     echo "$edited_files" | xargs yapf -i
+#     echo "$edited_files" | xargs git add
+# fi

@@ -15,6 +15,11 @@ export FZF_DEFAULT_COMMAND='fd --type file'
 export FZF_DEFAULT_OPTS="--color=16,fg:white:dim,bg:-1,preview-fg:-1,preview-bg:-1,hl:yellow:regular,fg+:yellow:regular:bold,bg+:-1,gutter:-1,hl+:yellow:regular:bold,query:white,info:magenta,border:magenta:dim,prompt:magenta,marker:cyan:bold,spinner:magenta,disabled:gray,header:gray,pointer:red --bind 'ctrl-n:next-history' --bind 'ctrl-p:prev-history'"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
+# FZF used to be an ncurses program so had this as a non-zero value to support
+# windows? In practice this just makes closing it feel sluggish, especially in
+# Vim, so we just disable it.
+export ESCDELAY=0
+
 export MANPAGER='nvim +Man!'
 
 typeset -U PATH path # deduplicate PATH

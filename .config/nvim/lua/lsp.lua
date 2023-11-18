@@ -1,6 +1,6 @@
 local u = require("utils")
 local lspconfig = require("lspconfig")
-local null_ls = require("null-ls")
+local configs = require("lspconfig.configs")
 local fzf = require("fzf-lua")
 
 local min_severity = { min = vim.diagnostic.severity.INFO }
@@ -15,14 +15,12 @@ vim.diagnostic.config({
 
 -- This function gets executed when the LSP is initiated successfully
 local on_attach = function(client, bufnr)
-    vim.bo.omnifunc = "v:lua.MiniCompletion.completefunc_lsp"
-
-    -- I use gq mostly to wrap long lines, I don't need a mapping for it since
-    -- I almost always do it on save
+    -- I use gq mostly to wrap long lines, I don't need a mapping for
+    -- formatting since I almost always do it on save
     vim.bo.formatexpr = ""
 
-    -- New files tend to break the LSP so make a shorter command to make this
-    -- easier to manage
+    -- New files tend to break the LSP so make a shorter command
+    -- to make this easier to manage
     vim.api.nvim_create_user_command("LR", "LspRestart", {})
 
     -- Mappings
@@ -68,14 +66,9 @@ local on_attach = function(client, bufnr)
     -- Enable auto-formatting if it's provided
     if client.server_capabilities.documentFormattingProvider then
         u.autocmd("BufWritePre", {
-            buffer = 0,
+            buffer = bufnr,
             callback = function()
-                -- yapf is slow AF
-                if vim.bo.filetype == "python" then
-                    vim.lsp.buf.format({ async = true })
-                else
-                    vim.lsp.buf.format({ timeout_ms = 5000, async = false })
-                end
+                vim.lsp.buf.format({ timeout_ms = 2000, async = false })
             end,
         })
     end
@@ -119,40 +112,33 @@ lspconfig.gopls.setup({
 })
 
 -- Typescript
-local typescript = require("typescript")
-typescript.setup({
-    go_to_source_definition = {
-        fallback = true,
-    },
-    server = {
-        on_attach = function(client, bufnr)
-            on_attach(client, bufnr)
-
-            u.map_c("<C-]>", "TypescriptGoToSourceDefinition", { buffer = bufnr })
-
-            u.buf_command(bufnr, "TRF", function(_)
-                vim.cmd("TypescriptRenameFile")
-            end, { nargs = 0 })
-            u.buf_command(bufnr, "TAMI", typescript.actions.addMissingImports, { nargs = 0 })
-            u.buf_command(bufnr, "TRU", typescript.actions.removeUnused, { nargs = 0 })
-
-            -- Leave formatting up to eslint language server
-            -- override_formatting_capability(client, false)
-        end,
-        handlers = handlers,
-        capabilities = capabilities,
+require("typescript-tools").setup({
+    on_attach = function(client, bufnr)
+        -- Formatting is handled by eslint
+        override_formatting_capability(client, false)
+        on_attach(client, bufnr)
+    end,
+    handlers = handlers,
+    capabilities = capabilities,
+    settings = {
+        tsserver_file_preferences = {
+            autoImportFileExcludePatterns = {
+                "**/node_modules/antd",
+                "**/node_modules/react-i18next",
+                "**/node_modules/i18next",
+            },
+        },
     },
 })
 
 -- Eslint
 lspconfig.eslint.setup({
     on_attach = function(client, bufnr)
-        on_attach(client, bufnr)
-
         -- This LS doesn't broadcast formatting support initially and Neovim
         -- doesn't support dynamic registration so force broadcasting
         -- formatting capabilities.
         override_formatting_capability(client, true)
+        on_attach(client, bufnr)
     end,
     handlers = handlers,
     capabilities = capabilities,
@@ -166,6 +152,20 @@ lspconfig.elixirls.setup({
     cmd = { "/opt/homebrew/bin/elixir-ls" },
 })
 
+-- Things this currently does better:
+--  slightly smarter auto-completion
+--  doesn't seem to crash randomly
+-- Things this does worse (and thus why I don't use it yet):
+--  much slower startup time (which blocks saving until it's done)
+--  throws in snippets in a bunch of completions, which mini.completion does not support yet
+--  doesn't support workspace symbols
+-- lspconfig.lexical.setup({
+--     on_attach = on_attach,
+--     handlers = handlers,
+--     capabilities = capabilities,
+--     cmd = { vim.env.HOME .. "/projects/lexical/_build/dev/package/lexical/bin/start_lexical.sh" },
+-- })
+
 -- Vimscript
 lspconfig.vimls.setup({
     on_attach = on_attach,
@@ -178,7 +178,7 @@ lspconfig.lua_ls.setup({
     on_attach = function(client, bufnr)
         on_attach(client, bufnr)
 
-        -- Leave formatting up to stylua provided by null-ls
+        -- Leave formatting up to stylua
         override_formatting_capability(client, false)
     end,
     handlers = handlers,
@@ -243,13 +243,7 @@ lspconfig.jsonnet_ls.setup({
 
 -- Python
 lspconfig.pyright.setup({
-    on_attach = function(client, bufnr)
-        on_attach(client, bufnr)
-
-        u.buf_command(bufnr, "PO", function(_)
-            vim.cmd("PyrightOrganizeImports")
-        end, { nargs = 0 })
-    end,
+    on_attach = on_attach,
     handlers = handlers,
     capabilities = capabilities,
     settings = {
@@ -276,49 +270,4 @@ lspconfig.terraformls.setup({
     on_attach = on_attach,
     handlers = handlers,
     capabilities = capabilities,
-})
-
--- null-ls
-null_ls.setup({
-    sources = {
-        -- shellcheck
-        null_ls.builtins.diagnostics.shellcheck,
-        null_ls.builtins.code_actions.shellcheck,
-
-        -- golang
-        null_ls.builtins.diagnostics.golangci_lint.with({
-            args = { "run", "--fix=false", "--out-format=json", "$DIRNAME", "--path-prefix", "$ROOT" },
-        }),
-        null_ls.builtins.formatting.gofumpt,
-        null_ls.builtins.formatting.goimports,
-
-        -- lua
-        -- Using stylua instead of LSP formatter since it's more opinionated.
-        null_ls.builtins.formatting.stylua.with({
-            extra_args = { "--indent-type", "Spaces" },
-        }),
-
-        null_ls.builtins.formatting.prettierd.with({
-            filetypes = {
-                -- "html",
-                "css",
-                "json",
-                "yaml",
-                "markdown",
-                "graphql",
-            },
-        }),
-
-        -- python
-        null_ls.builtins.diagnostics.flake8, -- lint
-        null_ls.builtins.formatting.yapf, -- auto-format
-        null_ls.builtins.formatting.autoflake, -- auto-remove unused imports
-
-        -- elixir
-        null_ls.builtins.diagnostics.credo,
-    },
-    on_attach = on_attach,
-    handlers = handlers,
-    -- Look for language-specific files first to better handle mono-repos.
-    root_dir = lspconfig.util.root_pattern("tsconfig.json", "go.mod", ".git"),
 })

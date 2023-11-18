@@ -1,4 +1,4 @@
-# vim readline keybindings
+# emacs readline keybindings
 bindkey -e
 
 # bash-like navigation
@@ -83,6 +83,7 @@ alias reload='source ~/.zshrc && source ~/.zshenv'
 alias rgm='rg --multiline --multiline-dotall'
 alias rgo='rg --no-heading --no-filename --no-line-number --only-matching'
 alias j='just'
+alias we='watchexec'
 
 alias cdg='cd ~/Projects/giga'
 alias cds='cd ~/Projects/sugo'
@@ -146,10 +147,11 @@ __git-pick-files() {
 zle -N __git-pick-files
 bindkey '^G^F' __git-pick-files
 
-
 # enable direnv
 eval "$(direnv hook zsh)"
 
+# enable rtx
+eval "$(rtx activate zsh)"
 
 # enable side-by-side mode for git diff output if the terminal is wide enough
 __preexec_function () {

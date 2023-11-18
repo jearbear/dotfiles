@@ -1,5 +1,4 @@
 local u = require("utils")
-local grapple = require("grapple")
 local lualine = require("lualine")
 
 lualine.setup({
@@ -18,18 +17,11 @@ lualine.setup({
                     if vim.fn.winwidth(0) < 120 then
                         return str:sub(1, 1)
                     end
-                    return str
+                    return str:sub(1, 3)
                 end,
             },
         },
-        lualine_b = {
-            {
-                function()
-                    return "*"
-                end,
-                cond = grapple.exists,
-            },
-        },
+        lualine_b = {},
         lualine_c = {
             {
                 "filename",
@@ -62,14 +54,7 @@ lualine.setup({
         lualine_z = { "%l" },
     },
     inactive_sections = {
-        lualine_a = {
-            {
-                function()
-                    return "*"
-                end,
-                cond = grapple.exists,
-            },
-        },
+        lualine_a = {},
         lualine_b = {
             {
                 "filename",
@@ -97,7 +82,7 @@ lualine.setup({
             {
                 "tabs",
                 max_length = vim.o.columns,
-                mode = 2,
+                mode = 0,
             },
         },
     },
