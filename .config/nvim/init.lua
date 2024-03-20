@@ -81,7 +81,8 @@ require("lazy").setup({
     -- trying out
     { "nvim-treesitter/playground" },
     { "altermo/ultimate-autopair.nvim" },
-    { "L3MON4D3/LuaSnip" },
+    { "tpope/vim-rsi" },
+    -- { "L3MON4D3/LuaSnip" },
 })
 -- }}}
 
@@ -144,7 +145,7 @@ vim.opt.fillchars:append({ diff = "╱" }) -- prettier filler characters for emp
 
 function _G.custom_fold_text()
     local line = vim.fn.getline(vim.v.foldstart)
-    local marker = "{{{"
+    local marker = string.rep("{", 3)
     if string.sub(line, -#marker) == marker then
         line = string.sub(line, 0, -4) -- remove fold marker
     end
@@ -160,7 +161,7 @@ vim.opt.fillchars:append({ fold = " " })
 vim.opt.conceallevel = 2 -- hide concealed text
 
 vim.opt.incsearch = true -- jump to search results as you type
-vim.opt.hlsearch = false -- highlight search results
+vim.opt.hlsearch = true -- highlight search results
 vim.opt.ignorecase = true -- perform case-insensitive search and replace
 vim.opt.smartcase = true -- override `ignorecase` if capital letters are involved
 
@@ -251,8 +252,15 @@ u.autocmd({ "BufWritePre", "FileWritePre" }, {
     group = u.augroup("MKDIR"),
 })
 
--- automatically resize splits when vim window is resized
-u.autocmd({ "VimResized" }, {
+u.autocmd("BufReadPost", {
+    desc = "Open file at the last position it was edited earlier",
+    group = u.augroup("REOPEN"),
+    pattern = "*",
+    command = 'silent! normal! g`"zv',
+})
+
+-- automatically resize splits
+u.autocmd({ "VimResized", "TabEnter" }, {
     pattern = "*",
     command = "wincmd =",
     group = u.augroup("RESIZE"),
@@ -272,6 +280,17 @@ u.autocmd({ "FocusGained", "BufEnter" }, {
     group = u.augroup("AUTO_READ"),
 })
 
+-- automatically write the file on focus lost
+u.autocmd({ "BufLeave", "FocusLost" }, {
+    callback = function()
+        if vim.bo.modified and not vim.bo.readonly and vim.fn.expand("%") ~= "" and vim.bo.buftype == "" then
+            vim.cmd([[silent update]])
+            lualine.refresh()
+        end
+    end,
+    group = u.augroup("AUTO_WRITE"),
+})
+
 u.autocmd({ "BufWritePost" }, {
     pattern = "*",
     callback = lualine.refresh,
@@ -288,20 +307,20 @@ u.autocmd("BufEnter", {
 })
 
 -- highlight all results while searching
-u.autocmd("CmdlineEnter", {
-    pattern = "/,?",
-    callback = function()
-        vim.opt.hlsearch = true
-    end,
-    group = u.augroup("SEARCH_START"),
-})
-u.autocmd("CmdlineLeave", {
-    pattern = "/,?",
-    callback = function()
-        vim.opt.hlsearch = false
-    end,
-    group = u.augroup("SEARCH_END"),
-})
+-- u.autocmd("CmdlineEnter", {
+--     pattern = "/,?",
+--     callback = function()
+--         vim.opt.hlsearch = true
+--     end,
+--     group = u.augroup("SEARCH_START"),
+-- })
+-- u.autocmd("CmdlineLeave", {
+--     pattern = "/,?",
+--     callback = function()
+--         vim.opt.hlsearch = false
+--     end,
+--     group = u.augroup("SEARCH_END"),
+-- })
 
 -- treat .json.tftpl files as json
 u.autocmd({ "BufEnter", "BufNew" }, {
@@ -310,6 +329,21 @@ u.autocmd({ "BufEnter", "BufNew" }, {
         vim.bo.filetype = "json"
     end,
     group = u.augroup("JSON_TFTPL"),
+})
+-- }}}
+
+-- conveniences for empty buffers and the `q:` buffer
+u.autocmd({ "BufEnter" }, {
+    pattern = "*",
+    callback = function()
+        if vim.o.filetype ~= "" then
+            return
+        end
+
+        u.map("n", "<CR>", "<CR>", { buffer = true })
+        u.map_c("q", "q", { buffer = true })
+    end,
+    group = u.augroup("NONE"),
 })
 -- }}}
 
@@ -354,8 +388,9 @@ u.map("n", "]q", function()
     end
 end)
 
--- I never use the stock behavior so this makes omni completion faster
+-- I never use the stock behavior so this makes completions faster
 u.map("i", "<C-o>", "<C-x><C-o>")
+u.map("i", "<C-l>", "<C-x><C-l>")
 
 -- faster renaming
 u.map("n", "<Leader>r", "*``cgn")
@@ -381,12 +416,22 @@ u.map({ "n", "x" }, "<Leader>P", '"+P', { remap = true })
 -- select content that was just pasted
 u.map("n", "gp", "`[v`]")
 
--- basic readline mappings ("!" maps both insert and command mode)
-u.map("!", "<C-d>", "<Delete>")
+-- navigate command history using what's already typed in
 u.map("c", "<C-p>", "<Up>")
 u.map("c", "<C-n>", "<Down>")
-u.map("!", "<C-f>", "<Right>")
-u.map("!", "<C-b>", "<Left>")
+
+-- basic readline mappings ("!" maps both insert and command mode)
+-- u.map("!", "<C-d>", "<Delete>")
+-- u.map("!", "<C-f>", "<Right>")
+-- u.map("!", "<C-b>", "<Left>")
+u.map("i", "<C-k>", "<C-o>d$")
+u.map("!", "<C-BS>", "<C-w>")
+-- u.map("i", "<C-e>", "<C-o>A")
+--
+u.map("i", "<C-e>", function()
+    u.close_completion_menu()
+    u.set_cursor_pos(u.line_number(), u.col_number() + 1)
+end)
 
 -- edit config files
 u.map_c("<Leader>vev", "edit ~/.config/nvim/init.lua")

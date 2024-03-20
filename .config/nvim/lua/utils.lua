@@ -54,4 +54,27 @@ M.set_indent_guide = function()
     }
 end
 
+M.line_number = function()
+    return vim.fn.line(".")
+end
+
+M.col_number = function()
+    local line_number = M.line_number()
+    return vim.fn.strchars(vim.fn.getline(line_number))
+end
+
+M.set_cursor_pos = function(line_number, col_number)
+    vim.fn.setcursorcharpos({ line_number, col_number })
+end
+
+M.close_completion_menu = function()
+    if vim.fn.pumvisible() ~= 0 then
+        M.feed_keys(" <BS>") -- for some reason <C-y> will nuke the rest of the line if you are in completion mode and you haven't selected anything, so doing this instead
+    end
+end
+
+M.feed_keys = function(keys)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, true, true), "", false)
+end
+
 return M

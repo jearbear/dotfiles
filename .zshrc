@@ -17,9 +17,11 @@ bindkey '^H' backward-kill-word
 
 # history
 HISTFILE=~/.histfile
-HISTSIZE=100000
-SAVEHIST=100000
+HISTSIZE=1000000000
+SAVEHIST=1000000000
 setopt HIST_IGNORE_DUPS appendhistory
+setopt INC_APPEND_HISTORY
+setopt HIST_FIND_NO_DUPS
 
 # background jobs
 setopt NO_HUP NO_CHECK_JOBS
@@ -40,6 +42,9 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z-_}={A-Za-z_-}'
 setopt completeinword
 autoload -Uz compinit promptinit
+# setup completions for packages installed via homebrew (must be done before
+# compinit)
+FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 compinit
 
 # colors
@@ -83,7 +88,9 @@ alias reload='source ~/.zshrc && source ~/.zshenv'
 alias rgm='rg --multiline --multiline-dotall'
 alias rgo='rg --no-heading --no-filename --no-line-number --only-matching'
 alias j='just'
+alias g='git'
 alias we='watchexec'
+alias d='date -r'
 
 alias cdg='cd ~/Projects/giga'
 alias cds='cd ~/Projects/sugo'

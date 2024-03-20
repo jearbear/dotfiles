@@ -1,5 +1,4 @@
 local u = require("utils")
-local lualine = require("lualine")
 
 -- nvim-treesitter {{{
 -- work around compiler issues on Mac OS
@@ -59,7 +58,7 @@ u.map("n", "[c", treesitter_context.go_to_context)
 -- }}}
 
 -- tree-sitter-just {{{
-require("tree-sitter-just").setup({})
+-- require("tree-sitter-just").setup({})
 -- }}}
 
 -- gitlinker.nvim {{{
@@ -117,8 +116,9 @@ require("bqf").setup({
         filterr = "R",
     },
     preview = {
-        win_height = 25,
-        win_vheight = 25,
+        auto_preview = true,
+        win_height = 999,
+        win_vheight = 999,
         winblend = 0,
     },
 })
@@ -163,6 +163,7 @@ fzf_lua.setup({
             vertical = "up:75%",
             horizontal = "right:66%",
             layout = "flex",
+            flip_columns = 160,
             border = "sharp",
             winopts = {
                 number = true,
@@ -222,10 +223,7 @@ u.map("n", "<Leader>l", fzf_lua.buffers)
 u.map("n", "<Leader>;", fzf_lua.blines)
 u.map("n", "<Leader>:", fzf_lua.command_history)
 u.map("n", "<Leader>G", with_history(fzf_lua.lsp_live_workspace_symbols, "live-workspace-symbols"))
-u.map("n", "<Leader>k", function()
-    -- Remove filename from results since it's not useful
-    fzf_lua.lsp_document_symbols({ fzf_cli_args = "--with-nth 2.." })
-end)
+u.map("n", "<Leader>k", with_history(fzf_lua.lsp_document_symbols, "document-symbols"))
 u.map("n", "<Leader>h", fzf_lua.help_tags)
 u.map("n", "<Bslash>", fzf_lua.live_grep_native)
 u.map("n", "<Leader><Bslash>", fzf_lua.live_grep_resume)
@@ -275,17 +273,17 @@ u.autocmd("User", {
     callback = function()
         vim.notify("Conflicts detected! Enabling git conflict mappings...")
 
-        u.map_c("[n", "GitConflictPrevConflict", { buffer = 0 })
-        u.map_c("]n", "GitConflictNextConflict", { buffer = 0 })
-        u.map_c("<Leader>co", "GitConflictChooseOurs", { buffer = 0 })
-        u.map_c("<Leader>ct", "GitConflictChooseTheirs", { buffer = 0 })
-        u.map_c("<Leader>cb", "GitConflictChooseBoth", { buffer = 0 })
-        u.map_c("<Leader>cB", "GitConflictChooseBase", { buffer = 0 })
+        u.map_c("[n", "GitConflictPrevConflict", { buffer = true })
+        u.map_c("]n", "GitConflictNextConflict", { buffer = true })
+        u.map_c("<Leader>co", "GitConflictChooseOurs", { buffer = true })
+        u.map_c("<Leader>ct", "GitConflictChooseTheirs", { buffer = true })
+        u.map_c("<Leader>cb", "GitConflictChooseBoth", { buffer = true })
+        u.map_c("<Leader>cB", "GitConflictChooseBase", { buffer = true })
     end,
     group = u.augroup("GIT_CONFLICT"),
 })
 
-u.map_c("<Leader>cq", "GitConflictListQf")
+u.map_c("<Leader>cq", "GitConflictListQf", { desc = "Load git conflicts into the quickfix" })
 -- }}}
 
 -- mini.ai {{{
@@ -342,6 +340,8 @@ require("nvim-surround").setup({
         change = "<Leader>sc",
     },
 })
+
+u.map("n", "<Leader>S", "<Leader>sa$", { remap = true })
 -- }}}
 
 -- yanky.nvim {{{
@@ -357,8 +357,8 @@ yanky.setup({
 
 u.map({ "n", "x" }, "y", "<Plug>(YankyYank)")
 
-u.map({ "n", "x" }, "p", "<Plug>(YankyPutIndentAfter)")
-u.map({ "n", "x" }, "P", "<Plug>(YankyPutIndentBefore)")
+u.map({ "n", "x" }, "p", "<Plug>(YankyPutAfter)")
+u.map({ "n", "x" }, "P", "<Plug>(YankyPutBefore)")
 
 u.map("n", "<C-p>", "<Plug>(YankyCycleForward)")
 u.map("n", "<C-n>", "<Plug>(YankyCycleBackward)")
@@ -398,19 +398,6 @@ u.map("n", "gJ", treesj.join)
 u.map("n", "gS", treesj.split)
 -- }}}
 
--- readline.nvim {{{
-local readline = require("readline")
-u.map("!", "<C-k>", readline.kill_line)
-u.map("!", "<C-u>", readline.backward_kill_line)
-u.map("!", "<M-d>", readline.kill_word)
-u.map("!", "<C-BS>", readline.backward_kill_word)
-u.map("!", "<C-w>", readline.unix_word_rubout)
-u.map("!", "<C-a>", readline.beginning_of_line)
-u.map("!", "<C-e>", readline.end_of_line)
-u.map("!", "<M-f>", readline.forward_word)
-u.map("!", "<M-b>", readline.backward_word)
--- }}}
-
 -- vim-slime {{{
 vim.g.slime_target = "kitty"
 vim.g.slime_python_ipython = true
@@ -420,7 +407,7 @@ vim.g.slime_python_ipython = true
 require("lint").linters_by_ft = {
     sh = { "shellcheck" },
     bash = { "shellcheck" },
-    python = { "flake8" },
+    python = { "ruff" },
     elixir = { "credo" },
 }
 
@@ -441,34 +428,19 @@ require("conform.formatters.stylua").args =
 conform.setup({
     formatters_by_ft = {
         lua = { "stylua" },
-        python = { "autoflake", "isort", "yapf" },
+        python = { "ruff_fix", "ruff_format" },
         css = { "prettierd" },
         json = { "prettierd" },
         yaml = { "prettierd" },
+        javascript = { "prettierd" },
+        javascriptreact = { "prettierd" },
     },
     notify_on_error = false,
+    format_on_save = {
+        timeout_ms = 500,
+        lsp_fallback = true,
+    },
 })
-
-u.autocmd("BufWritePre", {
-    pattern = { "*.lua", "*.css", "*.json", "*.yaml", "*.yml" },
-    callback = function(args)
-        conform.format({ bufnr = args.buf, async = false })
-    end,
-    group = u.augroup("FORMAT_SYNC"),
-})
-
-u.autocmd("BufWritePost", {
-    pattern = { "*.py" },
-    callback = function(args)
-        conform.format({ bufnr = args.buf, async = true }, function(err)
-            if not err then
-                vim.cmd([[update]])
-            end
-        end)
-    end,
-    group = u.augroup("FORMAT_ASYNC"),
-})
--- }}}
 
 -- ultimate-autopair {{{
 require("ultimate-autopair").setup({})

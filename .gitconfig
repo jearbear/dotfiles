@@ -37,7 +37,7 @@
     branch-name = rev-parse --abbrev-ref HEAD
     head = rev-parse HEAD
 
-    new = !git co -b jerry-${1?} main && git mm && :
+    new = !git update && git co --merge -b jerry-${1?} main && :
     backup = !git co -b $(git branch-name)-backup && git co - && :
 
     get = !git fetch origin ${1}:${1} && git checkout ${1} -- && :
@@ -47,10 +47,11 @@
     resave = !git aa && git recommit && git push -f && :
 
     cleanup = !"f() { set -e; BRANCHES=$(git pick branches-without-main); git branch -D $BRANCHES; }; f"
+    cleanup-remote = !"f() { set -e; git fetch --prune; BRANCHES=$(git pick my-remote-branches); git push origin --delete $BRANCHES; }; f"
 
     l = log --oneline main..
 
-    mm = !git update && git merge main --no-edit && git push
+    mm = !git update && git merge main --no-edit && git push && :
     mt = mergetool
 
     ri = !"f() { set -e; BRANCH=$(git pick branch); git rebase --interactive $BRANCH; }; f"
@@ -58,7 +59,7 @@
     rib = !git rebase --interactive $(git base) && :
     rom = !git update && git rebase main && :
     romp = !git update && git rebase main && git push -f && :
-    recon = !git aa && git rebase --continue
+    recon = !git aa && git rebase --continue && :
 
     bmerge = !"f() { set -e; BRANCH=$(git pick branch); git merge --squash $BRANCH && git commit -m \"[MERGED] $BRANCH\"; }; f"
 
@@ -68,7 +69,7 @@
 
     cor = !git fetch origin ${1?}:jerry-${1?} && git checkout jerry-${1?} && :
 
-    update = fetch origin main:main
+    update = fetch origin main:main --update-head-ok
 
     unstage = reset -q HEAD
     recommit = commit --amend --no-edit
@@ -82,9 +83,14 @@
     unstow = !"if [[ $(git log -1 --format=%B) == '[STOWED]' ]]; then git reset @^; else echo \"Nothing to unstow\"; fi"
 
     ci = !gh pr checks
-    pr = !hub pull-request --edit --browse --push && :
-    prd = !hub pull-request --draft --edit --browse --push && :
+    pr = !git ac || true && git mm && hub pull-request --edit --browse --push && :
+    prd = !git ac || true && git mm && hub pull-request --draft --edit --browse --push && :
+    prm = !git ac || true && git mm && hub pull-request --edit --browse --push && gh pr merge --auto --squash && :
     open = !"gh pr view --web || open https://$(git remote get-url origin | sed 's/git@//; s/.git//; s/:/\\//')/pull/new/$(git branch-name)"
+
+
+[branch]
+    sort = -committerdate
 
 [commit]
     gpgSign = false
@@ -111,14 +117,19 @@
     cmd = difft "$LOCAL" "$REMOTE"
 
 [merge]
-    conflictstyle = diff3
+    conflictstyle = zdiff3
     tool = nvimdiff
+    autoStash = true
 
 [mergetool]
     prompt = false
 
 [mergetool "nvimdiff"]
     cmd = nvim $MERGED
+
+[fetch]
+    ; automatically delete tracking branches if they don't exist in github
+    prune = true
 
 [pull]
     ff = only
@@ -130,6 +141,7 @@
 [rebase]
     autostash = true
     autosquash = true
+    updateRefs = true
 
 [stash]
     showPatch = true
@@ -150,6 +162,9 @@
     line-numbers-plus-style = bold green
 
     navigate = true
+
+[protocol]
+    version = 2
 
 ; Allow commands like `git clone gh:jearbear/dotfiles`
 [url "git@github.com:"]

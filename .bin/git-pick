@@ -82,6 +82,15 @@ __git-pick-branches-without-main() {
         tr '\n' ' '
 }
 
+__git-pick-my-remote-branches() {
+    git branch --remote                     |
+        rg 'origin/jerry-'                  |
+        sed 's/origin.//'                   |
+        awk '{$1=$1};1'                     |
+        __fzf-git-branch --multi            |
+        tr '\n' ' '
+}
+
 __git-pick-commit() {
     git log --date=short --format="%C(green)%C(bold)%cd %C(auto)%h%d %s (%an)" --color=always |
         __fzf-git-commit --multi --preview 'git show --color=always {2}'                      |

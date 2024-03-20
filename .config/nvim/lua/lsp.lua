@@ -103,7 +103,6 @@ lspconfig.gopls.setup({
         override_formatting_capability(client, false)
     end,
     handlers = handlers,
-    capabilities = capabilities,
     settings = {
         gopls = {
             usePlaceholders = true,
@@ -119,8 +118,9 @@ require("typescript-tools").setup({
         on_attach(client, bufnr)
     end,
     handlers = handlers,
-    capabilities = capabilities,
     settings = {
+        separate_diagnostic_server = true,
+        include_completions_with_insert_text = false,
         tsserver_file_preferences = {
             autoImportFileExcludePatterns = {
                 "**/node_modules/antd",
@@ -141,15 +141,16 @@ lspconfig.eslint.setup({
         on_attach(client, bufnr)
     end,
     handlers = handlers,
-    capabilities = capabilities,
 })
 
 -- Elixir
 lspconfig.elixirls.setup({
     on_attach = on_attach,
     handlers = handlers,
-    capabilities = capabilities,
     cmd = { "/opt/homebrew/bin/elixir-ls" },
+    settings = {
+        dialyzerEnabled = false,
+    },
 })
 
 -- Things this currently does better:
@@ -170,7 +171,6 @@ lspconfig.elixirls.setup({
 lspconfig.vimls.setup({
     on_attach = on_attach,
     handlers = handlers,
-    capabilities = capabilities,
 })
 
 -- Lua
@@ -182,7 +182,6 @@ lspconfig.lua_ls.setup({
         override_formatting_capability(client, false)
     end,
     handlers = handlers,
-    capabilities = capabilities,
     settings = {
         Lua = {
             runtime = {
@@ -210,14 +209,12 @@ lspconfig.lua_ls.setup({
 lspconfig.rust_analyzer.setup({
     on_attach = on_attach,
     handlers = handlers,
-    capabilities = capabilities,
 })
 
 -- Tailwind
 lspconfig.tailwindcss.setup({
     on_attach = on_attach,
     handlers = handlers,
-    capabilities = capabilities,
     filetypes = {
         "html",
         "javascriptreact",
@@ -237,7 +234,6 @@ lspconfig.tailwindcss.setup({
 lspconfig.jsonnet_ls.setup({
     on_attach = on_attach,
     handlers = handlers,
-    capabilities = capabilities,
     single_file_support = true,
 })
 
@@ -245,11 +241,15 @@ lspconfig.jsonnet_ls.setup({
 lspconfig.pyright.setup({
     on_attach = on_attach,
     handlers = handlers,
-    capabilities = capabilities,
     settings = {
+        pyright = {
+            -- Use Ruff instead
+            disableOrganizeImports = true,
+        },
         python = {
             analysis = {
                 typeCheckingMode = "off",
+                ignore = { "*" },
             },
         },
     },
@@ -259,7 +259,6 @@ lspconfig.pyright.setup({
 lspconfig.jsonls.setup({
     on_attach = on_attach,
     handlers = handlers,
-    capabilities = capabilities,
     init_options = {
         provideFormatter = false,
     },
@@ -269,5 +268,4 @@ lspconfig.jsonls.setup({
 lspconfig.terraformls.setup({
     on_attach = on_attach,
     handlers = handlers,
-    capabilities = capabilities,
 })
