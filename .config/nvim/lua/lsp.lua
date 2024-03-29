@@ -111,7 +111,28 @@ lspconfig.gopls.setup({
 })
 
 -- Typescript
-require("typescript-tools").setup({
+-- This is supposed to be faster, but it crashes literally all the time and seems very buggy
+-- require("typescript-tools").setup({
+--     on_attach = function(client, bufnr)
+--         -- Formatting is handled by eslint
+--         override_formatting_capability(client, false)
+--         on_attach(client, bufnr)
+--     end,
+--     handlers = handlers,
+--     settings = {
+--         separate_diagnostic_server = true,
+--         include_completions_with_insert_text = false,
+--         tsserver_file_preferences = {
+--             autoImportFileExcludePatterns = {
+--                 "**/node_modules/antd",
+--                 "**/node_modules/react-i18next",
+--                 "**/node_modules/i18next",
+--             },
+--         },
+--     },
+-- })
+
+lspconfig.tsserver.setup({
     on_attach = function(client, bufnr)
         -- Formatting is handled by eslint
         override_formatting_capability(client, false)

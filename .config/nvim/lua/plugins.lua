@@ -7,29 +7,30 @@ require("nvim-treesitter.install").compilers = { "gcc-11" }
 require("nvim-treesitter.configs").setup({
     ensure_installed = {
         "bash",
+        "css",
         "eex",
         "elixir",
         "go",
         "graphql",
         "heex",
-        "css",
         "javascript",
         "json",
         "jsonnet",
+        "just",
         "lua",
         "make",
         "markdown",
         "markdown_inline",
         "python",
         "regex",
-        "terraform",
         "rust",
-        -- "sql", -- this doesn't work very well at the moment
         "surface",
+        "terraform",
         "tsx",
         "typescript",
         "vim",
         "yaml",
+        -- "sql", -- this doesn't work very well at the moment
     },
     highlight = { enable = true },
     indent = { enable = true },
@@ -55,10 +56,6 @@ vim.cmd([[highlight TreesitterContext guibg=#313244]])
 vim.cmd([[highlight TreesitterContextBottom guibg=#313244 guisp=#51576d gui=underline]])
 
 u.map("n", "[c", treesitter_context.go_to_context)
--- }}}
-
--- tree-sitter-just {{{
--- require("tree-sitter-just").setup({})
 -- }}}
 
 -- gitlinker.nvim {{{
@@ -308,6 +305,26 @@ u.map("n", "Q", MiniBufremove.wipeout)
 require("mini.align").setup({})
 -- }}}
 
+-- mini.pairs {{{
+-- require("mini.pairs").setup({
+--     mappings = {
+--         ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\][%s]" },
+--         ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\][%s]" },
+--         ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\][%s]" },
+--         ["<"] = { action = "open", pair = "<>", neigh_pattern = "[^\\][%s]" },
+--
+--         [")"] = { action = "close", pair = "()", neigh_pattern = "[^\\]." },
+--         ["]"] = { action = "close", pair = "[]", neigh_pattern = "[^\\]." },
+--         ["}"] = { action = "close", pair = "{}", neigh_pattern = "[^\\]." },
+--         [">"] = { action = "close", pair = "<>", neigh_pattern = "[^\\]." },
+--
+--         ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^\\].", register = { cr = false } },
+--         ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^%a\\].", register = { cr = false } },
+--         ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\].", register = { cr = false } },
+--     },
+-- })
+-- }}}
+
 -- mini.completion {{{
 require("mini.completion").setup({
     delay = { completion = 0, info = 0, signature = 0 },
@@ -317,11 +334,8 @@ require("mini.completion").setup({
         signature = { border = "single" },
     },
 
-    fallback_action = "<C-x><C-p>",
-
     mappings = {
-        force_twostep = "<C-x><C-o>",
-        force_fallback = "",
+        force_twostep = "<C-o>",
     },
 })
 -- }}}

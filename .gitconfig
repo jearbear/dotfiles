@@ -11,7 +11,7 @@
     ; `set -e; FOO=$(...)` is used to terminate when <C-c> is pressed in FZF
     ; `xargs` will trim for you if you don't provide other arguments
 
-    b = branch
+    b = branch --format="%(color:dim)%(committerdate:relative)%09%(color:reset)%(refname:short)"
     s = status
     c = !"f() { git commit -m \"${1:-$(shuf -n 1 ~/.word_list.txt)}\"; }; f"
     ac = !"f() { git aa; git commit -m \"${1:-$(shuf -n 1 ~/.word_list.txt)}\"; }; f"
@@ -43,8 +43,6 @@
     get = !git fetch origin ${1}:${1} && git checkout ${1} -- && :
 
     save = !"f() { git aa && git commit --message \"${1:-$(shuf -n 1 ~/.word_list.txt)}\"; git push; }; f"
-    fsave = !"f() { git aa && git commit --message \"${1:-$(shuf -n 1 ~/.word_list.txt)}\" --no-verify; git push; }; f"
-    resave = !git aa && git recommit && git push -f && :
 
     cleanup = !"f() { set -e; BRANCHES=$(git pick branches-without-main); git branch -D $BRANCHES; }; f"
     cleanup-remote = !"f() { set -e; git fetch --prune; BRANCHES=$(git pick my-remote-branches); git push origin --delete $BRANCHES; }; f"

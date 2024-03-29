@@ -32,12 +32,11 @@ require("lazy").setup({
     { "nvim-lualine/lualine.nvim" }, -- statusline
 
     -- tree-sitter
-    { "nvim-treesitter/nvim-treesitter" },
+    { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
     { "nvim-treesitter/nvim-treesitter-textobjects" }, -- provides treesitter-powered text objects
     { "nvim-treesitter/nvim-treesitter-context" }, -- provide context into where you are
     { "windwp/nvim-ts-autotag" }, -- automatically close tags
     { "RRethy/nvim-treesitter-endwise" }, -- automatically close everything else
-    { "IndianBoy42/tree-sitter-just" }, -- support for justfiles
     { "Wansmer/treesj" }, -- treesitter-powered splits and joins
 
     -- mappings
@@ -82,7 +81,6 @@ require("lazy").setup({
     { "nvim-treesitter/playground" },
     { "altermo/ultimate-autopair.nvim" },
     { "tpope/vim-rsi" },
-    -- { "L3MON4D3/LuaSnip" },
 })
 -- }}}
 
@@ -197,7 +195,7 @@ vim.opt.wildignorecase = true -- perform case-insensitive completion of files in
 vim.opt.wildmode = { "full", "full" } -- complete the entire result in command mode
 
 vim.opt.shortmess:append("c") -- don't show messages when performing completion
--- vim.opt.completeopt = { "menu", "menuone" } -- when completing, show a menu even if there is only one result
+vim.opt.completeopt = { "menu", "menuone" } -- when completing, show a menu even if there is only one result
 vim.opt.complete = { ".", "w", "b" } -- source keyword and line completions from current buffer, open windows, and other loaded buffers
 
 vim.opt.pumheight = 10 -- limit the number of completion results to show at a time
@@ -306,22 +304,6 @@ u.autocmd("BufEnter", {
     group = u.augroup("PRS"),
 })
 
--- highlight all results while searching
--- u.autocmd("CmdlineEnter", {
---     pattern = "/,?",
---     callback = function()
---         vim.opt.hlsearch = true
---     end,
---     group = u.augroup("SEARCH_START"),
--- })
--- u.autocmd("CmdlineLeave", {
---     pattern = "/,?",
---     callback = function()
---         vim.opt.hlsearch = false
---     end,
---     group = u.augroup("SEARCH_END"),
--- })
-
 -- treat .json.tftpl files as json
 u.autocmd({ "BufEnter", "BufNew" }, {
     pattern = "*.json.tftpl",
@@ -330,7 +312,6 @@ u.autocmd({ "BufEnter", "BufNew" }, {
     end,
     group = u.augroup("JSON_TFTPL"),
 })
--- }}}
 
 -- conveniences for empty buffers and the `q:` buffer
 u.autocmd({ "BufEnter" }, {
