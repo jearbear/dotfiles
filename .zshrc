@@ -19,9 +19,19 @@ bindkey '^H' backward-kill-word
 HISTFILE=~/.histfile
 HISTSIZE=1000000000
 SAVEHIST=1000000000
-setopt HIST_IGNORE_DUPS appendhistory
-setopt INC_APPEND_HISTORY
-setopt HIST_FIND_NO_DUPS
+HISTORY_IGNORE="(ls|cd|pwd|exit|cd)*"
+
+setopt EXTENDED_HISTORY      # write the history file in the ':start:elapsed;command' format.
+setopt INC_APPEND_HISTORY    # write to the history file immediately, not when the shell exits.
+setopt SHARE_HISTORY         # share history between all sessions.
+setopt HIST_IGNORE_DUPS      # do not record an event that was just recorded again.
+setopt HIST_IGNORE_ALL_DUPS  # delete an old recorded event if a new event is a duplicate.
+setopt HIST_IGNORE_SPACE     # do not record an event starting with a space.
+setopt HIST_SAVE_NO_DUPS     # do not write a duplicate event to the history file.
+setopt HIST_VERIFY           # do not execute immediately upon history expansion.
+setopt APPEND_HISTORY        # append to history file (default)
+setopt HIST_NO_STORE         # don't store history commands
+setopt HIST_REDUCE_BLANKS    # remove superfluous blanks from each command line being added to the history.
 
 # background jobs
 setopt NO_HUP NO_CHECK_JOBS
@@ -58,10 +68,13 @@ bindkey '^v' edit-command-line
 # version control info
 autoload -Uz vcs_info
 zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:*' check-for-changes true
+zstyle ':vcs_info:*' stagedstr ' [!]'
+zstyle ':vcs_info:*' unstagedstr ' [?]'
 precmd() {
     vcs_info
 }
-zstyle ':vcs_info:git*' formats "%F{magenta}// %F{white}%b"
+zstyle ':vcs_info:git*' formats "%F{magenta}// %F{white}%b%F{green}%c%F{red}%u"
 setopt prompt_subst
 
 # prompt

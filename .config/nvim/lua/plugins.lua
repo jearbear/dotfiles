@@ -117,24 +117,8 @@ require("bqf").setup({
         win_height = 999,
         win_vheight = 999,
         winblend = 0,
+        delay_syntax = 100,
     },
-})
--- }}}
-
--- marks.nvim {{{
-require("marks").setup({
-    default_mappings = false,
-    bookmark_0 = {
-        sign = "*",
-    },
-    mappings = {
-        toggle_bookmark0 = "m;",
-        next_bookmark0 = ")",
-        prev_bookmark0 = "(",
-        delete_bookmark = "dm",
-        delete_bookmark0 = "dM",
-    },
-    sign_priority = 100,
 })
 -- }}}
 
@@ -166,17 +150,11 @@ fzf_lua.setup({
                 number = true,
             },
             title = false,
-            delay = 0,
+            delay = 100,
             scrollbar = false,
         },
     },
-    keymap = {
-        fzf = {
-            ["ctrl-q"] = "select-all+accept",
-        },
-    },
     files = {
-        -- previewer = "bat",
         fzf_opts = {
             ["--history"] = vim.fn.stdpath("data") .. "/fzf-lua-files-history",
         },
@@ -201,33 +179,45 @@ fzf_lua.setup({
     },
 })
 
-local with_history = function(fn, name)
+local fzf_cmd = function(fn, params)
+    params = params or {}
+    local layout = params.layout or nil
+    local history = params.history or nil
+
     return function()
-        fn({ fzf_opts = { ["--history"] = vim.fn.stdpath("data") .. "/fzf-lua-" .. name } })
+        fn({
+            winopts = layout and { preview = { layout = layout } } or {},
+            fzf_opts = history and { ["--history"] = vim.fn.stdpath("data") .. "/fzf-lua-" .. history .. "-history" }
+                or {},
+        })
     end
 end
 
 u.map_c("<Leader><Leader>", "FzfLua")
 u.map("n", "<Leader>f", function()
     if vim.loop.cwd() == vim.fn.expand("~") then
-        fzf_lua.git_files({ git_dir = "~/.dotfiles", git_worktree = "~" })
+        fzf_lua.git_files({
+            git_dir = "~/.dotfiles",
+            git_worktree = "~",
+            winopts = { preview = { layout = "vertical" } },
+        })
     else
-        fzf_lua.files()
+        fzf_lua.files({ winopts = { preview = { layout = "vertical" } } })
     end
 end)
-u.map("n", "<Leader>F", fzf_lua.git_status)
-u.map("n", "<Leader>l", fzf_lua.buffers)
-u.map("n", "<Leader>;", fzf_lua.blines)
-u.map("n", "<Leader>:", fzf_lua.command_history)
-u.map("n", "<Leader>G", with_history(fzf_lua.lsp_live_workspace_symbols, "live-workspace-symbols"))
-u.map("n", "<Leader>k", with_history(fzf_lua.lsp_document_symbols, "document-symbols"))
-u.map("n", "<Leader>h", fzf_lua.help_tags)
-u.map("n", "<Bslash>", fzf_lua.live_grep_native)
-u.map("n", "<Leader><Bslash>", fzf_lua.live_grep_resume)
-u.map("n", "<Bar>", fzf_lua.grep_cword)
-u.map("v", "<Bar>", fzf_lua.grep_visual)
-u.map("n", "<Leader>o", fzf_lua.oldfiles)
-u.map("n", "<Leader>j", fzf_lua.jumps)
+u.map("n", "<Leader>F", fzf_cmd(fzf_lua.git_status, { layout = "vertical" }))
+u.map("n", "<Leader>l", fzf_cmd(fzf_lua.buffers, { layout = "vertical" }))
+u.map("n", "<Leader>;", fzf_cmd(fzf_lua.blines, { layout = "vertical" }))
+u.map("n", "<Leader>:", fzf_cmd(fzf_lua.command_history))
+u.map("n", "<Leader>G", fzf_cmd(fzf_lua.lsp_live_workspace_symbols, { history = "live-workspace-symbols" }))
+u.map("n", "<Leader>k", fzf_cmd(fzf_lua.lsp_document_symbols, { history = "document-symbols" }))
+u.map("n", "<Leader>h", fzf_cmd(fzf_lua.help_tags))
+u.map("n", "<Bslash>", fzf_cmd(fzf_lua.live_grep_native, { layout = "vertical" }))
+u.map("n", "<Leader><Bslash>", fzf_cmd(fzf_lua.live_grep_resume, { layout = "vertical" }))
+u.map("n", "<Bar>", fzf_cmd(fzf_lua.grep_cword, { layout = "vertical" }))
+u.map("v", "<Bar>", fzf_cmd(fzf_lua.grep_visual, { layout = "vertical" }))
+u.map("n", "<Leader>o", fzf_cmd(fzf_lua.oldfiles, { layout = "vertical" }))
+u.map("n", "<Leader>j", fzf_cmd(fzf_lua.jumps))
 -- }}}
 
 -- vim-matchup {{{
@@ -306,38 +296,101 @@ require("mini.align").setup({})
 -- }}}
 
 -- mini.pairs {{{
--- require("mini.pairs").setup({
+require("mini.pairs").setup({
+    mappings = {
+        ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\]." },
+        ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\]." },
+        ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\]." },
+        ["<"] = { action = "open", pair = "<>", neigh_pattern = "[^\\]." },
+
+        [")"] = { action = "close", pair = "()", neigh_pattern = "[^\\]." },
+        ["]"] = { action = "close", pair = "[]", neigh_pattern = "[^\\]." },
+        ["}"] = { action = "close", pair = "{}", neigh_pattern = "[^\\]." },
+        [">"] = { action = "close", pair = "<>", neigh_pattern = "[^\\]." },
+
+        ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^\\].", register = { cr = false } },
+        ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^%a\\].", register = { cr = false } },
+        ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\].", register = { cr = false } },
+    },
+})
+-- }}}
+
+-- mini.completion {{{
+-- require("mini.completion").setup({
+--     delay = { completion = 0, info = 0, signature = 0 },
+--
+--     window = {
+--         info = { border = "single" },
+--         signature = { border = "single" },
+--     },
+--
 --     mappings = {
---         ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\][%s]" },
---         ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\][%s]" },
---         ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\][%s]" },
---         ["<"] = { action = "open", pair = "<>", neigh_pattern = "[^\\][%s]" },
---
---         [")"] = { action = "close", pair = "()", neigh_pattern = "[^\\]." },
---         ["]"] = { action = "close", pair = "[]", neigh_pattern = "[^\\]." },
---         ["}"] = { action = "close", pair = "{}", neigh_pattern = "[^\\]." },
---         [">"] = { action = "close", pair = "<>", neigh_pattern = "[^\\]." },
---
---         ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^\\].", register = { cr = false } },
---         ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^%a\\].", register = { cr = false } },
---         ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\].", register = { cr = false } },
+--         force_twostep = "<C-o>",
 --     },
 -- })
 -- }}}
 
--- mini.completion {{{
-require("mini.completion").setup({
-    delay = { completion = 0, info = 0, signature = 0 },
+-- nvim-cmp + friends {{{
+local cmp = require("cmp")
+local snippy = require("snippy")
 
-    window = {
-        info = { border = "single" },
-        signature = { border = "single" },
+cmp.setup({
+    -- preselect = cmp.PreselectMode.None,
+    snippet = {
+        expand = function(args)
+            snippy.expand_snippet(args.body)
+        end,
     },
-
-    mappings = {
-        force_twostep = "<C-o>",
+    window = {
+        -- completion = cmp.config.window.bordered({
+        --     border = "none",
+        --     side_padding = 1,
+        -- }),
+        documentation = cmp.config.window.bordered({
+            border = "single",
+            side_padding = 0,
+        }),
+    },
+    mapping = {
+        ["<C-l>"] = cmp.mapping(function(fallback)
+            if snippy.can_expand_or_advance() then
+                snippy.expand_or_advance()
+            elseif cmp.visible() then
+                cmp.confirm()
+            else
+                fallback()
+            end
+        end, { "i", "s" }),
+        ["<C-h>"] = cmp.mapping(function(fallback)
+            if snippy.can_jump(-1) then
+                snippy.previous()
+            else
+                fallback()
+            end
+        end, { "i", "s" }),
+        ["<C-n>"] = cmp.mapping(cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }), { "i", "c" }),
+        ["<C-p>"] = cmp.mapping(cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }), { "i", "c" }),
+    },
+    sources = cmp.config.sources({
+        { name = "nvim_lsp_signature_help" },
+    }, {
+        { name = "nvim_lsp" },
+        { name = "snippy" },
+    }),
+    experimental = {
+        ghost_text = true,
     },
 })
+
+u.map("i", "<C-o>", cmp.complete)
+
+-- when deleting text, enter insert mode instead of bailing out to normal mode
+-- u.map("s", "<BS>", "<BS>i")
+-- u.map("s", "<C-d>", "<BS>i")
+-- u.map("s", "<C-f>", "<Right>")
+-- u.map("s", "<C-b>", "<Left>")
+-- u.map("s", "<C-o>", "<C-o>o")
+
 -- }}}
 
 -- nvim-surround {{{
@@ -347,15 +400,15 @@ require("mini.completion").setup({
 -- - supports modifying tags
 require("nvim-surround").setup({
     keymaps = {
-        normal = "<Leader>sa",
-        normal_cur = "<Leader>ss",
-        visual = "<Leader>sa",
-        delete = "<Leader>sd",
-        change = "<Leader>sc",
+        normal = "ma",
+        normal_cur = "mm",
+        visual = "ma",
+        delete = "md",
+        change = "mc",
     },
 })
 
-u.map("n", "<Leader>S", "<Leader>sa$", { remap = true })
+u.map("n", "M", "ma$", { remap = true })
 -- }}}
 
 -- yanky.nvim {{{
@@ -455,9 +508,10 @@ conform.setup({
         lsp_fallback = true,
     },
 })
+-- }}}
 
 -- ultimate-autopair {{{
-require("ultimate-autopair").setup({})
+-- require("ultimate-autopair").setup({})
 -- }}}
 
 -- oil.nvim {{{
@@ -472,4 +526,26 @@ require("oil").setup({
 })
 
 u.map_c("-", "Oil")
+-- }}}
+
+-- flash.nvim {{{
+local flash = require("flash")
+flash.setup({
+    modes = {
+        search = {
+            -- enabled = false,
+            multi_window = false,
+        },
+        char = { enabled = false },
+    },
+    highlight = {
+        groups = {
+            label = "MiniJump2dSpot",
+        },
+    },
+})
+
+u.map({ "n", "x", "o" }, "<C-f>", function()
+    flash.jump()
+end)
 -- }}}

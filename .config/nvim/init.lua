@@ -56,7 +56,6 @@ require("lazy").setup({
     { "stevearc/oil.nvim" }, -- minimal file browser
     { "vim-test/vim-test" }, -- run tests and copy test runner commands
     { "wsdjeg/vim-fetch" }, -- support opening line and column numbers (e.g. foo.bar:13)
-    { "chentoast/marks.nvim" }, -- show marks in the gutter and provide better mappings to manipulate them
     { "jpalardy/vim-slime" }, -- send text to other terminal windows (useful for REPLs)
 
     -- LSP stuff
@@ -81,6 +80,15 @@ require("lazy").setup({
     { "nvim-treesitter/playground" },
     { "altermo/ultimate-autopair.nvim" },
     { "tpope/vim-rsi" },
+    { "folke/flash.nvim" },
+
+    { "hrsh7th/cmp-nvim-lsp" },
+    { "hrsh7th/cmp-buffer" },
+    -- { "hrsh7th/cmp-path" },
+    -- { "hrsh7th/cmp-cmdline" },
+    { "hrsh7th/nvim-cmp" },
+    { "dcampos/nvim-snippy" },
+    { "dcampos/cmp-snippy" },
 })
 -- }}}
 
@@ -370,7 +378,7 @@ u.map("n", "]q", function()
 end)
 
 -- I never use the stock behavior so this makes completions faster
-u.map("i", "<C-o>", "<C-x><C-o>")
+-- u.map("i", "<C-o>", "<C-x><C-o>")
 u.map("i", "<C-l>", "<C-x><C-l>")
 
 -- faster renaming

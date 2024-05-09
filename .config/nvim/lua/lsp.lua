@@ -3,7 +3,7 @@ local lspconfig = require("lspconfig")
 local configs = require("lspconfig.configs")
 local fzf = require("fzf-lua")
 
-local min_severity = { min = vim.diagnostic.severity.INFO }
+local min_severity = { min = vim.diagnostic.severity.HINT }
 
 vim.diagnostic.config({
     virtual_text = false,
@@ -93,6 +93,8 @@ local override_formatting_capability = function(client, override)
     client.server_capabilities.documentRangeFormattingProvider = override
 end
 
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
 -- Golang
 lspconfig.gopls.setup({
     on_attach = function(client, bufnr)
@@ -103,34 +105,13 @@ lspconfig.gopls.setup({
         override_formatting_capability(client, false)
     end,
     handlers = handlers,
+    capabilities = capabilities,
     settings = {
         gopls = {
             usePlaceholders = true,
         },
     },
 })
-
--- Typescript
--- This is supposed to be faster, but it crashes literally all the time and seems very buggy
--- require("typescript-tools").setup({
---     on_attach = function(client, bufnr)
---         -- Formatting is handled by eslint
---         override_formatting_capability(client, false)
---         on_attach(client, bufnr)
---     end,
---     handlers = handlers,
---     settings = {
---         separate_diagnostic_server = true,
---         include_completions_with_insert_text = false,
---         tsserver_file_preferences = {
---             autoImportFileExcludePatterns = {
---                 "**/node_modules/antd",
---                 "**/node_modules/react-i18next",
---                 "**/node_modules/i18next",
---             },
---         },
---     },
--- })
 
 lspconfig.tsserver.setup({
     on_attach = function(client, bufnr)
@@ -139,14 +120,17 @@ lspconfig.tsserver.setup({
         on_attach(client, bufnr)
     end,
     handlers = handlers,
+    capabilities = capabilities,
     settings = {
         separate_diagnostic_server = true,
-        include_completions_with_insert_text = false,
+        -- include_completions_with_insert_text = false,
         tsserver_file_preferences = {
             autoImportFileExcludePatterns = {
-                "**/node_modules/antd",
-                "**/node_modules/react-i18next",
-                "**/node_modules/i18next",
+                "antd",
+                "react-i18next",
+                "i18next",
+                "module",
+                "webpack",
             },
         },
     },
@@ -162,17 +146,18 @@ lspconfig.eslint.setup({
         on_attach(client, bufnr)
     end,
     handlers = handlers,
+    capabilities = capabilities,
 })
 
 -- Elixir
-lspconfig.elixirls.setup({
-    on_attach = on_attach,
-    handlers = handlers,
-    cmd = { "/opt/homebrew/bin/elixir-ls" },
-    settings = {
-        dialyzerEnabled = false,
-    },
-})
+-- lspconfig.elixirls.setup({
+--     on_attach = on_attach,
+--     handlers = handlers,
+--     cmd = { "/opt/homebrew/bin/elixir-ls" },
+--     settings = {
+--         dialyzerEnabled = false,
+--     },
+-- })
 
 -- Things this currently does better:
 --  slightly smarter auto-completion
@@ -181,17 +166,11 @@ lspconfig.elixirls.setup({
 --  much slower startup time (which blocks saving until it's done)
 --  throws in snippets in a bunch of completions, which mini.completion does not support yet
 --  doesn't support workspace symbols
--- lspconfig.lexical.setup({
---     on_attach = on_attach,
---     handlers = handlers,
---     capabilities = capabilities,
---     cmd = { vim.env.HOME .. "/projects/lexical/_build/dev/package/lexical/bin/start_lexical.sh" },
--- })
-
--- Vimscript
-lspconfig.vimls.setup({
+lspconfig.lexical.setup({
     on_attach = on_attach,
     handlers = handlers,
+    capabilities = capabilities,
+    cmd = { vim.env.HOME .. "/Projects/lexical/_build/dev/package/lexical/bin/start_lexical.sh" },
 })
 
 -- Lua
@@ -203,6 +182,7 @@ lspconfig.lua_ls.setup({
         override_formatting_capability(client, false)
     end,
     handlers = handlers,
+    capabilities = capabilities,
     settings = {
         Lua = {
             runtime = {
@@ -230,12 +210,14 @@ lspconfig.lua_ls.setup({
 lspconfig.rust_analyzer.setup({
     on_attach = on_attach,
     handlers = handlers,
+    capabilities = capabilities,
 })
 
 -- Tailwind
 lspconfig.tailwindcss.setup({
     on_attach = on_attach,
     handlers = handlers,
+    capabilities = capabilities,
     filetypes = {
         "html",
         "javascriptreact",
@@ -251,17 +233,11 @@ lspconfig.tailwindcss.setup({
     },
 })
 
--- Jsonnet (for gmailctl)
-lspconfig.jsonnet_ls.setup({
-    on_attach = on_attach,
-    handlers = handlers,
-    single_file_support = true,
-})
-
 -- Python
 lspconfig.pyright.setup({
     on_attach = on_attach,
     handlers = handlers,
+    capabilities = capabilities,
     settings = {
         pyright = {
             -- Use Ruff instead
@@ -280,6 +256,7 @@ lspconfig.pyright.setup({
 lspconfig.jsonls.setup({
     on_attach = on_attach,
     handlers = handlers,
+    capabilities = capabilities,
     init_options = {
         provideFormatter = false,
     },
@@ -289,4 +266,5 @@ lspconfig.jsonls.setup({
 lspconfig.terraformls.setup({
     on_attach = on_attach,
     handlers = handlers,
+    capabilities = capabilities,
 })

@@ -34,20 +34,26 @@
     dt = difftool
 
     base = !git merge-base ${1:-HEAD} main && :
-    branch-name = rev-parse --abbrev-ref HEAD
+    branch-name = branch --show-current
     head = rev-parse HEAD
 
-    new = !git update && git co --merge -b jerry-${1?} main && :
+    new = !git update && git co --merge -b jerry-$(echo $@ | sed 's/ /-/g') main && :
     backup = !git co -b $(git branch-name)-backup && git co - && :
 
     get = !git fetch origin ${1}:${1} && git checkout ${1} -- && :
 
     save = !"f() { git aa && git commit --message \"${1:-$(shuf -n 1 ~/.word_list.txt)}\"; git push; }; f"
+    fsave = !"f() { git aa && git commit --message \"${1:-$(shuf -n 1 ~/.word_list.txt)}\" --no-verify; git push; }; f"
+    resave = !git aa && git recommit && git push -f && :
 
-    cleanup = !"f() { set -e; BRANCHES=$(git pick branches-without-main); git branch -D $BRANCHES; }; f"
+    cleanup = !"f() { git fetch && git for-each-ref --format '%(if:equals=[gone])%(upstream:track)%(then)%(refname:short)%(end)' refs/heads | rg -v \"^$\" | xargs git branch -D; }; f"
+    bd = !"f() { set -e; BRANCHES=$(git pick branches-without-main); git branch -D $BRANCHES; }; f"
     cleanup-remote = !"f() { set -e; git fetch --prune; BRANCHES=$(git pick my-remote-branches); git push origin --delete $BRANCHES; }; f"
 
-    l = log --oneline main..
+    ; show new commits in the branch
+    l = log --oneline main.. 
+    ; show status of all branches w.r.t. main
+    lb = log --branches='jerry-*' main  --oneline --graph --first-parent --decorate-refs=refs/heads --simplify-by-decoration --dense --pretty=format:'%C(yellow)%D %C(auto)%s %C(dim)%ad' 
 
     mm = !git update && git merge main --no-edit && git push && :
     mt = mergetool
@@ -67,7 +73,7 @@
 
     cor = !git fetch origin ${1?}:jerry-${1?} && git checkout jerry-${1?} && :
 
-    update = fetch origin main:main --update-head-ok
+    update = !"f() { git branch-name | rg --quiet "main" && git pull origin main || git fetch origin main:main; }; f"
 
     unstage = reset -q HEAD
     recommit = commit --amend --no-edit
@@ -98,7 +104,7 @@
     ui = true
 
 [help]
-    autocorrect = 1
+    autocorrect = "immediate"
 
 [log]
     date = relative

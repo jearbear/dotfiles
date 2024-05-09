@@ -3,6 +3,7 @@
 tags
 tags.lock
 tags.temp
+.DS_STORE
 
 # Personal files that I don't want checked in 
 _/
