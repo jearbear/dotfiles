@@ -35,7 +35,6 @@ require("nvim-treesitter.configs").setup({
     highlight = { enable = true },
     indent = { enable = true },
     endwise = { enable = true },
-    autotag = { enable = true },
     matchup = { enable = true },
     -- we use this just for the library of text objects that it provides, but
     -- the actual selection is handled by mini.ai
@@ -56,6 +55,16 @@ vim.cmd([[highlight TreesitterContext guibg=#313244]])
 vim.cmd([[highlight TreesitterContextBottom guibg=#313244 guisp=#51576d gui=underline]])
 
 u.map("n", "[c", treesitter_context.go_to_context)
+-- }}}
+
+-- nvim-ts-autotag {{{
+require("nvim-ts-autotag").setup({
+    opts = {
+        enable_close = true,
+        enable_rename = true,
+        enable_close_on_slash = true,
+    },
+})
 -- }}}
 
 -- gitlinker.nvim {{{
@@ -315,37 +324,17 @@ require("mini.pairs").setup({
 })
 -- }}}
 
--- mini.completion {{{
--- require("mini.completion").setup({
---     delay = { completion = 0, info = 0, signature = 0 },
---
---     window = {
---         info = { border = "single" },
---         signature = { border = "single" },
---     },
---
---     mappings = {
---         force_twostep = "<C-o>",
---     },
--- })
--- }}}
-
 -- nvim-cmp + friends {{{
 local cmp = require("cmp")
 local snippy = require("snippy")
 
 cmp.setup({
-    -- preselect = cmp.PreselectMode.None,
     snippet = {
         expand = function(args)
             snippy.expand_snippet(args.body)
         end,
     },
     window = {
-        -- completion = cmp.config.window.bordered({
-        --     border = "none",
-        --     side_padding = 1,
-        -- }),
         documentation = cmp.config.window.bordered({
             border = "single",
             side_padding = 0,
@@ -449,13 +438,6 @@ u.map("n", "S", substitute.eol)
 require("neodev").setup({})
 -- }}}
 
--- mini.comment {{{
-require("mini.comment").setup({})
-
-u.map("n", "<Leader>/", "gcc", { remap = true })
-u.map("v", "<Leader>/", "gc", { remap = true })
--- }}}
-
 -- treesj {{{
 local treesj = require("treesj")
 treesj.setup({
@@ -476,6 +458,8 @@ require("lint").linters_by_ft = {
     bash = { "shellcheck" },
     python = { "ruff" },
     elixir = { "credo" },
+    typescriptreact = { "eslint_d" },
+    typescript = { "eslint_d" },
 }
 
 u.autocmd({ "BufRead", "BufWritePost" }, {
@@ -501,6 +485,8 @@ conform.setup({
         yaml = { "prettierd" },
         javascript = { "prettierd" },
         javascriptreact = { "prettierd" },
+        typescriptreact = { "eslint_d" },
+        typescript = { "eslint_d" },
     },
     notify_on_error = false,
     format_on_save = {
@@ -508,10 +494,6 @@ conform.setup({
         lsp_fallback = true,
     },
 })
--- }}}
-
--- ultimate-autopair {{{
--- require("ultimate-autopair").setup({})
 -- }}}
 
 -- oil.nvim {{{
@@ -533,7 +515,7 @@ local flash = require("flash")
 flash.setup({
     modes = {
         search = {
-            -- enabled = false,
+            enabled = false,
             multi_window = false,
         },
         char = { enabled = false },

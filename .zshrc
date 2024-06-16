@@ -104,6 +104,7 @@ alias j='just'
 alias g='git'
 alias we='watchexec'
 alias d='date -r'
+alias np='pnpm'
 
 alias cdg='cd ~/Projects/giga'
 alias cds='cd ~/Projects/sugo'

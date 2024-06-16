@@ -136,36 +136,7 @@ lspconfig.tsserver.setup({
     },
 })
 
--- Eslint
-lspconfig.eslint.setup({
-    on_attach = function(client, bufnr)
-        -- This LS doesn't broadcast formatting support initially and Neovim
-        -- doesn't support dynamic registration so force broadcasting
-        -- formatting capabilities.
-        override_formatting_capability(client, true)
-        on_attach(client, bufnr)
-    end,
-    handlers = handlers,
-    capabilities = capabilities,
-})
-
 -- Elixir
--- lspconfig.elixirls.setup({
---     on_attach = on_attach,
---     handlers = handlers,
---     cmd = { "/opt/homebrew/bin/elixir-ls" },
---     settings = {
---         dialyzerEnabled = false,
---     },
--- })
-
--- Things this currently does better:
---  slightly smarter auto-completion
---  doesn't seem to crash randomly
--- Things this does worse (and thus why I don't use it yet):
---  much slower startup time (which blocks saving until it's done)
---  throws in snippets in a bunch of completions, which mini.completion does not support yet
---  doesn't support workspace symbols
 lspconfig.lexical.setup({
     on_attach = on_attach,
     handlers = handlers,
@@ -260,6 +231,13 @@ lspconfig.jsonls.setup({
     init_options = {
         provideFormatter = false,
     },
+})
+
+-- yaml
+lspconfig.yamlls.setup({
+    on_attach = on_attach,
+    handlers = handlers,
+    capabilities = capabilities,
 })
 
 -- terraforml-ls

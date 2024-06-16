@@ -20,7 +20,7 @@ IEx.configure(
     ls_directory: :cyan,
     ls_device: :yellow,
     doc_code: :green,
-    doc_inline_code: :magenta,
+    doc_inline_code: :green,
     doc_headings: [:cyan, :underline],
     doc_title: [:cyan, :bright, :underline]
   ],

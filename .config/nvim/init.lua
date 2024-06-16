@@ -138,7 +138,7 @@ vim.opt.shiftwidth = 4 -- use 4 spaces per "tab"
 vim.opt.softtabstop = 4 -- use 4 spaces per "tab"
 
 vim.opt.cursorline = true -- highlight the line the cursor is on
-vim.opt.scrolloff = 5 -- ensure 5 lines of padding between the cursor and the edges of the window
+vim.opt.scrolloff = 10 -- ensure 10 lines of padding between the cursor and the edges of the window
 
 vim.opt.joinspaces = false -- only insert one space when joining sentences
 
@@ -365,6 +365,10 @@ u.map_c("<S-Tab>", "tabp")
 u.map_c("<Tab>", "tabn")
 u.map_c("<Leader><Tab>", "tabe")
 
+-- more convenient commenting
+u.map("n", "<Leader>/", "gcc", { remap = true })
+u.map("v", "<Leader>/", "gc", { remap = true })
+
 -- navigate quickfix list
 u.map("n", "[q", function()
     if not pcall(vim.cmd, "cprevious") then
@@ -386,8 +390,8 @@ u.map("n", "<Leader>r", "*``cgn")
 u.map("n", "g<Leader>r", "g*``cgn")
 
 -- faster substitution
-u.map("n", "<Leader>%", ":%s/<C-r><C-w>/")
-u.map("v", "<Leader>%", '"ay/<C-R>a<CR>``:%s//')
+u.map("n", "<Leader>s", ":%s/<C-r><C-w>/")
+u.map("v", "<Leader>s", '"ay/<C-R>a<CR>``:%s//')
 
 -- load the selection into the seach register
 u.map("v", "*", '"ay/<C-R>a<CR>``')
