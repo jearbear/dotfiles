@@ -50,7 +50,7 @@ require("lazy").setup({
     -- version control
     { "akinsho/git-conflict.nvim", version = "*" }, -- better git conflict resolution
     { "lewis6991/gitsigns.nvim" }, -- VCS change indicators in the gutter
-    { "ruifm/gitlinker.nvim", dependencies = { "nvim-lua/plenary.nvim" } }, -- create links to Github
+    { "linrongbin16/gitlinker.nvim", dependencies = { "nvim-lua/plenary.nvim" } }, -- create links to Github
 
     -- project navigation + management
     { "stevearc/oil.nvim" }, -- minimal file browser
@@ -231,6 +231,8 @@ vim.opt.swapfile = false -- disable swap files since they tend to be more annoyi
 
 vim.g.is_bash = true -- default to bash filetype when `ft=sh`
 
+vim.g.ttimeout = false
+
 -- use ripgrep for `grep` command
 vim.opt.grepprg = "rg --vimgrep --smart-case --hidden --sort path --glob '!schema.sql' --glob '!pkg/database/models'"
 vim.opt.grepformat = "%f:%l:%c:%m"
@@ -359,11 +361,17 @@ u.map("n", "J", "mzJ`z")
 u.map_c("<CR>", "call append(line('.'), '')")
 u.map_c("<S-CR>", "call append(line('.') - 1, '')")
 
+-- don't add motions from { or } to the jumplist
+u.map_c("}", 'execute "keepjumps norm! " . v:count1 . "}"')
+u.map_c("{", 'execute "keepjumps norm! " . v:count1 . "{"')
+
 -- buffer/tab navigation
 u.map("n", "<BS>", "<C-^>")
+u.map("n", "<C-h>", "<C-^>")
 u.map_c("<S-Tab>", "tabp")
 u.map_c("<Tab>", "tabn")
 u.map_c("<Leader><Tab>", "tabe")
+u.map_c("<C-Tab>", "tabc")
 
 -- more convenient commenting
 u.map("n", "<Leader>/", "gcc", { remap = true })
@@ -398,7 +406,7 @@ u.map("v", "*", '"ay/<C-R>a<CR>``')
 
 -- yank/paste to/from system clipboard
 -- (recursive mappings are intentionally used to preserve the benefits of
--- preserving cursor position provided by vim-yoink)
+-- preserving cursor position provided by yanky.nvim)
 u.map({ "n", "x" }, "<Leader>d", '"+d', { remap = true })
 u.map({ "n", "x" }, "<Leader>D", '"+D', { remap = true })
 u.map({ "n", "x" }, "<Leader>y", '"+y', { remap = true })
@@ -421,10 +429,10 @@ u.map("i", "<C-k>", "<C-o>d$")
 u.map("!", "<C-BS>", "<C-w>")
 -- u.map("i", "<C-e>", "<C-o>A")
 --
-u.map("i", "<C-e>", function()
-    u.close_completion_menu()
-    u.set_cursor_pos(u.line_number(), u.col_number() + 1)
-end)
+-- u.map("i", "<C-e>", function()
+--     u.close_completion_menu()
+--     u.set_cursor_pos(u.line_number(), u.col_number() + 1)
+-- end)
 
 -- edit config files
 u.map_c("<Leader>vev", "edit ~/.config/nvim/init.lua")
@@ -442,7 +450,9 @@ u.map("n", "<Leader>qq", function()
             return
         end
     end
-    if not vim.tbl_isempty(vim.fn.getqflist()) then
+    if vim.tbl_isempty(vim.fn.getqflist()) then
+        vim.notify("No items in quickfix")
+    else
         vim.cmd("copen")
     end
 end)

@@ -13,7 +13,7 @@ bindkey "^n" history-beginning-search-forward
 bindkey '^[[Z' reverse-menu-complete
 
 # more emacs-like bindings
-bindkey '^H' backward-kill-word
+# bindkey '^H' backward-kill-word
 
 # history
 HISTFILE=~/.histfile

@@ -68,7 +68,7 @@ local on_attach = function(client, bufnr)
         u.autocmd("BufWritePre", {
             buffer = bufnr,
             callback = function()
-                vim.lsp.buf.format({ timeout_ms = 2000, async = false })
+                vim.lsp.buf.format({ timeout_ms = 5000, async = false })
             end,
         })
     end
@@ -137,11 +137,16 @@ lspconfig.tsserver.setup({
 })
 
 -- Elixir
-lspconfig.lexical.setup({
+lspconfig.nextls.setup({
     on_attach = on_attach,
     handlers = handlers,
     capabilities = capabilities,
-    cmd = { vim.env.HOME .. "/Projects/lexical/_build/dev/package/lexical/bin/start_lexical.sh" },
+    cmd = { "nextls", "--stdio" },
+    init_options = {
+        experimental = {
+            completions = { enable = true },
+        },
+    },
 })
 
 -- Lua

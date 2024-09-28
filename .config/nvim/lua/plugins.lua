@@ -13,6 +13,7 @@ require("nvim-treesitter.configs").setup({
         "go",
         "graphql",
         "heex",
+        "html",
         "javascript",
         "json",
         "jsonnet",
@@ -24,7 +25,7 @@ require("nvim-treesitter.configs").setup({
         "python",
         "regex",
         "rust",
-        "surface",
+        "starlark",
         "terraform",
         "tsx",
         "typescript",
@@ -39,6 +40,15 @@ require("nvim-treesitter.configs").setup({
     -- we use this just for the library of text objects that it provides, but
     -- the actual selection is handled by mini.ai
     textobjects = { select = { enable = false } },
+    incremental_selection = {
+        enable = true,
+        keymaps = {
+            init_selection = false,
+            node_incremental = "<CR>",
+            scope_incremental = "<C-CR>",
+            node_decremental = "<S-CR>",
+        },
+    },
 })
 -- }}}
 
@@ -74,7 +84,9 @@ require("gitlinker").setup({
         add_current_line_on_normal_mode = false,
         print_url = true,
     },
-    mappings = "<Leader>gl",
+    u.map({ "n", "v" }, "<Leader>gl", ":GitLink<CR>"),
+    u.map({ "n", "v" }, "<Leader>gL", ":GitLink default_branch<CR>"),
+    u.map({ "n", "v" }, "<Leader>go", ":GitLink! blame<CR>"),
 })
 -- }}}
 
@@ -172,9 +184,9 @@ fzf_lua.setup({
         rg_glob = true,
         fzf_opts = {
             ["--delimiter"] = "[:]",
-            ["--with-nth"] = "1,3..",
-            ["--nth"] = "2..",
-            ["--tiebreak"] = "index",
+            ["--with-nth"] = "1,3..", -- hide line numbers
+            ["--nth"] = "2..", -- don't search filenames
+            ["--tiebreak"] = "chunk",
             ["--history"] = vim.fn.stdpath("data") .. "/fzf-lua-grep-history",
         },
     },
@@ -182,7 +194,7 @@ fzf_lua.setup({
         fzf_opts = {
             ["--delimiter"] = "[:]",
             ["--with-nth"] = "3..",
-            ["--tiebreak"] = "index",
+            ["--tiebreak"] = "chunk",
             ["--history"] = vim.fn.stdpath("data") .. "/fzf-lua-blines-history",
         },
     },
@@ -221,12 +233,13 @@ u.map("n", "<Leader>:", fzf_cmd(fzf_lua.command_history))
 u.map("n", "<Leader>G", fzf_cmd(fzf_lua.lsp_live_workspace_symbols, { history = "live-workspace-symbols" }))
 u.map("n", "<Leader>k", fzf_cmd(fzf_lua.lsp_document_symbols, { history = "document-symbols" }))
 u.map("n", "<Leader>h", fzf_cmd(fzf_lua.help_tags))
-u.map("n", "<Bslash>", fzf_cmd(fzf_lua.live_grep_native, { layout = "vertical" }))
+u.map("n", "<Bslash>", fzf_cmd(fzf_lua.live_grep, { layout = "vertical" }))
 u.map("n", "<Leader><Bslash>", fzf_cmd(fzf_lua.live_grep_resume, { layout = "vertical" }))
 u.map("n", "<Bar>", fzf_cmd(fzf_lua.grep_cword, { layout = "vertical" }))
 u.map("v", "<Bar>", fzf_cmd(fzf_lua.grep_visual, { layout = "vertical" }))
 u.map("n", "<Leader>o", fzf_cmd(fzf_lua.oldfiles, { layout = "vertical" }))
 u.map("n", "<Leader>j", fzf_cmd(fzf_lua.jumps))
+u.map("n", "<C-t>", fzf_cmd(fzf_lua.tagstack))
 -- }}}
 
 -- vim-matchup {{{
@@ -310,7 +323,6 @@ require("mini.pairs").setup({
         ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\]." },
         ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\]." },
         ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\]." },
-        ["<"] = { action = "open", pair = "<>", neigh_pattern = "[^\\]." },
 
         [")"] = { action = "close", pair = "()", neigh_pattern = "[^\\]." },
         ["]"] = { action = "close", pair = "[]", neigh_pattern = "[^\\]." },
@@ -318,10 +330,11 @@ require("mini.pairs").setup({
         [">"] = { action = "close", pair = "<>", neigh_pattern = "[^\\]." },
 
         ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^\\].", register = { cr = false } },
-        ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^%a\\].", register = { cr = false } },
+        ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^\\].", register = { cr = false } },
         ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\].", register = { cr = false } },
     },
 })
+u.map("i", "<C-h>", "v:lua.MiniPairs.bs()", { expr = true, replace_keycodes = false })
 -- }}}
 
 -- nvim-cmp + friends {{{
@@ -333,6 +346,9 @@ cmp.setup({
         expand = function(args)
             snippy.expand_snippet(args.body)
         end,
+    },
+    completion = {
+        autocomplete = false,
     },
     window = {
         documentation = cmp.config.window.bordered({
@@ -374,11 +390,11 @@ cmp.setup({
 u.map("i", "<C-o>", cmp.complete)
 
 -- when deleting text, enter insert mode instead of bailing out to normal mode
--- u.map("s", "<BS>", "<BS>i")
--- u.map("s", "<C-d>", "<BS>i")
--- u.map("s", "<C-f>", "<Right>")
--- u.map("s", "<C-b>", "<Left>")
--- u.map("s", "<C-o>", "<C-o>o")
+u.map("s", "<BS>", "<BS>i")
+u.map("s", "<C-d>", "<BS>i")
+u.map("s", "<C-f>", "<Right>")
+u.map("s", "<C-b>", "<Left>")
+u.map("s", "<C-o>", "<C-o>o")
 
 -- }}}
 
@@ -395,6 +411,13 @@ require("nvim-surround").setup({
         delete = "md",
         change = "mc",
     },
+    move_cursor = false,
+    aliases = {
+        ["{"] = "}",
+        ["<"] = ">",
+        ["("] = ")",
+        ["["] = "]",
+    },
 })
 
 u.map("n", "M", "ma$", { remap = true })
@@ -407,7 +430,7 @@ yanky.setup({
         storage = "memory",
     },
     highlight = {
-        timer = 150,
+        timer = 100,
     },
 })
 
@@ -415,6 +438,8 @@ u.map({ "n", "x" }, "y", "<Plug>(YankyYank)")
 
 u.map({ "n", "x" }, "p", "<Plug>(YankyPutAfter)")
 u.map({ "n", "x" }, "P", "<Plug>(YankyPutBefore)")
+u.map({ "n" }, "=p", "<Plug>(YankyPutIndentAfterLinewise)")
+u.map({ "n" }, "=P", "<Plug>(YankyPutIndentBeforeLinewise)")
 
 u.map("n", "<C-p>", "<Plug>(YankyCycleForward)")
 u.map("n", "<C-n>", "<Plug>(YankyCycleBackward)")
@@ -423,14 +448,21 @@ u.map("n", "<C-n>", "<Plug>(YankyCycleBackward)")
 -- substitute.nvim {{{
 local substitute = require("substitute")
 substitute.setup({
-    on_substitute = function(event)
-        yanky.init_ring("p", event.register, event.count, event.vmode:match("[vV�]"))
-    end,
+    on_substitute = require("yanky.integration").substitute(),
+    highlight_substituted_text = {
+        timer = 100,
+    },
 })
 
-u.map("n", "s", substitute.operator)
-u.map("n", "ss", substitute.line)
-u.map("x", "s", substitute.visual)
+u.map("n", "s", function()
+    substitute.operator()
+end)
+u.map("n", "ss", function()
+    substitute.line({ modifiers = { "reindent" } })
+end)
+u.map("x", "s", function()
+    substitute.visual()
+end)
 u.map("n", "S", substitute.eol)
 -- }}}
 
@@ -485,8 +517,11 @@ conform.setup({
         yaml = { "prettierd" },
         javascript = { "prettierd" },
         javascriptreact = { "prettierd" },
+        starlark = { "ruff_fix", "ruff_format" },
         typescriptreact = { "eslint_d" },
         typescript = { "eslint_d" },
+        bash = { "shfmt" },
+        sh = { "shfmt" },
     },
     notify_on_error = false,
     format_on_save = {
@@ -505,6 +540,15 @@ require("oil").setup({
         ["<C-s>"] = "actions.select_split",
     },
     skip_confirm_for_simple_edits = true,
+    buf_options = {
+        bufhidden = "delete",
+    },
+    cleanup_delay_ms = 0,
+    lsp_file_methods = {
+        enabled = true,
+        timeout_ms = 3000,
+        autosave_changes = true,
+    },
 })
 
 u.map_c("-", "Oil")

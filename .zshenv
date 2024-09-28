@@ -3,7 +3,7 @@
 # you're going to experience slowness in situations where subshells are used
 # (e.g. vim executing shell commands).
 
-export KEYTIMEOUT=1
+export KEYTIMEOUT=100
 export EDITOR='nvim'
 export VISUAL='nvim'
 export PAGER='less'

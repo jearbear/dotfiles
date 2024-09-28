@@ -38,6 +38,7 @@
     head = rev-parse HEAD
 
     new = !git update && git co --merge -b jerry-$(echo $@ | sed 's/ /-/g') main && :
+    newb = !git co -b jerry-$(echo $@ | sed 's/ /-/g') && :
     dup = !git co -b jerry-$(echo $@ | sed 's/ /-/g') && :
     backup = !git co -b $(git branch-name)-backup && git co - && :
 
@@ -71,6 +72,7 @@
     co = checkout
     com = checkout main
     cob = !"f() { set -e; BRANCH=$(git pick branch); git co $BRANCH; }; f"
+    cod = checkout --detach
 
     cor = !git fetch origin ${1?}:jerry-${1?} && git checkout jerry-${1?} && :
 
