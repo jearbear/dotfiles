@@ -122,6 +122,10 @@ gitsigns.setup({
     },
 })
 
+u.map("o", "ah", ":<C-U>Gitsigns select_hunk<CR>")
+u.map("x", "ah", ":<C-U>Gitsigns select_hunk<CR>")
+u.map("o", "ih", ":<C-U>Gitsigns select_hunk<CR>")
+u.map("x", "ih", ":<C-U>Gitsigns select_hunk<CR>")
 -- }}}
 
 -- nvim-bqf {{{
@@ -135,10 +139,11 @@ require("bqf").setup({
     },
     preview = {
         auto_preview = true,
-        win_height = 999,
-        win_vheight = 999,
+        win_height = 20,
+        win_vheight = 20,
         winblend = 0,
         delay_syntax = 100,
+        border = "single",
     },
 })
 -- }}}
@@ -151,9 +156,12 @@ vim.g.rsi_no_meta = true
 local fzf_lua = require("fzf-lua")
 fzf_lua.setup({
     winopts = {
-        height = 0.80,
-        width = 0.90,
+        -- split = "belowright new",
+        height = 0.66,
+        width = 1,
+        row = 1,
         border = "single",
+        backdrop = 100,
         hl = {
             border = "Keyword",
             preview_border = "Keyword",
@@ -174,7 +182,13 @@ fzf_lua.setup({
             delay = 100,
             scrollbar = false,
         },
+        on_create = function()
+            u.map("t", "<C-S-J>", "<End>", { silent = true, buffer = true })
+            u.map("t", "<C-S-K>", "<Home>", { silent = true, buffer = true })
+        end,
     },
+    -- Use same bindings as FZF in the shell
+    keymap = { fzf = {} },
     files = {
         fzf_opts = {
             ["--history"] = vim.fn.stdpath("data") .. "/fzf-lua-files-history",
@@ -231,7 +245,7 @@ u.map("n", "<Leader>l", fzf_cmd(fzf_lua.buffers, { layout = "vertical" }))
 u.map("n", "<Leader>;", fzf_cmd(fzf_lua.blines, { layout = "vertical" }))
 u.map("n", "<Leader>:", fzf_cmd(fzf_lua.command_history))
 u.map("n", "<Leader>G", fzf_cmd(fzf_lua.lsp_live_workspace_symbols, { history = "live-workspace-symbols" }))
-u.map("n", "<Leader>k", fzf_cmd(fzf_lua.lsp_document_symbols, { history = "document-symbols" }))
+u.map("n", "<Leader>k", fzf_cmd(fzf_lua.lsp_document_symbols, { history = "document-symbols", layout = "horizontal" }))
 u.map("n", "<Leader>h", fzf_cmd(fzf_lua.help_tags))
 u.map("n", "<Bslash>", fzf_cmd(fzf_lua.live_grep, { layout = "vertical" }))
 u.map("n", "<Leader><Bslash>", fzf_cmd(fzf_lua.live_grep_resume, { layout = "vertical" }))
@@ -330,72 +344,47 @@ require("mini.pairs").setup({
         [">"] = { action = "close", pair = "<>", neigh_pattern = "[^\\]." },
 
         ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^\\].", register = { cr = false } },
-        ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^\\].", register = { cr = false } },
+        ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^\\%a].", register = { cr = false } },
         ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\].", register = { cr = false } },
     },
 })
 u.map("i", "<C-h>", "v:lua.MiniPairs.bs()", { expr = true, replace_keycodes = false })
 -- }}}
 
--- nvim-cmp + friends {{{
-local cmp = require("cmp")
-local snippy = require("snippy")
-
-cmp.setup({
-    snippet = {
-        expand = function(args)
-            snippy.expand_snippet(args.body)
-        end,
-    },
-    completion = {
-        autocomplete = false,
-    },
+-- mini.completion {{{
+require("mini.completion").setup({
+    delay = { completion = 0, info = 0, signature = 0 },
     window = {
-        documentation = cmp.config.window.bordered({
-            border = "single",
-            side_padding = 0,
-        }),
+        info = { height = 25, width = 80, border = "single" },
+        signature = { height = 25, width = 80, border = "single" },
     },
-    mapping = {
-        ["<C-l>"] = cmp.mapping(function(fallback)
-            if snippy.can_expand_or_advance() then
-                snippy.expand_or_advance()
-            elseif cmp.visible() then
-                cmp.confirm()
-            else
-                fallback()
-            end
-        end, { "i", "s" }),
-        ["<C-h>"] = cmp.mapping(function(fallback)
-            if snippy.can_jump(-1) then
-                snippy.previous()
-            else
-                fallback()
-            end
-        end, { "i", "s" }),
-        ["<C-n>"] = cmp.mapping(cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }), { "i", "c" }),
-        ["<C-p>"] = cmp.mapping(cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }), { "i", "c" }),
+    mappings = {
+        force_twostep = "<C-o>",
     },
-    sources = cmp.config.sources({
-        { name = "nvim_lsp_signature_help" },
-    }, {
-        { name = "nvim_lsp" },
-        { name = "snippy" },
-    }),
-    experimental = {
-        ghost_text = true,
-    },
+    set_vim_settings = true,
 })
+-- }}}
 
-u.map("i", "<C-o>", cmp.complete)
-
--- when deleting text, enter insert mode instead of bailing out to normal mode
-u.map("s", "<BS>", "<BS>i")
-u.map("s", "<C-d>", "<BS>i")
-u.map("s", "<C-f>", "<Right>")
-u.map("s", "<C-b>", "<Left>")
-u.map("s", "<C-o>", "<C-o>o")
-
+-- mini.files {{{
+-- require("mini.files").setup({
+--     mappings = {
+--         close = "q",
+--         go_in = "l",
+--         go_in_plus = "<CR>",
+--         go_out = "h",
+--         go_out_plus = "-",
+--         mark_goto = "'",
+--         mark_set = "m",
+--         reset = "<BS>",
+--         reveal_cwd = "@",
+--         show_help = "g?",
+--         synchronize = "=",
+--         trim_left = "<",
+--         trim_right = ">",
+--     },
+-- })
+--
+-- u.map_c("-", "lua MiniFiles.open(vim.api.nvim_buf_get_name(0))")
 -- }}}
 
 -- nvim-surround {{{
@@ -503,6 +492,7 @@ u.autocmd({ "BufRead", "BufWritePost" }, {
 -- }}}
 
 -- conform.nvim {{{
+
 local conform = require("conform")
 
 require("conform.formatters.stylua").args =
@@ -522,11 +512,14 @@ conform.setup({
         typescript = { "eslint_d" },
         bash = { "shfmt" },
         sh = { "shfmt" },
+        elixir = {},
+        terraform = { "terraform_fmt" },
     },
     notify_on_error = false,
     format_on_save = {
-        timeout_ms = 500,
         lsp_fallback = true,
+        timeout_ms = 2000,
+        quiet = true,
     },
 })
 -- }}}
@@ -540,9 +533,6 @@ require("oil").setup({
         ["<C-s>"] = "actions.select_split",
     },
     skip_confirm_for_simple_edits = true,
-    buf_options = {
-        bufhidden = "delete",
-    },
     cleanup_delay_ms = 0,
     lsp_file_methods = {
         enabled = true,

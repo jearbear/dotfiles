@@ -1,6 +1,5 @@
 local u = require("utils")
 local lspconfig = require("lspconfig")
-local configs = require("lspconfig.configs")
 local fzf = require("fzf-lua")
 
 local min_severity = { min = vim.diagnostic.severity.HINT }
@@ -14,7 +13,9 @@ vim.diagnostic.config({
 })
 
 -- This function gets executed when the LSP is initiated successfully
-local on_attach = function(client, bufnr)
+local on_attach = function(_, bufnr)
+    -- vim.bo.omnifunc = "v:lua.vim.lsp.omnifunc"
+
     -- I use gq mostly to wrap long lines, I don't need a mapping for
     -- formatting since I almost always do it on save
     vim.bo.formatexpr = ""
@@ -63,16 +64,6 @@ local on_attach = function(client, bufnr)
         end
     end)
 
-    -- Enable auto-formatting if it's provided
-    if client.server_capabilities.documentFormattingProvider then
-        u.autocmd("BufWritePre", {
-            buffer = bufnr,
-            callback = function()
-                vim.lsp.buf.format({ timeout_ms = 5000, async = false })
-            end,
-        })
-    end
-
     -- Update signs
     local sign = "⏵"
     local signs = { Error = sign, Warn = sign, Hint = sign, Info = sign }
@@ -93,8 +84,6 @@ local override_formatting_capability = function(client, override)
     client.server_capabilities.documentRangeFormattingProvider = override
 end
 
-local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
 -- Golang
 lspconfig.gopls.setup({
     on_attach = function(client, bufnr)
@@ -105,7 +94,6 @@ lspconfig.gopls.setup({
         override_formatting_capability(client, false)
     end,
     handlers = handlers,
-    capabilities = capabilities,
     settings = {
         gopls = {
             usePlaceholders = true,
@@ -120,7 +108,6 @@ lspconfig.tsserver.setup({
         on_attach(client, bufnr)
     end,
     handlers = handlers,
-    capabilities = capabilities,
     settings = {
         separate_diagnostic_server = true,
         -- include_completions_with_insert_text = false,
@@ -137,15 +124,13 @@ lspconfig.tsserver.setup({
 })
 
 -- Elixir
-lspconfig.nextls.setup({
+lspconfig.elixirls.setup({
     on_attach = on_attach,
     handlers = handlers,
-    capabilities = capabilities,
-    cmd = { "nextls", "--stdio" },
-    init_options = {
-        experimental = {
-            completions = { enable = true },
-        },
+    cmd = { "/opt/homebrew/bin/elixir-ls" },
+    settings = {
+        dialyzerEnabled = false,
+        incrementalDialyzer = false,
     },
 })
 
@@ -158,7 +143,6 @@ lspconfig.lua_ls.setup({
         override_formatting_capability(client, false)
     end,
     handlers = handlers,
-    capabilities = capabilities,
     settings = {
         Lua = {
             runtime = {
@@ -186,14 +170,12 @@ lspconfig.lua_ls.setup({
 lspconfig.rust_analyzer.setup({
     on_attach = on_attach,
     handlers = handlers,
-    capabilities = capabilities,
 })
 
 -- Tailwind
 lspconfig.tailwindcss.setup({
     on_attach = on_attach,
     handlers = handlers,
-    capabilities = capabilities,
     filetypes = {
         "html",
         "javascriptreact",
@@ -213,7 +195,6 @@ lspconfig.tailwindcss.setup({
 lspconfig.pyright.setup({
     on_attach = on_attach,
     handlers = handlers,
-    capabilities = capabilities,
     settings = {
         pyright = {
             -- Use Ruff instead
@@ -232,7 +213,6 @@ lspconfig.pyright.setup({
 lspconfig.jsonls.setup({
     on_attach = on_attach,
     handlers = handlers,
-    capabilities = capabilities,
     init_options = {
         provideFormatter = false,
     },
@@ -242,12 +222,10 @@ lspconfig.jsonls.setup({
 lspconfig.yamlls.setup({
     on_attach = on_attach,
     handlers = handlers,
-    capabilities = capabilities,
 })
 
 -- terraforml-ls
 lspconfig.terraformls.setup({
     on_attach = on_attach,
     handlers = handlers,
-    capabilities = capabilities,
 })

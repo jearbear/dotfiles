@@ -81,14 +81,6 @@ require("lazy").setup({
     { "altermo/ultimate-autopair.nvim" },
     { "tpope/vim-rsi" },
     { "folke/flash.nvim" },
-
-    { "hrsh7th/cmp-nvim-lsp" },
-    { "hrsh7th/cmp-buffer" },
-    -- { "hrsh7th/cmp-path" },
-    -- { "hrsh7th/cmp-cmdline" },
-    { "hrsh7th/nvim-cmp" },
-    { "dcampos/nvim-snippy" },
-    { "dcampos/cmp-snippy" },
 })
 -- }}}
 
@@ -251,7 +243,6 @@ end, { nargs = "+", complete = "file" })
 -- automatically create parent directories as needed when saving files
 u.autocmd({ "BufWritePre", "FileWritePre" }, {
     pattern = "*",
-    -- command = "silent! call mkdir(expand('<afile>:p:h'), 'p')",
     callback = function()
         if vim.bo.filetype ~= "oil" then
             vim.cmd([[silent! call mkdir(expand('<afile>:p:h'), 'p')]])
@@ -389,7 +380,7 @@ u.map("n", "]q", function()
     end
 end)
 
--- I never use the stock behavior so this makes completions faster
+-- faster access to completions
 -- u.map("i", "<C-o>", "<C-x><C-o>")
 u.map("i", "<C-l>", "<C-x><C-l>")
 
@@ -434,6 +425,15 @@ u.map("!", "<C-BS>", "<C-w>")
 --     u.set_cursor_pos(u.line_number(), u.col_number() + 1)
 -- end)
 
+-- readline mappings when in select mode (relevant when using snippets)
+-- u.map("s", "<BS>", "<BS>i")
+-- u.map("s", "<C-d>", "<BS>i")
+-- u.map("s", "<C-f>", "<Right>")
+-- u.map("s", "<C-b>", "<Left>")
+
+-- delete by word
+u.map("!", "<C-S-h>", "<C-w>")
+
 -- edit config files
 u.map_c("<Leader>vev", "edit ~/.config/nvim/init.lua")
 u.map_c("<Leader>vef", "edit ~/.config/nvim/ftplugin")
@@ -463,6 +463,10 @@ u.map("n", "<C-w>-", "<C-w>=")
 
 -- https://github.com/neovim/neovim/pull/17932#issue-1188088238
 u.map("n", "<C-i>", "<C-i>")
+
+-- don't add search navigation to jumplist
+u.map_c("n", 'execute "keepjumps norm! " . v:count1 . "n"')
+u.map_c("p", 'execute "keepjumps norm! " . v:count1 . "p"')
 
 -- Navigate search results with Tab/S-Tab
 u.map("c", "<Tab>", function()

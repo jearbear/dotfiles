@@ -8,3 +8,11 @@ vim.b.miniai_config = {
         t = mini_ai.gen_spec.treesitter({ a = "@tag.outer", i = "@tag.inner" }),
     },
 }
+
+require("nvim-surround").buffer_setup({
+    surrounds = {
+        ["h"] = {
+            add = { '~H"""', '"""' },
+        },
+    },
+})
