@@ -315,18 +315,18 @@ u.autocmd({ "BufEnter", "BufNew" }, {
 })
 
 -- conveniences for empty buffers and the `q:` buffer
-u.autocmd({ "BufEnter" }, {
-    pattern = "*",
-    callback = function()
-        if vim.o.filetype ~= "" then
-            return
-        end
-
-        u.map("n", "<CR>", "<CR>", { buffer = true })
-        u.map_c("q", "q", { buffer = true })
-    end,
-    group = u.augroup("NONE"),
-})
+-- u.autocmd({ "BufEnter" }, {
+--     pattern = "*",
+--     callback = function()
+--         if vim.o.filetype ~= "" then
+--             return
+--         end
+--
+--         u.map("n", "<CR>", "<CR>", { buffer = true })
+--         u.map_c("q", "q", { buffer = true })
+--     end,
+--     group = u.augroup("NONE"),
+-- })
 -- }}}
 
 -- MAPPINGS {{{

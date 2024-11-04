@@ -156,7 +156,6 @@ vim.g.rsi_no_meta = true
 local fzf_lua = require("fzf-lua")
 fzf_lua.setup({
     winopts = {
-        -- split = "belowright new",
         height = 0.66,
         width = 1,
         row = 1,
@@ -178,11 +177,18 @@ fzf_lua.setup({
             winopts = {
                 number = true,
             },
-            title = false,
+            title = true,
             delay = 100,
             scrollbar = false,
         },
         on_create = function()
+            -- Fzf ignores autocmds when opening (for some reason) so we need
+            -- to explicitly close the nvim-bqf preview window if it's open.
+            local qf_win_id = vim.fn.getqflist({ winid = 0 }).winid
+            if qf_win_id ~= 0 then
+                require("bqf.preview.handler").hideWindow(qf_win_id)
+            end
+            -- Set mappings to get to the first and last results.
             u.map("t", "<C-S-J>", "<End>", { silent = true, buffer = true })
             u.map("t", "<C-S-K>", "<Home>", { silent = true, buffer = true })
         end,
