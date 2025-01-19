@@ -9,6 +9,8 @@ export VISUAL='nvim'
 export PAGER='less'
 export GPG_TTY=$(tty)
 
+export JJ_CONFIG="$HOME/.jj_config.toml"
+
 export GOPATH=$HOME/go
 
 export FZF_DEFAULT_COMMAND='fd --type file'

@@ -156,9 +156,9 @@ vim.g.rsi_no_meta = true
 local fzf_lua = require("fzf-lua")
 fzf_lua.setup({
     winopts = {
-        height = 0.66,
-        width = 1,
-        row = 1,
+        height = 0.9,
+        width = 0.9,
+        -- row = 1,
         border = "single",
         backdrop = 100,
         hl = {
@@ -316,10 +316,13 @@ u.map_c("<Leader>cq", "GitConflictListQf", { desc = "Load git conflicts into the
 -- }}}
 
 -- mini.ai {{{
+local gen_spec = require("mini.ai").gen_spec
 local gen_ai_spec = require("mini.extra").gen_ai_spec
 require("mini.ai").setup({
     silent = true,
     custom_textobjects = {
+        F = gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }),
+        c = gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }),
         g = gen_ai_spec.buffer(),
         i = gen_ai_spec.indent(),
         N = gen_ai_spec.number(),
@@ -369,6 +372,20 @@ require("mini.completion").setup({
     },
     set_vim_settings = true,
 })
+-- }}}
+
+-- mini.snippets {{{
+local gen_loader = require("mini.snippets").gen_loader
+require("mini.snippets").setup({
+    snippets = {
+        gen_loader.from_lang(),
+    },
+    mappings = {
+        jump_next = "<Tab>",
+        jump_prev = "<S-Tab>",
+    },
+})
+
 -- }}}
 
 -- mini.files {{{
@@ -520,6 +537,8 @@ conform.setup({
         sh = { "shfmt" },
         elixir = {},
         terraform = { "terraform_fmt" },
+        toml = { "taplo" },
+        fish = { "findent" },
     },
     notify_on_error = false,
     format_on_save = {

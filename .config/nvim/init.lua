@@ -436,7 +436,7 @@ u.map("!", "<C-S-h>", "<C-w>")
 
 -- edit config files
 u.map_c("<Leader>vev", "edit ~/.config/nvim/init.lua")
-u.map_c("<Leader>vef", "edit ~/.config/nvim/ftplugin")
+u.map_c("<Leader>vef", "edit ~/.config/nvim/after/ftplugin")
 u.map_c("<Leader>vel", "edit ~/.config/nvim/lua/lsp.lua")
 u.map_c("<Leader>vep", "edit ~/.config/nvim/lua/plugins.lua")
 u.map_c("<Leader>ves", "edit ~/.config/nvim/snippets")
@@ -465,8 +465,8 @@ u.map("n", "<C-w>-", "<C-w>=")
 u.map("n", "<C-i>", "<C-i>")
 
 -- don't add search navigation to jumplist
-u.map_c("n", 'execute "keepjumps norm! " . v:count1 . "n"')
-u.map_c("p", 'execute "keepjumps norm! " . v:count1 . "p"')
+u.map_c("n", "keepjumps normal! n", { silent = true })
+u.map_c("N", "keepjumps normal! N", { silent = true })
 
 -- Navigate search results with Tab/S-Tab
 u.map("c", "<Tab>", function()

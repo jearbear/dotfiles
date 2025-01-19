@@ -29,7 +29,10 @@ M.unmap = vim.keymap.del
 M.map = vim.keymap.set
 M.map_c = function(lhs, rhs, opts)
     vim.keymap.set("n", lhs, function()
-        vim.cmd(rhs)
+        local ok, result = pcall(vim.cmd, rhs)
+        if not ok then
+            vim.api.nvim_err_writeln(result)
+        end
     end, opts)
 end
 

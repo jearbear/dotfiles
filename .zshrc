@@ -60,6 +60,9 @@ compinit
 # colors
 autoload -U colors && colors
 
+# jj completions
+source <(jj util completion zsh)
+
 # edit command in $EDITOR
 autoload -U edit-command-line
 zle -N edit-command-line
