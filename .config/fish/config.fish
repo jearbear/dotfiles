@@ -7,9 +7,11 @@ set -gx JJ_CONFIG "$HOME/.jj_config.toml"
 set -gx BAT_THEME "base16"
 set -gx MANPAGER "nvim +Man!" # use neovim to read man pages
 set -gx ERL_AFLAGS "-kernel shell_history enabled" # enable history in iex sessions
+set -gx HOMEBREW_NO_AUTO_UPDATE "1"
+
 
 set -gx FZF_DEFAULT_COMMAND 'fd --type file'
-set -gx FZF_DEFAULT_OPTS "--cycle --color=16,fg:white:dim,bg:-1,preview-fg:-1,preview-bg:-1,hl:yellow:regular,fg+:yellow:regular:bold,bg+:-1,gutter:-1,hl+:yellow:regular:bold,query:white,info:magenta,border:magenta:dim,prompt:magenta,marker:cyan:bold,spinner:magenta,disabled:gray,header:gray,pointer:red --bind ctrl-n:next-history --bind ctrl-p:prev-history --bind ctrl-o:toggle-all --bind ctrl-delete:backward-kill-word --bind home:first --bind end:last"
+set -gx FZF_DEFAULT_OPTS "--cycle --color=16,fg:white:dim,bg:-1,preview-fg:-1,preview-bg:-1,hl:yellow:regular,fg+:yellow:regular:bold,bg+:-1,gutter:-1,hl+:yellow:regular:bold,query:white,info:magenta,border:magenta:dim,prompt:magenta,marker:cyan:bold,spinner:magenta,disabled:gray,header:gray,pointer:yellow --bind ctrl-n:next-history --bind ctrl-p:prev-history --bind ctrl-o:toggle-all --bind ctrl-delete:backward-kill-word --bind home:first --bind end:last --pointer='█'"
 set -gx FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND"
 
 # recommended when installing sqlite, but might not need anymore
@@ -19,6 +21,7 @@ set -gx CPPFLAGS "-I/opt/homebrew/opt/openssl@1.1/include"
 fish_add_path "$HOME/.bin"
 fish_add_path "$HOME/.cargo/bin" # rust
 fish_add_path "/opt/homebrew/bin/"
+fish_add_path "/usr/local/bin"
 
 
 if status is-interactive

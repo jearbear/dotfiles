@@ -229,3 +229,9 @@ lspconfig.terraformls.setup({
     on_attach = on_attach,
     handlers = handlers,
 })
+
+-- taplo
+lspconfig.taplo.setup({
+    on_attach = on_attach,
+    handlers = handlers,
+})

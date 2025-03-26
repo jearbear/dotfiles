@@ -247,6 +247,9 @@ u.map("n", "<Leader>f", function()
     end
 end)
 u.map("n", "<Leader>F", fzf_cmd(fzf_lua.git_status, { layout = "vertical" }))
+u.map("n", "<Leader>-", function()
+    fzf_lua.files({ cmd = "fd --type directory" })
+end)
 u.map("n", "<Leader>l", fzf_cmd(fzf_lua.buffers, { layout = "vertical" }))
 u.map("n", "<Leader>;", fzf_cmd(fzf_lua.blines, { layout = "vertical" }))
 u.map("n", "<Leader>:", fzf_cmd(fzf_lua.command_history))
@@ -277,7 +280,7 @@ let g:test#custom_strategies = {'copy': function('CopyStrategy')}
 let g:test#strategy = 'copy'
 
 function! PytestTransform(cmd) abort
-    return 'watchexec --restart --exts py --clear -- pytest -n0' . a:cmd[17:]
+    return 'watchexec --restart --exts py,html --clear -- pytest -n0 --snapshot-update' . a:cmd[17:]
 endfunction
 
 let g:test#python#runner = 'pytest'
@@ -289,30 +292,6 @@ u.map_c("<Leader>tf", "TestFile")
 u.map_c("<Leader>tl", "TestNearest")
 u.map_c("<Leader>tT", "TestFile -strategy=kitty")
 u.map_c("<Leader>tt", "TestNearest -strategy=kitty")
--- }}}
-
--- git-conflict.nvim {{{
-require("git-conflict").setup({
-    default_mappings = false,
-    disable_diagnostics = true,
-})
-
-u.autocmd("User", {
-    pattern = "GitConflictDetected",
-    callback = function()
-        vim.notify("Conflicts detected! Enabling git conflict mappings...")
-
-        u.map_c("[n", "GitConflictPrevConflict", { buffer = true })
-        u.map_c("]n", "GitConflictNextConflict", { buffer = true })
-        u.map_c("<Leader>co", "GitConflictChooseOurs", { buffer = true })
-        u.map_c("<Leader>ct", "GitConflictChooseTheirs", { buffer = true })
-        u.map_c("<Leader>cb", "GitConflictChooseBoth", { buffer = true })
-        u.map_c("<Leader>cB", "GitConflictChooseBase", { buffer = true })
-    end,
-    group = u.augroup("GIT_CONFLICT"),
-})
-
-u.map_c("<Leader>cq", "GitConflictListQf", { desc = "Load git conflicts into the quickfix" })
 -- }}}
 
 -- mini.ai {{{
@@ -362,29 +341,49 @@ u.map("i", "<C-h>", "v:lua.MiniPairs.bs()", { expr = true, replace_keycodes = fa
 
 -- mini.completion {{{
 require("mini.completion").setup({
-    delay = { completion = 0, info = 0, signature = 0 },
+    delay = { completion = 50, info = 50, signature = 50 },
     window = {
         info = { height = 25, width = 80, border = "single" },
         signature = { height = 25, width = 80, border = "single" },
     },
+    fallback_action = "",
     mappings = {
         force_twostep = "<C-o>",
+        force_fallback = "",
+        scroll_down = "",
+        scroll_up = "",
     },
     set_vim_settings = true,
 })
 -- }}}
 
 -- mini.snippets {{{
-local gen_loader = require("mini.snippets").gen_loader
-require("mini.snippets").setup({
+local mini_snippets = require("mini.snippets")
+mini_snippets.setup({
     snippets = {
-        gen_loader.from_lang(),
+        mini_snippets.gen_loader.from_lang(),
     },
     mappings = {
-        jump_next = "<Tab>",
-        jump_prev = "<S-Tab>",
+        jump_next = "",
+        jump_prev = "",
     },
 })
+
+u.map("i", "<C-j>", function()
+    if #mini_snippets.expand({ insert = false }) > 0 then
+        mini_snippets.expand()
+    elseif mini_snippets.session.get() ~= nil then
+        mini_snippets.session.jump("next")
+    end
+end)
+-- u.map("i", "<C-k>", function()
+--     if mini_snippets.session.get() ~= nil then
+--         mini_snippets.session.jump("prev")
+--         return ""
+--     else
+--         return "<C-o>d$"
+--     end
+-- end, { remap = true })
 
 -- }}}
 
@@ -494,6 +493,23 @@ u.map("n", "gS", treesj.split)
 -- vim-slime {{{
 vim.g.slime_target = "kitty"
 vim.g.slime_python_ipython = true
+vim.g.slime_dont_ask_default = true
+
+u.map("n", "<C-c><C-c>", function()
+    if not vim.g.slime_default_config then
+        vim.cmd("SlimeSetup")
+    end
+    u.feed_keys("<C-c>v")
+end)
+u.map("n", "<C-c>v", "<Plug>SlimeParagraphSend")
+
+u.command("SlimeSetup", function()
+    vim.g.slime_default_config = {
+        listen_on = os.getenv("KITTY_LISTEN_ON"),
+        window_id = tonumber(vim.fn.system("kitty @ select-window --self")),
+    }
+    vim.notify("Slime config set for Kitty", vim.log.levels.INFO)
+end, { desc = "Configure vim-slime for Kitty terminal" })
 -- }}}
 
 -- nvim-lint {{{
@@ -589,4 +605,19 @@ flash.setup({
 u.map({ "n", "x", "o" }, "<C-f>", function()
     flash.jump()
 end)
+-- }}}
+
+-- grapple.nvim {{{
+require("grapple").setup({
+    scope = "cwd",
+    icons = false,
+})
+
+u.map("n", "`", function()
+    vim.cmd("Grapple toggle")
+    require("lualine").refresh()
+end)
+u.map_c("<Leader>`", "Grapple toggle_tags")
+u.map_c("<Tab>", "Grapple cycle_tags next")
+u.map_c("<S-Tab>", "Grapple cycle_tags prev")
 -- }}}

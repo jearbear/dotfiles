@@ -14,5 +14,8 @@ require("nvim-surround").buffer_setup({
         ["h"] = {
             add = { '~H"""', '"""' },
         },
+        ["m"] = {
+            add = { "%{", "}" },
+        },
     },
 })

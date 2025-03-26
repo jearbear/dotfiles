@@ -48,7 +48,6 @@ require("lazy").setup({
     { "gbprod/yanky.nvim" }, -- better handling of yanks (yank rings, auto-formatting)
 
     -- version control
-    { "akinsho/git-conflict.nvim", version = "*" }, -- better git conflict resolution
     { "lewis6991/gitsigns.nvim" }, -- VCS change indicators in the gutter
     { "linrongbin16/gitlinker.nvim", dependencies = { "nvim-lua/plenary.nvim" } }, -- create links to Github
 
@@ -78,9 +77,10 @@ require("lazy").setup({
 
     -- trying out
     { "nvim-treesitter/playground" },
-    { "altermo/ultimate-autopair.nvim" },
     { "tpope/vim-rsi" },
     { "folke/flash.nvim" },
+    { "cbochs/grapple.nvim" },
+    { "rafikdraoui/jj-diffconflicts" },
 })
 -- }}}
 
@@ -195,12 +195,12 @@ vim.opt.wildignorecase = true -- perform case-insensitive completion of files in
 vim.opt.wildmode = { "full", "full" } -- complete the entire result in command mode
 
 vim.opt.shortmess:append("c") -- don't show messages when performing completion
+vim.opt.shortmess:append("I") -- don't show vim start screen
+
 vim.opt.completeopt = { "menu", "menuone" } -- when completing, show a menu even if there is only one result
 vim.opt.complete = { ".", "w", "b" } -- source keyword and line completions from current buffer, open windows, and other loaded buffers
 
 vim.opt.pumheight = 10 -- limit the number of completion results to show at a time
-
-vim.opt.shortmess:append("I") -- don't show vim start screen
 
 vim.opt.signcolumn = "yes"
 
@@ -359,10 +359,10 @@ u.map_c("{", 'execute "keepjumps norm! " . v:count1 . "{"')
 -- buffer/tab navigation
 u.map("n", "<BS>", "<C-^>")
 u.map("n", "<C-h>", "<C-^>")
-u.map_c("<S-Tab>", "tabp")
-u.map_c("<Tab>", "tabn")
-u.map_c("<Leader><Tab>", "tabe")
-u.map_c("<C-Tab>", "tabc")
+u.map_c("<Leader>tp", "tabp")
+u.map_c("<Leader>tn", "tabn")
+u.map_c("<Leader>te", "tabe %")
+u.map_c("<Leader>tc", "tabc")
 
 -- more convenient commenting
 u.map("n", "<Leader>/", "gcc", { remap = true })
@@ -430,9 +430,6 @@ u.map("!", "<C-BS>", "<C-w>")
 -- u.map("s", "<C-d>", "<BS>i")
 -- u.map("s", "<C-f>", "<Right>")
 -- u.map("s", "<C-b>", "<Left>")
-
--- delete by word
-u.map("!", "<C-S-h>", "<C-w>")
 
 -- edit config files
 u.map_c("<Leader>vev", "edit ~/.config/nvim/init.lua")

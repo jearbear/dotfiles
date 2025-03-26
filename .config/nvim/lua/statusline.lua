@@ -1,5 +1,14 @@
 local u = require("utils")
 local lualine = require("lualine")
+local grapple = require("grapple")
+
+local function grapple_indicator()
+    if grapple.exists() then
+        return grapple.name_or_index()
+    else
+        return ""
+    end
+end
 
 lualine.setup({
     options = {
@@ -21,7 +30,7 @@ lualine.setup({
                 end,
             },
         },
-        lualine_b = {},
+        lualine_b = { { grapple_indicator } },
         lualine_c = {
             {
                 "filename",
@@ -34,15 +43,7 @@ lualine.setup({
                 padding = 2,
             },
         },
-        lualine_x = {
-            {
-                "branch",
-                padding = 2,
-                cond = function()
-                    return vim.fn.winwidth(0) >= 120
-                end,
-            },
-        },
+        lualine_x = {},
         lualine_y = {
             {
                 "diagnostics",
