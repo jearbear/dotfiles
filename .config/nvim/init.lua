@@ -49,7 +49,6 @@ require("lazy").setup({
 
     -- version control
     { "lewis6991/gitsigns.nvim" }, -- VCS change indicators in the gutter
-    { "linrongbin16/gitlinker.nvim", dependencies = { "nvim-lua/plenary.nvim" } }, -- create links to Github
 
     -- project navigation + management
     { "stevearc/oil.nvim" }, -- minimal file browser
@@ -59,7 +58,7 @@ require("lazy").setup({
 
     -- LSP stuff
     { "neovim/nvim-lspconfig" }, -- defines configs for various LSP servers for me
-    { "pmizio/typescript-tools.nvim" }, -- better/faster typescript support
+    { "pmizio/typescript-tools.nvim", dependencies = { "nvim-lua/plenary.nvim" } }, -- better/faster typescript support
     { "folke/neodev.nvim" }, -- setup the Lua LSP for neovim development
 
     -- linting + formatting
@@ -81,6 +80,7 @@ require("lazy").setup({
     { "folke/flash.nvim" },
     { "cbochs/grapple.nvim" },
     { "rafikdraoui/jj-diffconflicts" },
+    { "MeanderingProgrammer/render-markdown.nvim" },
 })
 -- }}}
 
@@ -194,11 +194,14 @@ vim.opt.wildmenu = true -- show all command mode completion options in a menu
 vim.opt.wildignorecase = true -- perform case-insensitive completion of files in command mode
 vim.opt.wildmode = { "full", "full" } -- complete the entire result in command mode
 
+vim.opt.winborder = "single"
+
 vim.opt.shortmess:append("c") -- don't show messages when performing completion
 vim.opt.shortmess:append("I") -- don't show vim start screen
 
-vim.opt.completeopt = { "menu", "menuone" } -- when completing, show a menu even if there is only one result
-vim.opt.complete = { ".", "w", "b" } -- source keyword and line completions from current buffer, open windows, and other loaded buffers
+-- vim.opt.completeopt = { "menu", "menuone", "popup" } -- when completing, show a menu even if there is only one result
+-- vim.opt.completeopt = { "menuone", "noselect", "fuzzy" } -- for mini.completion
+vim.opt.complete = { ".", "w", "b", "f" } -- source keyword and line completions from current buffer, open windows, other loaded buffers, and buffer names
 
 vim.opt.pumheight = 10 -- limit the number of completion results to show at a time
 
@@ -333,6 +336,17 @@ u.autocmd({ "BufEnter", "BufNew" }, {
 u.map("", "Y", "y$")
 u.map("", "0", "^")
 
+-- u.map({ "n", "v" }, ";", ":")
+-- u.map({ "n", "v" }, ":", ";")
+
+-- save and quit huehue
+u.map_c("<Leader>w", ":w")
+u.map_c("<Leader>W", ":wa")
+u.map_c("<Leader>q", ":q")
+u.map_c("<Leader>Q", ":qa")
+u.map_c("<Leader>x", ":x")
+u.map_c("<Leader>X", ":xa")
+
 -- scroll by larger increments
 u.map({ "n", "v" }, "<C-d>", "10<C-d>")
 u.map({ "n", "v" }, "<C-u>", "10<C-u>")
@@ -349,8 +363,8 @@ u.map("v", "<C-k>", ":m '<-2<CR>gv=gv")
 u.map("n", "J", "mzJ`z")
 
 -- insert blank lines
-u.map_c("<CR>", "call append(line('.'), '')")
-u.map_c("<S-CR>", "call append(line('.') - 1, '')")
+u.map("n", "<CR>", "]<Space>", { remap = true })
+u.map("n", "<S-CR>", "[<Space>", { remap = true })
 
 -- don't add motions from { or } to the jumplist
 u.map_c("}", 'execute "keepjumps norm! " . v:count1 . "}"')
@@ -368,20 +382,8 @@ u.map_c("<Leader>tc", "tabc")
 u.map("n", "<Leader>/", "gcc", { remap = true })
 u.map("v", "<Leader>/", "gc", { remap = true })
 
--- navigate quickfix list
-u.map("n", "[q", function()
-    if not pcall(vim.cmd, "cprevious") then
-        vim.cmd("clast")
-    end
-end)
-u.map("n", "]q", function()
-    if not pcall(vim.cmd, "cnext") then
-        vim.cmd("cfirst")
-    end
-end)
-
 -- faster access to completions
--- u.map("i", "<C-o>", "<C-x><C-o>")
+u.map("i", "<C-o>", "<C-x><C-o>")
 u.map("i", "<C-l>", "<C-x><C-l>")
 
 -- faster renaming
@@ -394,6 +396,9 @@ u.map("v", "<Leader>s", '"ay/<C-R>a<CR>``:%s//')
 
 -- load the selection into the seach register
 u.map("v", "*", '"ay/<C-R>a<CR>``')
+
+-- the default mapping is insane
+u.map("i", "<C-Space>", "<nop>")
 
 -- yank/paste to/from system clipboard
 -- (recursive mappings are intentionally used to preserve the benefits of
@@ -440,7 +445,7 @@ u.map_c("<Leader>ves", "edit ~/.config/nvim/snippets")
 u.map_c("<Leader>veu", "edit ~/.config/nvim/lua/utils.lua")
 
 -- toggle qflist
-u.map("n", "<Leader>qq", function()
+u.map("n", "<Leader>~", function()
     for _, win in pairs(vim.fn.getwininfo()) do
         if win["quickfix"] == 1 then
             vim.cmd("cclose")
@@ -487,6 +492,25 @@ u.map("c", "<S-Tab>", function()
         return "<S-Tab>"
     end
 end, { expr = true })
+
+-- Get Github URL for current file
+u.map({ "n", "v" }, "<Leader>gl", function()
+    local url = u.get_github_url({ mode = "blob" })
+    if url then
+        vim.fn.setreg("+", url)
+        print(url)
+    else
+        print("Could not get Github URL")
+    end
+end)
+u.map({ "n", "v" }, "<Leader>go", function()
+    local url = u.get_github_url({ mode = "blame" })
+    if url then
+        u.system({ "open", url })
+    else
+        print("Could not get Github URL")
+    end
+end)
 -- }}}
 
 require("statusline")

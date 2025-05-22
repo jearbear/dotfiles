@@ -192,3 +192,11 @@ preexec_functions=( __preexec_function ${preexec_functions[@]} )
 
 # source local configs
 [ -r ~/.zshrc.local ] && . ~/.zshrc.local
+
+# pnpm
+export PNPM_HOME="/Users/jerry/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end

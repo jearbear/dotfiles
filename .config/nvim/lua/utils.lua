@@ -80,4 +80,75 @@ M.feed_keys = function(keys)
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, true, true), "", false)
 end
 
+M.system = function(cmd)
+    local resp = vim.system(cmd, { text = true }):wait()
+    if resp.code == 0 then
+        return resp.stdout:gsub("\n", "")
+    else
+        return nil
+    end
+end
+
+M.get_visual_range = function()
+    local mode = vim.fn.mode()
+    if mode == "v" or mode == "V" or mode == "" then
+        local start_pos = vim.fn.getpos("v")[2]
+        local end_pos = vim.fn.getcurpos()[2]
+
+        local start_line = math.min(start_pos, end_pos)
+        local end_line = math.max(start_pos, end_pos)
+
+        print(start_line)
+        print(end_line)
+        return { start_line, end_line }
+    else
+        return nil
+    end
+end
+
+M.get_github_url = function(opts)
+    opts = opts or {}
+    local mode = opts.mode or "blob"
+
+    local git_root = M.system({ "git", "rev-parse", "--show-toplevel" })
+    if git_root == nil then
+        return nil
+    end
+
+    local commit_hash = M.system({ "git", "rev-parse", "HEAD" })
+    if M.trim(M.system({ "git", "branch", "--remote", "--contains", commit_hash })) == "" then
+        commit_hash = "main"
+    end
+
+    local remote_url = M.system({ "git", "remote", "get-url", "origin" })
+    if commit_hash == nil or remote_url == nil then
+        return nil
+    end
+
+    local github_path = remote_url:match("github%.com[:/](.+)%.git")
+    if not github_path then
+        return nil
+    end
+
+    local rel_path = vim.fn.expand("%:p"):sub(#git_root + 2)
+    local github_url = "https://github.com/" .. github_path .. "/" .. mode .. "/" .. commit_hash .. "/" .. rel_path
+
+    local visual_range = M.get_visual_range()
+    if visual_range then
+        local start_line = visual_range[1]
+        local end_line = visual_range[2]
+        if start_line == end_line then
+            github_url = github_url .. "#L" .. start_line
+        else
+            github_url = github_url .. "#L" .. start_line .. "-L" .. end_line
+        end
+    end
+
+    return github_url
+end
+
+M.trim = function(s)
+    return s:gsub("^%s*(.-)%s*$", "%1")
+end
+
 return M

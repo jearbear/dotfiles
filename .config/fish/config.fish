@@ -13,15 +13,19 @@ set -gx HOMEBREW_NO_AUTO_UPDATE "1"
 set -gx FZF_DEFAULT_COMMAND 'fd --type file'
 set -gx FZF_DEFAULT_OPTS "--cycle --color=16,fg:white:dim,bg:-1,preview-fg:-1,preview-bg:-1,hl:yellow:regular,fg+:yellow:regular:bold,bg+:-1,gutter:-1,hl+:yellow:regular:bold,query:white,info:magenta,border:magenta:dim,prompt:magenta,marker:cyan:bold,spinner:magenta,disabled:gray,header:gray,pointer:yellow --bind ctrl-n:next-history --bind ctrl-p:prev-history --bind ctrl-o:toggle-all --bind ctrl-delete:backward-kill-word --bind home:first --bind end:last --pointer='█'"
 set -gx FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND"
+set -gx ESCDELAY 0 # for some cursed reason, FZF defaults to 100
 
 # recommended when installing sqlite, but might not need anymore
 set -gx LDFLAGS "-L/opt/homebrew/opt/openssl@1.1/lib"
 set -gx CPPFLAGS "-I/opt/homebrew/opt/openssl@1.1/include"
 
+set -gx PNPM_HOME "$HOME/Library/pnpm"
+
 fish_add_path "$HOME/.bin"
 fish_add_path "$HOME/.cargo/bin" # rust
 fish_add_path "/opt/homebrew/bin/"
 fish_add_path "/usr/local/bin"
+fish_add_path "$PNPM_HOME"
 
 
 if status is-interactive

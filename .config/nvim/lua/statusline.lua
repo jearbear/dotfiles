@@ -23,10 +23,7 @@ lualine.setup({
             {
                 "mode",
                 fmt = function(str)
-                    if vim.fn.winwidth(0) < 120 then
-                        return str:sub(1, 1)
-                    end
-                    return str:sub(1, 3)
+                    return str:sub(1, 1)
                 end,
             },
         },

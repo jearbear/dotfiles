@@ -15,6 +15,7 @@ require("nvim-treesitter.configs").setup({
         "heex",
         "html",
         "javascript",
+        "jinja",
         "json",
         "jsonnet",
         "just",
@@ -77,19 +78,6 @@ require("nvim-ts-autotag").setup({
 })
 -- }}}
 
--- gitlinker.nvim {{{
-require("gitlinker").setup({
-    opts = {
-        remote = "origin",
-        add_current_line_on_normal_mode = false,
-        print_url = true,
-    },
-    u.map({ "n", "v" }, "<Leader>gl", ":GitLink<CR>"),
-    u.map({ "n", "v" }, "<Leader>gL", ":GitLink default_branch<CR>"),
-    u.map({ "n", "v" }, "<Leader>go", ":GitLink! blame<CR>"),
-})
--- }}}
-
 -- gitsigns.nvim {{{
 local gitsigns = require("gitsigns")
 gitsigns.setup({
@@ -97,13 +85,12 @@ gitsigns.setup({
         u.map("n", "<Leader>gp", gitsigns.preview_hunk, { buffer = bufnr })
         u.map("n", "<Leader>gb", gitsigns.blame_line, { buffer = bufnr })
         u.map("n", "<Leader>gs", gitsigns.stage_hunk, { buffer = bufnr })
-        u.map("n", "<Leader>gS", gitsigns.undo_stage_hunk, { buffer = bufnr })
         u.map("n", "<Leader>gu", gitsigns.reset_hunk, { buffer = bufnr })
         u.map("n", "<C-S-j>", function()
-            gitsigns.next_hunk({ wrap = false })
+            gitsigns.nav_hunk("next", { wrap = false })
         end, { buffer = bufnr })
         u.map("n", "<C-S-k>", function()
-            gitsigns.prev_hunk({ wrap = false })
+            gitsigns.nav_hunk("prev", { wrap = false })
         end, { buffer = bufnr })
     end,
     signs = {
@@ -155,25 +142,25 @@ vim.g.rsi_no_meta = true
 -- fzf-lua {{{
 local fzf_lua = require("fzf-lua")
 fzf_lua.setup({
+    hls = {
+        border = "Keyword",
+        preview_border = "Keyword",
+        header_text = "Error",
+        buf_flag_cur = "Error",
+        buf_flag_alt = "Constant",
+    },
     winopts = {
         height = 0.9,
         width = 0.9,
         -- row = 1,
         border = "single",
         backdrop = 100,
-        hl = {
-            border = "Keyword",
-            preview_border = "Keyword",
-            header_text = "Error",
-            buf_flag_cur = "Error",
-            buf_flag_alt = "Constant",
-        },
         preview = {
             vertical = "up:75%",
             horizontal = "right:66%",
             layout = "flex",
             flip_columns = 160,
-            border = "sharp",
+            border = "single",
             winopts = {
                 number = true,
             },
@@ -195,6 +182,9 @@ fzf_lua.setup({
     },
     -- Use same bindings as FZF in the shell
     keymap = { fzf = {} },
+    fzf_opts = {
+        ["--tiebreak"] = "chunk", -- prefer continuous matches
+    },
     files = {
         fzf_opts = {
             ["--history"] = vim.fn.stdpath("data") .. "/fzf-lua-files-history",
@@ -204,16 +194,13 @@ fzf_lua.setup({
         rg_glob = true,
         fzf_opts = {
             ["--delimiter"] = "[:]",
-            ["--with-nth"] = "1,3..", -- hide line numbers
-            ["--nth"] = "2..", -- don't search filenames
-            ["--tiebreak"] = "chunk",
+            ["--with-nth"] = "1,4..", -- hide line numbers
+            ["--tiebreak"] = "chunk", -- prefer continuous matches
             ["--history"] = vim.fn.stdpath("data") .. "/fzf-lua-grep-history",
         },
     },
     blines = {
         fzf_opts = {
-            ["--delimiter"] = "[:]",
-            ["--with-nth"] = "3..",
             ["--tiebreak"] = "chunk",
             ["--history"] = vim.fn.stdpath("data") .. "/fzf-lua-blines-history",
         },
@@ -254,7 +241,7 @@ u.map("n", "<Leader>l", fzf_cmd(fzf_lua.buffers, { layout = "vertical" }))
 u.map("n", "<Leader>;", fzf_cmd(fzf_lua.blines, { layout = "vertical" }))
 u.map("n", "<Leader>:", fzf_cmd(fzf_lua.command_history))
 u.map("n", "<Leader>G", fzf_cmd(fzf_lua.lsp_live_workspace_symbols, { history = "live-workspace-symbols" }))
-u.map("n", "<Leader>k", fzf_cmd(fzf_lua.lsp_document_symbols, { history = "document-symbols", layout = "horizontal" }))
+u.map("n", "<Leader>k", fzf_cmd(fzf_lua.lsp_document_symbols, { history = "document-symbols" }))
 u.map("n", "<Leader>h", fzf_cmd(fzf_lua.help_tags))
 u.map("n", "<Bslash>", fzf_cmd(fzf_lua.live_grep, { layout = "vertical" }))
 u.map("n", "<Leader><Bslash>", fzf_cmd(fzf_lua.live_grep_resume, { layout = "vertical" }))
@@ -300,11 +287,12 @@ local gen_ai_spec = require("mini.extra").gen_ai_spec
 require("mini.ai").setup({
     silent = true,
     custom_textobjects = {
+        t = gen_spec.treesitter({ a = "@tag.outer", i = "@tag.inner" }),
         F = gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }),
         c = gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }),
         g = gen_ai_spec.buffer(),
         i = gen_ai_spec.indent(),
-        N = gen_ai_spec.number(),
+        n = gen_ai_spec.number(),
     },
 })
 -- }}}
@@ -346,10 +334,10 @@ require("mini.completion").setup({
         info = { height = 25, width = 80, border = "single" },
         signature = { height = 25, width = 80, border = "single" },
     },
-    fallback_action = "",
+    fallback_action = "<C-x><C-p>",
     mappings = {
-        force_twostep = "<C-o>",
-        force_fallback = "",
+        force_twostep = "<C-Space>",
+        force_fallback = "<C-p>",
         scroll_down = "",
         scroll_up = "",
     },
@@ -503,6 +491,14 @@ u.map("n", "<C-c><C-c>", function()
 end)
 u.map("n", "<C-c>v", "<Plug>SlimeParagraphSend")
 
+u.map("x", "<C-c><C-c>", function()
+    if not vim.g.slime_default_config then
+        vim.cmd("SlimeSetup")
+    end
+    u.feed_keys("<C-c>v")
+end)
+u.map("x", "<C-c>v", "<Plug>SlimeRegionSend")
+
 u.command("SlimeSetup", function()
     vim.g.slime_default_config = {
         listen_on = os.getenv("KITTY_LISTEN_ON"),
@@ -539,22 +535,24 @@ require("conform.formatters.stylua").args =
 
 conform.setup({
     formatters_by_ft = {
-        lua = { "stylua" },
-        python = { "ruff_fix", "ruff_format" },
+        bash = { "shfmt" },
         css = { "prettierd" },
-        json = { "prettierd" },
-        yaml = { "prettierd" },
+        elixir = {},
+        fish = { "findent" },
+        html = { "prettierd" },
         javascript = { "prettierd" },
         javascriptreact = { "prettierd" },
-        starlark = { "ruff_fix", "ruff_format" },
-        typescriptreact = { "eslint_d" },
-        typescript = { "eslint_d" },
-        bash = { "shfmt" },
+        json = { "prettierd" },
+        lua = { "stylua" },
+        markdown = { "prettierd" },
+        python = { "ruff_fix", "ruff_format" },
         sh = { "shfmt" },
-        elixir = {},
+        starlark = { "ruff_fix", "ruff_format" },
         terraform = { "terraform_fmt" },
         toml = { "taplo" },
-        fish = { "findent" },
+        typescript = { "eslint_d" },
+        typescriptreact = { "eslint_d" },
+        yaml = { "prettierd" },
     },
     notify_on_error = false,
     format_on_save = {
@@ -572,6 +570,7 @@ require("oil").setup({
         ["q"] = "actions.close",
         ["<C-v>"] = "actions.select_vsplit",
         ["<C-s>"] = "actions.select_split",
+        ["<C-h>"] = false,
     },
     skip_confirm_for_simple_edits = true,
     cleanup_delay_ms = 0,
@@ -620,4 +619,21 @@ end)
 u.map_c("<Leader>`", "Grapple toggle_tags")
 u.map_c("<Tab>", "Grapple cycle_tags next")
 u.map_c("<S-Tab>", "Grapple cycle_tags prev")
+-- }}}
+
+-- render-markdown.nvim {{{
+require("render-markdown").setup({
+    completions = { lsp = { enabled = true } },
+    heading = {
+        sign = false,
+        icons = {
+            "# ",
+            "## ",
+            "### ",
+            "#### ",
+            "##### ",
+            "###### ",
+        },
+    },
+})
 -- }}}

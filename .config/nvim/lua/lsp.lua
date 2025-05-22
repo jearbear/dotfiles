@@ -13,7 +13,7 @@ vim.diagnostic.config({
 })
 
 -- This function gets executed when the LSP is initiated successfully
-local on_attach = function(_, bufnr)
+local on_attach = function(client, bufnr)
     -- vim.bo.omnifunc = "v:lua.vim.lsp.omnifunc"
 
     -- I use gq mostly to wrap long lines, I don't need a mapping for
@@ -23,6 +23,18 @@ local on_attach = function(_, bufnr)
     -- New files tend to break the LSP so make a shorter command
     -- to make this easier to manage
     vim.api.nvim_create_user_command("LR", "LspRestart", {})
+
+    if client:supports_method("textDocument/completion") then
+        vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = false })
+        u.map("i", "<C-Space>", function()
+            if vim.fn.pumvisible() ~= 0 then
+                return "<C-y>"
+            else
+                vim.lsp.completion.get()
+                return ""
+            end
+        end, { expr = true, silent = true })
+    end
 
     -- Mappings
     local function map(lhs, rhs)
@@ -73,12 +85,6 @@ local on_attach = function(_, bufnr)
     end
 end
 
--- These are callbacks for various LSP functions that can configure their behavior
-local handlers = {
-    ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" }),
-    ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" }),
-}
-
 local override_formatting_capability = function(client, override)
     client.server_capabilities.documentFormattingProvider = override
     client.server_capabilities.documentRangeFormattingProvider = override
@@ -101,7 +107,7 @@ lspconfig.gopls.setup({
     },
 })
 
-lspconfig.tsserver.setup({
+lspconfig.ts_ls.setup({
     on_attach = function(client, bufnr)
         -- Formatting is handled by eslint
         override_formatting_capability(client, false)
@@ -232,6 +238,12 @@ lspconfig.terraformls.setup({
 
 -- taplo
 lspconfig.taplo.setup({
+    on_attach = on_attach,
+    handlers = handlers,
+})
+
+-- marksman
+lspconfig.marksman.setup({
     on_attach = on_attach,
     handlers = handlers,
 })
