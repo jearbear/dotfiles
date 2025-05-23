@@ -81,6 +81,7 @@ require("lazy").setup({
     { "cbochs/grapple.nvim" },
     { "rafikdraoui/jj-diffconflicts" },
     { "MeanderingProgrammer/render-markdown.nvim" },
+    { "saghen/blink.cmp", version = "1.*" },
 })
 -- }}}
 
@@ -90,23 +91,37 @@ vim.opt.termguicolors = true
 require("catppuccin").setup({
     flavour = "mocha",
     transparent_background = false,
+    default_integrations = false,
     integrations = {
-        cmp = true,
+        flash = true,
+        fzf = true,
+        blink_cmp = true,
+        nvim_surround = true,
+        treesitter = true,
         gitsigns = true,
-        indent_blankline = false,
+        render_markdown = true,
         markdown = true,
         mini = true,
         native_lsp = {
             enabled = true,
+            virtual_text = {
+                errors = { "italic" },
+                hints = { "italic" },
+                warnings = { "italic" },
+                information = { "italic" },
+                ok = { "italic" },
+            },
             underlines = {
                 errors = { "undercurl" },
                 hints = { "undercurl" },
                 warnings = { "undercurl" },
                 information = { "undercurl" },
             },
+            inlay_hints = {
+                background = true,
+            },
         },
         treesitter_context = true,
-        which_key = true,
     },
     custom_highlights = function(colors)
         return {

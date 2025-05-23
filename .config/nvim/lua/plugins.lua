@@ -328,20 +328,78 @@ u.map("i", "<C-h>", "v:lua.MiniPairs.bs()", { expr = true, replace_keycodes = fa
 -- }}}
 
 -- mini.completion {{{
-require("mini.completion").setup({
-    delay = { completion = 50, info = 50, signature = 50 },
-    window = {
-        info = { height = 25, width = 80, border = "single" },
-        signature = { height = 25, width = 80, border = "single" },
+-- require("mini.completion").setup({
+--     delay = { completion = 50, info = 50, signature = 50 },
+--     window = {
+--         info = { height = 25, width = 80, border = "single" },
+--         signature = { height = 25, width = 80, border = "single" },
+--     },
+--     fallback_action = "<C-x><C-p>",
+--     mappings = {
+--         force_twostep = "<C-Space>",
+--         force_fallback = "<C-p>",
+--         scroll_down = "",
+--         scroll_up = "",
+--     },
+--     set_vim_settings = true,
+-- })
+-- }}}
+
+-- blink.cmp {{{
+require("blink.cmp").setup({
+    keymap = {
+        preset = "default",
+        ["<C-space>"] = { "show", "select_and_accept" },
+        ["<C-b>"] = {},
+        ["<C-f>"] = {},
     },
-    fallback_action = "<C-x><C-p>",
-    mappings = {
-        force_twostep = "<C-Space>",
-        force_fallback = "<C-p>",
-        scroll_down = "",
-        scroll_up = "",
+    completion = {
+        ghost_text = { enabled = true },
+        menu = {
+            border = "none",
+            draw = {
+                columns = {
+                    {
+                        "kind_icon",
+                        "label",
+                        "label_description",
+                        "source_name",
+                        gap = 1,
+                    },
+                },
+                components = {
+                    kind_icon = {
+                        text = function(ctx)
+                            local kind_icon, _, _ = require("mini.icons").get("lsp", ctx.kind)
+                            return kind_icon
+                        end,
+                        -- (optional) use highlights from mini.icons
+                        highlight = function(ctx)
+                            local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
+                            return hl
+                        end,
+                    },
+                    kind = {
+                        -- (optional) use highlights from mini.icons
+                        highlight = function(ctx)
+                            local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
+                            return hl
+                        end,
+                    },
+                },
+            },
+        },
+        documentation = { auto_show = true },
+        list = {
+            selection = {
+                preselect = true,
+            },
+        },
     },
-    set_vim_settings = true,
+    snippets = { preset = "mini_snippets" },
+    sources = { default = { "lsp", "snippets", "buffer" } },
+    fuzzy = { implementation = "prefer_rust_with_warning" },
+    signature = { enabled = true, window = { show_documentation = false } },
 })
 -- }}}
 
@@ -375,26 +433,10 @@ end)
 
 -- }}}
 
--- mini.files {{{
--- require("mini.files").setup({
---     mappings = {
---         close = "q",
---         go_in = "l",
---         go_in_plus = "<CR>",
---         go_out = "h",
---         go_out_plus = "-",
---         mark_goto = "'",
---         mark_set = "m",
---         reset = "<BS>",
---         reveal_cwd = "@",
---         show_help = "g?",
---         synchronize = "=",
---         trim_left = "<",
---         trim_right = ">",
---     },
--- })
---
--- u.map_c("-", "lua MiniFiles.open(vim.api.nvim_buf_get_name(0))")
+-- mini.icons {{{
+require("mini.icons").setup({
+    style = "ascii",
+})
 -- }}}
 
 -- nvim-surround {{{
