@@ -7,3 +7,5 @@ tags.temp
 
 # Personal files that I don't want checked in 
 _/
+
+.claude/

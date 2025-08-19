@@ -35,6 +35,7 @@ if status is-interactive
     fzf --fish | source
     direnv hook fish | source
     fnm env --use-on-cd --shell fish | source
+    source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish'
 
     abbr v "nvim"
     abbr vi "nvim"
@@ -65,9 +66,20 @@ if status is-interactive
     abbr cdoa 'cd ~/Projects/cinderblock-openapi'
     abbr cdt 'cd ~/Projects/terraform'
     abbr cdbp 'cd ~/Projects/mosaic/packages/blueprint'
+    abbr cdn 'cd "/Users/jerry/Library/Mobile Documents/iCloud~md~obsidian/Documents/PKM"'
 
     alias pw 'watchexec --restart --exts py,html,css --ignore "**/__snapshots__/**" --clear --'
-    alias pwt 'fd --type file --extension py test_ tests/ | fzf --multi --history /tmp/fzf-history-pytest | xargs watchexec --restart --exts py,html,css --ignore "**/__snapshots__/**" --clear -- pytest -n0'
+    function pwt -a pattern
+        set pytest_args
+        if test -n "$pattern"
+            set pytest_args "-k $pattern"
+        end
+
+        fd --type file --extension py test_ tests/ | \
+        fzf --multi --history /tmp/fzf-history-pytest | \
+        xargs watchexec --restart --exts py,html,css --ignore "**/__snapshots__/**" --clear -- pytest -n0 $pytest_args
+    end
+
     alias pwtc 'fd --type file --extension py test_ tests/ | fzf --multi --history /tmp/fzf-history-pytest | xargs watchexec --restart --exts py,html,css --ignore "**/__snapshots__/**" --clear -- pytest -n0 --create-db'
     alias pwtp 'fd --type file --extension py test_ tests/ | fzf --multi --history /tmp/fzf-history-pytest | xargs watchexec --restart --exts py,html,css --ignore "**/__snapshots__/**" --clear -- pytest'
 

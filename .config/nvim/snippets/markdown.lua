@@ -1,5 +1,5 @@
 return {
-    { prefix = "td", body = "# $CURRENT_YEAR.$CURRENT_MONTH.$CURRENT_DATE\n" },
+    { prefix = "d", body = "# $CURRENT_YEAR.$CURRENT_MONTH.$CURRENT_DATE\n" },
     { prefix = ".", body = "- [ ] " },
     { prefix = "h1", body = "# " },
     { prefix = "h2", body = "## " },

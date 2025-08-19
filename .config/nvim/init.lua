@@ -78,9 +78,7 @@ require("lazy").setup({
     { "nvim-treesitter/playground" },
     { "tpope/vim-rsi" },
     { "folke/flash.nvim" },
-    { "cbochs/grapple.nvim" },
     { "rafikdraoui/jj-diffconflicts" },
-    { "MeanderingProgrammer/render-markdown.nvim" },
     { "saghen/blink.cmp", version = "1.*" },
 })
 -- }}}
@@ -96,12 +94,14 @@ require("catppuccin").setup({
         flash = true,
         fzf = true,
         blink_cmp = true,
-        nvim_surround = true,
+        nvim_surround = false,
         treesitter = true,
         gitsigns = true,
         render_markdown = true,
         markdown = true,
-        mini = true,
+        mini = {
+            enabled = true,
+        },
         native_lsp = {
             enabled = true,
             virtual_text = {
@@ -135,8 +135,6 @@ vim.cmd("colorscheme catppuccin")
 
 -- SETTINGS {{{
 vim.opt.mouse = "" -- disable mouse
-
-vim.opt.lazyredraw = true -- don't redraw the screen while executing macros and registers
 
 vim.opt.hidden = true -- allow switching buffers without saving
 
@@ -244,7 +242,7 @@ vim.g.is_bash = true -- default to bash filetype when `ft=sh`
 vim.g.ttimeout = false
 
 -- use ripgrep for `grep` command
-vim.opt.grepprg = "rg --vimgrep --smart-case --hidden --sort path --glob '!schema.sql' --glob '!pkg/database/models'"
+vim.opt.grepprg = "rg --vimgrep --smart-case --hidden --sort path"
 vim.opt.grepformat = "%f:%l:%c:%m"
 
 u.command("Grep", function(input)
@@ -388,8 +386,8 @@ u.map_c("{", 'execute "keepjumps norm! " . v:count1 . "{"')
 -- buffer/tab navigation
 u.map("n", "<BS>", "<C-^>")
 u.map("n", "<C-h>", "<C-^>")
-u.map_c("<Leader>tp", "tabp")
-u.map_c("<Leader>tn", "tabn")
+u.map_c("<S-Tab>", "tabp")
+u.map_c("<Tab>", "tabn")
 u.map_c("<Leader>te", "tabe %")
 u.map_c("<Leader>tc", "tabc")
 
@@ -428,6 +426,9 @@ u.map({ "n", "x" }, "<Leader>P", '"+P', { remap = true })
 -- select content that was just pasted
 u.map("n", "gp", "`[v`]")
 
+-- insert at top of file
+u.map({ "n" }, "<Leader>O", "ggO")
+
 -- navigate command history using what's already typed in
 u.map("c", "<C-p>", "<Up>")
 u.map("c", "<C-n>", "<Down>")
@@ -460,7 +461,7 @@ u.map_c("<Leader>ves", "edit ~/.config/nvim/snippets")
 u.map_c("<Leader>veu", "edit ~/.config/nvim/lua/utils.lua")
 
 -- toggle qflist
-u.map("n", "<Leader>~", function()
+u.map("n", "<Leader>`", function()
     for _, win in pairs(vim.fn.getwininfo()) do
         if win["quickfix"] == 1 then
             vim.cmd("cclose")
@@ -480,6 +481,10 @@ u.map("n", "<C-w>-", "<C-w>=")
 
 -- https://github.com/neovim/neovim/pull/17932#issue-1188088238
 u.map("n", "<C-i>", "<C-i>")
+
+-- only search within selection if a selection is active
+u.map("v", "/", "<Esc>/\\%V")
+u.map("v", "?", "<Esc>?\\%V")
 
 -- don't add search navigation to jumplist
 u.map_c("n", "keepjumps normal! n", { silent = true })

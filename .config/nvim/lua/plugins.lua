@@ -229,6 +229,8 @@ u.map("n", "<Leader>f", function()
             git_worktree = "~",
             winopts = { preview = { layout = "vertical" } },
         })
+    elseif true then
+        fzf_lua.files({})
     else
         fzf_lua.files({ winopts = { preview = { layout = "vertical" } } })
     end
@@ -352,9 +354,10 @@ require("blink.cmp").setup({
         ["<C-space>"] = { "show", "select_and_accept" },
         ["<C-b>"] = {},
         ["<C-f>"] = {},
+        ["<C-k>"] = {},
     },
     completion = {
-        ghost_text = { enabled = true },
+        ghost_text = { enabled = false },
         menu = {
             border = "none",
             draw = {
@@ -569,7 +572,6 @@ u.autocmd({ "BufRead", "BufWritePost" }, {
 -- }}}
 
 -- conform.nvim {{{
-
 local conform = require("conform")
 
 require("conform.formatters.stylua").args =
@@ -580,13 +582,14 @@ conform.setup({
         bash = { "shfmt" },
         css = { "prettierd" },
         elixir = {},
+        elm = {},
         fish = { "findent" },
         html = { "prettierd" },
         javascript = { "prettierd" },
         javascriptreact = { "prettierd" },
         json = { "prettierd" },
         lua = { "stylua" },
-        markdown = { "prettierd" },
+        -- markdown = { "prettierd" },
         python = { "ruff_fix", "ruff_format" },
         sh = { "shfmt" },
         starlark = { "ruff_fix", "ruff_format" },
@@ -648,34 +651,6 @@ u.map({ "n", "x", "o" }, "<C-f>", function()
 end)
 -- }}}
 
--- grapple.nvim {{{
-require("grapple").setup({
-    scope = "cwd",
-    icons = false,
-})
-
-u.map("n", "`", function()
-    vim.cmd("Grapple toggle")
-    require("lualine").refresh()
-end)
-u.map_c("<Leader>`", "Grapple toggle_tags")
-u.map_c("<Tab>", "Grapple cycle_tags next")
-u.map_c("<S-Tab>", "Grapple cycle_tags prev")
--- }}}
-
--- render-markdown.nvim {{{
-require("render-markdown").setup({
-    completions = { lsp = { enabled = true } },
-    heading = {
-        sign = false,
-        icons = {
-            "# ",
-            "## ",
-            "### ",
-            "#### ",
-            "##### ",
-            "###### ",
-        },
-    },
-})
+-- lualine.nvim {{{
+u.map("n", "<Leader>tr", ":LualineRenameTab ")
 -- }}}

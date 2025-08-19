@@ -61,6 +61,9 @@ local on_attach = function(client, bufnr)
     map("<Leader>gr", function()
         vim.lsp.buf.references({ includeDeclaration = false })
     end)
+    map("<Leader>gt", function()
+        vim.lsp.buf.type_definition()
+    end)
     map("<Leader>gi", vim.lsp.buf.implementation)
     map("<Leader>ca", fzf.lsp_code_actions)
 
@@ -244,6 +247,12 @@ lspconfig.taplo.setup({
 
 -- marksman
 lspconfig.marksman.setup({
+    on_attach = on_attach,
+    handlers = handlers,
+})
+
+-- elm
+lspconfig.elmls.setup({
     on_attach = on_attach,
     handlers = handlers,
 })

@@ -13,6 +13,9 @@ require("nvim-surround").buffer_setup({
         ["d"] = {
             add = { "dict(", ")" },
         },
+        ["s"] = {
+            add = { "str(", ")" },
+        },
     },
 })
 
