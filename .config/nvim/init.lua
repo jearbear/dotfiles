@@ -40,7 +40,6 @@ require("lazy").setup({
     { "Wansmer/treesj" }, -- treesitter-powered splits and joins
 
     -- mappings
-    { "linty-org/readline.nvim" }, -- provides functions I use to provide readline bindings in insert and command mode
     { "kylechui/nvim-surround" }, -- manipulate surrounds (works with treesitter unlike mini.surround and highlights selections automatically)
 
     -- copy pasta
