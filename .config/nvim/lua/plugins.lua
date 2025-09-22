@@ -2,7 +2,7 @@ local u = require("utils")
 
 -- nvim-treesitter {{{
 -- work around compiler issues on Mac OS
-require("nvim-treesitter.install").compilers = { "gcc-11" }
+require("nvim-treesitter.install").compilers = { "gcc", "gcc-11" }
 
 require("nvim-treesitter.configs").setup({
     ensure_installed = {
@@ -598,6 +598,7 @@ conform.setup({
         typescript = { "eslint_d" },
         typescriptreact = { "eslint_d" },
         yaml = { "prettierd" },
+        nix = {"alejandra"}
     },
     notify_on_error = false,
     format_on_save = {
