@@ -282,18 +282,6 @@ u.autocmd({ "VimResized", "TabEnter" }, {
 
 local lualine = require("lualine")
 
--- automatically read the file on focus (relies on autoread being set)
-u.autocmd({ "FocusGained", "BufEnter" }, {
-    pattern = "*",
-    callback = function()
-        if vim.bo.modified and not vim.bo.readonly and vim.fn.expand("%") ~= "" and vim.bo.buftype == "" then
-            vim.cmd([[checktime]])
-            lualine.refresh()
-        end
-    end,
-    group = u.augroup("AUTO_READ"),
-})
-
 -- automatically write the file on focus lost
 u.autocmd({ "BufLeave", "FocusLost" }, {
     callback = function()

@@ -129,6 +129,9 @@ lspconfig.ts_ls.setup({
                 "webpack",
             },
         },
+        compilerOptions = {
+            noErrorTruncation = true,
+        },
     },
 })
 
