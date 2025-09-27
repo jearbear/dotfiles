@@ -34,16 +34,14 @@ if status is-interactive
     abbr j 'just'
     abbr g 'git'
     abbr we 'watchexec'
-    abbr d 'date -r'
     abbr w 'watch --color --interval 5'
 
     abbr cdg 'cd ~/Projects/giga'
     abbr cds 'cd ~/Projects/sugo'
 
-    abbr dots "git --git-dir $HOME/.dotfiles/ --work-tree $HOME"
-    abbr sdots "git --git-dir $HOME/.dotfiles.secret/ --work-tree $HOME"
-
     abbr kssh 'kitty +kitten ssh'
+
+    alias d "git --git-dir $HOME/.dotfiles/ --work-tree $HOME"
 
     source "$HOME/.config/fish/functions/newline.fish"
 end
