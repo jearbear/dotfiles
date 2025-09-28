@@ -1,0 +1,26 @@
+// -*- mode: jsonc -*-
+{
+    "layer": "bottom", 
+    "position": "bottom", 
+    "height": 32, // Waybar height (to be removed for auto height)
+    "spacing": 4, // Gaps between modules (4px)
+    "margin-left": 12,
+    "margin-right": 12,
+    "margin-bottom": 12,
+    "modules-left": [
+        "niri/workspaces",
+    ],
+    "modules-right": [
+        "battery",
+        "clock",
+    ],
+    "clock": {
+        "timezone": "America/Los_Angeles",
+        "format": "{:%I:%M}"
+    },
+    "battery": {
+        "format": "{capacity}%",
+        "format-charging": "{capacity}%+",
+        "format-icons": []
+    },
+}

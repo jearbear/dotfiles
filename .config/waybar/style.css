@@ -1,0 +1,24 @@
+@import "mocha.css";
+
+* {
+  font-family: JetBrains Mono;
+  font-size: 14px;
+    padding: 0px 4px;
+}
+
+#waybar {
+  background: @crust;
+  color: @text;
+  margin: 5 5;
+}
+
+#workspaces button {
+  color: @lavender;
+  padding: 6px;
+        border-radius: 0;
+}
+
+#workspaces button.active {
+  color: @yellow;
+    border-bottom: 2px solid @yellow;
+}
