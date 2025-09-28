@@ -41,7 +41,10 @@ if status is-interactive
 
     abbr kssh 'kitty +kitten ssh'
 
-    alias d "git --git-dir $HOME/.dotfiles/ --work-tree $HOME"
+    # abbr 
+
+    # alias d "git --git-dir $HOME/.dotfiles/ --work-tree $HOME"
+    abbr d "just --justfile ~/.dotfiles.justfile"
 
     source "$HOME/.config/fish/functions/newline.fish"
 end
