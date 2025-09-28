@@ -5,22 +5,25 @@ help:
 
 git := "git --git-dir ~/.dotfiles --work-tree ~"
 
-# Show git status of dotfiles
 status:
     {{git}} status
 
-# Add path to dotfiles
+diff:
+    {{git}} diff
+
 add +paths:
     {{git}} add --force {{paths}}
 
-# Push changes to Github
 save:
     {{git}} save
 
-# Execute arbitrary git commands against the dotfiles repo
+ls:
+    {{git}} ls-files | tree --fromfile -C | less
+
 git +args:
     {{git}} {{args}}
 
 alias s := status
 alias a := add
 alias g := git
+alias d := diff
