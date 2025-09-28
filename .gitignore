@@ -3,6 +3,4 @@
 # their work tree.
 /*
 
-!/.bin/
-!/.completions/
 !/.config/nvim/
