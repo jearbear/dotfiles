@@ -17,17 +17,22 @@
     firefox
     chromium
     kitty
-    fish
     jujutsu
     fzf
     direnv
     bat
     fd
+    ripgrep
     yazi # file manager
     mpv
     stow
     just
     tree
+    jq
+    foot
+
+    python3
+    ruff
 
     catppuccin-cursors
     bibata-cursors
@@ -37,12 +42,13 @@
     # lsps and formatters
     marksman
     alejandra
+    nodePackages.vscode-json-languageserver
+    shellcheck
 
     powertop
     btop
 
     mako
-    fuzzel
     xwayland-satellite
     waybar
     xdg-desktop-portal-gtk
@@ -53,10 +59,6 @@
     tofi
     gammastep
     bluetui
-
-    (rofi-wayland.override {plugins = [rofi-calc];})
-    rofi-network-manager
-    rofimoji
 
     seahorse
 
@@ -70,6 +72,7 @@
 
   programs = {
     niri.enable = true;
+    fish.enable = true;
 
     _1password.enable = true;
     _1password-gui = {
@@ -205,6 +208,7 @@
     description = "Jerry";
     extraGroups = ["networkmanager" "wheel" "video"];
     packages = with pkgs; [];
+    shell = pkgs.fish;
   };
 
   # Allow unfree packages
@@ -219,14 +223,19 @@
     pulse.enable = true;
   };
 
-  fonts.packages = with pkgs; [
-    noto-fonts
-    noto-fonts-cjk-sans
-    noto-fonts-emoji
-    inter
-    jetbrains-mono
-    nerd-fonts.jetbrains-mono
-  ];
+  fonts = {
+    packages = with pkgs; [
+      noto-fonts
+      noto-fonts-cjk-sans
+      noto-fonts-emoji
+      inter
+      jetbrains-mono
+      nerd-fonts.jetbrains-mono
+    ];
+    fontconfig.subpixel.rgba = "none";
+    fontconfig.subpixel.lcdfilter = "default";
+    fontconfig.hinting.style = "full";
+  };
 
   security.polkit.enable = true;
 

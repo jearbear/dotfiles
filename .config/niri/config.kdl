@@ -3,6 +3,10 @@
 // Check the wiki for a full description of the configuration:
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Introduction
 
+hotkey-overlay {
+    skip-at-startup
+}
+
 // Input device configuration.
 // Find the full list of options on the wiki:
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Input
@@ -247,7 +251,7 @@ animations {
     // off
 
     // Slow down all animations by this factor. Values below 1 speed them up instead.
-    // slowdown 1
+    // slowdown 0.5
 }
 
 // Window rules let you adjust behavior for individual windows.
@@ -292,22 +296,19 @@ window-rule {
 window-rule {
     match app-id=r#"fzf-launcher"#
     open-floating true
-    default-floating-position relative-to="top" x=0 y=50
-    default-window-height { fixed 400; }
-    default-column-width { fixed 800; }
+    default-floating-position relative-to="top" x=0 y=200
+    default-window-height { fixed 250; }
+    default-column-width { fixed 600; }
 
     shadow {
         on
         spread 1024
     }
-
 }
 
 binds {
     Alt+Return hotkey-overlay-title="Kitty" { spawn "kitty" "--single-instance"; }
-    Alt+Space hotkey-overlay-title="Fuzzel" { spawn "fuzzel"; }
-    Alt+Shift+Space { spawn "kitty" "--single-instance" "--app-id" "fzf-launcher" "--" "fish" "-c" "fzf"; }
-    // Alt+Ctrl+Q hotkey-overlay-title="Lock screen" { spawn "swaylock" "--indicator-idle-visible"; }
+    Alt+Space { spawn "~/.bin/toggle-fzf-launcher"; }
     Alt+Ctrl+Q { spawn "systemctl" "suspend-then-hibernate"; }
 
     // You can also use a shell. Do this if you need pipes, multiple commands, etc.

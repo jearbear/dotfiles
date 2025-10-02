@@ -583,7 +583,7 @@ conform.setup({
         css = { "prettierd" },
         elixir = {},
         elm = {},
-        fish = { "findent" },
+        fish = { "fish_indent" },
         html = { "prettierd" },
         javascript = { "prettierd" },
         javascriptreact = { "prettierd" },

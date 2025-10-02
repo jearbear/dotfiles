@@ -38,6 +38,7 @@ if status is-interactive
 
     abbr cdg 'cd ~/Projects/giga'
     abbr cds 'cd ~/Projects/sugo'
+    abbr cdn 'cd ~/Sync/PKM'
 
     abbr kssh 'kitty +kitten ssh'
 
