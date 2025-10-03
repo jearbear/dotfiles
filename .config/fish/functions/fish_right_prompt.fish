@@ -1,11 +1,11 @@
 function fish_right_prompt
-    jj root &> /dev/null
+    jj root &>/dev/null
     if test $status -ne 0
         return
     end
 
     set_color purple
-    echo -n '// '
+    echo -n '∷ '
     echo -en (jj log --ignore-working-copy --no-graph --color never -r @ -T '
         separate(
             " ",

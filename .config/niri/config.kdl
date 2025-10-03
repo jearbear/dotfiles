@@ -252,6 +252,10 @@ animations {
 
     // Slow down all animations by this factor. Values below 1 speed them up instead.
     // slowdown 0.5
+
+    window-open {
+        // duration-ms 100
+    }
 }
 
 // Window rules let you adjust behavior for individual windows.
@@ -307,7 +311,7 @@ window-rule {
 }
 
 binds {
-    Alt+Return hotkey-overlay-title="Kitty" { spawn "kitty" "--single-instance"; }
+    Alt+Return { spawn "foot"; }
     Alt+Space { spawn "~/.bin/toggle-fzf-launcher"; }
     Alt+Ctrl+Q { spawn "systemctl" "suspend-then-hibernate"; }
 
@@ -367,6 +371,8 @@ spawn-at-startup "xwayland-satellite"
 environment {
     DISPLAY ":0"
 }
+
+spawn-at-startup "foot --server"
 
 spawn-at-startup "mako"
 

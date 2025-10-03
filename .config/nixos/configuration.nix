@@ -30,6 +30,7 @@
     tree
     jq
     foot
+    wl-clipboard
 
     python3
     ruff
