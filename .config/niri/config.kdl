@@ -311,7 +311,7 @@ window-rule {
 }
 
 binds {
-    Alt+Return { spawn "foot"; }
+    Alt+Return { spawn "kitty" "--single-instance"; }
     Alt+Space { spawn "~/.bin/toggle-fzf-launcher"; }
     Alt+Ctrl+Q { spawn "systemctl" "suspend-then-hibernate"; }
 

@@ -1,6 +1,6 @@
 set fish_greeting
 
-set -gx HOMEBREW_NO_AUTO_UPDATE "1"
+set -gx HOMEBREW_NO_AUTO_UPDATE 1
 
 # recommended when installing sqlite, but might not need anymore
 set -gx LDFLAGS "-L/opt/homebrew/opt/openssl@1.1/lib"
@@ -8,8 +8,8 @@ set -gx CPPFLAGS "-I/opt/homebrew/opt/openssl@1.1/include"
 
 set -gx PNPM_HOME "$HOME/Library/pnpm"
 
-fish_add_path "/opt/homebrew/bin/"
-fish_add_path "/usr/local/bin"
+fish_add_path /opt/homebrew/bin/
+fish_add_path /usr/local/bin
 fish_add_path "$PNPM_HOME"
 
 if status is-interactive
@@ -33,9 +33,7 @@ if status is-interactive
             set pytest_args "-k $pattern"
         end
 
-        fd --type file --extension py test_ tests/ | \
-        fzf --multi --history /tmp/fzf-history-pytest | \
-        xargs watchexec --restart --exts py,html,css --ignore "**/__snapshots__/**" --clear -- pytest -n0 $pytest_args
+        fd --type file --extension py test_ tests/ | fzf --multi --history /tmp/fzf-history-pytest | xargs watchexec --restart --exts py,html,css --ignore "**/__snapshots__/**" --clear -- pytest -n0 $pytest_args
     end
 
     alias pwtc 'fd --type file --extension py test_ tests/ | fzf --multi --history /tmp/fzf-history-pytest | xargs watchexec --restart --exts py,html,css --ignore "**/__snapshots__/**" --clear -- pytest -n0 --create-db'
