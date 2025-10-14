@@ -8,6 +8,7 @@
     linux-firmware
     networkmanagerapplet
 
+    docker
     git
     delta
     neovim
@@ -31,6 +32,7 @@
     jq
     foot
     wl-clipboard
+    pass
 
     python3
     ruff
@@ -79,6 +81,11 @@
     _1password-gui = {
       enable = true;
       polkitPolicyOwners = ["jerry"];
+    };
+
+    gnupg.agent = {
+      enable = true;
+      # pinentry.Package = pkgs.pinentry-curses;
     };
   };
 
@@ -195,6 +202,8 @@
           settings = {
             main = {
               capslock = "overload(control, esc)";
+              leftmeta = "leftalt";
+              leftalt = "leftmeta";
             };
           };
         };

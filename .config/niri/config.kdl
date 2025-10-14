@@ -16,7 +16,7 @@ input {
         repeat-rate 30
     }
 
-    mod-key "Alt"
+    mod-key "Super"
 
     // Next sections include libinput settings.
     // Omitting settings disables them, or leaves them at their default values.
@@ -222,6 +222,11 @@ layout {
     }
 }
 
+// Make fuzzel FLOAT.
+layer-rule {
+    match namespace="^kitty-panel$"
+}
+
 // Add lines like this to spawn processes at startup.
 // Note that running niri as a session supports xdg-desktop-autostart,
 // which may be more convenient to use.
@@ -310,10 +315,23 @@ window-rule {
     }
 }
 
+window-rule {
+    match app-id=r#"kitty-panel"#
+
+    border {
+        width 2
+    }
+
+    shadow {
+        on
+        spread 1024
+    }
+}
+
 binds {
-    Alt+Return { spawn "kitty" "--single-instance"; }
-    Alt+Space { spawn "~/.bin/toggle-fzf-launcher"; }
-    Alt+Ctrl+Q { spawn "systemctl" "suspend-then-hibernate"; }
+    Mod+Return { spawn "kitty" "--single-instance"; }
+    Mod+Space { spawn "~/.bin/toggle-fzf-launcher"; }
+    Mod+Ctrl+Q { spawn "systemctl" "suspend-then-hibernate"; }
 
     // You can also use a shell. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument in the end.
@@ -327,19 +345,19 @@ binds {
     XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "set" "10%-"; }
     XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "set" "10%+"; }
 
-    Alt+Shift+O repeat=false { toggle-overview; }
+    Mod+Shift+O repeat=false { toggle-overview; }
 
-    Alt+Shift+Q { close-window; }
+    Mod+Shift+Q { close-window; }
 
-    Alt+H     { focus-column-left; }
-    Alt+J     { focus-window-or-workspace-down; }
-    Alt+K     { focus-window-or-workspace-up; }
-    Alt+L     { focus-column-right; }
+    Mod+H     { focus-column-left; }
+    Mod+J     { focus-window-or-workspace-down; }
+    Mod+K     { focus-window-or-workspace-up; }
+    Mod+L     { focus-column-right; }
 
-    Alt+Shift+H     { move-column-left; }
-    Alt+Shift+J     { move-window-down-or-to-workspace-down; }
-    Alt+Shift+K     { move-window-up-or-to-workspace-up; }
-    Alt+Shift+L     { move-column-right; }
+    Mod+Shift+H     { move-column-left; }
+    Mod+Shift+J     { move-window-down-or-to-workspace-down; }
+    Mod+Shift+K     { move-window-up-or-to-workspace-up; }
+    Mod+Shift+L     { move-column-right; }
 
     Mod+Shift+Comma  { consume-or-expel-window-left; }
     Mod+Shift+Period { consume-or-expel-window-right; }
@@ -351,9 +369,9 @@ binds {
 
     Print { screenshot; }
     Ctrl+Print { screenshot-screen; }
-    Alt+Print { screenshot-window; }
+    Mod+Print { screenshot-window; }
 
-    Ctrl+Alt+Delete { quit; }
+    Ctrl+Mod+Delete { quit; }
 }
 
 cursor {
