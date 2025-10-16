@@ -3,8 +3,6 @@ nop %sh{
     ln -s "$kak_runtime/autoload" "$kak_config/autoload/stdlib"
 }
 
-require-module kitty
-
 colorscheme catppuccin_mocha
 
 
@@ -14,17 +12,41 @@ set-option global scrolloff 5,5
 set-option global autoreload true
 set-option global ui_options terminal_enable_mouse=false
 set-option global modelinefmt '%val{bufname} {{context_info}} {{mode_info}}'
-set-option global kitty_window_type 'os-window'
+
+declare-option str system_yank_command "%sh{ test $(uname) = Darwin && echo pbcopy || echo wl-copy }"
+declare-option str system_paste_command "%sh{ test $(uname) = Darwin && echo pbpaste || echo wl-paste }"
+
+define-command execute-keys-with-system-clipboard -params 1 %{
+    evaluate-commands -save-regs '"' %{
+        set-register '"' %sh{
+            $kak_opt_system_paste_command
+            # %sh{} trims a trailing newline from its collected output,
+            # so we add an extra newline for it to eat.
+            echo
+        }
+        execute-keys %arg{1}
+    }
+}
+map global user y '<a-|>%opt{system_yank_command}<ret>'        -docstring "yank from system clipboard"
+map global user p ":execute-keys-with-system-clipboard p<ret>" -docstring "append from system clipboard"
+map global user P ":execute-keys-with-system-clipboard P<ret>" -docstring "insert from system clipboard"
+map global user R ":execute-keys-with-system-clipboard R<ret>" -docstring "replace from system clipboard"
+
+
+hook global ModuleLoaded kitty %{
+    set-option global kitty_window_type 'os-window'
+}
 
 add-highlighter global/ wrap -indent -marker ...
 
-map -docstring "save file" global user w :w<ret>
-map -docstring "quit" global user q :q<ret>
-map -docstring "save + quit" global user x :wq<ret>
-map -docstring "comment line(s)" global user / :comment-line<ret>
-map -docstring "pick file" global user f ":pick-file<ret>"
-map -docstring "pick buffer" global user l ":pick-buffer<ret>"
-map -docstring "open new window" global user n ":new<ret>"
+map global user w :w<ret>             -docstring "save file" 
+map global user q :q<ret>             -docstring "quit" 
+map global user x :wq<ret>            -docstring "save + quit" 
+map global user / :comment-line<ret>  -docstring "comment line(s)" 
+map global user f ":pick-file<ret>"   -docstring "pick file" 
+map global user l ":pick-buffer<ret>" -docstring "pick buffer" 
+map global user n ":new<ret>"         -docstring "open new window" 
+map global user * '*%s<ret>'          -docstring "select all" 
 
 define-command pick-file %{
     prompt -shell-script-candidates 'fd --type file' file: %{ edit -existing %val{text} }
@@ -46,8 +68,8 @@ map global insert <c-w> '<a-;><a-/>\S+\s*<ret><a-;>d'
 
 # Change cursor color depending on the mode
 hook global ModeChange push:.*:insert %{
-    set-face window PrimaryCursor        LineNumbers
-    set-face window PrimaryCursorEol     LineNumbers
+    set-face window PrimaryCursor LineNumbers
+    set-face window PrimaryCursorEol LineNumbers
 }
 
 hook global ModeChange pop:insert:.* %{
@@ -66,7 +88,7 @@ define-command -override surround-add -params 2 %{
 }
 
 declare-user-mode surround
-map global user s ':enter-user-mode surround<ret>' -docstring "surround mode"
+map global user s ':enter-user-mode surround<ret>' -docstring "enter surround mode"
 
 declare-user-mode surround-add
 map global surround a ':enter-user-mode surround-add<ret>' -docstring "add surround"
@@ -127,3 +149,6 @@ define-command -hidden highlight-current-line -docstring "Highlight current line
     try %{ add-highlighter window/crosshairs-line line %val{cursor_line} CurrentLine }
 }
 hook global -group crosshairs RawKey .+ highlight-current-line
+
+
+set-option global grepcmd 'rg --column --smart-case --sort path'
