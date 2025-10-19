@@ -1,0 +1,3 @@
+[submodule ".config/kak/autoload/smarttab.kak"]
+	path = .config/kak/autoload/smarttab.kak
+	url = git@github.com:andreyorst/smarttab.kak.git
