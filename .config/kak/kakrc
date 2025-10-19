@@ -17,7 +17,7 @@ add-highlighter global/ wrap -indent -marker ...
 add-highlighter global/ show-matching -previous
 
 
-#
+
 # COMMANDS
 #
 
@@ -27,6 +27,10 @@ define-command pick-file -docstring 'fuzzy find a file' %{
 
 define-command pick-buffer -docstring 'fuzzy find a buffer' %{
     prompt -buffer-completion buffer: %{ buffer %val{text} }
+}
+
+define-command dbg -docstring 'open debug buffer' %{
+    evaluate-commands 'buffer *debug*'
 }
 
 
@@ -62,6 +66,22 @@ map global insert <c-w> '<a-;><a-/>\S+\s*<ret><a-;>d'
 map global normal <c-d> 5j
 map global normal <c-u> 5k
 
+# Redo like vim
+map global normal <c-r> <s-u>
+
+# Goto beginning of line like vim
+map global normal 0 'gi'
+
+# Indent in insert mode
+map global insert <c-,> '<a-;><'
+map global insert <c-.> '<a-;>>'
+
+# Make history navigation harder to trigger on accident
+map global normal <c-j> ''
+map global normal <c-k> ''
+map global normal <c-s-j> <c-j>
+map global normal <c-s-k> <c-k>
+
 
 #
 # HOOKS
@@ -72,18 +92,16 @@ hook global FocusOut .* %{ try "write" }
 
 # Change cursor color depending on the mode
 hook global ModeChange push:.*:insert %{
-    set-face window PrimaryCursor LineNumbers
-    set-face window PrimaryCursorEol LineNumbers
+    set-face window CursorLine CursorLineInsertMode
 }
 hook global ModeChange pop:insert:.* %{
-    unset-face window PrimaryCursor
-    unset-face window PrimaryCursorEol     
+    unset-face window CursorLine
 }
 
 # Highlight current line
 hook global RawKey .+ %{
     try %{ remove-highlighter window/cursor-line }
-    try %{ add-highlighter window/cursor-line line %val{cursor_line} default,rgb:313244 }
+    try %{ add-highlighter window/cursor-line line %val{cursor_line} CursorLine }
 }
 
 
@@ -96,7 +114,15 @@ hook global ModuleLoaded kitty %{
 }
 
 # Always use spaces for indentation
-hook global ModuleLoaded smartab %{
-    smarttab
+hook global BufOpenFile .* expandtab
+hook global BufNewFile  .* expandtab
+
+hook global ModuleLoaded smarttab %{
+    set-option global indentwidth 4
     set-option global softtabstop 4
+}
+
+hook global WinSetOption filetype=markdown %{
+    set-option buffer indentwidth 2
+    set-option buffer softtabstop 2
 }
