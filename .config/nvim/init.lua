@@ -316,34 +316,17 @@ u.autocmd({ "BufEnter", "BufNew" }, {
     end,
     group = u.augroup("JSON_TFTPL"),
 })
-
--- conveniences for empty buffers and the `q:` buffer
--- u.autocmd({ "BufEnter" }, {
---     pattern = "*",
---     callback = function()
---         if vim.o.filetype ~= "" then
---             return
---         end
---
---         u.map("n", "<CR>", "<CR>", { buffer = true })
---         u.map_c("q", "q", { buffer = true })
---     end,
---     group = u.augroup("NONE"),
--- })
 -- }}}
 
 -- MAPPINGS {{{
 u.map("", "Y", "y$")
 u.map("", "0", "^")
 
--- u.map({ "n", "v" }, ";", ":")
--- u.map({ "n", "v" }, ":", ";")
-
 -- save and quit huehue
 u.map_c("<Leader>w", ":w")
 u.map_c("<Leader>W", ":wa")
-u.map_c("<Leader>q", ":q")
-u.map_c("<Leader>Q", ":qa")
+u.map_c("<Leader>q", ":q!")
+u.map_c("<Leader>Q", ":qa!")
 u.map_c("<Leader>x", ":x")
 u.map_c("<Leader>X", ":xa")
 
@@ -355,12 +338,8 @@ u.map({ "n", "v" }, "<C-u>", "10<C-u>")
 u.map({ "n", "v" }, "j", "gj")
 u.map({ "n", "v" }, "k", "gk")
 
--- move selected lines around
-u.map("v", "<C-j>", ":m '>+1<CR>gv=gv")
-u.map("v", "<C-k>", ":m '<-2<CR>gv=gv")
-
 -- preserve cursor position when joining
-u.map("n", "J", "mzJ`z")
+-- u.map("n", "J", "mzJ`z")
 
 -- insert blank lines
 u.map("n", "<CR>", "]<Space>", { remap = true })
@@ -474,8 +453,8 @@ u.map("v", "/", "<Esc>/\\%V")
 u.map("v", "?", "<Esc>?\\%V")
 
 -- don't add search navigation to jumplist
-u.map_c("n", "keepjumps normal! n", { silent = true })
-u.map_c("N", "keepjumps normal! N", { silent = true })
+-- u.map_c("n", "keepjumps normal! n")
+-- u.map_c("N", "keepjumps normal! N")
 
 -- Navigate search results with Tab/S-Tab
 u.map("c", "<Tab>", function()

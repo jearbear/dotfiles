@@ -588,6 +588,7 @@ conform.setup({
         javascript = { "prettierd" },
         javascriptreact = { "prettierd" },
         json = { "prettierd" },
+        just = { "just" },
         lua = { "stylua" },
         -- markdown = { "prettierd" },
         python = { "ruff_fix", "ruff_format" },
@@ -598,7 +599,7 @@ conform.setup({
         typescript = { "eslint_d" },
         typescriptreact = { "eslint_d" },
         yaml = { "prettierd" },
-        nix = {"alejandra"}
+        nix = { "alejandra" },
     },
     notify_on_error = false,
     format_on_save = {

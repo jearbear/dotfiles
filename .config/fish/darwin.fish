@@ -1,5 +1,3 @@
-set fish_greeting
-
 set -gx HOMEBREW_NO_AUTO_UPDATE 1
 
 # recommended when installing sqlite, but might not need anymore
@@ -27,6 +25,7 @@ if status is-interactive
     abbr cdn 'cd "/Users/jerry/Library/Mobile Documents/iCloud~md~obsidian/Documents/PKM"'
 
     alias pw 'watchexec --restart --exts py,html,css --ignore "**/__snapshots__/**" --clear --'
+
     function pwt -a pattern
         set pytest_args
         if test -n "$pattern"
@@ -35,8 +34,6 @@ if status is-interactive
 
         fd --type file --extension py test_ tests/ | fzf --multi --history /tmp/fzf-history-pytest | xargs watchexec --restart --exts py,html,css --ignore "**/__snapshots__/**" --clear -- pytest -n0 $pytest_args
     end
-
-    alias pwtc 'fd --type file --extension py test_ tests/ | fzf --multi --history /tmp/fzf-history-pytest | xargs watchexec --restart --exts py,html,css --ignore "**/__snapshots__/**" --clear -- pytest -n0 --create-db'
     alias pwtp 'fd --type file --extension py test_ tests/ | fzf --multi --history /tmp/fzf-history-pytest | xargs watchexec --restart --exts py,html,css --ignore "**/__snapshots__/**" --clear -- pytest'
 
     source "$HOME/.config/fish/functions/newline.fish"
