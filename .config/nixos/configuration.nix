@@ -41,7 +41,7 @@
     bibata-cursors
     spotify
 
-    gcc11 # for nvim treesitter parser installs
+    # gcc11 # for nvim treesitter parser installs
     # lsps and formatters
     marksman
     alejandra

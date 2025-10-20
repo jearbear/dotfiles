@@ -5,7 +5,7 @@ colorscheme catppuccin_mocha
 # OPTIONS
 #
 
-set-option global startup_info_version 20240518
+set-option global startup_info_version 20250603
 set-option global scrolloff 5,5
 set-option global autoreload true
 set-option global ui_options terminal_enable_mouse=false terminal_assistant=none
