@@ -126,3 +126,10 @@ hook global WinSetOption filetype=markdown %{
     set-option buffer indentwidth 2
     set-option buffer softtabstop 2
 }
+
+#
+# LSP
+#
+
+eval %sh{kak-lsp}
+lsp-enable

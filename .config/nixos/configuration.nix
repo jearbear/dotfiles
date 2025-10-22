@@ -12,7 +12,6 @@
     git
     delta
     neovim
-    kakoune
     helix
     wget
     firefox
@@ -34,8 +33,19 @@
     wl-clipboard
     pass
 
+    kakoune
+    kakoune-lsp
+    file # filetype detection
+
+    beam27Packages.elixir_1_17
+    beam27Packages.elixir-ls
+
+    fish-lsp
+
     python3
     ruff
+
+    aichat
 
     catppuccin-cursors
     bibata-cursors
