@@ -1,0 +1,7 @@
+#!/usr/bin/env fish
+
+while true
+    printf '\e[3J' # clear
+    printf $(date)
+    sleep 1
+end

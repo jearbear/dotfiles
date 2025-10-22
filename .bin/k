@@ -1,0 +1,13 @@
+#!/usr/bin/env fish
+
+if set -q $KAKOUNE_SESSION
+    set session $KAKOUNE_SESSION
+else
+    set session global
+end
+
+if kak -l | rg -q $session
+    kak -c $session $argv
+else
+    kak -s $session $arg
+end
