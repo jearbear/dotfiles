@@ -110,7 +110,7 @@ hook global RawKey .+ %{
 #
 
 hook global ModuleLoaded kitty %{
-    set-option global kitty_window_type 'os-window'
+    set-option global kitty_window_type "%sh{ test $(uname) = Darwin && echo 'window' || echo 'os-window' }"
 }
 
 # Always use spaces for indentation
@@ -133,3 +133,17 @@ hook global WinSetOption filetype=markdown %{
 
 eval %sh{kak-lsp}
 lsp-enable
+
+remove-hooks global lsp-filetype-.*
+hook global BufSetOption filetype=python %{
+    set-option buffer lsp_servers %{
+        [pyright-langserver]
+        root_globs = ["requirements.txt", "setup.py", "pyproject.toml", "pyrightconfig.json", ".git", ".hg"]
+        args = ["--stdio"]
+        [pyright-langserver.settings.pyright]
+        disableOrganizeImports = true
+        [pyright-langserver.settings.python.analysis]
+        typeCheckingMode = "off"
+    }
+}
+
