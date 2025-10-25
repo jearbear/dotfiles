@@ -17,6 +17,9 @@ add +paths:
 save:
     {{git}} save
 
+pull:
+    {{git}} pull --rebase
+
 ls:
     {{git}} ls-files | tree --fromfile -C | less
 
