@@ -1,0 +1,203 @@
+"$schema" = "https://jj-vcs.github.io/jj/latest/config-schema.json"
+
+[core]
+fsmonitor = "none"
+
+[ui]
+pager = "delta"
+editor = "nvim"
+diff-editor = ":builtin"
+diff-formatter = ":git"
+default-command = ["log", "--no-pager"]
+
+[ui.graph]
+style = "curved"
+
+[templates]
+log = "builtin_log_oneline"
+op_log = "builtin_op_log_comfortable"
+git_push_bookmark = '"jerry-" ++ change_id.short()'
+
+[template-aliases]
+"format_short_id(id)" = "id.shortest()"
+"format_short_signature(signature)" = "signature.email().local()"
+"abbreviate_timestamp_suffix(s, suffix, abbr)" = '''
+if(
+    s.ends_with(suffix),
+    s.remove_suffix(suffix) ++ label("timestamp", abbr)
+)
+'''
+"abbreviate_relative_timestamp(s)" = '''
+coalesce(
+    abbreviate_timestamp_suffix(s, " millisecond", "ms"),
+    abbreviate_timestamp_suffix(s, " second", "s"),
+    abbreviate_timestamp_suffix(s, " minute", "m"),
+    abbreviate_timestamp_suffix(s, " hour", "h"),
+    abbreviate_timestamp_suffix(s, " day", "d"),
+    abbreviate_timestamp_suffix(s, " week", "w"),
+    abbreviate_timestamp_suffix(s, " month", "mo"),
+    abbreviate_timestamp_suffix(s, " year", "y"),
+    s
+)
+'''
+"format_timestamp(timestamp)" = 'abbreviate_relative_timestamp(timestamp.ago().remove_suffix(" ago").remove_suffix("s"))'
+
+# Support colorizing text in templates
+'colored(color, txt)' = '''surround('\x01\e[' ++ color ++ 'm\x02', '\x01\e[0m\x02', txt)'''
+'black(txt)' = "colored('30', txt)"
+'red(txt)' = "colored('31', txt)"
+'green(txt)' = "colored('32', txt)"
+'yellow(txt)' = "colored('33', txt)"
+'blue(txt)' = "colored('34', txt)"
+'magenta(txt)' = "colored('35', txt)"
+'cyan(txt)' = "colored('36', txt)"
+'white(txt)' = "colored('37', txt)"
+'brblack(txt)' = "colored('90', txt)"
+'brred(txt)' = "colored('91', txt)"
+'brgreen(txt)' = "colored('92', txt)"
+'bryellow(txt)' = "colored('93', txt)"
+'brblue(txt)' = "colored('94', txt)"
+'brmagenta(txt)' = "colored('95', txt)"
+'brcyan(txt)' = "colored('96', txt)"
+'brwhite(txt)' = "colored('97', txt)"
+
+[user]
+name = "Jerry Tegno"
+email = "jerrytegno@gmail.com"
+
+[revsets]
+log = "present(@) | ancestors(immutable_heads().., 2) | present(trunk()) | bookmarks()"
+
+[revset-aliases]
+"uncommitted()" = "description(exact:'')"
+"committed()" = "~uncommitted()"
+"branch_head()" = "latest(main..@ & ~empty() & committed() & mutable())"
+
+[aliases]
+h = ["help"]
+s = ["show", "--summary"]
+ss = ["show"]
+d = ["diff"]
+e = ["edit"]
+dm = ["diff", "--from", "main"]
+c = ["commit"]
+wip = ["commit", "--message", "wip"]
+n = ["new"]
+r = ["rebase", "-r", "@"]
+pull = ["git", "fetch", "--branch", "main", "--branch", "glob:jerry-*"]
+gp = ["git", "push"]
+re = ["rebase"]
+rd = ["desc", "@-"]
+rm = ["rebase", "--destination", "main"]
+lm = ["log", "-r", "..main", "-T", "builtin_log_compact"]
+ri = ["restore", "--interactive", "--from", "main"]
+rev = ["revert", "--before", "@", "--revisions"]
+nm = ["new", "main"]
+newb = ["new", "--before", "@", "--message"]
+dup = ["duplicate"]
+reconfig = ["config", "edit", "--user"]
+smash = ["squash"]
+del = ["abandon"]
+prune = [
+  "abandon",
+  "~@ & mutable() & ((empty() & visible_heads()) | ~mine() | (~(committed() & mutable())::))",
+]
+restore-generated = ["restore", "common/cb/src/generated", "--from", "main"]
+resolve-ours = ["resolve", "--tool", ":ours"]
+resolve-theirs = ["resolve", "--tool", ":theirs"]
+# Move parent bookmarks to point to the latest revision
+mb = [
+  "bookmark",
+  "move",
+  "--from",
+  "heads(::@- & bookmarks())",
+  "--to",
+  "branch_head()",
+]
+
+
+get = ["util", "exec", "--", "bash", "-c", """
+#!/usr/bin/env bash
+set -euox pipefail
+jj git fetch --branch "$@"
+jj new "$@"@origin
+jj bookmark track "$@"@origin
+""", ""]
+
+g = ["util", "exec", "--", "bash", "-c", """
+#!/usr/bin/env bash
+set -euox pipefail
+jj up
+jj new main
+jj commit
+""", ""]
+
+up = ["util", "exec", "--", "bash", "-c", """
+#!/usr/bin/env bash
+set -euox pipefail
+jj pull
+jj rm
+jj gp
+""", ""]
+
+pr = [
+  "util",
+  "exec",
+  "--",
+  "bash",
+  "-c",
+  """
+#!/usr/bin/env bash
+set -euox pipefail
+jj smash
+jj up
+jj git push --change "branch_head()"
+hub pull-request --no-edit --browse --head "$(jj pr-bookmarks)" --message "$(jj branch-head-desc)"
+""",
+  "",
+]
+
+prm = ["util", "exec", "--", "bash", "-c", """
+#!/usr/bin/env bash
+set -euox pipefail
+jj pr
+gh pr merge --auto --squash "$(jj pr-bookmarks)"
+""", ""]
+
+rp = ["util", "exec", "--", "bash", "-c", """
+#!/usr/bin/env bash
+set -euox pipefail
+bookmarks=$(jj pr-bookmarks)
+if [ -n "$bookmarks" ]; then
+    jj smash
+    jj up
+else
+    echo "No PR active"
+    exit 1
+fi
+""", ""]
+
+changed = ["util", "exec", "--", "bash", "-c", """
+#!/usr/bin/env bash
+set -euox pipefail
+jj log --no-graph --revisions "diff_contains($@)"
+""", ""]
+
+
+pr-bookmarks = [
+  "log",
+  "--revisions",
+  "branch_head()",
+  "--template",
+  "self.bookmarks().join(' ')",
+  "--no-graph",
+]
+
+branch-head-desc = [
+  "log",
+  "--revisions",
+  "branch_head()",
+  "--template",
+  "self.description()",
+  "--no-graph",
+]

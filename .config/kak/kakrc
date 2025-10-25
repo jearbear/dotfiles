@@ -93,6 +93,7 @@ hook global FocusOut .* %{ try "write" }
 # Change cursor color depending on the mode
 hook global ModeChange push:.*:insert %{
     set-face window CursorLine CursorLineInsertMode
+    set-face window LineNumbersWrapped
 }
 hook global ModeChange pop:insert:.* %{
     unset-face window CursorLine
