@@ -68,7 +68,6 @@
     # xdg-desktop-portal-gtk
     # xdg-desktop-portal-gnome
     # gnome-keyring
-    # polkit_gnome
     brightnessctl
     tofi
     gammastep
