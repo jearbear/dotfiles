@@ -1,3 +1,5 @@
+set global debug profile
+
 colorscheme catppuccin_mocha
 
 

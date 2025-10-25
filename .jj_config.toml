@@ -1,7 +1,7 @@
 "$schema" = "https://jj-vcs.github.io/jj/latest/config-schema.json"
 
-[core]
-fsmonitor = "none"
+[fsmonitor]
+backend = "none"
 
 [ui]
 pager = "delta"
@@ -74,6 +74,7 @@ log = "present(@) | ancestors(immutable_heads().., 2) | present(trunk()) | bookm
 "branch_head()" = "latest(main..@ & ~empty() & committed() & mutable())"
 
 [aliases]
+init = ["git", "init", "--colocate"]
 h = ["help"]
 s = ["show", "--summary"]
 ss = ["show"]

@@ -16,6 +16,8 @@ set -gx FZF_DEFAULT_OPTS "--cycle --color=16,fg:white:dim,bg:-1,preview-fg:-1,pr
 set -gx FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND"
 set -gx ESCDELAY 0 # for some cursed reason, FZF defaults to 100
 
+set -gx KAKOUNE_POSIX_SHELL $(which dash)
+
 fish_add_path "$HOME/.bin"
 fish_add_path "$HOME/.cargo/bin" # rust
 

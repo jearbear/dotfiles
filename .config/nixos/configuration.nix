@@ -32,6 +32,7 @@
     foot
     wl-clipboard
     pass
+    dash
 
     kakoune
     kakoune-lsp
@@ -64,16 +65,16 @@
     mako
     xwayland-satellite
     waybar
-    xdg-desktop-portal-gtk
-    xdg-desktop-portal-gnome
-    gnome-keyring
-    polkit_gnome
+    # xdg-desktop-portal-gtk
+    # xdg-desktop-portal-gnome
+    # gnome-keyring
+    # polkit_gnome
     brightnessctl
     tofi
     gammastep
     bluetui
 
-    seahorse
+    # seahorse
 
     libqalculate
     grim
@@ -95,7 +96,11 @@
 
     gnupg.agent = {
       enable = true;
-      # pinentry.Package = pkgs.pinentry-curses;
+      pinentryPackage = pkgs.pinentry-curses;
+    };
+
+    ssh = {
+      startAgent = true;
     };
   };
 
@@ -118,6 +123,10 @@
         port = 8110;
       };
     };
+
+    # Why are these enabled by default???
+    gnome.gcr-ssh-agent.enable = false;
+    gnome.gnome-keyring.enable = false;
   };
 
   # Bootloader
