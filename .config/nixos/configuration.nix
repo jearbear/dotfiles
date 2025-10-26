@@ -2,7 +2,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   # Installed packages
   environment.systemPackages = with pkgs; [
     linux-firmware
@@ -58,6 +59,7 @@
     alejandra
     nodePackages.vscode-json-languageserver
     shellcheck
+    nil # nix
 
     powertop
     btop
@@ -90,7 +92,7 @@
     _1password.enable = true;
     _1password-gui = {
       enable = true;
-      polkitPolicyOwners = ["jerry"];
+      polkitPolicyOwners = [ "jerry" ];
     };
 
     gnupg.agent = {
@@ -136,7 +138,10 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # Enable hibernation
-  boot.kernelParams = ["resume=/" "resume_offset=436224"];
+  boot.kernelParams = [
+    "resume=/"
+    "resume_offset=436224"
+  ];
   boot.resumeDevice = "/dev/nvme0n1p2";
 
   hardware.bluetooth.enable = true;
@@ -147,7 +152,7 @@
   services.auto-cpufreq.enable = true;
 
   systemd.services.fprintd = {
-    wantedBy = ["multi-user.target"];
+    wantedBy = [ "multi-user.target" ];
     serviceConfig.type = "simple";
   };
   services.fprintd.enable = true;
@@ -216,7 +221,7 @@
       enable = true;
       keyboards = {
         default = {
-          ids = ["*"];
+          ids = [ "*" ];
           settings = {
             main = {
               capslock = "overload(control, esc)";
@@ -234,15 +239,22 @@
   users.users.jerry = {
     isNormalUser = true;
     description = "Jerry";
-    extraGroups = ["networkmanager" "wheel" "video"];
-    packages = with pkgs; [];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "video"
+    ];
+    packages = [ ];
     shell = pkgs.fish;
   };
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   security.rtkit.enable = true; # improved perf for pipewire
   services.pipewire = {

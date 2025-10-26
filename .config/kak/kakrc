@@ -1,5 +1,3 @@
-set global debug profile
-
 colorscheme catppuccin_mocha
 
 
@@ -19,7 +17,7 @@ add-highlighter global/ wrap -indent -marker ...
 add-highlighter global/ show-matching -previous
 
 
-
+#
 # COMMANDS
 #
 
@@ -95,7 +93,6 @@ hook global FocusOut .* %{ try "write" }
 # Change cursor color depending on the mode
 hook global ModeChange push:.*:insert %{
     set-face window CursorLine CursorLineInsertMode
-    set-face window LineNumbersWrapped
 }
 hook global ModeChange pop:insert:.* %{
     unset-face window CursorLine
@@ -136,8 +133,12 @@ hook global WinSetOption filetype=markdown %{
 
 eval %sh{kak-lsp}
 lsp-enable
-
 remove-hooks global lsp-filetype-.*
+
+hook global WinSetOption filetype=(nix|python) %{
+    hook -group lsp buffer BufWritePre .* lsp-formatting-sync
+}
+
 hook global BufSetOption filetype=python %{
     set-option buffer lsp_servers %{
         [pyright-langserver]
@@ -150,3 +151,20 @@ hook global BufSetOption filetype=python %{
     }
 }
 
+hook global BufSetOption filetype=nix %{
+    set-option buffer lsp_servers %{
+        [nil]
+        root_globs = ["flake.nix", "shell.nix", ".git", ".hg"]
+    }
+}
+
+hook -group lsp-filetype-elixir global BufSetOption filetype=(?:elixir|eex) %{
+    set-option buffer lsp_servers %{
+        [elixir-ls]
+        root_globs = ["mix.exs"]
+        settings_section = "elixirLS"
+        [elixir-ls.settings.elixirLS]
+        # See https://github.com/elixir-lsp/elixir-ls/blob/master/apps/language_server/lib/language_server/server.ex
+        # dialyzerEnable = true
+    }
+}
