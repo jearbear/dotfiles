@@ -1,10 +1,9 @@
 #!/usr/bin/env fish
 
-if set -q KAKOUNE_SESSION
-    set session $KAKOUNE_SESSION
-else
-    set session global
-end
+set working_dir $(git rev-parse --show-toplevel &>/dev/null || pwd)
+echo $working_dir
+set session $(echo $working_dir | sed 's/\//__/g')
+echo $session
 
 if kak -l | rg -q $session
     kak -c $session $argv

@@ -82,6 +82,10 @@ map global normal <c-k> ''
 map global normal <c-s-j> <c-j>
 map global normal <c-s-k> <c-k>
 
+# Edit config files quickly
+map global user C ':edit ~/.config/kak/kakrc<ret>' -docstring 'edit kakrc'
+
+
 
 #
 # HOOKS
@@ -135,7 +139,8 @@ eval %sh{kak-lsp}
 lsp-enable
 remove-hooks global lsp-filetype-.*
 
-hook global WinSetOption filetype=(nix|python) %{
+# Enable auto-formatting if LSP is enabled
+hook global BufSetOption lsp_servers=* %{
     hook -group lsp buffer BufWritePre .* lsp-formatting-sync
 }
 
@@ -158,13 +163,13 @@ hook global BufSetOption filetype=nix %{
     }
 }
 
-hook -group lsp-filetype-elixir global BufSetOption filetype=(?:elixir|eex) %{
+hook global BufSetOption filetype=(elixir|eex) %{
     set-option buffer lsp_servers %{
         [elixir-ls]
         root_globs = ["mix.exs"]
         settings_section = "elixirLS"
         [elixir-ls.settings.elixirLS]
         # See https://github.com/elixir-lsp/elixir-ls/blob/master/apps/language_server/lib/language_server/server.ex
-        # dialyzerEnable = true
+        dialyzerEnable = false
     }
 }

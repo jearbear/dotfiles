@@ -39,7 +39,7 @@
     kakoune-lsp
     file # filetype detection
 
-    beam27Packages.elixir_1_17
+    beam27Packages.elixir
     beam27Packages.elixir-ls
 
     fish-lsp
