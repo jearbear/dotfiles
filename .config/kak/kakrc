@@ -108,6 +108,11 @@ hook global RawKey .+ %{
     try %{ add-highlighter window/cursor-line line %val{cursor_line} CursorLine }
 }
 
+# Enable auto-formatting if format command is enabled
+hook global BufSetOption formatcmd=.+ %{
+    hook buffer BufWritePre .* format
+}
+
 
 #
 # PLUGINS
@@ -117,19 +122,19 @@ hook global ModuleLoaded kitty %{
     set-option global kitty_window_type "%sh{ test $(uname) = Darwin && echo 'window' || echo 'os-window' }"
 }
 
+# Smart tab
 # Always use spaces for indentation
 hook global BufOpenFile .* expandtab
-hook global BufNewFile  .* expandtab
-
+hook global BufNewFile .* expandtab
+# Default indentation
 hook global ModuleLoaded smarttab %{
     set-option global indentwidth 4
-    set-option global softtabstop 4
+}
+# Sync softtabstop with the indent width
+hook global BufSetOption indentwidth=(.*) %{
+    set-option buffer softtabstop %val{hook_param_capture_1}
 }
 
-hook global WinSetOption filetype=markdown %{
-    set-option buffer indentwidth 2
-    set-option buffer softtabstop 2
-}
 
 #
 # LSP
@@ -140,20 +145,23 @@ lsp-enable
 remove-hooks global lsp-filetype-.*
 
 # Enable auto-formatting if LSP is enabled
-hook global BufSetOption lsp_servers=* %{
+hook global BufSetOption lsp_servers=.+ %{
     hook -group lsp buffer BufWritePre .* lsp-formatting-sync
 }
+
+
 
 hook global BufSetOption filetype=python %{
     set-option buffer lsp_servers %{
         [pyright-langserver]
         root_globs = ["requirements.txt", "setup.py", "pyproject.toml", "pyrightconfig.json", ".git", ".hg"]
         args = ["--stdio"]
-        [pyright-langserver.settings.pyright]
-        disableOrganizeImports = true
-        [pyright-langserver.settings.python.analysis]
-        typeCheckingMode = "off"
+        settings.pyright.disableOrganizeImports = true
+        settings.python.analysis.typeCheckingMode = "off"
     }
+
+    set-option buffer formatcmd "ruff format -"
+    set-option buffer indentwidth 2
 }
 
 hook global BufSetOption filetype=nix %{
@@ -161,6 +169,8 @@ hook global BufSetOption filetype=nix %{
         [nil]
         root_globs = ["flake.nix", "shell.nix", ".git", ".hg"]
     }
+
+    set-option buffer indentwidth 2
 }
 
 hook global BufSetOption filetype=(elixir|eex) %{
@@ -172,4 +182,11 @@ hook global BufSetOption filetype=(elixir|eex) %{
         # See https://github.com/elixir-lsp/elixir-ls/blob/master/apps/language_server/lib/language_server/server.ex
         dialyzerEnable = false
     }
+
+    set-option buffer indentwidth 2
 }
+
+hook global BufSetOption filetype=markdown %{
+    set-option buffer indentwidth 2
+}
+

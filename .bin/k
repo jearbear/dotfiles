@@ -1,9 +1,7 @@
 #!/usr/bin/env fish
 
-set working_dir $(git rev-parse --show-toplevel &>/dev/null || pwd)
-echo $working_dir
+set working_dir $(git rev-parse --show-toplevel 2>/dev/null || echo (pwd))
 set session $(echo $working_dir | sed 's/\//__/g')
-echo $session
 
 if kak -l | rg -q $session
     kak -c $session $argv

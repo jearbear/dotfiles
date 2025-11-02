@@ -60,6 +60,7 @@
     nodePackages.vscode-json-languageserver
     shellcheck
     nil # nix
+    efm-langserver
 
     powertop
     btop
