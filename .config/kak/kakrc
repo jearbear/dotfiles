@@ -15,6 +15,7 @@ set-option global grepcmd 'rg --column --smart-case --sort path'
 
 add-highlighter global/ wrap -indent -marker ...
 add-highlighter global/ show-matching -previous
+# add-highlighter global/ show-whitespaces -lf · -only-trailing
 
 
 #
@@ -43,7 +44,7 @@ map global user q :q<ret>             -docstring "quit"
 map global user x :wq<ret>            -docstring "save + quit" 
 map global user / :comment-line<ret>  -docstring "comment line(s)" 
 map global user f ":pick-file<ret>"   -docstring "pick file" 
-map global user l ":pick-buffer<ret>" -docstring "pick buffer" 
+map global user b ":pick-buffer<ret>" -docstring "pick buffer" 
 map global user n ":new<ret>"         -docstring "open new window" 
 map global user * '*%s<ret>'          -docstring "select all"
 
@@ -135,6 +136,28 @@ hook global BufSetOption indentwidth=(.*) %{
     set-option buffer softtabstop %val{hook_param_capture_1}
 }
 
+# Git
+declare-user-mode git
+map global user g ":enter-user-mode git<ret>" -docstring "git"
+map global git p ":git prev-hunk<ret>" -docstring "prev git hunk"
+map global git n ":git next-hunk<ret>" -docstring "next git hunk"
+map global git u ":git apply --reverse<ret>" -docstring "undo hunk"
+
+map global goto p "<esc>:git prev-hunk<ret>" -docstring "prev git hunk"
+map global goto n "<esc>:git next-hunk<ret>" -docstring "next git hunk"
+
+set-option global git_diff_add_char "▎ "
+set-option global git_diff_mod_char "▎ "
+
+define-command maybe-git-show-diff -hidden %sh{
+    cd $(dirname "$kak_buffile")
+    if [ $(git rev-parse --git-dir 2>/dev/null) ]; then
+        printf "git show-diff"
+    fi
+}
+hook global WinCreate .* %{ maybe-git-show-diff }
+hook global BufWritePost .* %{ maybe-git-show-diff }
+
 
 #
 # LSP
@@ -142,13 +165,15 @@ hook global BufSetOption indentwidth=(.*) %{
 
 eval %sh{kak-lsp}
 lsp-enable
+# Disable default servers
 remove-hooks global lsp-filetype-.*
 
 # Enable auto-formatting if LSP is enabled
 hook global BufSetOption lsp_servers=.+ %{
+    map global user l ':enter-user-mode lsp<ret>' -docstring "lsp"
+
     hook -group lsp buffer BufWritePre .* lsp-formatting-sync
 }
-
 
 
 hook global BufSetOption filetype=python %{
@@ -177,10 +202,10 @@ hook global BufSetOption filetype=(elixir|eex) %{
     set-option buffer lsp_servers %{
         [elixir-ls]
         root_globs = ["mix.exs"]
-        settings_section = "elixirLS"
+
+        # https://github.com/elixir-lsp/elixir-ls?tab=readme-ov-file#elixirls-configuration-settings
         [elixir-ls.settings.elixirLS]
-        # See https://github.com/elixir-lsp/elixir-ls/blob/master/apps/language_server/lib/language_server/server.ex
-        dialyzerEnable = false
+        dialyzerEnabled = false
     }
 
     set-option buffer indentwidth 2
@@ -189,4 +214,3 @@ hook global BufSetOption filetype=(elixir|eex) %{
 hook global BufSetOption filetype=markdown %{
     set-option buffer indentwidth 2
 }
-
