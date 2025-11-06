@@ -259,3 +259,9 @@ lspconfig.elmls.setup({
     on_attach = on_attach,
     handlers = handlers,
 })
+
+-- efm
+lspconfig.efm.setup({
+    on_attach = on_attach,
+    handlers = handlers,
+})

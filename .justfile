@@ -19,6 +19,7 @@ save:
 
 pull:
     {{git}} pull --rebase
+    {{git}} submodule
 
 ls:
     {{git}} ls-files | tree --fromfile -C | less

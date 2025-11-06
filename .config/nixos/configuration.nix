@@ -138,11 +138,11 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # Enable hibernation
-  boot.kernelParams = [
-    "resume=/"
-    "resume_offset=436224"
-  ];
-  boot.resumeDevice = "/dev/nvme0n1p2";
+  # boot.kernelParams = [
+  #   "resume=/"
+  #   "resume_offset=436224"
+  # ];
+  # boot.resumeDevice = "/dev/nvme0n1p2";
 
   hardware.bluetooth.enable = true;
 
@@ -162,11 +162,7 @@
   };
 
   # Sleep settings
-  services.logind.lidSwitch = "suspend-then-hibernate";
-  systemd.sleep.extraConfig = ''
-    HibernateDelaySec=24h
-    SuspendEstimateSec=3h
-  '';
+  services.logind.lidSwitch = "suspend";
 
   networking = {
     hostName = "nixos";

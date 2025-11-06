@@ -23,17 +23,24 @@ add-highlighter global/ show-matching -previous
 #
 
 define-command pick-file -docstring 'fuzzy find a file' %{
-    prompt -shell-script-candidates 'fd --type file' file: %{ edit -existing %val{text} }
+    prompt -shell-script-candidates 'fd --type file' 'file:' %{ edit -existing %val{text} }
 }
 
 define-command pick-buffer -docstring 'fuzzy find a buffer' %{
-    prompt -buffer-completion buffer: %{ buffer %val{text} }
+    prompt -buffer-completion 'buffer:' %{ buffer %val{text} }
 }
 
 define-command dbg -docstring 'open debug buffer' %{
     evaluate-commands 'buffer *debug*'
 }
 
+define-command update -docstring 'save file if modified' %{
+    evaluate-commands %sh{
+        if [ "$kak_modified" = "true" ]; then
+            printf "write"
+        fi
+    }
+}
 
 #
 # MAPPINGS
@@ -92,8 +99,7 @@ map global user C ':edit ~/.config/kak/kakrc<ret>' -docstring 'edit kakrc'
 # HOOKS
 #
 
-# Save file on focus lost
-hook global FocusOut .* %{ try "write" }
+hook global FocusOut .* 'update'
 
 # Change cursor color depending on the mode
 hook global ModeChange push:.*:insert %{
@@ -120,7 +126,9 @@ hook global BufSetOption formatcmd=.+ %{
 #
 
 hook global ModuleLoaded kitty %{
-    set-option global kitty_window_type "%sh{ test $(uname) = Darwin && echo 'window' || echo 'os-window' }"
+    set-option global kitty_window_type %sh{
+        test "$(uname)" = Darwin && printf 'window' || printf 'os-window'
+    }
 }
 
 # Smart tab
@@ -130,10 +138,11 @@ hook global BufNewFile .* expandtab
 # Default indentation
 hook global ModuleLoaded smarttab %{
     set-option global indentwidth 4
-}
-# Sync softtabstop with the indent width
-hook global BufSetOption indentwidth=(.*) %{
-    set-option buffer softtabstop %val{hook_param_capture_1}
+
+    # Sync softtabstop with the indent width
+    hook global BufSetOption indentwidth=(.*) %{
+        set-option buffer softtabstop %val{hook_param_capture_1}
+    }
 }
 
 # Git
@@ -152,7 +161,7 @@ set-option global git_diff_mod_char "▎ "
 define-command maybe-git-show-diff -hidden %sh{
     cd $(dirname "$kak_buffile")
     if [ $(git rev-parse --git-dir 2>/dev/null) ]; then
-        printf "git show-diff"
+        printf "try 'git show-diff'"
     fi
 }
 hook global WinCreate .* %{ maybe-git-show-diff }
@@ -168,11 +177,14 @@ lsp-enable
 # Disable default servers
 remove-hooks global lsp-filetype-.*
 
-# Enable auto-formatting if LSP is enabled
 hook global BufSetOption lsp_servers=.+ %{
     map global user l ':enter-user-mode lsp<ret>' -docstring "lsp"
+}
 
-    hook -group lsp buffer BufWritePre .* lsp-formatting-sync
+# Enable auto-formatting if LSP is enabled
+declare-option bool lsp_format false
+hook global BufSetOption lsp_format=true %{
+    hook buffer BufWritePre .* lsp-formatting-sync
 }
 
 
@@ -186,7 +198,7 @@ hook global BufSetOption filetype=python %{
     }
 
     set-option buffer formatcmd "ruff format -"
-    set-option buffer indentwidth 2
+    set-option buffer indentwidth 4
 }
 
 hook global BufSetOption filetype=nix %{
@@ -195,6 +207,7 @@ hook global BufSetOption filetype=nix %{
         root_globs = ["flake.nix", "shell.nix", ".git", ".hg"]
     }
 
+    set-option buffer lsp_format true
     set-option buffer indentwidth 2
 }
 
@@ -208,6 +221,7 @@ hook global BufSetOption filetype=(elixir|eex) %{
         dialyzerEnabled = false
     }
 
+    set-option buffer lsp_format true
     set-option buffer indentwidth 2
 }
 
