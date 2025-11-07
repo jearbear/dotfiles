@@ -1,6 +1,10 @@
-define-command fzf %{
+define-command fzf-file %{
     nop %sh{
-        printf "$client_env_PWD" >&2
-        fd --type file --base-directory "/home/jerry/.config" | kitten @ launch --type overlay -- fzf
+        kitten @ launch --type overlay --cwd current --copy-env -- dash -c '
+            file="$(fzf)"
+            if [ "$file" ]; then
+                printf "eval -client $kak_client edit $file" | kak -p "$kak_session"
+            fi
+        '
     }
 }

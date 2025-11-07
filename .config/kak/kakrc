@@ -22,10 +22,6 @@ add-highlighter global/ show-matching -previous
 # COMMANDS
 #
 
-define-command pick-file -docstring 'fuzzy find a file' %{
-    prompt -shell-script-candidates 'fd --type file' 'file:' %{ edit -existing %val{text} }
-}
-
 define-command pick-buffer -docstring 'fuzzy find a buffer' %{
     prompt -buffer-completion 'buffer:' %{ buffer %val{text} }
 }
@@ -50,7 +46,7 @@ map global user w :w<ret>             -docstring "save file"
 map global user q :q<ret>             -docstring "quit" 
 map global user x :wq<ret>            -docstring "save + quit" 
 map global user / :comment-line<ret>  -docstring "comment line(s)" 
-map global user f ":pick-file<ret>"   -docstring "pick file" 
+map global user f ":fzf-file<ret>"    -docstring "pick file" 
 map global user b ":pick-buffer<ret>" -docstring "pick buffer" 
 map global user n ":new<ret>"         -docstring "open new window" 
 map global user * '*%s<ret>'          -docstring "select all"
