@@ -68,7 +68,7 @@ map global insert <c-d> <del>
 map global insert <c-h> <backspace>
 map global insert <c-k> '<a-;>;<a-;>Gl<a-;>"_d'
 map global insert <c-u> '<a-;>;<a-;>h<a-;>Gh<a-;>"_d'
-map global insert <c-w> '<a-;><a-/>\S+\s*<ret><a-;>d'
+map global insert <c-w> '<a-;>b<a-;>"_d'
 
 # Faster scrolling
 map global normal <c-d> 5j
@@ -193,8 +193,11 @@ hook global BufSetOption filetype=python %{
         [pyright-langserver]
         root_globs = ["requirements.txt", "setup.py", "pyproject.toml", "pyrightconfig.json", ".git", ".hg"]
         args = ["--stdio"]
-        settings.pyright.disableOrganizeImports = true
-        settings.python.analysis.typeCheckingMode = "off"
+
+        [pyright-langserver.settings]
+        pyright.disableOrganizeImports = true
+        python.analysis.typeCheckingMode = "off"
+        python.analysis.ignore = ["*"]
     }
 
     set-option buffer formatcmd "ruff format -"

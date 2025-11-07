@@ -1,10 +1,10 @@
-#!/usr/bin/env fish
+# !/usr/bin/env sh
 
-set working_dir $(git rev-parse --show-toplevel 2>/dev/null || echo (pwd))
-set session $(echo $working_dir | sed 's/\//__/g' | sed 's/\./dot/g' )
+session="$(printf $PWD | sed 's/\//__/g; s/\./dot/g')"
 
-if kak -l | rg -q $session
-    kak -c $session $argv
+# echo $session
+if kak -l | rg -q "$session"; then
+    kak -c "$session" "$@"
 else
-    kak -s $session $argv
-end
+    kak -s "$session" "$@"
+fi
