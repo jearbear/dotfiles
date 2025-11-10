@@ -1,5 +1,4 @@
-colorscheme catppuccin_mocha
-
+colorscheme catppuccin
 
 #
 # OPTIONS
@@ -16,6 +15,10 @@ set-option global grepcmd 'rg --column --smart-case --sort path'
 add-highlighter global/ wrap -indent -marker ...
 add-highlighter global/ show-matching -previous
 # add-highlighter global/ show-whitespaces -lf · -only-trailing
+#
+
+# I save frequently and this slows down startup
+autorestore-disable
 
 
 #
@@ -121,12 +124,6 @@ hook global BufSetOption formatcmd=.+ %{
 # PLUGINS
 #
 
-hook global ModuleLoaded kitty %{
-    set-option global kitty_window_type %sh{
-        test "$(uname)" = Darwin && printf 'window' || printf 'os-window'
-    }
-}
-
 # Smart tab
 # Always use spaces for indentation
 hook global BufOpenFile .* expandtab
@@ -154,11 +151,13 @@ map global goto n "<esc>:git next-hunk<ret>" -docstring "next git hunk"
 set-option global git_diff_add_char "▎ "
 set-option global git_diff_mod_char "▎ "
 
-define-command maybe-git-show-diff -hidden %sh{
-    cd $(dirname "$kak_buffile")
-    if [ $(git rev-parse --git-dir 2>/dev/null) ]; then
-        printf "try 'git show-diff'"
-    fi
+define-command maybe-git-show-diff -hidden %{
+    evaluate-commands %sh{
+        cd $(dirname "$kak_buffile")
+        if [ $(git rev-parse --git-dir 2>/dev/null) ]; then
+            printf "try 'git show-diff'"
+        fi
+    }
 }
 hook global WinCreate .* %{ maybe-git-show-diff }
 hook global BufWritePost .* %{ maybe-git-show-diff }
@@ -180,7 +179,7 @@ hook global BufSetOption lsp_servers=.+ %{
 # Enable auto-formatting if LSP is enabled
 declare-option bool lsp_format false
 hook global BufSetOption lsp_format=true %{
-    hook buffer BufWritePre .* lsp-formatting-sync
+    hook buffer BufWritePre .* lsp-formatting
 }
 
 
@@ -226,4 +225,15 @@ hook global BufSetOption filetype=(elixir|eex) %{
 
 hook global BufSetOption filetype=markdown %{
     set-option buffer indentwidth 2
+}
+
+#
+# OS-SPECIFIC
+#
+try %sh{
+    if [ "$(uname)" = Darwin ]; then
+        printf "source $kak_config/osx.kak"
+    else
+        printf "source $kak_config/linux.kak"
+    fi
 }

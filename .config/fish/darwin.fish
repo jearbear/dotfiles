@@ -9,6 +9,10 @@ set -gx PNPM_HOME "$HOME/Library/pnpm"
 fish_add_path /opt/homebrew/bin/
 fish_add_path /usr/local/bin
 fish_add_path "$PNPM_HOME"
+fish_add_path /opt/homebrew/opt/coreutils/libexec/gnubin
+fish_add_path /opt/homebrew/opt/grep/libexec/gnubin
+fish_add_path /opt/homebrew/opt/gnu-sed/libexec/gnubin
+fish_add_path /opt/homebrew/opt/findutils/libexec/gnubin
 
 if status is-interactive
     source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish'

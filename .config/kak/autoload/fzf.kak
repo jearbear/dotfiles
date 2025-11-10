@@ -1,9 +1,9 @@
 define-command fzf-file %{
     nop %sh{
-        kitten @ launch --type overlay --cwd current --copy-env -- dash -c '
-            file="$(fzf)"
+        kitten @ launch --type overlay --cwd current --copy-env --wait-for-child-to-exit -- dash -c '
+            file="$(fzf --preview '\''bat --force-colorization {}'\'')"
             if [ "$file" ]; then
-                printf "eval -client $kak_client edit $file" | kak -p "$kak_session"
+                printf "edit $file" > "$kak_command_fifo"
             fi
         '
     }

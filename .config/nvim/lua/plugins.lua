@@ -150,8 +150,8 @@ fzf_lua.setup({
         buf_flag_alt = "Constant",
     },
     winopts = {
-        height = 0.9,
-        width = 0.9,
+        height = 1,
+        width = 1,
         -- row = 1,
         border = "single",
         backdrop = 100,
