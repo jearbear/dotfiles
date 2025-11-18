@@ -1,14 +1,12 @@
-colorscheme catppuccin
-
 #
 # OPTIONS
 #
 
 set-option global startup_info_version 20250603
-set-option global scrolloff 5,5
+set-option global scrolloff 10,10
 set-option global autoreload true
-set-option global ui_options terminal_enable_mouse=false terminal_assistant=none
-set-option global modelinefmt '%val{bufname} {{context_info}} {{mode_info}}'
+set-option global ui_options terminal_enable_mouse=false terminal_assistant=none terminal_set_title=false terminal_status_on_top=true
+set-option global modelinefmt '%val{bufname} {{context_info}} {{mode_info}} '
 
 set-option global grepcmd 'rg --column --smart-case --sort path'
 
@@ -55,8 +53,8 @@ map global user n ":new<ret>"         -docstring "open new window"
 map global user * '*%s<ret>'          -docstring "select all"
 
 # Insert lines above/below
-map global normal <ret> <a-o>
-map global normal <s-ret> <a-O>
+# map global normal <ret> <a-o>
+# map global normal <s-ret> <a-O>
 
 # Readline mappings
 map global insert <c-a> <home>
@@ -77,7 +75,7 @@ map global normal <c-u> 5k
 map global normal <c-r> <s-u>
 
 # Goto beginning of line like vim
-map global normal 0 'gi'
+# map global normal 0 'gi'
 
 # Indent in insert mode
 map global insert <c-,> '<a-;><'
@@ -92,6 +90,8 @@ map global normal <c-s-k> <c-k>
 # Edit config files quickly
 map global user C ':edit ~/.config/kak/kakrc<ret>' -docstring 'edit kakrc'
 
+# Faster grep
+map global normal <\> ':grep "<left>"'
 
 
 #
@@ -160,7 +160,12 @@ define-command maybe-git-show-diff -hidden %{
     }
 }
 hook global WinCreate .* %{ maybe-git-show-diff }
-hook global BufWritePost .* %{ maybe-git-show-diff }
+hook global ModeChange .*:insert:normal %{ maybe-git-show-diff }
+hook global FocusIn .* %{ maybe-git-show-diff }
+
+
+# Treesitter
+# evaluate-commands %sh{ kak-tree-sitter -dks -vvvvv --init $kak_session }
 
 
 #
@@ -182,20 +187,19 @@ hook global BufSetOption lsp_format=true %{
     hook buffer BufWritePre .* lsp-formatting
 }
 
+# hook global BufSetOption lintcmd=.+ %{
+#     hook buffer NormalIdle '' lint
+# }
+
 
 hook global BufSetOption filetype=python %{
     set-option buffer lsp_servers %{
         [pyright-langserver]
         root_globs = ["requirements.txt", "setup.py", "pyproject.toml", "pyrightconfig.json", ".git", ".hg"]
         args = ["--stdio"]
-
-        [pyright-langserver.settings]
-        pyright.disableOrganizeImports = true
-        python.analysis.typeCheckingMode = "off"
-        python.analysis.ignore = ["*"]
     }
 
-    set-option buffer formatcmd "ruff format -"
+    set-option buffer formatcmd "ruff check --fix - | ruff format -"
     set-option buffer indentwidth 4
 }
 
@@ -227,6 +231,11 @@ hook global BufSetOption filetype=markdown %{
     set-option buffer indentwidth 2
 }
 
+hook global BufSetOption filetype=grep %{
+    map window normal <ret> <ret>
+    map window normal <s-ret> <s-ret>
+}
+
 #
 # OS-SPECIFIC
 #
@@ -237,3 +246,8 @@ try %sh{
         printf "source $kak_config/linux.kak"
     fi
 }
+
+
+
+colorscheme catppuccin
+

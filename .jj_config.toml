@@ -86,7 +86,7 @@ wip = ["commit", "--message", "wip"]
 n = ["new"]
 r = ["rebase", "-r", "@"]
 pull = ["git", "fetch", "--branch", "main", "--branch", "glob:jerry-*"]
-gp = ["git", "push"]
+gp = ["git", "push", "--branch", "glob:jerry-*"]
 re = ["rebase"]
 rd = ["desc", "@-"]
 rm = ["rebase", "--destination", "main"]
@@ -138,7 +138,6 @@ up = ["util", "exec", "--", "bash", "-c", """
 set -euox pipefail
 jj pull
 jj rm
-jj gp
 """, ""]
 
 pr = [
@@ -172,6 +171,7 @@ bookmarks=$(jj pr-bookmarks)
 if [ -n "$bookmarks" ]; then
     jj smash
     jj up
+    jj gp
 else
     echo "No PR active"
     exit 1
