@@ -3,10 +3,9 @@
 #
 
 set-option global startup_info_version 20250603
-set-option global scrolloff 10,10
+set-option global scrolloff 100,100
 set-option global autoreload true
-set-option global ui_options terminal_enable_mouse=false terminal_assistant=none terminal_set_title=false terminal_status_on_top=true
-set-option global modelinefmt '%val{bufname} {{context_info}} {{mode_info}} '
+set-option global ui_options terminal_enable_mouse=false terminal_assistant=none terminal_set_title=false terminal_status_on_top=false
 
 set-option global grepcmd 'rg --column --smart-case --sort path'
 
@@ -43,14 +42,15 @@ define-command update -docstring 'save file if modified' %{
 # MAPPINGS
 #
 
-map global user w :w<ret>             -docstring "save file" 
-map global user q :q<ret>             -docstring "quit" 
-map global user x :wq<ret>            -docstring "save + quit" 
-map global user / :comment-line<ret>  -docstring "comment line(s)" 
-map global user f ":fzf-file<ret>"    -docstring "pick file" 
-map global user b ":pick-buffer<ret>" -docstring "pick buffer" 
-map global user n ":new<ret>"         -docstring "open new window" 
-map global user * '*%s<ret>'          -docstring "select all"
+map global user w :w<ret>                 -docstring "save file" 
+map global user q :q<ret>                 -docstring "quit" 
+map global user x :wq<ret>                -docstring "save + quit" 
+map global user / :comment-line<ret>      -docstring "comment line(s)" 
+map global user f ":fzf-file<ret>"        -docstring "pick file" 
+map global user F ":fzf-git-file<ret>"    -docstring "pick changed file" 
+map global user b ":pick-buffer<ret>"     -docstring "pick buffer" 
+map global user n ":new<ret>"             -docstring "open new window" 
+map global user * '*%s<ret>'              -docstring "select all"
 
 # Insert lines above/below
 # map global normal <ret> <a-o>
@@ -92,6 +92,38 @@ map global user C ':edit ~/.config/kak/kakrc<ret>' -docstring 'edit kakrc'
 
 # Faster grep
 map global normal <\> ':grep "<left>"'
+
+# I always want to insert where the cursor is, not where the selection is
+map global normal i ';i'
+
+# Make it easier to exit a multi-cursor situation
+map global normal <esc> ';,<esc>'
+
+# I never want whitespace included when I do this
+map global normal * '_*'
+
+# Better mappings for object selection
+map global normal v '<a-i>'
+map global normal V '<a-a>'
+
+# Navigate selection history
+map global normal <c-.> '<a-.>'
+map global normal <c-9> '<a-u>'
+map global normal <c-0> '<a-U>'
+
+# File manager
+map global normal <minus> ':nnn<ret>'
+
+
+
+# Additional objects
+map global object l '<esc>giGl' -docstring "line"
+map global object f 'c\w+\(,\)<ret>'
+
+# Better repeat mappings
+# map global normal ; '<a-.>'
+#
+
 
 
 #
@@ -151,20 +183,38 @@ map global goto n "<esc>:git next-hunk<ret>" -docstring "next git hunk"
 set-option global git_diff_add_char "▎ "
 set-option global git_diff_mod_char "▎ "
 
-define-command maybe-git-show-diff -hidden %{
-    evaluate-commands %sh{
-        cd $(dirname "$kak_buffile")
-        if [ $(git rev-parse --git-dir 2>/dev/null) ]; then
-            printf "try 'git show-diff'"
-        fi
-    }
-}
-hook global WinCreate .* %{ maybe-git-show-diff }
-hook global ModeChange .*:insert:normal %{ maybe-git-show-diff }
-hook global FocusIn .* %{ maybe-git-show-diff }
+# define-command maybe-git-show-diff -hidden %{
+#     evaluate-commands %sh{
+#         cd $(dirname "$kak_buffile")
+#         if [ $(git rev-parse --git-dir 2>/dev/null) ]; then
+#             printf "try 'git show-diff'"
+#         fi
+#     }
+# }
+# hook global WinCreate .* %{ maybe-git-show-diff }
+# hook global ModeChange .*:insert:normal %{ maybe-git-show-diff }
+# hook global FocusIn .* %{ maybe-git-show-diff }
 
+add-highlighter global/git-diff flag-lines Default git_diff_flags
+
+hook global -group git-gutter-hooks BufCreate .* %{
+  try %{ git show-diff }
+}
+hook global -group git-gutter-hooks FocusIn .* %{
+  try %{ git-async update-diff }
+}
+hook global -group git-gutter-hooks BufReload .* %{
+  try %{ git-async update-diff }
+}
+hook global -group git-gutter-hooks BufWritePost .* %{
+  try %{ git-async update-diff }
+}
+# hook global -group git-gutter-hooks NormalIdle .* %{
+#   try %{ git-async update-diff }
+# }
 
 # Treesitter
+# Currently too slow on large files
 # evaluate-commands %sh{ kak-tree-sitter -dks -vvvvv --init $kak_session }
 
 
@@ -174,33 +224,64 @@ hook global FocusIn .* %{ maybe-git-show-diff }
 
 eval %sh{kak-lsp}
 lsp-enable
+# set global lsp_debug true
 # Disable default servers
 remove-hooks global lsp-filetype-.*
 
 hook global BufSetOption lsp_servers=.+ %{
     map global user l ':enter-user-mode lsp<ret>' -docstring "lsp"
+    # Override whatever the LSP does to the modeline
+    set-option global modelinefmt '%val{bufname} {{context_info}} {{mode_info}} '
+}
+
+define-command lsp-enable-semantic-tokens -params 1 %{
+    hook global WinSetOption filetype=%arg{1} %{
+        hook window -group semantic-tokens BufReload .* lsp-semantic-tokens
+        hook window -group semantic-tokens NormalIdle .* lsp-semantic-tokens
+        hook window -group semantic-tokens InsertIdle .* lsp-semantic-tokens
+        hook -once -always window WinSetOption filetype=.* %{
+            remove-hooks window semantic-tokens
+        }
+    }
 }
 
 # Enable auto-formatting if LSP is enabled
 declare-option bool lsp_format false
 hook global BufSetOption lsp_format=true %{
-    hook buffer BufWritePre .* lsp-formatting
+    hook buffer BufWritePre .* lsp-formatting-sync
 }
-
-# hook global BufSetOption lintcmd=.+ %{
-#     hook buffer NormalIdle '' lint
-# }
 
 
 hook global BufSetOption filetype=python %{
     set-option buffer lsp_servers %{
-        [pyright-langserver]
-        root_globs = ["requirements.txt", "setup.py", "pyproject.toml", "pyrightconfig.json", ".git", ".hg"]
+        [basedpyright-langserver]
+        root_globs = [".git"]
         args = ["--stdio"]
+        settings_section = "_"
+
+        [basedpyright-langserver.settings._.basedpyright]
+        disableOrganizeImports = true
+        analysis.typeCheckingMode = "off"
+        analysis.ignore = ["*"]
+
+        # [efm-langserver]
+        # root_globs = [".git"]
     }
 
+    # set-option buffer lintcmd "ruff check"
     set-option buffer formatcmd "ruff check --fix - | ruff format -"
+    # set-option buffer lsp_format true
     set-option buffer indentwidth 4
+
+    require-module python
+    # add-highlighter shared/python/code/ regex ([A-Z]+[A-Z_]+) 0:constant
+    # add-highlighter shared/python/code/ regex ([A-Z]+[a-z0-9]+)+ 0:class
+    # add-highlighter shared/python/code/ regex (self) "0:%opt{color_red}"
+    # add-highlighter shared/python/code/ regex (True|False|None) "0:%opt{color_peach}"
+    # add-highlighter shared/python/code/ regex (@[a-zA-Z\._]+) "0:%opt{color_peach}"
+    # add-highlighter shared/python/code/ regex ([\(\)\[\]\{\}\.:,]) 0:comment
+
+    lsp-enable-semantic-tokens python
 }
 
 hook global BufSetOption filetype=nix %{
@@ -217,10 +298,12 @@ hook global BufSetOption filetype=(elixir|eex) %{
     set-option buffer lsp_servers %{
         [elixir-ls]
         root_globs = ["mix.exs"]
+        settings_section = "_"
 
         # https://github.com/elixir-lsp/elixir-ls?tab=readme-ov-file#elixirls-configuration-settings
-        [elixir-ls.settings.elixirLS]
+        [elixir-ls.settings._.elixirLS]
         dialyzerEnabled = false
+        incrementalDialyzer = false
     }
 
     set-option buffer lsp_format true
