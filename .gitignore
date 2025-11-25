@@ -3,6 +3,18 @@
 # their work tree.
 /*
 
+# To automatically include certain subdirectories you have to allow un-ignore and
+# then re-ignore using a wildcard.
+!/.config
+/.config/*
+
 !/.config/nvim/
+/.config/nvim/.undo
+/.config/nvim/plugged
+
 !/.config/fish/
+
 !/.config/nixos/
+
+!/.config/kak/
+/.config/kak/autoload/stdlib

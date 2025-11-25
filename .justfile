@@ -6,26 +6,26 @@ help:
 git := "git --git-dir ~/.dotfiles --work-tree ~"
 
 status:
-    {{git}} status
+    {{ git }} status
 
 diff:
-    {{git}} diff
+    {{ git }} diff
 
 add +paths:
-    {{git}} add --force {{paths}}
+    {{ git }} add {{ paths }}
 
 save:
-    {{git}} save
+    {{ git }} save
 
 pull:
-    {{git}} pull --rebase
-    {{git}} submodule
+    {{ git }} pull --rebase
+    {{ git }} submodule
 
 ls:
-    {{git}} ls-files | tree --fromfile -C | less
+    {{ git }} ls-files | tree --fromfile -C | less
 
 git +args:
-    {{git}} {{args}}
+    {{ git }} {{ args }}
 
 alias s := status
 alias a := add
