@@ -12,7 +12,7 @@ diff:
     {{ git }} diff
 
 add +paths:
-    {{ git }} add {{ paths }}
+    {{ git }} add --force {{ paths }}
 
 save:
     {{ git }} save
