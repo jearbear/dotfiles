@@ -109,7 +109,7 @@ map global normal * '_*'
 
 # Better mappings for object selection
 map global normal v '<a-i>'
-map global normal V '<a-a>'
+map global normal <c-v> '<a-a>'
 
 # Navigate selection history
 map global normal <c-.> '<a-.>'
@@ -236,8 +236,6 @@ set-option global lsp_diagnostic_line_warning_sign "● "
 set-option global lsp_diagnostic_line_info_sign "● "
 set-option global lsp_diagnostic_line_hint_sign "● "
 
-lsp-inlay-diagnostics-enable global
-
 hook global BufSetOption lsp_servers=.+ %{
     map global user l ':enter-user-mode lsp<ret>' -docstring "lsp"
     # Override whatever the LSP does to the modeline
@@ -304,7 +302,7 @@ hook global BufSetOption filetype=typescript %{
         args = ["--stdio"]
     }
 
-    set-option buffer lsp_format true
+    set-option buffer formatcmd "prettierd %val{buffile}"
     set-option buffer indentwidth 2
 }
 
