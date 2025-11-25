@@ -60,7 +60,7 @@ set-face global StatusLineValue            "%opt{color_crust},%opt{color_yellow}
 set-face global StatusCursor               "%opt{color_crust},%opt{color_rosewater}"
 set-face global Prompt                     "%opt{color_mauve},%opt{color_mantle}"
 set-face global MatchingChar               "%opt{color_maroon},%opt{color_base}"
-set-face global Whitespace                 "%opt{color_overlay1},%opt{color_base}+f"
+set-face global Whitespace                 "%opt{color_surface1},%opt{color_base}+f"
 set-face global WrapMarker                 Whitespace
 set-face global BufferPadding              "%opt{color_base},%opt{color_base}"
 
@@ -77,7 +77,7 @@ set-face global comment       "%opt{color_overlay0}"
 set-face global documentation comment
 set-face global meta          "%opt{color_mauve}"
 set-face global builtin       "%opt{color_text}"
-set-face global class       "%opt{color_yellow}"
+set-face global class       "%opt{color_blue}"
 set-face global constant "%opt{color_peach}"
 
 
