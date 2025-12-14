@@ -27,7 +27,6 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
     -- UI
     { "catppuccin/nvim", name = "catppuccin" }, -- theme
-    { "andymass/vim-matchup", dependencies = { "anuvyklack/nvim-keymap-amend" } }, -- more extensive support for matching with `%`
     { "kevinhwang91/nvim-bqf" }, -- enhanced qflist (previews FZF integration)
     { "nvim-lualine/lualine.nvim" }, -- statusline
 
@@ -51,14 +50,7 @@ require("lazy").setup({
 
     -- project navigation + management
     { "stevearc/oil.nvim" }, -- minimal file browser
-    { "vim-test/vim-test" }, -- run tests and copy test runner commands
     { "wsdjeg/vim-fetch" }, -- support opening line and column numbers (e.g. foo.bar:13)
-    { "jpalardy/vim-slime" }, -- send text to other terminal windows (useful for REPLs)
-
-    -- LSP stuff
-    { "neovim/nvim-lspconfig" }, -- defines configs for various LSP servers for me
-    { "pmizio/typescript-tools.nvim", dependencies = { "nvim-lua/plenary.nvim" } }, -- better/faster typescript support
-    { "folke/neodev.nvim" }, -- setup the Lua LSP for neovim development
 
     -- linting + formatting
     { "mfussenegger/nvim-lint" }, -- integrate linters that aren't provided by LSPs
@@ -74,11 +66,9 @@ require("lazy").setup({
     { "echasnovski/mini.nvim" }, -- used for mini.bufremove, mini.ai (enhanced text objects), mini.align
 
     -- trying out
-    { "nvim-treesitter/playground" },
-    { "tpope/vim-rsi" },
-    { "folke/flash.nvim" },
-    { "rafikdraoui/jj-diffconflicts" },
     { "saghen/blink.cmp", version = "1.*" },
+    { "dmtrKovalenko/fold-imports.nvim" },
+    -- { "neovim/nvim-lspconfig" },
 })
 -- }}}
 
@@ -90,13 +80,11 @@ require("catppuccin").setup({
     transparent_background = false,
     default_integrations = false,
     integrations = {
-        flash = true,
         fzf = true,
         blink_cmp = true,
-        nvim_surround = false,
+        nvim_surround = true,
         treesitter = true,
         gitsigns = true,
-        render_markdown = true,
         markdown = true,
         mini = {
             enabled = true,
@@ -122,14 +110,69 @@ require("catppuccin").setup({
         },
         treesitter_context = true,
     },
-    custom_highlights = function(colors)
-        return {
-            Whitespace = { fg = "#313244" },
-        }
-    end,
 })
 
 vim.cmd("colorscheme catppuccin")
+
+local set_hl = function(group, options)
+    vim.api.nvim_set_hl(0, group, options)
+end
+
+local colors = require("catppuccin.palettes").get_palette("mocha")
+for _, group in ipairs(vim.fn.getcompletion("@", "highlight")) do
+    set_hl(group, {})
+end
+
+set_hl("Whitespace", { fg = colors.surface0 })
+set_hl("@comment", { fg = colors.overlay0 })
+
+set_hl("@string", { fg = colors.green })
+
+set_hl("@keyword", { fg = colors.mauve })
+set_hl("@keyword.conditional", { fg = colors.mauve })
+set_hl("@keyword.conditional.ternary", { fg = colors.mauve })
+set_hl("@keyword.coroutine", { fg = colors.mauve })
+set_hl("@keyword.debug", { fg = colors.mauve })
+set_hl("@keyword.directive", { fg = colors.mauve })
+set_hl("@keyword.directive.define", { fg = colors.mauve })
+set_hl("@keyword.exception", { fg = colors.mauve })
+set_hl("@keyword.function", { fg = colors.mauve })
+set_hl("@keyword.import", { fg = colors.mauve })
+set_hl("@keyword.modifier", { fg = colors.mauve })
+set_hl("@keyword.operator", { fg = colors.mauve })
+set_hl("@keyword.repeat", { fg = colors.mauve })
+set_hl("@keyword.return", { fg = colors.mauve })
+set_hl("@keyword.type", { fg = colors.mauve })
+
+set_hl("@boolean", { fg = colors.peach })
+set_hl("@number", { fg = colors.peach })
+set_hl("@number.float", { fg = colors.peach })
+set_hl("@constant.builtin", { fg = colors.peach })
+set_hl("@operator", { fg = colors.red })
+
+set_hl("@function", { fg = colors.lavender })
+set_hl("@type.builtin", { fg = colors.lavender })
+set_hl("@type", { fg = colors.lavender })
+
+set_hl("@punctuation.delimiter", { fg = colors.overlay1 })
+set_hl("@punctuation.bracket", { fg = colors.overlay1 })
+set_hl("@punctuation.special", { fg = colors.peach })
+
+set_hl("@markup.strong", { bold = true })
+set_hl("@markup.italic", { italic = true })
+set_hl("@markup.strikethrough", { strikethrough = true })
+set_hl("@markup.underline", { underline = true })
+set_hl("@markup.heading.markdown", { bold = true })
+set_hl("@markup.heading.1.markdown", { fg = colors.red })
+set_hl("@markup.heading.2.markdown", { fg = colors.peach })
+set_hl("@markup.heading.3.markdown", { fg = colors.yellow })
+set_hl("@markup.heading.4.markdown", { fg = colors.mauve })
+set_hl("@markup.heading.5.markdown", { fg = colors.mauve })
+set_hl("@markup.heading.6.markdown", { fg = colors.mauve })
+set_hl("@markup.link", { fg = colors.blue })
+set_hl("@markup.list", { fg = colors.peach })
+set_hl("@markup.list.checked", { fg = colors.peach })
+set_hl("@markup.list.unchecked", { fg = colors.peach })
 -- }}}
 
 -- SETTINGS {{{
@@ -141,8 +184,9 @@ vim.opt.expandtab = true -- use spaces instead of tabs
 vim.opt.shiftwidth = 4 -- use 4 spaces per "tab"
 vim.opt.softtabstop = 4 -- use 4 spaces per "tab"
 
+-- vim.opt.guicursor = "" -- I like the vibe of the OG cursors
 vim.opt.cursorline = true -- highlight the line the cursor is on
-vim.opt.scrolloff = 10 -- ensure 10 lines of padding between the cursor and the edges of the window
+vim.opt.scrolloff = 999 -- ensure 999 lines of padding between the cursor and the edges of the window
 
 vim.opt.joinspaces = false -- only insert one space when joining sentences
 
@@ -151,7 +195,7 @@ vim.opt.linebreak = true -- enable line wrapping on word boundaries only
 vim.opt.breakindent = true -- indent wrapped lines
 vim.opt.showbreak = ".." -- indent wrapped lines with `..`
 
-vim.opt.fillchars:append({ diff = "╱" }) -- prettier filler characters for empty diff blocks
+vim.opt.fillchars:append({ diff = " " }) -- prettier filler characters for empty diff blocks
 
 function _G.custom_fold_text()
     local line = vim.fn.getline(vim.v.foldstart)
@@ -182,6 +226,8 @@ vim.opt.splitright = true -- default to opening splits ot the right of the curre
 vim.opt.equalalways = true -- default to equalizing all windows when splits are created and closed
 
 vim.opt.showmode = false -- don't show the mode below the status line
+
+vim.opt.lazyredraw = true -- macros are really slow without this
 
 vim.opt.virtualedit = "block" -- allow the cursor to move off the end of the line in visual block mode
 
@@ -255,6 +301,20 @@ end, { nargs = "+", complete = "file" })
 -- }}}
 
 -- AUTO COMMANDS {{{
+-- ghetto indent lines
+u.autocmd({ "BufReadPost" }, {
+    pattern = "*",
+    callback = function()
+        local guide = string.rep(" ", vim.bo.shiftwidth - 1)
+        vim.opt_local.list = true
+        -- repeat enough times to not have to rely on the built-in repeat which
+        -- will look off by one
+        vim.opt_local.listchars = {
+            tab = "> ",
+            leadmultispace = " " .. string.rep(guide .. "│", 100),
+        }
+    end,
+})
 -- automatically create parent directories as needed when saving files
 u.autocmd({ "BufWritePre", "FileWritePre" }, {
     pattern = "*",
@@ -263,12 +323,10 @@ u.autocmd({ "BufWritePre", "FileWritePre" }, {
             vim.cmd([[silent! call mkdir(expand('<afile>:p:h'), 'p')]])
         end
     end,
-    group = u.augroup("MKDIR"),
 })
 
 u.autocmd("BufReadPost", {
     desc = "Open file at the last position it was edited earlier",
-    group = u.augroup("REOPEN"),
     pattern = "*",
     command = 'silent! normal! g`"zv',
 })
@@ -277,7 +335,6 @@ u.autocmd("BufReadPost", {
 u.autocmd({ "VimResized", "TabEnter" }, {
     pattern = "*",
     command = "wincmd =",
-    group = u.augroup("RESIZE"),
 })
 
 local lualine = require("lualine")
@@ -290,22 +347,11 @@ u.autocmd({ "BufLeave", "FocusLost" }, {
             lualine.refresh()
         end
     end,
-    group = u.augroup("AUTO_WRITE"),
 })
 
 u.autocmd({ "BufWritePost" }, {
     pattern = "*",
     callback = lualine.refresh,
-    group = u.augroup("WRITE_REFRESH_LUALINE"),
-})
-
--- treat pull request edit messages as markdown
-u.autocmd("BufEnter", {
-    pattern = "*/PULLREQ_EDITMSG",
-    callback = function()
-        vim.bo.filetype = "markdown"
-    end,
-    group = u.augroup("PRS"),
 })
 
 -- treat .json.tftpl files as json
@@ -314,18 +360,18 @@ u.autocmd({ "BufEnter", "BufNew" }, {
     callback = function()
         vim.bo.filetype = "json"
     end,
-    group = u.augroup("JSON_TFTPL"),
 })
 -- }}}
 
 -- MAPPINGS {{{
 u.map("", "Y", "y$")
 u.map("", "0", "^")
+u.map("", "<C-f>", "%")
 
 -- save and quit huehue
 u.map_c("<Leader>w", ":w")
 u.map_c("<Leader>W", ":wa")
-u.map_c("<Leader>q", ":q!")
+u.map_c("<Leader>q", ":q")
 u.map_c("<Leader>Q", ":qa!")
 u.map_c("<Leader>x", ":x")
 u.map_c("<Leader>X", ":xa")
@@ -337,6 +383,14 @@ u.map({ "n", "v" }, "<C-u>", "10<C-u>")
 -- navigate by visual lines when lines are wrapped
 u.map({ "n", "v" }, "j", "gj")
 u.map({ "n", "v" }, "k", "gk")
+
+-- better ^,$ mappings
+u.map({ "n", "o", "v" }, "H", "^")
+u.map({ "n", "o", "v" }, "L", "$")
+
+-- retraining myself to use ^
+u.map({ "n", "o", "v" }, "0", "<nop>")
+u.map({ "n", "o", "v" }, "$", "<nop>")
 
 -- preserve cursor position when joining
 -- u.map("n", "J", "mzJ`z")
@@ -361,23 +415,54 @@ u.map_c("<Leader>tc", "tabc")
 u.map("n", "<Leader>/", "gcc", { remap = true })
 u.map("v", "<Leader>/", "gc", { remap = true })
 
+-- duplicate and comment
+function _G.duplicate_and_comment_lines()
+    local start_line, end_line = vim.api.nvim_buf_get_mark(0, "[")[1], vim.api.nvim_buf_get_mark(0, "]")[1]
+    -- NOTE: `nvim_buf_get_mark()` is 1-indexed, but `nvim_buf_get_lines()` is 0-indexed. Adjust accordingly.
+    local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
+    -- Store cursor position because it might move when commenting out the lines.
+    local cursor = vim.api.nvim_win_get_cursor(0)
+    -- Comment out the selection using the builtin gc operator.
+    vim.cmd.normal({ "gcc", range = { start_line, end_line } })
+    -- Append a duplicate of the selected lines to the end of selection.
+    vim.api.nvim_buf_set_lines(0, end_line, end_line, false, lines)
+    -- Move cursor to the start of the duplicate lines.
+    vim.api.nvim_win_set_cursor(0, { end_line + 1, cursor[2] })
+end
+u.map({ "n" }, "<Leader>?", function()
+    vim.opt.operatorfunc = "v:lua.duplicate_and_comment_lines"
+    return "g@l"
+end, { expr = true })
+u.map({ "x" }, "<Leader>?", function()
+    vim.opt.operatorfunc = "v:lua.duplicate_and_comment_lines"
+    return "g@"
+end, { expr = true })
+
 -- faster access to completions
 u.map("i", "<C-o>", "<C-x><C-o>")
 u.map("i", "<C-l>", "<C-x><C-l>")
 
--- faster renaming
+-- the default mapping is insane, overriden if LSP is active
+u.map("i", "<C-Space>", "<nop>")
+
+-- dot-repeatable replace actions
 u.map("n", "<Leader>r", "*``cgn")
-u.map("n", "g<Leader>r", "g*``cgn")
+u.map("n", "g<Leader>r", "g*``cgn") -- w/o word boundaries
+u.map("v", "<Leader>r", function()
+    vim.cmd([[normal! "vy]])
+    vim.fn.setreg("/", [[\V]] .. vim.fn.getreg("v"))
+    u.feed_keys("cgn")
+end)
 
 -- faster substitution
 u.map("n", "<Leader>s", ":%s/<C-r><C-w>/")
 u.map("v", "<Leader>s", '"ay/<C-R>a<CR>``:%s//')
 
 -- load the selection into the seach register
-u.map("v", "*", '"ay/<C-R>a<CR>``')
-
--- the default mapping is insane
-u.map("i", "<C-Space>", "<nop>")
+u.map("v", "*", function()
+    vim.cmd([[normal! "vy]])
+    vim.fn.setreg("/", vim.fn.getreg("v"))
+end)
 
 -- yank/paste to/from system clipboard
 -- (recursive mappings are intentionally used to preserve the benefits of
@@ -400,23 +485,17 @@ u.map("c", "<C-p>", "<Up>")
 u.map("c", "<C-n>", "<Down>")
 
 -- basic readline mappings ("!" maps both insert and command mode)
--- u.map("!", "<C-d>", "<Delete>")
--- u.map("!", "<C-f>", "<Right>")
--- u.map("!", "<C-b>", "<Left>")
-u.map("i", "<C-k>", "<C-o>d$")
+u.map("!", "<C-a>", "<Home>")
+u.map("!", "<C-e>", "<End>")
+u.map("!", "<C-d>", "<Delete>")
+u.map("!", "<C-f>", "<Right>")
+u.map("!", "<C-b>", "<Left>")
 u.map("!", "<C-BS>", "<C-w>")
--- u.map("i", "<C-e>", "<C-o>A")
---
--- u.map("i", "<C-e>", function()
---     u.close_completion_menu()
---     u.set_cursor_pos(u.line_number(), u.col_number() + 1)
--- end)
+u.map("i", "<C-k>", "<C-o>d$")
 
--- readline mappings when in select mode (relevant when using snippets)
--- u.map("s", "<BS>", "<BS>i")
--- u.map("s", "<C-d>", "<BS>i")
--- u.map("s", "<C-f>", "<Right>")
--- u.map("s", "<C-b>", "<Left>")
+-- indent in insert mode
+u.map("i", "<C-.>", "<C-t>")
+u.map("i", "<C-,>", "<C-d>")
 
 -- edit config files
 u.map_c("<Leader>vev", "edit ~/.config/nvim/init.lua")
@@ -452,33 +531,6 @@ u.map("n", "<C-i>", "<C-i>")
 u.map("v", "/", "<Esc>/\\%V")
 u.map("v", "?", "<Esc>?\\%V")
 
--- don't add search navigation to jumplist
--- u.map_c("n", "keepjumps normal! n")
--- u.map_c("N", "keepjumps normal! N")
-
--- Navigate search results with Tab/S-Tab
-u.map("c", "<Tab>", function()
-    local cmdtype = vim.fn.getcmdtype()
-    if cmdtype == "/" then
-        return "<C-g>"
-    elseif cmdtype == "?" then
-        return "<C-t>"
-    else
-        return "<C-z>"
-    end
-end, { expr = true })
-
-u.map("c", "<S-Tab>", function()
-    local cmdtype = vim.fn.getcmdtype()
-    if cmdtype == "/" then
-        return "<C-t>"
-    elseif cmdtype == "?" then
-        return "<C-g>"
-    else
-        return "<S-Tab>"
-    end
-end, { expr = true })
-
 -- Get Github URL for current file
 u.map({ "n", "v" }, "<Leader>gl", function()
     local url = u.get_github_url({ mode = "blob" })
@@ -495,6 +547,79 @@ u.map({ "n", "v" }, "<Leader>go", function()
         u.system({ "open", url })
     else
         print("Could not get Github URL")
+    end
+end)
+u.map({ "n", "v" }, "<Leader>gB", function()
+    local url = u.get_github_pr_url()
+    if url then
+        u.system({ "open", url })
+    else
+        print("Could not get Github PR")
+    end
+end)
+
+-- slime
+u.map("n", "<C-c><C-c>", function()
+    u.kitty_send_text(vim.fn.getregion(vim.fn.getpos("'{"), vim.fn.getpos("'}")))
+end)
+u.map("x", "<C-c><C-c>", function()
+    u.kitty_send_text(vim.fn.getregion(vim.fn.getpos("v"), vim.fn.getpos("."), { type = vim.fn.mode() }))
+end)
+
+-- navigate to the beginning/end of TS nodes
+u.map("n", "(", function()
+    local ts_utils = require("nvim-treesitter.ts_utils")
+    local start_node = ts_utils.get_node_at_cursor()
+    if not start_node then
+        return
+    end
+    local start_row, start_col = start_node:start()
+
+    local parent_pos = vim.iter((function()
+        local node = start_node
+        return function()
+            node = node:parent()
+            return node
+        end
+    end)())
+        :map(function(node)
+            local row, col = node:start()
+            return { row, col }
+        end)
+        :find(function(pos)
+            return pos[1] ~= start_row or pos[2] ~= start_col
+        end)
+
+    if parent_pos then
+        vim.api.nvim_win_set_cursor(0, { parent_pos[1] + 1, parent_pos[2] })
+    end
+end)
+u.map("n", ")", function()
+    local ts_utils = require("nvim-treesitter.ts_utils")
+    local start_node = ts_utils.get_node_at_cursor()
+    if not start_node then
+        return
+    end
+    local start_row, start_col = start_node:end_()
+
+    local parent_pos = vim.iter((function()
+        local node = start_node
+        return function()
+            node = node:parent()
+            return node
+        end
+    end)())
+        :map(function(node)
+            local row, col = node:end_()
+            return { row, col }
+        end)
+        :find(function(pos)
+            return pos[1] ~= start_row or pos[2] ~= start_col
+        end)
+
+    if parent_pos then
+        -- Ignore errors if we somehow attempt to move out of the buffer
+        pcall(vim.api.nvim_win_set_cursor, 0, { parent_pos[1] + 1, parent_pos[2] - 1 })
     end
 end)
 -- }}}

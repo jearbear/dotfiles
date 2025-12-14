@@ -47,16 +47,6 @@ M.table.contains = function(table, element)
     return false
 end
 
-M.set_indent_guide = function()
-    local guide = string.rep(" ", vim.bo.shiftwidth - 1)
-    vim.opt_local.list = true
-    vim.opt_local.listchars = {
-        -- repeat enough times to not have to rely on the built-in repeat which
-        -- will look off by one
-        leadmultispace = " " .. string.rep(guide .. "│", 100),
-    }
-end
-
 M.line_number = function()
     return vim.fn.line(".")
 end
@@ -98,9 +88,53 @@ M.get_visual_range = function()
         local start_line = math.min(start_pos, end_pos)
         local end_line = math.max(start_pos, end_pos)
 
-        print(start_line)
-        print(end_line)
         return { start_line, end_line }
+    else
+        return nil
+    end
+end
+
+M.git_root_path = function()
+    return M.system({ "git", "rev-parse", "--show-toplevel" })
+end
+
+M.github_remote_url = function()
+    local git_repo = M.system({ "git", "remote", "get-url", "origin" }):match("github%.com[:/](.+)%.git")
+    if git_repo then
+        return "https://github.com/" .. git_repo
+    end
+    return nil
+end
+
+M.git_relative_path = function()
+    local git_root_path = M.git_root_path()
+    if git_root_path then
+        return vim.fn.expand("%:p"):sub(#git_root_path + 2)
+    else
+        return nil
+    end
+end
+
+M.git_commit_hash = function()
+    local commit_hash = M.system({ "git", "rev-parse", "HEAD" })
+    if M.trim(M.system({ "git", "branch", "--remote", "--contains", commit_hash })) == "" then
+        commit_hash = "main"
+    end
+    return commit_hash
+end
+
+M.github_pr_number = function()
+    local line_number = M.line_number()
+    local commit_description = M.system({
+        "git",
+        "log",
+        "-s",
+        "-1",
+        "-L",
+        string.format("%i,%i:%s", line_number, line_number, vim.fn.bufname()),
+    })
+    if commit_description then
+        return commit_description:match("%(#(%d+)%)")
     else
         return nil
     end
@@ -110,28 +144,15 @@ M.get_github_url = function(opts)
     opts = opts or {}
     local mode = opts.mode or "blob"
 
-    local git_root = M.system({ "git", "rev-parse", "--show-toplevel" })
-    if git_root == nil then
+    local remote_url = M.github_remote_url()
+    local commit_hash = M.git_commit_hash()
+    local relative_path = M.git_relative_path()
+
+    if remote_url == nil or commit_hash == nil or relative_path == nil then
         return nil
     end
 
-    local commit_hash = M.system({ "git", "rev-parse", "HEAD" })
-    if M.trim(M.system({ "git", "branch", "--remote", "--contains", commit_hash })) == "" then
-        commit_hash = "main"
-    end
-
-    local remote_url = M.system({ "git", "remote", "get-url", "origin" })
-    if commit_hash == nil or remote_url == nil then
-        return nil
-    end
-
-    local github_path = remote_url:match("github%.com[:/](.+)%.git")
-    if not github_path then
-        return nil
-    end
-
-    local rel_path = vim.fn.expand("%:p"):sub(#git_root + 2)
-    local github_url = "https://github.com/" .. github_path .. "/" .. mode .. "/" .. commit_hash .. "/" .. rel_path
+    local github_url = table.concat({ remote_url, mode, commit_hash, relative_path }, "/")
 
     local visual_range = M.get_visual_range()
     if visual_range then
@@ -147,8 +168,40 @@ M.get_github_url = function(opts)
     return github_url
 end
 
+M.get_github_pr_url = function()
+    local remote_url = M.github_remote_url()
+    local pr_number = M.github_pr_number()
+
+    if remote_url == nil or pr_number == nil then
+        return nil
+    end
+
+    return table.concat({ remote_url, "pull", pr_number, "files" }, "/")
+end
+
 M.trim = function(s)
     return s:gsub("^%s*(.-)%s*$", "%1")
+end
+
+M.kitty_send_text = function(lines)
+    M.system({
+        "kitten",
+        "@",
+        "send-text",
+        "--match",
+        "neighbor:right",
+        "--bracketed-paste",
+        "enable",
+        M.trim(table.concat(lines, "\n")) .. "\n",
+    })
+    M.system({
+        "kitten",
+        "@",
+        "send-text",
+        "--match",
+        "neighbor:right",
+        "\n",
+    })
 end
 
 return M

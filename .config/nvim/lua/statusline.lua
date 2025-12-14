@@ -1,6 +1,4 @@
-local u = require("utils")
 local lualine = require("lualine")
-
 
 lualine.setup({
     options = {
@@ -11,7 +9,8 @@ lualine.setup({
         always_divide_middle = false,
     },
     sections = {
-        lualine_a = {
+        lualine_a = {},
+        lualine_b = {
             {
                 "mode",
                 fmt = function(str)
@@ -19,7 +18,6 @@ lualine.setup({
                 end,
             },
         },
-        lualine_b = {  },
         lualine_c = {
             {
                 "filename",
@@ -32,16 +30,17 @@ lualine.setup({
                 padding = 2,
             },
         },
-        lualine_x = {},
-        lualine_y = {
+        lualine_x = {
             {
                 "diagnostics",
                 sources = { "nvim_diagnostic" },
                 sections = { "error", "warn", "info" },
-                symbols = { error = "E/", warn = "W/", info = "I/" },
+                symbols = { error = "● ", warn = "● ", info = "● " },
             },
+            { "location" },
         },
-        lualine_z = { "%l" },
+        lualine_y = {},
+        lualine_z = {},
     },
     inactive_sections = {
         lualine_a = {},
@@ -67,14 +66,14 @@ lualine.setup({
         lualine_b = {},
         lualine_c = {},
         lualine_x = {},
-        lualine_y = {},
-        lualine_z = {
+        lualine_y = {
             {
                 "tabs",
                 max_length = vim.o.columns,
                 mode = 2,
             },
         },
+        lualine_z = {},
     },
     extensions = { "quickfix" },
 })

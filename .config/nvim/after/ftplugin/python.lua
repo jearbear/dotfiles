@@ -1,7 +1,5 @@
 local u = require("utils")
 
-u.set_indent_guide()
-
 require("nvim-surround").buffer_setup({
     surrounds = {
         ['"'] = {

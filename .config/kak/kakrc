@@ -110,6 +110,7 @@ map global normal * '_*'
 # Better mappings for object selection
 map global normal v '<a-i>'
 map global normal <c-v> '<a-a>'
+map global normal V '<a-a>'
 
 # Navigate selection history
 map global normal <c-.> '<a-.>'
@@ -137,7 +138,7 @@ define-command select-line -hidden %{
 }
 map global object l '<a-;>select-line<ret>'      -docstring 'line'
 map global object L '<a-;>select-line<ret>'      -docstring 'line'
-map global object f 'c\w+\(,\)<ret>'             -docstring 'function'
+map global object f 'c[\w\.]+\(,\)<ret>'             -docstring 'function'
 
 # Better repeat mappings
 # map global normal ; '<a-.>'
@@ -193,9 +194,13 @@ hook global ModuleLoaded smarttab %{
     }
 }
 
+# Auto pairs
+enable-auto-pairs
+
 # Git
 declare-user-mode git
 map global user g ":enter-user-mode git<ret>"   -docstring "git"
+map global git d ":git diff<ret>"               -docstring "diff"
 map global git p ":git prev-hunk<ret>"          -docstring "prev git hunk"
 map global git n ":git next-hunk<ret>"          -docstring "next git hunk"
 map global git u ":git apply --reverse<ret>"    -docstring "undo hunk"
@@ -242,7 +247,7 @@ hook global BufSetOption lsp_servers=.+ %{
     set-option global modelinefmt '%val{bufname} {{context_info}} {{mode_info}} '
 
     map global normal <c-j> ':lsp-find-error --include-warnings<ret>'
-    map global normal <c-k> ':lsp-find-error --include-warnings --previous<ret>'
+    map global normal <c-k> ':lsp-find-error --previous --include-warnings<ret>'
 }
 
 define-command lsp-enable-semantic-tokens -params 1 %{

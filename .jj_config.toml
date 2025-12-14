@@ -8,7 +8,7 @@ pager = "delta"
 editor = "nvim"
 diff-editor = ":builtin"
 diff-formatter = ":git"
-default-command = ["log", "--no-pager"]
+default-command = ["log", "--no-pager", "--reversed"]
 
 [ui.graph]
 style = "curved"
@@ -16,7 +16,7 @@ style = "curved"
 [templates]
 log = "builtin_log_oneline"
 op_log = "builtin_op_log_comfortable"
-git_push_bookmark = '"jerry-" ++ change_id.short()'
+git_push_bookmark = '"jerry/" ++ change_id.short()'
 
 [template-aliases]
 "format_short_id(id)" = "id.shortest()"
@@ -85,8 +85,9 @@ c = ["commit"]
 wip = ["commit", "--message", "wip"]
 n = ["new"]
 r = ["rebase", "-r", "@"]
-pull = ["git", "fetch", "--branch", "main", "--branch", "glob:jerry-*"]
-gp = ["git", "push", "--branch", "glob:jerry-*"]
+pull = ["git", "fetch", "--branch", "main", "--branch", "glob:jerry/*"]
+# gp = ["git", "push", "--branch", "glob:jerry/*"]
+gp = ["git", "push"]
 re = ["rebase"]
 rd = ["desc", "@-"]
 rm = ["rebase", "--destination", "main"]

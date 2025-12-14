@@ -4,7 +4,7 @@ vim.opt_local.conceallevel = 0
 vim.bo.shiftwidth = 2
 vim.bo.softtabstop = 2
 
-u.map({ "i", "n" }, "<C-.>", function()
+u.map({ "n" }, "<C-.>", function()
     local line = vim.api.nvim_get_current_line()
     local line_start, _ = line:find("- %[.-%]")
 
