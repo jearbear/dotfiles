@@ -63,14 +63,10 @@ input {
 // Remember to uncomment the node by removing "/-"!
 output "eDP-1" {
     scale 1
-    background-color "#181825"
-    backdrop-color "#11111b"
 }
 
 output "HDMI-A-1" {
     scale 2
-    background-color "#181825"
-    backdrop-color "#11111b"
 }
 
 // Settings that influence how windows are positioned and sized.
@@ -220,13 +216,9 @@ layout {
         left 20
         right 20
     }
+
+    background-color "#181825"
 }
-
-// Add lines like this to spawn processes at startup.
-// Note that running niri as a session supports xdg-desktop-autostart,
-// which may be more convenient to use.
-// See the binds section below for more spawn examples.
-
 
 // Uncomment this line to ask the clients to omit their client-side decorations if possible.
 // If the client will specifically ask for CSD, the request will be honored.
@@ -252,10 +244,6 @@ animations {
 
     // Slow down all animations by this factor. Values below 1 speed them up instead.
     // slowdown 0.5
-
-    window-open {
-        // duration-ms 100
-    }
 }
 
 // Window rules let you adjust behavior for individual windows.
@@ -378,12 +366,12 @@ cursor {
 
 overview {
     zoom 0.5
+    backdrop-color "#11111b"
 }
 
-spawn-at-startup "xwayland-satellite"
-environment {
-    DISPLAY ":0"
-}
+// environment {
+//     DISPLAY ":0"
+// }
 
 spawn-at-startup "foot --server"
 

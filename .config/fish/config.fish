@@ -36,7 +36,7 @@ if status is-interactive
     abbr v nvim
     abbr vi nvim
     abbr vim nvim
-    abbr n 'nnn -CReorA'
+    abbr n 'nnn -CReoA'
     abbr pn 'ping www.google.com -c 1'
     abbr j just
     abbr g git

@@ -1,0 +1,154 @@
+nop %sh{
+    mkdir -p "$kak_config/autoload"
+    ln -s "$kak_runtime/autoload" "$kak_config/autoload/stdlib"
+}
+
+colorscheme catppuccin_mocha
+
+
+# options
+set-option global startup_info_version 20240518
+set-option global scrolloff 5,5
+set-option global autoreload true
+set-option global ui_options terminal_enable_mouse=false
+set-option global modelinefmt '%val{bufname} {{context_info}} {{mode_info}}'
+
+declare-option str system_yank_command "%sh{ test $(uname) = Darwin && echo pbcopy || echo wl-copy }"
+declare-option str system_paste_command "%sh{ test $(uname) = Darwin && echo pbpaste || echo wl-paste }"
+
+define-command execute-keys-with-system-clipboard -params 1 %
+    evaluate-commands -save-regs '"' %{
+        set-register '"' %sh{
+            $kak_opt_system_paste_command
+            # %sh{} trims a trailing newline from its collected output,
+            # so we add an extra newline for it to eat.
+            echo
+        }
+        execute-keys %arg{1}
+    }
+
+map global user y '<a-|>%opt{system_yank_command}<ret>'        -docstring "yank from system clipboard"
+map global user p ":execute-keys-with-system-clipboard p<ret>" -docstring "append from system clipboard"
+map global user P ":execute-keys-with-system-clipboard P<ret>" -docstring "insert from system clipboard"
+map global user R ":execute-keys-with-system-clipboard R<ret>" -docstring "replace from system clipboard"
+
+
+hook global ModuleLoaded kitty %{
+    set-option global kitty_window_type 'os-window'
+}
+
+add-highlighter global/ wrap -indent -marker ...
+
+map global user w :w<ret>             -docstring "save file" 
+map global user q :q<ret>             -docstring "quit" 
+map global user x :wq<ret>            -docstring "save + quit" 
+map global user / :comment-line<ret>  -docstring "comment line(s)" 
+map global user f ":pick-file<ret>"   -docstring "pick file" 
+map global user l ":pick-buffer<ret>" -docstring "pick buffer" 
+map global user n ":new<ret>"         -docstring "open new window" 
+map global user * '*%s<ret>'          -docstring "select all" 
+
+define-command pick-file %{
+    prompt -shell-script-candidates 'fd --type file' file: %{ edit -existing %val{text} }
+}
+define-command pick-buffer %{
+    prompt -buffer-completion buffer: %{ buffer %val{text} }
+}
+
+# readline mappings
+map global insert <c-a> <home>
+map global insert <c-e> <end>
+map global insert <c-f> <right>
+map global insert <c-b> <left>
+map global insert <c-d> <del>
+map global insert <c-h> <backspace>
+map global insert <c-k> '<a-;>;<a-;>Gl<a-;>"_d'
+map global insert <c-u> '<a-;>;<a-;>h<a-;>Gh<a-;>"_d'
+map global insert <c-w> '<a-;><a-/>\S+\s*<ret><a-;>d'
+
+# Change cursor color depending on the mode
+hook global ModeChange push:.*:insert %{
+    set-face window PrimaryCursor LineNumbers
+    set-face window PrimaryCursorEol LineNumbers
+}
+
+hook global ModeChange pop:insert:.* %{
+    unset-face window PrimaryCursor
+    unset-face window PrimaryCursorEol     
+}
+
+# Surrounds
+define-command -override surround-add -params 2 %{
+    evaluate-commands -draft -save-regs '"' %{
+        set-register '"' %arg{1}
+        execute-keys -draft P
+        set-register '"' %arg{2}
+        execute-keys -draft p
+  }
+}
+
+declare-user-mode surround
+map global user s ':enter-user-mode surround<ret>' -docstring "surround mode"
+
+declare-user-mode surround-add
+map global surround a ':enter-user-mode surround-add<ret>' -docstring "add surround"
+
+
+map global surround-add b   ':surround-add ( )<ret>'         -docstring 'surround with parenthesis'
+map global surround-add (   ':surround-add ( )<ret>'         -docstring 'surround with parenthesis'
+map global surround-add )   ':surround-add ( )<ret>'         -docstring 'surround with parenthesis'
+map global surround-add [   ':surround-add [ ]<ret>'         -docstring 'surround with brackets'
+map global surround-add ]   ':surround-add [ ]<ret>'         -docstring 'surround with brackets'
+map global surround-add {   ':surround-add { }<ret>'         -docstring 'surround with curly brackets'
+map global surround-add }   ':surround-add { }<ret>'         -docstring 'surround with curly brackets'
+map global surround-add <   ':surround-add < ><ret>'         -docstring 'surround with angle brackets'
+map global surround-add >   ':surround-add < ><ret>'         -docstring 'surround with angle brackets'
+map global surround-add "'" ":surround-add ""'"" ""'""<ret>" -docstring 'surround with quotes'
+map global surround-add '"' ":surround-add '""' '""'<ret>"   -docstring 'surround with double quotes'
+map global surround-add *   ':surround-add * *<ret>'         -docstring 'surround with asteriks'
+map global surround-add _   ':surround-add _ _<ret>'         -docstring 'surround with undescores'
+
+
+define-command -hidden surround-delete-key -params 1 %{
+    execute-keys -draft "<a-a>%arg{1}i<del><esc>a<backspace><esc>"
+}
+
+define-command surround-delete %{
+    on-key %{
+        surround-delete-key %val{key}
+    }
+}
+
+declare-user-mode surround-delete
+map global surround d ':surround-delete<ret>' -docstring "delete surround"
+
+
+define-command -hidden surround-replace-sub -params 1 %{
+    on-key %{
+        evaluate-commands -no-hooks -draft %{
+            execute-keys "<a-a>%arg{1}"
+            enter-user-mode surround-add
+            execute-keys %val{key}
+        }
+        surround-delete-key %arg{1}
+    }
+}
+
+define-command surround-replace %{
+    on-key %{
+        surround-replace-sub %val{key}
+    }
+}
+
+map global surround c ':surround-replace<ret>' -docstring "replace surround"
+
+# Highlight the current line
+set-face global CurrentLine default,rgb:313244
+define-command -hidden highlight-current-line -docstring "Highlight current line" %{
+    try %{ remove-highlighter window/crosshairs-line }
+    try %{ add-highlighter window/crosshairs-line line %val{cursor_line} CurrentLine }
+}
+hook global -group crosshairs RawKey .+ highlight-current-line
+
+
+set-option global grepcmd 'rg --column --smart-case --sort path'
