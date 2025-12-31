@@ -49,7 +49,7 @@ if status is-interactive
 
     abbr kssh 'kitty +kitten ssh'
 
-    # abbr 
+    abbr yd yt-dlp
 
     # alias d "git --git-dir $HOME/.dotfiles/ --work-tree $HOME"
     abbr d "just --justfile ~/.dotfiles.justfile"

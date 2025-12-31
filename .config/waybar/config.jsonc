@@ -11,6 +11,7 @@
         "niri/workspaces",
     ],
     "modules-right": [
+        "pulseaudio",
         "battery",
         "clock",
     ],

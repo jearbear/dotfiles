@@ -40,6 +40,14 @@ for name, config in pairs({
         cmd = { "ruff", "server" },
         filetypes = { "python" },
     },
+    elixirls = {
+        cmd = { "elixir-ls" },
+        filetypes = { "elixir" },
+        settings = {
+            dialyzerEnabled = false,
+            incrementalDialyzer = false,
+        },
+    },
     marksman = {
         cmd = { "marksman" },
         filetypes = { "markdown" },

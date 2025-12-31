@@ -1,7 +1,0 @@
-#!/usr/bin/env fish
-
-set config_file "$HOME/.config/fzf-launcher.json"
-set key $(jq -r "keys[]" $config_file | fzf)
-set command $(jq -r ".[\"$key\"]" $config_file)
-# Niri expects the command to be a stream of space-delimited quoted values
-niri msg action spawn -- $(string split ' ' $command)

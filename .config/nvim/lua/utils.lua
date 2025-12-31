@@ -184,24 +184,60 @@ M.trim = function(s)
 end
 
 M.kitty_send_text = function(lines)
-    M.system({
-        "kitten",
-        "@",
-        "send-text",
-        "--match",
-        "neighbor:right",
-        "--bracketed-paste",
-        "enable",
-        M.trim(table.concat(lines, "\n")) .. "\n",
-    })
-    M.system({
-        "kitten",
-        "@",
-        "send-text",
-        "--match",
-        "neighbor:right",
-        "\n",
-    })
+    if vim.uv.os_uname().sysname == "Linux" then
+        M.system({ "niri", "msg", "action", "focus-column-right" })
+        dest_window = vim.json.decode(M.system({ "niri", "msg", "--json", "focused-window" }), {})
+        if dest_window.app_id == "kitty" then
+            M.system({
+                "kitten",
+                "@",
+                "send-text",
+                "--match",
+                "state:focused",
+                "--bracketed-paste",
+                "enable",
+                M.trim(table.concat(lines, "\n")) .. "\n",
+            })
+            M.system({
+                "kitten",
+                "@",
+                "send-text",
+                "--match",
+                "state:focused",
+                "\n",
+            })
+        else
+            print("Neighboring window is not a kitty terminal")
+        end
+        M.system({ "niri", "msg", "action", "focus-window-previous" })
+    else
+        M.system({
+            "kitten",
+            "@",
+            "send-text",
+            "--match",
+            "neighbor:right",
+            "--bracketed-paste",
+            "enable",
+            M.trim(table.concat(lines, "\n")) .. "\n",
+        })
+        M.system({
+            "kitten",
+            "@",
+            "send-text",
+            "--match",
+            "neighbor:right",
+            "\n",
+        })
+    end
+end
+
+M.open_url = function(url)
+    if vim.uv.os_uname().sysname == "Linux" then
+        M.system({ "xdg-open", url })
+    else
+        M.system({ "open", url })
+    end
 end
 
 return M

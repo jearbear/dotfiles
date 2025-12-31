@@ -2,25 +2,23 @@
   config,
   pkgs,
   ...
-}:
-{
+}: {
   # Installed packages
   environment.systemPackages = with pkgs; [
     linux-firmware
     networkmanagerapplet
 
-    docker
     git
     delta
     neovim
     helix
     wget
     firefox
+    librewolf
     chromium
     kitty
     jujutsu
     fzf
-    direnv
     bat
     fd
     ripgrep
@@ -36,19 +34,12 @@
     dash
     nnn
     yt-dlp
-    cpg
 
     kakoune
     kakoune-lsp
     file # filetype detection
 
-    beam27Packages.elixir
-    beam27Packages.elixir-ls
-
-    fish-lsp
-
     python3
-    ruff
 
     aichat
 
@@ -58,27 +49,38 @@
 
     # gcc11 # for nvim treesitter parser installs
     # lsps and formatters
-    marksman
-    alejandra
+    # lsps
+    fish-lsp
+    marksman # markdown
     nodePackages.vscode-json-languageserver
-    shellcheck
+    shellcheck # bash
     nil # nix
+
+    # linters
+
+    # formatters
+    stylua
+    ruff
+    alejandra # nix
 
     powertop
     btop
 
+    fuzzel
+    rofimoji
     mako
     xwayland-satellite
     waybar
-    # xdg-desktop-portal-gtk
-    # xdg-desktop-portal-gnome
-    # gnome-keyring
     brightnessctl
     tofi
     gammastep
     bluetui
 
-    # seahorse
+    keepassxc
+
+    # for 1password
+    gnome-keyring
+    seahorse
 
     libqalculate
     grim
@@ -92,10 +94,13 @@
     niri.enable = true;
     fish.enable = true;
 
+    # also takes care of installing nix-direnv
+    direnv.enable = true;
+
     _1password.enable = true;
     _1password-gui = {
       enable = true;
-      polkitPolicyOwners = [ "jerry" ];
+      polkitPolicyOwners = ["jerry"];
     };
 
     gnupg.agent = {
@@ -108,6 +113,9 @@
     };
   };
 
+  # This leads to leads to awful rebuild performance
+  documentation.man.generateCaches = false;
+
   # Services
   services = {
     syncthing = {
@@ -119,18 +127,29 @@
     # Auto-derive location for gammastep
     geoclue2.enable = true;
 
-    calibre-web = {
-      enable = true;
-      user = "jerry";
-      listen = {
-        ip = "0.0.0.0";
-        port = 8110;
-      };
-    };
-
     # Why are these enabled by default???
     gnome.gcr-ssh-agent.enable = false;
-    gnome.gnome-keyring.enable = false;
+    # This gets 1password to work
+    gnome.gnome-keyring.enable = true;
+
+    postgresql = {
+      enable = true;
+      settings = {
+        port = 9876;
+      };
+      # Allow passwordless access for all users
+      authentication = ''
+        local all all trust
+      '';
+      ensureUsers = [
+        {
+          name = "postgres";
+          ensureClauses = {
+            createdb = true;
+          };
+        }
+      ];
+    };
   };
 
   # Bootloader
@@ -155,7 +174,7 @@
   services.auto-cpufreq.enable = true;
 
   systemd.services.fprintd = {
-    wantedBy = [ "multi-user.target" ];
+    wantedBy = ["multi-user.target"];
     serviceConfig.type = "simple";
   };
   services.fprintd.enable = true;
@@ -165,13 +184,13 @@
   };
 
   # Sleep settings
-  services.logind.lidSwitch = "suspend";
+  services.logind.settings.Login.HandleLidSwitch = "suspend";
 
   networking = {
     hostName = "nixos";
     networkmanager = {
       enable = true;
-      wifi.powersave = true;
+      wifi.powersave = false;
     };
     firewall = {
       allowedUDPPorts = [
@@ -220,7 +239,7 @@
       enable = true;
       keyboards = {
         default = {
-          ids = [ "*" ];
+          ids = ["*"];
           settings = {
             main = {
               capslock = "overload(control, esc)";
@@ -234,6 +253,10 @@
   };
   console.useXkbConfig = true;
 
+  virtualisation.docker = {
+    enable = true;
+  };
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.jerry = {
     isNormalUser = true;
@@ -242,8 +265,9 @@
       "networkmanager"
       "wheel"
       "video"
+      "docker" # to run docker commands without sudo
     ];
-    packages = [ ];
+    packages = [];
     shell = pkgs.fish;
   };
 

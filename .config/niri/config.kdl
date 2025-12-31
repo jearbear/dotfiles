@@ -285,35 +285,10 @@ window-rule {
     clip-to-geometry true
 }
 
-window-rule {
-    match app-id=r#"fzf-launcher"#
-    open-floating true
-    default-floating-position relative-to="top" x=0 y=200
-    default-window-height { fixed 250; }
-    default-column-width { fixed 600; }
-
-    shadow {
-        on
-        spread 1024
-    }
-}
-
-window-rule {
-    match app-id=r#"kitty-panel"#
-
-    border {
-        width 2
-    }
-
-    shadow {
-        on
-        spread 1024
-    }
-}
 
 binds {
     Mod+Return { spawn "kitty" "--single-instance"; }
-    Mod+Space { spawn "~/.bin/toggle-fzf-launcher"; }
+    Mod+Space { spawn "fuzzel"; }
     Mod+Ctrl+Q { spawn "systemctl" "suspend-then-hibernate"; }
 
     // You can also use a shell. Do this if you need pipes, multiple commands, etc.
@@ -325,7 +300,7 @@ binds {
     XF86AudioMute        allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
     XF86AudioMicMute     allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
 
-    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "set" "10%-"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "set" "10%-" "--min-value"; }
     XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "set" "10%+"; }
 
     Mod+Shift+O repeat=false { toggle-overview; }
@@ -369,11 +344,6 @@ overview {
     backdrop-color "#11111b"
 }
 
-// environment {
-//     DISPLAY ":0"
-// }
-
-spawn-at-startup "foot --server"
 
 spawn-at-startup "mako"
 

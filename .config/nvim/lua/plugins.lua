@@ -37,7 +37,6 @@ require("nvim-treesitter.configs").setup({
     highlight = { enable = true },
     indent = { enable = true },
     endwise = { enable = true },
-    matchup = { enable = true },
     -- we use this just for the library of text objects that it provides, but
     -- the actual selection is handled by mini.ai
     textobjects = { select = { enable = false } },
@@ -375,8 +374,16 @@ require("blink.cmp").setup({
             },
         },
     },
-    snippets = { preset = "mini_snippets" },
-    sources = { default = { "lsp", "snippets", "buffer" } },
+    -- snippets = { preset = "mini_snippets" },
+    sources = {
+        default = { "lsp", "snippets", "buffer" },
+        -- disable snippets
+        -- transform_items = function(_, items)
+        --     return vim.tbl_filter(function(item)
+        --         return item.kind ~= require("blink.cmp.types").CompletionItemKind.Snippet
+        --     end, items)
+        -- end,
+    },
     fuzzy = { implementation = "prefer_rust_with_warning" },
     signature = { enabled = true, window = { show_documentation = false } },
 })

@@ -37,6 +37,7 @@ require("lazy").setup({
     { "windwp/nvim-ts-autotag" }, -- automatically close tags
     { "RRethy/nvim-treesitter-endwise" }, -- automatically close everything else
     { "Wansmer/treesj" }, -- treesitter-powered splits and joins
+    -- { "andymass/vim-matchup" }, -- more powerful %: text objects, more types supported
 
     -- mappings
     { "kylechui/nvim-surround" }, -- manipulate surrounds (works with treesitter unlike mini.surround and highlights selections automatically)
@@ -197,19 +198,9 @@ vim.opt.showbreak = ".." -- indent wrapped lines with `..`
 
 vim.opt.fillchars:append({ diff = " " }) -- prettier filler characters for empty diff blocks
 
-function _G.custom_fold_text()
-    local line = vim.fn.getline(vim.v.foldstart)
-    local marker = string.rep("{", 3)
-    if string.sub(line, -#marker) == marker then
-        line = string.sub(line, 0, -4) -- remove fold marker
-    end
-    return line
-end
-
 vim.opt.foldenable = false -- default to open folds
 vim.opt.foldopen = { "hor", "jump", "mark", "quickfix", "search", "tag", "undo" } -- always open folds when navigated through
 vim.wo.foldnestmax = 1
-vim.opt.foldtext = "v:lua.custom_fold_text()"
 vim.opt.fillchars:append({ fold = " " })
 
 vim.opt.conceallevel = 2 -- hide concealed text
@@ -285,6 +276,8 @@ vim.opt.swapfile = false -- disable swap files since they tend to be more annoyi
 vim.g.is_bash = true -- default to bash filetype when `ft=sh`
 
 vim.g.ttimeout = false
+
+vim.opt.matchpairs:append("<:>") -- support <,> matching
 
 -- use ripgrep for `grep` command
 vim.opt.grepprg = "rg --vimgrep --smart-case --hidden --sort path"
@@ -366,7 +359,7 @@ u.autocmd({ "BufEnter", "BufNew" }, {
 -- MAPPINGS {{{
 u.map("", "Y", "y$")
 u.map("", "0", "^")
-u.map("", "<C-f>", "%")
+u.map({ "n", "o", "v" }, "<C-f>", "%", { remap = true })
 
 -- save and quit huehue
 u.map_c("<Leader>w", ":w")
@@ -540,7 +533,7 @@ end)
 u.map({ "n", "v" }, "<Leader>go", function()
     local url = u.get_github_url({ mode = "blame" })
     if url then
-        u.system({ "open", url })
+        u.open_url(url)
     else
         print("Could not get Github URL")
     end
@@ -548,7 +541,7 @@ end)
 u.map({ "n", "v" }, "<Leader>gB", function()
     local url = u.get_github_pr_url()
     if url then
-        u.system({ "open", url })
+        u.open_url(url)
     else
         print("Could not get Github PR")
     end
