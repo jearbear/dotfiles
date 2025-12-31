@@ -444,7 +444,7 @@ require("nvim-surround").setup({
     },
 })
 
-u.map("n", "M", "maL", { remap = true })
+u.map("n", "M", "ma$")
 -- }}}
 
 -- yanky.nvim {{{

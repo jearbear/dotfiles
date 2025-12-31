@@ -388,10 +388,6 @@ u.map({ "n", "v" }, "k", "gk")
 u.map({ "n", "o", "v" }, "H", "^")
 u.map({ "n", "o", "v" }, "L", "$")
 
--- retraining myself to use ^
-u.map({ "n", "o", "v" }, "0", "<nop>")
-u.map({ "n", "o", "v" }, "$", "<nop>")
-
 -- preserve cursor position when joining
 -- u.map("n", "J", "mzJ`z")
 

@@ -18,6 +18,8 @@ if status is-interactive
     source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish'
 
     fnm env --use-on-cd --shell fish | source
+    # This is really slow and isn't needed if you don't want to manage your global python with it
+    # pyenv init - fish | source
 
     abbr cdbe 'cd ~/Projects/cinderblock'
     abbr cdber 'cd ~/Projects/cinderblock-ro'
