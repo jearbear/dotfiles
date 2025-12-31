@@ -246,40 +246,11 @@ animations {
     // slowdown 0.5
 }
 
-// Window rules let you adjust behavior for individual windows.
-// Find more information on the wiki:
-// https://github.com/YaLTeR/niri/wiki/Configuration:-Window-Rules
-
-// Work around WezTerm's initial configure bug
-// by setting an empty default-column-width.
 window-rule {
-    // This regular expression is intentionally made as specific as possible,
-    // since this is the default config, and we want no false positives.
-    // You can get away with just app-id="wezterm" if you want.
-    match app-id=r#"^org\.wezfurlong\.wezterm$"#
-    default-column-width {}
+    match app-id="Spotify"
+    open-maximized true
 }
 
-window-rule {
-    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
-    open-floating true
-}
-
-
-// Example: block out two password managers from screen capture.
-// (This example rule is commented out with a "/-" in front.)
-/-window-rule {
-    match app-id=r#"^org\.keepassxc\.KeePassXC$"#
-    match app-id=r#"^org\.gnome\.World\.Secrets$"#
-
-    block-out-from "screen-capture"
-
-    // Use this instead if you want them visible on third-party screenshot tools.
-    // block-out-from "screencast"
-}
-
-// Example: enable rounded corners for all windows.
-// (This example rule is commented out with a "/-" in front.)
 window-rule {
     geometry-corner-radius 2
     clip-to-geometry true
