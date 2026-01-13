@@ -69,9 +69,9 @@ email = "jerrytegno@gmail.com"
 log = "present(@) | ancestors(immutable_heads().., 2) | present(trunk()) | bookmarks()"
 
 [revset-aliases]
-"uncommitted()" = "description(exact:'')"
-"committed()" = "~uncommitted()"
-"branch_head()" = "latest(main..@ & ~empty() & committed() & mutable())"
+"no_desc()" = "description(exact:'')"
+"has_desc()" = "~no_desc()"
+"branch_head()" = "latest(main..@ & ~empty() & has_desc() & mutable())"
 
 [aliases]
 init = ["git", "init", "--colocate"]
@@ -103,7 +103,7 @@ smash = ["squash"]
 del = ["abandon"]
 prune = [
   "abandon",
-  "~@ & mutable() & ((empty() & visible_heads()) | ~mine() | (~(committed() & mutable())::))",
+  "~@ & mutable() & ((empty() & visible_heads()) | ~mine() | (~(has_desc() & mutable())::))",
 ]
 restore-generated = ["restore", "common/cb/src/generated", "--from", "main"]
 resolve-ours = ["resolve", "--tool", ":ours"]
@@ -112,10 +112,8 @@ resolve-theirs = ["resolve", "--tool", ":theirs"]
 mb = [
   "bookmark",
   "move",
-  "--from",
-  "heads(::@- & bookmarks())",
   "--to",
-  "branch_head()",
+  "latest(main..@ & ~empty() & has_desc())",
 ]
 
 

@@ -374,49 +374,12 @@ require("blink.cmp").setup({
             },
         },
     },
-    -- snippets = { preset = "mini_snippets" },
     sources = {
-        default = { "lsp", "snippets", "buffer" },
-        -- disable snippets
-        -- transform_items = function(_, items)
-        --     return vim.tbl_filter(function(item)
-        --         return item.kind ~= require("blink.cmp.types").CompletionItemKind.Snippet
-        --     end, items)
-        -- end,
+        default = { "lsp", "buffer" },
     },
     fuzzy = { implementation = "prefer_rust_with_warning" },
     signature = { enabled = true, window = { show_documentation = false } },
 })
--- }}}
-
--- mini.snippets {{{
-local mini_snippets = require("mini.snippets")
-mini_snippets.setup({
-    snippets = {
-        mini_snippets.gen_loader.from_lang(),
-    },
-    mappings = {
-        jump_next = "",
-        jump_prev = "",
-    },
-})
-
-u.map("i", "<C-j>", function()
-    if #mini_snippets.expand({ insert = false }) > 0 then
-        mini_snippets.expand()
-    elseif mini_snippets.session.get() ~= nil then
-        mini_snippets.session.jump("next")
-    end
-end)
--- u.map("i", "<C-k>", function()
---     if mini_snippets.session.get() ~= nil then
---         mini_snippets.session.jump("prev")
---         return ""
---     else
---         return "<C-o>d$"
---     end
--- end, { remap = true })
-
 -- }}}
 
 -- mini.icons {{{
@@ -553,10 +516,10 @@ conform.setup({
         nix = { "alejandra" },
     },
     notify_on_error = false,
+    async = true,
     format_on_save = {
-        lsp_fallback = true,
+        lsp_format = "fallback",
         timeout_ms = 2000,
-        quiet = true,
     },
 })
 -- }}}

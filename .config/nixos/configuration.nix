@@ -118,6 +118,10 @@
 
   # Services
   services = {
+    connman = {
+      enable = false;
+    };
+
     syncthing = {
       enable = true;
       user = "jerry";

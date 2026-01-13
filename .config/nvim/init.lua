@@ -491,7 +491,7 @@ u.map_c("<Leader>vev", "edit ~/.config/nvim/init.lua")
 u.map_c("<Leader>vef", "edit ~/.config/nvim/after/ftplugin")
 u.map_c("<Leader>vel", "edit ~/.config/nvim/lua/lsp.lua")
 u.map_c("<Leader>vep", "edit ~/.config/nvim/lua/plugins.lua")
-u.map_c("<Leader>ves", "edit ~/.config/nvim/snippets")
+u.map_c("<Leader>ves", "edit ~/.config/nvim/lua/snippets")
 u.map_c("<Leader>veu", "edit ~/.config/nvim/lua/utils.lua")
 
 -- toggle qflist
@@ -554,6 +554,25 @@ end)
 u.map("x", "<C-c><C-c>", function()
     u.kitty_send_text(vim.fn.getregion(vim.fn.getpos("v"), vim.fn.getpos("."), { type = vim.fn.mode() }))
 end)
+
+-- snippets
+u.map({ "s" }, "j", "j") -- type instead of navigate in select mode
+u.map({ "s" }, "k", "k")
+
+u.map("i", "<C-j>", function()
+    if vim.snippet.active({ direction = 1 }) then
+        vim.snippet.jump(1)
+    else
+        u.expand_snippet()
+    end
+end)
+
+u.map({ "i", "s" }, "<Esc>", function()
+    if vim.snippet.active() then
+        vim.snippet.stop()
+    end
+    return "<Esc>"
+end, { expr = true })
 
 -- navigate to the beginning/end of TS nodes
 u.map("n", "(", function()

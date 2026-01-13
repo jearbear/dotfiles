@@ -1,6 +1,7 @@
 return {
     { prefix = "d", body = "# $CURRENT_YEAR.$CURRENT_MONTH.$CURRENT_DATE\n" },
     { prefix = ".", body = "- [ ] " },
+    { prefix = "h", body = "# " },
     { prefix = "h1", body = "# " },
     { prefix = "h2", body = "## " },
     { prefix = "h3", body = "### " },

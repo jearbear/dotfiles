@@ -240,4 +240,37 @@ M.open_url = function(url)
     end
 end
 
+M.expand_snippet = function()
+    local _, col = unpack(vim.api.nvim_win_get_cursor(0))
+    local line = vim.api.nvim_get_current_line()
+    local prefix = line:sub(1, col):match("%S+$")
+    if not prefix then
+        print("No snippet to expand")
+        return nil
+    end
+
+    local ok, snippets = pcall(require, "snippets." .. vim.bo.filetype)
+    if not ok then
+        print("No snippets defined for " .. vim.bo.filetype .. " filetype")
+        return nil
+    end
+
+    local snippet = vim.iter(snippets):find(function(x)
+        return x.prefix == prefix
+    end)
+    if not snippet then
+        print("No snippets defined for " .. prefix .. " prefix")
+        return nil
+    end
+
+    local snippet_body = snippet.body
+        :gsub("%$CURRENT_YEAR", os.date("%Y"))
+        :gsub("%$CURRENT_MONTH", os.date("%m"))
+        :gsub("%$CURRENT_DATE", os.date("%d"))
+
+    -- TODO: Preserve the line following the snippet expansion
+    vim.api.nvim_set_current_line(line:sub(1, col - #prefix))
+    vim.snippet.expand(snippet_body)
+end
+
 return M

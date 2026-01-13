@@ -46,6 +46,8 @@ for name, config in pairs({
         settings = {
             dialyzerEnabled = false,
             incrementalDialyzer = false,
+            mcpEnabled = false,
+            autoBuild = false,
         },
     },
     marksman = {
