@@ -9,13 +9,13 @@ vim.b.miniai_config = {
     },
 }
 
-require("nvim-surround").buffer_setup({
-    surrounds = {
-        ["h"] = {
-            add = { '~H"""', '"""' },
-        },
-        ["m"] = {
-            add = { "%{", "}" },
-        },
-    },
-})
+-- require("nvim-surround").buffer_setup({
+--     surrounds = {
+--         ["h"] = {
+--             add = { '~H"""', '"""' },
+--         },
+--         ["m"] = {
+--             add = { "%{", "}" },
+--         },
+--     },
+-- })

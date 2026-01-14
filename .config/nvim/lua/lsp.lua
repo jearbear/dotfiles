@@ -103,7 +103,7 @@ end
 
 u.autocmd({ "LspAttach" }, {
     callback = function(args)
-        -- vim.lsp.completion.enable(true, args.data.client_id, args.buf, { autotrigger = true })
+        vim.lsp.completion.enable(true, args.data.client_id, args.buf, { autotrigger = false })
 
         -- Continue to use `gq` for line wrapping, not auto-formatting
         vim.bo.formatexpr = ""
@@ -112,13 +112,13 @@ u.autocmd({ "LspAttach" }, {
             u.map("n", lhs, rhs, { buffer = args.buf })
         end
 
-        -- vim.keymap.set("i", "<C-Space>", function()
-        --     if vim.fn.pumvisible() ~= 0 then
-        --         return "<C-y>"
-        --     else
-        --         return "<C-x><C-o>"
-        --     end
-        -- end, { expr = true, buffer = args.buf })
+        vim.keymap.set("i", "<C-Space>", function()
+            if vim.fn.pumvisible() ~= 0 then
+                return "<C-y>"
+            else
+                return "<C-x><C-o>"
+            end
+        end, { expr = true, buffer = args.buf })
 
         map("K", vim.lsp.buf.hover)
         map("<Leader>R", vim.lsp.buf.rename)
@@ -139,9 +139,7 @@ u.autocmd({ "LspAttach" }, {
         map("<Leader>ca", fzf.lsp_code_actions)
 
         map("<Leader>m", function()
-            vim.diagnostic.setqflist({
-                open = true,
-            })
+            vim.diagnostic.setqflist({ open = true })
         end)
     end,
 })

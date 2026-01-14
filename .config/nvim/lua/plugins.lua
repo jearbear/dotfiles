@@ -261,10 +261,16 @@ local gen_spec = require("mini.ai").gen_spec
 local gen_ai_spec = require("mini.extra").gen_ai_spec
 require("mini.ai").setup({
     silent = true,
+    -- the defaults conflict with my line text object
+    mappings = {
+        around_last = "",
+        inside_last = "",
+    },
     custom_textobjects = {
         t = gen_spec.treesitter({ a = "@tag.outer", i = "@tag.inner" }),
         F = gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }),
         c = gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }),
+        l = gen_ai_spec.line(),
         g = gen_ai_spec.buffer(),
         i = gen_ai_spec.indent(),
         n = gen_ai_spec.number(),
@@ -322,64 +328,64 @@ require("mini.align").setup({})
 -- }}}
 
 -- blink.cmp {{{
-require("blink.cmp").setup({
-    keymap = {
-        preset = "default",
-        ["<C-space>"] = { "show", "select_and_accept" },
-        ["<C-b>"] = {},
-        ["<C-f>"] = {},
-        ["<C-k>"] = {},
-    },
-    completion = {
-        ghost_text = { enabled = false },
-        menu = {
-            auto_show_delay_ms = 100,
-            border = "none",
-            draw = {
-                columns = {
-                    {
-                        "kind_icon",
-                        "label",
-                        "label_description",
-                        "source_name",
-                        gap = 1,
-                    },
-                },
-                components = {
-                    kind_icon = {
-                        text = function(ctx)
-                            local kind_icon, _, _ = require("mini.icons").get("lsp", ctx.kind)
-                            return kind_icon
-                        end,
-                        -- (optional) use highlights from mini.icons
-                        highlight = function(ctx)
-                            local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
-                            return hl
-                        end,
-                    },
-                    kind = {
-                        -- (optional) use highlights from mini.icons
-                        highlight = function(ctx)
-                            local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
-                            return hl
-                        end,
-                    },
-                },
-            },
-        },
-        documentation = { auto_show = true },
-        list = {
-            selection = {
-                preselect = true,
-            },
-        },
-    },
-    sources = {
-        default = { "lsp", "buffer" },
-    },
-    fuzzy = { implementation = "prefer_rust_with_warning" },
-    signature = { enabled = true, window = { show_documentation = false } },
-})
+-- require("blink.cmp").setup({
+--     keymap = {
+--         preset = "default",
+--         ["<C-space>"] = { "show", "select_and_accept" },
+--         ["<C-b>"] = {},
+--         ["<C-f>"] = {},
+--         ["<C-k>"] = {},
+--     },
+--     completion = {
+--         ghost_text = { enabled = false },
+--         menu = {
+--             auto_show_delay_ms = 100,
+--             border = "none",
+--             draw = {
+--                 columns = {
+--                     {
+--                         "kind_icon",
+--                         "label",
+--                         "label_description",
+--                         "source_name",
+--                         gap = 1,
+--                     },
+--                 },
+--                 components = {
+--                     kind_icon = {
+--                         text = function(ctx)
+--                             local kind_icon, _, _ = require("mini.icons").get("lsp", ctx.kind)
+--                             return kind_icon
+--                         end,
+--                         -- (optional) use highlights from mini.icons
+--                         highlight = function(ctx)
+--                             local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
+--                             return hl
+--                         end,
+--                     },
+--                     kind = {
+--                         -- (optional) use highlights from mini.icons
+--                         highlight = function(ctx)
+--                             local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
+--                             return hl
+--                         end,
+--                     },
+--                 },
+--             },
+--         },
+--         documentation = { auto_show = true },
+--         list = {
+--             selection = {
+--                 preselect = true,
+--             },
+--         },
+--     },
+--     sources = {
+--         default = { "lsp", "buffer" },
+--     },
+--     fuzzy = { implementation = "prefer_rust_with_warning" },
+--     signature = { enabled = true, window = { show_documentation = false } },
+-- })
 -- }}}
 
 -- mini.icons {{{
@@ -388,33 +394,51 @@ require("mini.icons").setup({
 })
 -- }}}
 
+-- mini.surround {{{
+require("mini.surround").setup({
+    mappings = {
+        add = "ma",
+        delete = "md",
+        find = "",
+        find_left = "",
+        highlight = "mh",
+        replace = "mc",
+    },
+    n_lines = 20,
+    search_method = "cover_or_next",
+})
+
+u.map("n", "mm", "mail", { remap = true })
+u.map("n", "M", "ma$", { remap = true })
+-- }}}
+
 -- nvim-surround {{{
 -- Reasons I prefer this over mini.surround:
 -- - supports tags really well
 -- - has a mapping to affect the entire line
 -- - supports modifying tags
-require("nvim-surround").setup({
-    keymaps = {
-        normal = "ma",
-        normal_cur = "mm",
-        visual = "ma",
-        delete = "md",
-        change = "mc",
-    },
-    highlight = {
-        duration = 100,
-    },
-    move_cursor = false,
-    aliases = {
-        -- disable the variants that insert whitespace
-        ["{"] = "}",
-        ["<"] = ">",
-        ["("] = ")",
-        ["["] = "]",
-    },
-})
+-- require("nvim-surround").setup({
+--     keymaps = {
+--         normal = "ma",
+--         normal_cur = "mm",
+--         visual = "ma",
+--         delete = "md",
+--         change = "mc",
+--     },
+--     highlight = {
+--         duration = 100,
+--     },
+--     move_cursor = false,
+--     aliases = {
+--         -- disable the variants that insert whitespace
+--         ["{"] = "}",
+--         ["<"] = ">",
+--         ["("] = ")",
+--         ["["] = "]",
+--     },
+-- })
 
-u.map("n", "M", "ma$")
+-- u.map("n", "M", "ma$")
 -- }}}
 
 -- yanky.nvim {{{

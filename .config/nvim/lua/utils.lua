@@ -259,6 +259,12 @@ M.expand_snippet = function()
         return x.prefix == prefix
     end)
     if not snippet then
+        global_snippets = require("snippets.global")
+        snippet = vim.iter(global_snippets):find(function(x)
+            return x.prefix == prefix
+        end)
+    end
+    if not snippet then
         vim.notify("No snippets defined for " .. prefix .. " prefix", vim.log.levels.ERROR)
         return nil
     end

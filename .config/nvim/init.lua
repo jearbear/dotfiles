@@ -37,10 +37,9 @@ require("lazy").setup({
     { "windwp/nvim-ts-autotag" }, -- automatically close tags
     { "RRethy/nvim-treesitter-endwise" }, -- automatically close everything else
     { "Wansmer/treesj" }, -- treesitter-powered splits and joins
-    -- { "andymass/vim-matchup" }, -- more powerful %: text objects, more types supported
 
     -- mappings
-    { "kylechui/nvim-surround" }, -- manipulate surrounds (works with treesitter unlike mini.surround and highlights selections automatically)
+    -- { "kylechui/nvim-surround" }, -- manipulate surrounds (works with treesitter unlike mini.surround and highlights selections automatically)
 
     -- copy pasta
     { "gbprod/substitute.nvim" }, -- mappings to substitute text
@@ -67,9 +66,8 @@ require("lazy").setup({
     { "echasnovski/mini.nvim" }, -- used for mini.bufremove, mini.ai (enhanced text objects), mini.align
 
     -- trying out
-    { "saghen/blink.cmp", version = "1.*" },
+    -- { "saghen/blink.cmp", version = "1.*" },
     { "dmtrKovalenko/fold-imports.nvim" },
-    -- { "neovim/nvim-lspconfig" },
 })
 -- }}}
 
@@ -249,7 +247,7 @@ vim.opt.shortmess:append("c") -- don't show messages when performing completion
 vim.opt.shortmess:append("I") -- don't show vim start screen
 
 -- vim.opt.completeopt = { "menu", "menuone", "popup" } -- when completing, show a menu even if there is only one result
--- vim.opt.completeopt = { "menuone", "noselect", "fuzzy" } -- for mini.completion
+vim.opt.completeopt = { "menu", "menuone", "fuzzy", "popup" }
 vim.opt.complete = { ".", "w", "b", "f" } -- source keyword and line completions from current buffer, open windows, other loaded buffers, and buffer names
 
 vim.opt.pumheight = 10 -- limit the number of completion results to show at a time
