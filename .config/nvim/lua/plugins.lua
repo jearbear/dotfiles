@@ -283,23 +283,23 @@ require("mini.align").setup({})
 -- }}}
 
 -- mini.pairs {{{
-require("mini.pairs").setup({
-    mappings = {
-        ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\]." },
-        ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\]." },
-        ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\]." },
-
-        [")"] = { action = "close", pair = "()", neigh_pattern = "[^\\]." },
-        ["]"] = { action = "close", pair = "[]", neigh_pattern = "[^\\]." },
-        ["}"] = { action = "close", pair = "{}", neigh_pattern = "[^\\]." },
-        [">"] = { action = "close", pair = "<>", neigh_pattern = "[^\\]." },
-
-        ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^\\].", register = { cr = false } },
-        ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^\\%a].", register = { cr = false } },
-        ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\].", register = { cr = false } },
-    },
-})
-u.map("i", "<C-h>", "v:lua.MiniPairs.bs()", { expr = true, replace_keycodes = false })
+-- require("mini.pairs").setup({
+--     mappings = {
+--         ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\]." },
+--         ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\]." },
+--         ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\]." },
+--
+--         [")"] = { action = "close", pair = "()", neigh_pattern = "[^\\]." },
+--         ["]"] = { action = "close", pair = "[]", neigh_pattern = "[^\\]." },
+--         ["}"] = { action = "close", pair = "{}", neigh_pattern = "[^\\]." },
+--         [">"] = { action = "close", pair = "<>", neigh_pattern = "[^\\]." },
+--
+--         ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^\\].", register = { cr = false } },
+--         ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^\\%a].", register = { cr = false } },
+--         ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\].", register = { cr = false } },
+--     },
+-- })
+-- u.map("i", "<C-h>", "v:lua.MiniPairs.bs()", { expr = true, replace_keycodes = false })
 -- }}}
 
 -- mini.completion {{{
@@ -402,7 +402,7 @@ require("nvim-surround").setup({
         change = "mc",
     },
     highlight = {
-        duration = 0,
+        duration = 100,
     },
     move_cursor = false,
     aliases = {
