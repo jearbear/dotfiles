@@ -66,7 +66,7 @@ require("lazy").setup({
     { "echasnovski/mini.nvim" }, -- used for mini.bufremove, mini.ai (enhanced text objects), mini.align
 
     -- trying out
-    -- { "saghen/blink.cmp", version = "1.*" },
+    { "saghen/blink.cmp", version = "1.*" },
     { "dmtrKovalenko/fold-imports.nvim" },
 })
 -- }}}
@@ -428,6 +428,8 @@ end, { expr = true })
 -- faster access to completions
 u.map("i", "<C-o>", "<C-x><C-o>")
 u.map("i", "<C-l>", "<C-x><C-l>")
+u.map("i", "<C-p>", "<C-x><C-p>")
+u.map("i", "<C-n>", "<C-x><C-n>")
 
 -- the default mapping is insane, overriden if LSP is active
 u.map("i", "<C-Space>", "<nop>")

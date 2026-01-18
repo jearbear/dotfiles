@@ -328,64 +328,65 @@ require("mini.align").setup({})
 -- }}}
 
 -- blink.cmp {{{
--- require("blink.cmp").setup({
---     keymap = {
---         preset = "default",
---         ["<C-space>"] = { "show", "select_and_accept" },
---         ["<C-b>"] = {},
---         ["<C-f>"] = {},
---         ["<C-k>"] = {},
---     },
---     completion = {
---         ghost_text = { enabled = false },
---         menu = {
---             auto_show_delay_ms = 100,
---             border = "none",
---             draw = {
---                 columns = {
---                     {
---                         "kind_icon",
---                         "label",
---                         "label_description",
---                         "source_name",
---                         gap = 1,
---                     },
---                 },
---                 components = {
---                     kind_icon = {
---                         text = function(ctx)
---                             local kind_icon, _, _ = require("mini.icons").get("lsp", ctx.kind)
---                             return kind_icon
---                         end,
---                         -- (optional) use highlights from mini.icons
---                         highlight = function(ctx)
---                             local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
---                             return hl
---                         end,
---                     },
---                     kind = {
---                         -- (optional) use highlights from mini.icons
---                         highlight = function(ctx)
---                             local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
---                             return hl
---                         end,
---                     },
---                 },
---             },
---         },
---         documentation = { auto_show = true },
---         list = {
---             selection = {
---                 preselect = true,
---             },
---         },
---     },
---     sources = {
---         default = { "lsp", "buffer" },
---     },
---     fuzzy = { implementation = "prefer_rust_with_warning" },
---     signature = { enabled = true, window = { show_documentation = false } },
--- })
+require("blink.cmp").setup({
+    keymap = {
+        preset = "default",
+        ["<C-space>"] = { "show", "select_and_accept" },
+        ["<C-b>"] = {},
+        ["<C-f>"] = {},
+        ["<C-k>"] = {},
+    },
+    completion = {
+        ghost_text = { enabled = false },
+        menu = {
+            auto_show = false,
+            -- auto_show_delay_ms = 100,
+            border = "none",
+            draw = {
+                columns = {
+                    {
+                        "kind_icon",
+                        "label",
+                        "label_description",
+                        "source_name",
+                        gap = 1,
+                    },
+                },
+                components = {
+                    kind_icon = {
+                        text = function(ctx)
+                            local kind_icon, _, _ = require("mini.icons").get("lsp", ctx.kind)
+                            return kind_icon
+                        end,
+                        -- (optional) use highlights from mini.icons
+                        highlight = function(ctx)
+                            local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
+                            return hl
+                        end,
+                    },
+                    kind = {
+                        -- (optional) use highlights from mini.icons
+                        highlight = function(ctx)
+                            local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
+                            return hl
+                        end,
+                    },
+                },
+            },
+        },
+        documentation = { auto_show = true },
+        list = {
+            selection = {
+                preselect = true,
+            },
+        },
+    },
+    sources = {
+        default = { "lsp", "buffer" },
+    },
+    fuzzy = { implementation = "prefer_rust_with_warning" },
+    signature = { enabled = true, window = { show_documentation = false } },
+})
 -- }}}
 
 -- mini.icons {{{
@@ -534,8 +535,8 @@ conform.setup({
         starlark = { "ruff_fix", "ruff_format" },
         terraform = { "terraform_fmt" },
         toml = { "taplo" },
-        typescript = { "eslint_d" },
-        typescriptreact = { "eslint_d" },
+        typescript = { "prettierd" },
+        typescriptreact = { "prettierd" },
         yaml = { "prettierd" },
         nix = { "alejandra" },
     },

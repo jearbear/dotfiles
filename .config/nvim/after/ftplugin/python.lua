@@ -1,21 +1,21 @@
 local u = require("utils")
 
-require("nvim-surround").buffer_setup({
-    surrounds = {
-        ['"'] = {
-            add = { 'f"', '"' },
-        },
-        ["p"] = {
-            add = { "print(", ")" },
-        },
-        ["d"] = {
-            add = { "dict(", ")" },
-        },
-        ["s"] = {
-            add = { "str(", ")" },
-        },
-    },
-})
+-- require("nvim-surround").buffer_setup({
+--     surrounds = {
+--         ['"'] = {
+--             add = { 'f"', '"' },
+--         },
+--         ["p"] = {
+--             add = { "print(", ")" },
+--         },
+--         ["d"] = {
+--             add = { "dict(", ")" },
+--         },
+--         ["s"] = {
+--             add = { "str(", ")" },
+--         },
+--     },
+-- })
 
 u.buf_command(0, "ToggleTestCode", function()
     local path = vim.fn.expand("%")
