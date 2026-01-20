@@ -42,6 +42,7 @@ if status is-interactive
     abbr g git
     abbr we watchexec
     abbr w 'watch --color --interval 5'
+    abbr yd yt-dlp
 
     abbr cdg 'cd ~/Projects/giga'
     abbr cds 'cd ~/Projects/sugo'

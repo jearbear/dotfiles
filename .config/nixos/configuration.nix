@@ -34,6 +34,7 @@
     dash
     nnn
     yt-dlp
+    wireguard-tools
 
     kakoune
     kakoune-lsp
