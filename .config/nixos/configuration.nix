@@ -35,6 +35,7 @@
     nnn
     yt-dlp
     wireguard-tools
+    zathura
 
     kakoune
     kakoune-lsp
