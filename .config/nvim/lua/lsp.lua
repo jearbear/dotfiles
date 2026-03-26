@@ -130,7 +130,7 @@ u.autocmd({ "LspAttach" }, {
         end)
         -- TODO: Make this automatically filter out references coming from imports
         map("<Leader>gr", function()
-            vim.lsp.buf.references({ includeDeclaration = false })
+            vim.lsp.buf.references({ includeDeclaration = true })
         end)
         map("<Leader>gt", function()
             vim.lsp.buf.type_definition()

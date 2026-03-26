@@ -8,5 +8,8 @@ return {
     { prefix = "get", body = '${1}.objects.get(id="${0}")' },
     { prefix = "fil", body = "${1}.objects.filter(${0})" },
     { prefix = "db", body = 'print(f"\\nDEBUG: {${0}=}\\n")' },
-    { prefix = "rd", body = "${0}.refresh_from_db()" },
+    { prefix = "rfd", body = "${0}.refresh_from_db()" },
+    { prefix = "or", body = 'OuterRef("${0}")' },
+    { prefix = "now", body = "cbtime.now()${0}" },
+    { prefix = "td", body = "cbtime.now() - cbtime.timedelta(${0})" },
 }

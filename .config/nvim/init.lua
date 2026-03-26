@@ -246,8 +246,7 @@ vim.opt.winborder = "single"
 vim.opt.shortmess:append("c") -- don't show messages when performing completion
 vim.opt.shortmess:append("I") -- don't show vim start screen
 
--- vim.opt.completeopt = { "menu", "menuone", "popup" } -- when completing, show a menu even if there is only one result
-vim.opt.completeopt = { "menu", "menuone", "fuzzy", "popup" }
+vim.opt.completeopt = { "menu", "menuone", "fuzzy", "popup" } -- when completing, show a menu even if there is only one result
 vim.opt.complete = { ".", "w", "b", "f" } -- source keyword and line completions from current buffer, open windows, other loaded buffers, and buffer names
 
 vim.opt.pumheight = 10 -- limit the number of completion results to show at a time
@@ -428,8 +427,6 @@ end, { expr = true })
 -- faster access to completions
 u.map("i", "<C-o>", "<C-x><C-o>")
 u.map("i", "<C-l>", "<C-x><C-l>")
-u.map("i", "<C-p>", "<C-x><C-p>")
-u.map("i", "<C-n>", "<C-x><C-n>")
 
 -- the default mapping is insane, overriden if LSP is active
 u.map("i", "<C-Space>", "<nop>")

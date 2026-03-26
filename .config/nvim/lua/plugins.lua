@@ -300,9 +300,9 @@ require("mini.align").setup({})
 --         ["}"] = { action = "close", pair = "{}", neigh_pattern = "[^\\]." },
 --         [">"] = { action = "close", pair = "<>", neigh_pattern = "[^\\]." },
 --
---         ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^\\].", register = { cr = false } },
---         ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^\\%a].", register = { cr = false } },
---         ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\].", register = { cr = false } },
+--         ['"'] = { action = "open", pair = '""', neigh_pattern = "[^\\].", register = { cr = false } },
+--         ["'"] = { action = "open", pair = "''", neigh_pattern = "[^\\].", register = { cr = false } },
+--         ["`"] = { action = "open", pair = "``", neigh_pattern = "[^\\].", register = { cr = false } },
 --     },
 -- })
 -- u.map("i", "<C-h>", "v:lua.MiniPairs.bs()", { expr = true, replace_keycodes = false })
@@ -339,7 +339,7 @@ require("blink.cmp").setup({
     completion = {
         ghost_text = { enabled = false },
         menu = {
-            auto_show = false,
+            -- auto_show = true,
             -- auto_show_delay_ms = 100,
             border = "none",
             draw = {

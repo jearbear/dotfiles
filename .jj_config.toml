@@ -65,6 +65,11 @@ coalesce(
 name = "Jerry Tegno"
 email = "jerrytegno@gmail.com"
 
+[signing]
+behavior = "own"
+backend = "ssh"
+key = "~/.ssh/id_ed25519.pub"
+
 [revsets]
 log = "present(@) | ancestors(immutable_heads().., 2) | present(trunk()) | bookmarks()"
 
@@ -93,7 +98,8 @@ re = ["rebase"]
 rd = ["desc", "@-"]
 rm = ["rebase", "--destination", "main"]
 lm = ["log", "-r", "..main", "-T", "builtin_log_compact"]
-ri = ["restore", "--interactive", "--from", "main"]
+ri = ["restore", "--interactive", "--from"]
+rim = ["restore", "--interactive", "--from", "main"]
 rev = ["revert", "--before", "@", "--revisions"]
 nm = ["new", "main"]
 newb = ["new", "--before", "@"]
@@ -109,12 +115,7 @@ restore-generated = ["restore", "common/cb/src/generated", "--from", "main"]
 resolve-ours = ["resolve", "--tool", ":ours"]
 resolve-theirs = ["resolve", "--tool", ":theirs"]
 # Move parent bookmarks to point to the latest revision
-mb = [
-  "bookmark",
-  "move",
-  "--to",
-  "latest(main..@ & ~empty() & has_desc())",
-]
+mb = ["bookmark", "move", "--to", "latest(main..@ & ~empty() & has_desc())"]
 
 
 get = ["util", "exec", "--", "bash", "-c", """
@@ -149,6 +150,7 @@ pr = [
   """
 #!/usr/bin/env bash
 set -euox pipefail
+[ -n "${PRE_PR_COMMAND-}" ] && eval "$PRE_PR_COMMAND" || true
 jj smash
 jj up
 jj git push --change "branch_head()"
@@ -169,6 +171,7 @@ rp = ["util", "exec", "--", "bash", "-c", """
 set -euox pipefail
 bookmarks=$(jj pr-bookmarks)
 if [ -n "$bookmarks" ]; then
+    [ -n "${PRE_PR_COMMAND-}" ] && eval "$PRE_PR_COMMAND" || true
     jj smash
     jj up
     jj gp
@@ -181,9 +184,21 @@ fi
 changed = ["util", "exec", "--", "bash", "-c", """
 #!/usr/bin/env bash
 set -euox pipefail
-jj log --no-graph --revisions "diff_contains($@)"
+jj log --no-graph --patch --revisions "diff_lines(regex:'$@')"
 """, ""]
 
+# diff_lines_added/removed is an unreleased feature
+# added = ["util", "exec", "--", "bash", "-c", """
+# #!/usr/bin/env bash
+# set -euox pipefail
+# jj log --no-graph --revisions "diff_lines_added($@)"
+# """, ""]
+#
+# removed = ["util", "exec", "--", "bash", "-c", """
+# #!/usr/bin/env bash
+# set -euox pipefail
+# jj log --no-graph --revisions "diff_lines_removed($@)"
+# """, ""]
 
 pr-bookmarks = [
   "log",
