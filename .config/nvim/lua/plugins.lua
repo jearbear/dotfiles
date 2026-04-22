@@ -339,7 +339,7 @@ require("blink.cmp").setup({
     completion = {
         ghost_text = { enabled = false },
         menu = {
-            -- auto_show = true,
+            auto_show = true,
             -- auto_show_delay_ms = 100,
             border = "none",
             draw = {
@@ -521,6 +521,7 @@ require("conform.formatters.stylua").args =
 conform.setup({
     formatters_by_ft = {
         bash = { "shfmt" },
+        c = { "clang-format" },
         css = { "prettierd" },
         elixir = {},
         elm = {},

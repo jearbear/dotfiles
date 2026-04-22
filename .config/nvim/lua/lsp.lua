@@ -50,6 +50,10 @@ for name, config in pairs({
             autoBuild = false,
         },
     },
+    -- expert = {
+    --     cmd = { "expert", "--stdio" },
+    --     filetypes = { "elixir" },
+    -- },
     marksman = {
         cmd = { "marksman" },
         filetypes = { "markdown" },

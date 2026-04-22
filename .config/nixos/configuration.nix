@@ -22,7 +22,7 @@
     bat
     fd
     ripgrep
-    yazi # file manager
+    watchexec
     mpv
     stow
     just
@@ -30,12 +30,12 @@
     jq
     foot
     wl-clipboard
-    pass
     dash
     nnn
     yt-dlp
     wireguard-tools
-    zathura
+    zathura # pdf viewer
+    feh # image viewer
 
     kakoune
     kakoune-lsp
@@ -70,6 +70,7 @@
 
     fuzzel
     rofimoji
+    (writeShellScriptBin "dmenu" ''exec ${fuzzel}/bin/fuzzel --dmenu "$@"'')
     mako
     xwayland-satellite
     waybar
@@ -89,8 +90,22 @@
     swayidle
     swaylock
 
-    alacritty
+    # password manager
+    (pass.withExtensions (exts: [exts.pass-otp]))
+    paperkey # for physical backups
+    qrencode # for exporting keys to qr codes
+
+    opencode
+
+    keyd # for application-specific mappings
   ];
+
+  # Fixes the issue causing keyd socket to not be created with the appropriate group.
+  # https://github.com/NixOS/nixpkgs/issues/290161
+  systemd.services.keyd.serviceConfig.CapabilityBoundingSet = [
+    "CAP_SETGID"
+  ];
+  users.groups.keyd = {};
 
   programs = {
     niri.enable = true;
@@ -113,10 +128,21 @@
     ssh = {
       startAgent = true;
     };
+
+    # auto-typing service for use with pass
+    ydotool.enable = true;
   };
 
   # This leads to leads to awful rebuild performance
   documentation.man.generateCaches = false;
+
+  xdg.mime.defaultApplications = {
+    "application/pdf" = "org.pwmt.zathura.desktop";
+    "image/jpeg" = "mpv.desktop";
+    "image/png" = "mpv.desktop";
+    "image/gif" = "mpv.desktop";
+    "image/webp" = "mpv.desktop";
+  };
 
   # Services
   services = {
@@ -244,13 +270,20 @@
     keyd = {
       enable = true;
       keyboards = {
-        default = {
-          ids = ["*"];
+        internal = {
+          ids = ["0001:0001:09b4e68d"];
           settings = {
             main = {
               capslock = "overload(control, esc)";
               leftmeta = "leftalt";
               leftalt = "leftmeta";
+            };
+          };
+        };
+        iris = {
+          ids = ["cb10:8256:d72b9d3b"];
+          settings = {
+            main = {
             };
           };
         };
@@ -272,6 +305,8 @@
       "wheel"
       "video"
       "docker" # to run docker commands without sudo
+      "ydotool" # required to be able to use ydotool
+      "keyd" # required for application-specific mappings
     ];
     packages = [];
     shell = pkgs.fish;

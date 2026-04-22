@@ -241,31 +241,28 @@ M.open_url = function(url)
 end
 
 M.expand_snippet = function()
-    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-    local line = vim.api.nvim_get_current_line()
-    local prefix = line:sub(1, col):match("%S+$")
-    if not prefix then
-        vim.notify("No snippet to expand", vim.log.levels.ERROR)
-        return nil
-    end
-
     local ok, snippets = pcall(require, "snippets." .. vim.bo.filetype)
     if not ok then
-        vim.notify("No snippets defined for " .. vim.bo.filetype .. " filetype", vim.log.levels.ERROR)
-        return nil
+        snippets = {}
     end
+    table.sort(snippets, function(a, b)
+        return #a.prefix > #b.prefix
+    end)
 
-    local snippet = vim.iter(snippets):find(function(x)
-        return x.prefix == prefix
+    global_snippets = require("snippets.global")
+    table.sort(global_snippets, function(a, b)
+        return #a.prefix > #b.prefix
+    end)
+    vim.list_extend(snippets, global_snippets)
+
+    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+    local line = vim.api.nvim_get_current_line():sub(1, col)
+
+    snippet = vim.iter(snippets):find(function(x)
+        return vim.endswith(line, x.prefix)
     end)
     if not snippet then
-        global_snippets = require("snippets.global")
-        snippet = vim.iter(global_snippets):find(function(x)
-            return x.prefix == prefix
-        end)
-    end
-    if not snippet then
-        vim.notify("No snippets defined for " .. prefix .. " prefix", vim.log.levels.ERROR)
+        vim.notify("No snippets to expand at the current position", vim.log.levels.ERROR)
         return nil
     end
 
@@ -274,8 +271,8 @@ M.expand_snippet = function()
         :gsub("%$CURRENT_MONTH", os.date("%m"))
         :gsub("%$CURRENT_DATE", os.date("%d"))
 
-    vim.api.nvim_set_current_line(line:sub(1, col - #prefix) .. line:sub(col + 1))
-    vim.api.nvim_win_set_cursor(0, { row, col - #prefix })
+    vim.api.nvim_set_current_line(line:sub(1, col - #snippet.prefix) .. line:sub(col + 1))
+    vim.api.nvim_win_set_cursor(0, { row, col - #snippet.prefix })
     vim.snippet.expand(snippet_body)
 end
 

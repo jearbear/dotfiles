@@ -65,6 +65,11 @@ output "eDP-1" {
     scale 1
 }
 
+output "Dell Inc. DELL S2725QC GMRKS84" {
+    scale 1.25
+    mode "3840x2160@120.000"
+}
+
 output "HDMI-A-1" {
     scale 2
 }
@@ -260,6 +265,7 @@ window-rule {
 binds {
     Mod+Return { spawn "kitty" "--single-instance"; }
     Mod+Space { spawn "fuzzel"; }
+    Mod+Shift+Space { spawn "passmenu" "--type"; }
     Mod+Ctrl+Q { spawn "systemctl" "suspend-then-hibernate"; }
 
     // You can also use a shell. Do this if you need pipes, multiple commands, etc.
@@ -288,6 +294,11 @@ binds {
     Mod+Shift+K     { move-window-up-or-to-workspace-up; }
     Mod+Shift+L     { move-column-right; }
 
+    Mod+Ctrl+Shift+H     { move-workspace-to-monitor-left; }
+    Mod+Ctrl+Shift+J     { move-workspace-down; }
+    Mod+Ctrl+Shift+K     { move-workspace-up; }
+    Mod+Ctrl+Shift+L     { move-workspace-to-monitor-right; }
+
     Mod+Shift+Comma  { consume-or-expel-window-left; }
     Mod+Shift+Period { consume-or-expel-window-right; }
 
@@ -300,7 +311,10 @@ binds {
     Ctrl+Print { screenshot-screen; }
     Mod+Print { screenshot-window; }
 
-    Ctrl+Mod+Delete { quit; }
+    Ctrl+Mod+Backspace { quit; }
+
+    Mod+Tab { focus-monitor-next; }
+    Mod+Grave { move-window-to-monitor-next; }
 }
 
 cursor {
@@ -311,15 +325,18 @@ cursor {
 }
 
 overview {
-    zoom 0.5
+    zoom 0.25
     backdrop-color "#11111b"
 }
 
+gestures {
+    hot-corners {
+        off
+    }
+} 
+
 
 spawn-at-startup "mako"
-
 spawn-at-startup "swayidle" "-w" "timeout" "601" "niri msg action power-off-monitors" "timeout" "600" "swaylock -f" "before-sleep" "swaylock -f"
-
 spawn-at-startup "waybar"
-
 spawn-at-startup "gammastep" "-l" "geoclue2" "-m" "wayland" "-r" "-t" "6500:1500" "-b" "1:0.75"

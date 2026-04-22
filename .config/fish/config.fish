@@ -7,6 +7,7 @@ set -gx JJ_CONFIG "$HOME/.jj_config.toml"
 set -gx BAT_THEME base16
 set -gx MANPAGER "nvim +Man!" # use neovim to read man pages
 set -gx ERL_AFLAGS "-kernel shell_history enabled" # enable history in iex sessions
+set -gx NNN_OPENER "$HOME/.config/nnn/plugins/nuke"
 
 set -gx XCURSOR_THEME Breeze_Snow
 set -gx XCURSOR_SIZE 48
@@ -17,6 +18,9 @@ set -gx FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND"
 set -gx ESCDELAY 0 # for some cursed reason, FZF defaults to 100
 
 set -gx KAKOUNE_POSIX_SHELL $(which dash)
+
+# Store password store files in ASCII instead of binary
+set -gx PASSWORD_STORE_GPG_OPTS --armor
 
 fish_add_path "$HOME/.bin"
 fish_add_path "$HOME/.cargo/bin" # rust
@@ -40,7 +44,6 @@ if status is-interactive
     abbr pn 'ping www.google.com -c 1'
     abbr j just
     abbr g git
-    abbr we watchexec
     abbr w 'watch --color --interval 5'
     abbr yd yt-dlp
 

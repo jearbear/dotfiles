@@ -126,6 +126,7 @@ set_hl("Whitespace", { fg = colors.surface0 })
 set_hl("@comment", { fg = colors.overlay0 })
 
 set_hl("@string", { fg = colors.green })
+set_hl("@string.special.symbol", { fg = colors.lavender })
 
 set_hl("@keyword", { fg = colors.mauve })
 set_hl("@keyword.conditional", { fg = colors.mauve })

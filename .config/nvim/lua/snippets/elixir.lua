@@ -1,4 +1,5 @@
 return {
+    { prefix = "d", body = "dbg(${0})" },
     { prefix = "m", body = "%{${0}}" },
     { prefix = "map", body = "Enum.map(${0})" },
     { prefix = "filter", body = "Enum.filter(${0})" },

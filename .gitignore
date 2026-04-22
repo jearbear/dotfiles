@@ -13,6 +13,7 @@
 /.config/nvim/plugged
 
 !/.config/fish/
+/.config/fish/fish_variables
 
 !/.config/nixos/
 
