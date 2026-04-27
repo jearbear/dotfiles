@@ -526,6 +526,7 @@ conform.setup({
         elixir = {},
         elm = {},
         fish = { "fish_indent" },
+        go = { "goimports" },
         html = { "prettierd" },
         javascript = { "prettierd" },
         javascriptreact = { "prettierd" },
