@@ -10,7 +10,6 @@
 
 !/.config/nvim/
 /.config/nvim/.undo
-/.config/nvim/plugged
 
 !/.config/fish/
 /.config/fish/fish_variables

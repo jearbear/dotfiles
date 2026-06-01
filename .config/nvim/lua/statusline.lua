@@ -7,6 +7,7 @@ lualine.setup({
         section_separators = { left = "", right = "" },
         disabled_filetypes = {},
         always_divide_middle = false,
+        always_show_tabline = false,
     },
     sections = {
         lualine_a = {},
@@ -77,5 +78,3 @@ lualine.setup({
     },
     extensions = { "quickfix" },
 })
-
-vim.o.showtabline = 1

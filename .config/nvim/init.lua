@@ -10,64 +10,46 @@ vim.g.maplocalleader = " "
 -- }}}
 
 -- PLUGINS {{{
--- bootstrap lazy.nvim
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
-    vim.fn.system({
-        "git",
-        "clone",
-        "--filter=blob:none",
-        "https://github.com/folke/lazy.nvim.git",
-        "--branch=stable", -- latest stable release
-        lazypath,
-    })
-end
-vim.opt.rtp:prepend(lazypath)
+vim.cmd("packadd nvim.undotree")
+vim.cmd("packadd nvim.difftool")
 
-require("lazy").setup({
+vim.pack.add({
     -- UI
-    { "catppuccin/nvim", name = "catppuccin" }, -- theme
-    { "kevinhwang91/nvim-bqf" }, -- enhanced qflist (previews FZF integration)
-    { "nvim-lualine/lualine.nvim" }, -- statusline
+    { src = "https://github.com/catppuccin/nvim", name = "catppuccin" }, -- theme
+    "https://github.com/kevinhwang91/nvim-bqf", -- enhanced qflist (previews FZF integration)
+    "https://github.com/nvim-lualine/lualine.nvim", -- statusline
 
     -- tree-sitter
-    { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
-    { "nvim-treesitter/nvim-treesitter-textobjects" }, -- provides treesitter-powered text objects
-    { "nvim-treesitter/nvim-treesitter-context" }, -- provide context into where you are
-    { "windwp/nvim-ts-autotag" }, -- automatically close tags
-    { "RRethy/nvim-treesitter-endwise" }, -- automatically close everything else
-    { "Wansmer/treesj" }, -- treesitter-powered splits and joins
-
-    -- mappings
-    -- { "kylechui/nvim-surround" }, -- manipulate surrounds (works with treesitter unlike mini.surround and highlights selections automatically)
+    "https://github.com/nvim-treesitter/nvim-treesitter",
+    "https://github.com/nvim-treesitter/nvim-treesitter-textobjects", -- provides treesitter-powered text objects
+    "https://github.com/nvim-treesitter/nvim-treesitter-context", -- provide context into where you are
+    "https://github.com/windwp/nvim-ts-autotag", -- automatically close tags
+    "https://github.com/RRethy/nvim-treesitter-endwise", -- automatically close everything else
+    "https://github.com/Wansmer/treesj", -- treesitter-powered splits and joins
 
     -- copy pasta
-    { "gbprod/substitute.nvim" }, -- mappings to substitute text
-    { "gbprod/yanky.nvim" }, -- better handling of yanks (yank rings, auto-formatting)
+    "https://github.com/gbprod/substitute.nvim", -- mappings to substitute text
+    "https://github.com/gbprod/yanky.nvim", -- better handling of yanks (yank rings, auto-formatting)
 
     -- version control
-    { "lewis6991/gitsigns.nvim" }, -- VCS change indicators in the gutter
+    "https://github.com/lewis6991/gitsigns.nvim", -- VCS change indicators in the gutter
 
     -- project navigation + management
-    { "stevearc/oil.nvim" }, -- minimal file browser
-    { "wsdjeg/vim-fetch" }, -- support opening line and column numbers (e.g. foo.bar:13)
+    "https://github.com/stevearc/oil.nvim", -- minimal file browser
+    "https://github.com/wsdjeg/vim-fetch", -- support opening line and column numbers (e.g. foo.bar:13)
 
     -- linting + formatting
-    { "mfussenegger/nvim-lint" }, -- integrate linters that aren't provided by LSPs
-    { "stevearc/conform.nvim" }, -- integrate formatters that aren't provided by LSPs
+    "https://github.com/mfussenegger/nvim-lint", -- integrate linters that aren't provided by LSPs
+    "https://github.com/stevearc/conform.nvim", -- integrate formatters that aren't provided by LSPs
 
     -- language support for those not covered by tree-sitter
-    { "fladson/vim-kitty" },
+    "https://github.com/fladson/vim-kitty",
 
     -- fzf
-    { "ibhagwan/fzf-lua", branch = "main" },
+    "https://github.com/ibhagwan/fzf-lua",
 
     -- mini
-    { "echasnovski/mini.nvim" }, -- used for mini.bufremove, mini.ai (enhanced text objects), mini.align
-
-    -- trying out
-    { "saghen/blink.cmp", version = "1.*" },
-    { "dmtrKovalenko/fold-imports.nvim" },
+    "https://github.com/echasnovski/mini.nvim", -- used for mini.bufremove, mini.ai (enhanced text objects), mini.align
 })
 -- }}}
 
@@ -178,6 +160,10 @@ set_hl("@markup.list.unchecked", { fg = colors.peach })
 -- }}}
 
 -- SETTINGS {{{
+-- experimental UI that has some QOL improvements like disabling the "press
+-- enter to continue message" and a better pager
+require("vim._core.ui2").enable()
+
 vim.opt.mouse = "" -- disable mouse
 
 vim.opt.hidden = true -- allow switching buffers without saving
@@ -249,14 +235,19 @@ vim.opt.winborder = "single"
 vim.opt.shortmess:append("c") -- don't show messages when performing completion
 vim.opt.shortmess:append("I") -- don't show vim start screen
 
-vim.opt.completeopt = { "menu", "menuone", "fuzzy", "popup" } -- when completing, show a menu even if there is only one result
-vim.opt.complete = { ".", "w", "b", "f" } -- source keyword and line completions from current buffer, open windows, other loaded buffers, and buffer names
+vim.opt.completeopt = { "menu", "menuone", "nearest", "popup", "noselect" } -- when completing, show a menu even if there is only one result
+vim.opt.complete = { ".", "w", "b", "f", "o" } -- source keyword and line completions from current buffer, open windows, other loaded buffers, and buffer names
+vim.opt.autocomplete = true
 
-vim.opt.pumheight = 10 -- limit the number of completion results to show at a time
+vim.opt.pumheight = 10 -- max number of visible completions
+vim.opt.pummaxwidth = 100
+vim.opt.pumborder = "single" -- show borders for completion menu items
 
 vim.opt.signcolumn = "yes"
 
-vim.opt.showtabline = 0 -- disable the tab line (in favor of lualine's)
+vim.opt.nrformats = "bin,hex,blank" -- make <C-a> treat integers as unsigned
+
+vim.opt.showtabline = 1 -- show tabline if there is 2+ tabs
 
 vim.opt.dictionary:append("/usr/share/dict/words") -- use this for keyword completion (<C-x><C-k>)
 
@@ -576,8 +567,7 @@ end, { expr = true })
 
 -- navigate to the beginning/end of TS nodes
 u.map("n", "(", function()
-    local ts_utils = require("nvim-treesitter.ts_utils")
-    local start_node = ts_utils.get_node_at_cursor()
+    local start_node = vim.treesitter.get_node()
     if not start_node then
         return
     end
@@ -603,8 +593,7 @@ u.map("n", "(", function()
     end
 end)
 u.map("n", ")", function()
-    local ts_utils = require("nvim-treesitter.ts_utils")
-    local start_node = ts_utils.get_node_at_cursor()
+    local start_node = vim.treesitter.get_node()
     if not start_node then
         return
     end
@@ -628,6 +617,17 @@ u.map("n", ")", function()
     if parent_pos then
         -- Ignore errors if we somehow attempt to move out of the buffer
         pcall(vim.api.nvim_win_set_cursor, 0, { parent_pos[1] + 1, parent_pos[2] - 1 })
+    end
+end)
+
+-- more convenient mappings for incremental selections
+u.map({ "x", "o" }, "<CR>", function()
+    if vim.treesitter.get_parser(nil, nil, { error = false }) then
+        -- TODO: taken from https://github.com/neovim/neovim/blob/release-0.12/runtime/lua/vim/_core/defaults.lua#L472C9-L472C69
+        -- I assume that this API will get stabilized at some point
+        require("vim.treesitter._select").select_parent(vim.v.count1)
+    else
+        vim.lsp.buf.selection_range(vim.v.count1)
     end
 end)
 -- }}}

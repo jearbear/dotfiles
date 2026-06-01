@@ -1,54 +1,20 @@
 local u = require("utils")
 
 -- nvim-treesitter {{{
--- work around compiler issues on Mac OS
-require("nvim-treesitter.install").compilers = { "gcc", "gcc-11" }
+local ts = require("nvim-treesitter")
 
-require("nvim-treesitter.configs").setup({
-    ensure_installed = {
-        "bash",
-        "css",
-        "eex",
-        "elixir",
-        "go",
-        "graphql",
-        "heex",
-        "html",
-        "javascript",
-        "jinja",
-        "json",
-        "jsonnet",
-        "just",
-        "lua",
-        "make",
-        "markdown",
-        "markdown_inline",
-        "python",
-        "regex",
-        "rust",
-        "starlark",
-        "terraform",
-        "tsx",
-        "typescript",
-        "vim",
-        "yaml",
-        -- "sql", -- this doesn't work very well at the moment
-    },
-    highlight = { enable = true },
-    indent = { enable = true },
-    endwise = { enable = true },
-    -- we use this just for the library of text objects that it provides, but
-    -- the actual selection is handled by mini.ai
-    textobjects = { select = { enable = false } },
-    incremental_selection = {
-        enable = true,
-        keymaps = {
-            init_selection = false,
-            node_incremental = "<CR>",
-            scope_incremental = "<C-CR>",
-            node_decremental = "<S-CR>",
-        },
-    },
+u.autocmd({ "FileType" }, {
+    callback = function(args)
+        if not vim.treesitter.language.add(args.match) then
+            return
+        end
+
+        -- enable highlights
+        vim.treesitter.start()
+        -- enable indentation
+        vim.bo.indentexpr = "v:lua.require('nvim-treesitter').indentexpr()"
+    end,
+    group = u.augroup("TS SETUP"),
 })
 -- }}}
 
@@ -328,65 +294,65 @@ require("mini.align").setup({})
 -- }}}
 
 -- blink.cmp {{{
-require("blink.cmp").setup({
-    keymap = {
-        preset = "default",
-        ["<C-space>"] = { "show", "select_and_accept" },
-        ["<C-b>"] = {},
-        ["<C-f>"] = {},
-        ["<C-k>"] = {},
-    },
-    completion = {
-        ghost_text = { enabled = false },
-        menu = {
-            auto_show = true,
-            -- auto_show_delay_ms = 100,
-            border = "none",
-            draw = {
-                columns = {
-                    {
-                        "kind_icon",
-                        "label",
-                        "label_description",
-                        "source_name",
-                        gap = 1,
-                    },
-                },
-                components = {
-                    kind_icon = {
-                        text = function(ctx)
-                            local kind_icon, _, _ = require("mini.icons").get("lsp", ctx.kind)
-                            return kind_icon
-                        end,
-                        -- (optional) use highlights from mini.icons
-                        highlight = function(ctx)
-                            local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
-                            return hl
-                        end,
-                    },
-                    kind = {
-                        -- (optional) use highlights from mini.icons
-                        highlight = function(ctx)
-                            local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
-                            return hl
-                        end,
-                    },
-                },
-            },
-        },
-        documentation = { auto_show = true },
-        list = {
-            selection = {
-                preselect = true,
-            },
-        },
-    },
-    sources = {
-        default = { "lsp", "buffer" },
-    },
-    fuzzy = { implementation = "prefer_rust_with_warning" },
-    signature = { enabled = true, window = { show_documentation = false } },
-})
+-- require("blink.cmp").setup({
+--     keymap = {
+--         preset = "default",
+--         ["<C-space>"] = { "show", "select_and_accept" },
+--         ["<C-b>"] = {},
+--         ["<C-f>"] = {},
+--         ["<C-k>"] = {},
+--     },
+--     completion = {
+--         ghost_text = { enabled = false },
+--         menu = {
+--             auto_show = true,
+--             -- auto_show_delay_ms = 100,
+--             border = "none",
+--             draw = {
+--                 columns = {
+--                     {
+--                         "kind_icon",
+--                         "label",
+--                         "label_description",
+--                         "source_name",
+--                         gap = 1,
+--                     },
+--                 },
+--                 components = {
+--                     kind_icon = {
+--                         text = function(ctx)
+--                             local kind_icon, _, _ = require("mini.icons").get("lsp", ctx.kind)
+--                             return kind_icon
+--                         end,
+--                         -- (optional) use highlights from mini.icons
+--                         highlight = function(ctx)
+--                             local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
+--                             return hl
+--                         end,
+--                     },
+--                     kind = {
+--                         -- (optional) use highlights from mini.icons
+--                         highlight = function(ctx)
+--                             local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
+--                             return hl
+--                         end,
+--                     },
+--                 },
+--             },
+--         },
+--         documentation = { auto_show = true },
+--         list = {
+--             selection = {
+--                 preselect = true,
+--             },
+--         },
+--     },
+--     sources = {
+--         default = { "lsp", "buffer" },
+--     },
+--     fuzzy = { implementation = "prefer_rust_with_warning" },
+--     signature = { enabled = true, window = { show_documentation = false } },
+-- })
 -- }}}
 
 -- mini.icons {{{
@@ -573,8 +539,4 @@ u.map_c("-", "Oil")
 
 -- lualine.nvim {{{
 u.map("n", "<Leader>tr", ":LualineRenameTab ")
--- }}}
-
--- fold-imports.nvim {{{
-require("fold_imports").setup()
 -- }}}

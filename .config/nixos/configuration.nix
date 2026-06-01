@@ -14,7 +14,6 @@ in {
 
     git
     delta
-    neovim
     helix
     wget
     firefox
@@ -39,6 +38,10 @@ in {
     zathura # pdf viewer
     feh # image viewer
     gh
+
+    neovim
+    tree-sitter # for installing tree-sitter parsers
+    clang # for installing tree-sitter parsers
 
     kakoune
     kakoune-lsp
@@ -69,7 +72,6 @@ in {
     prettierd
     biome
 
-    powertop
     btop
 
     fuzzel
@@ -216,7 +218,7 @@ in {
 
   # Setup auto-suspend and CPU frequency scaling
   powerManagement.enable = true;
-  powerManagement.powertop.enable = true;
+  # powerManagement.powertop.enable = true;
   services.auto-cpufreq.enable = true;
 
   systemd.services.fprintd = {

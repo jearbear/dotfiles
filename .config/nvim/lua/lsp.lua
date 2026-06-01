@@ -133,8 +133,6 @@ end
 
 u.autocmd({ "LspAttach" }, {
     callback = function(args)
-        vim.lsp.completion.enable(true, args.data.client_id, args.buf, { autotrigger = false })
-
         -- Continue to use `gq` for line wrapping, not auto-formatting
         vim.bo.formatexpr = ""
 
