@@ -1,0 +1,3 @@
+[Desktop Entry]
+Name=btop
+Exec=kitty --single-instance btop

@@ -1,0 +1,24 @@
+[Desktop Entry]
+Name=firefox
+Exec=firefox
+Actions=fastmail;prs;calendar;slack;gmail;
+
+[Desktop Action fastmail]
+Name=fastmail
+Exec=firefox --new-tab https://app.fastmail.com/
+
+[Desktop Action prs]
+Name=prs
+Exec=firefox --new-tab https://github.com/pulls
+
+[Desktop Action calendar]
+Name=calendar
+Exec=firefox --new-tab https://calendar.notion.so/
+
+[Desktop Action slack]
+Name=slack
+Exec=firefox --new-tab https://app.slack.com/client/T03EML23KE2/
+
+[Desktop Action gmail]
+Name=gmail
+Exec=firefox --new-tab https://gmail.com

@@ -19,3 +19,5 @@
 
 !/.config/kak/
 /.config/kak/autoload/stdlib
+
+!/.local/share/applications

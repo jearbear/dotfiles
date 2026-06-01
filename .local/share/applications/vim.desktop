@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=vim
+Exec=kitty --single-instance nvim
+Actions=1
+
+[Desktop Action 1]
+Name=sql scratch
+Exec=kitty --single-instance nvim -c "set ft=sql" -c "startinsert"

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=screenshot
+Exec=niri msg action screenshot-screen
+Actions=selection;window;
+
+[Desktop Action selection]
+Name=selection
+Exec=niri msg action screenshot
+
+[Desktop Action window]
+Name=window
+Exec=niri msg action screenshot-window
