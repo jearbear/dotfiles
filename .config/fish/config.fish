@@ -40,7 +40,7 @@ if status is-interactive
     abbr v nvim
     abbr vi nvim
     abbr vim nvim
-    abbr n 'nnn -CReoA'
+    abbr n 'nnn -CReoA -Tt'
     abbr pn 'ping www.google.com -c 1'
     abbr j just
     abbr g git
@@ -49,7 +49,12 @@ if status is-interactive
 
     abbr cdg 'cd ~/Projects/giga'
     abbr cds 'cd ~/Projects/sugo'
+    abbr cdp 'cd ~/Projects/product'
+    abbr cdp2 'cd ~/Projects/product-2'
+    abbr cdpp 'cd ~/Projects/product/python'
+    abbr cdpt 'cd ~/Projects/product/typescript'
     abbr cdn 'cd ~/Sync/PKM'
+    abbr cdv 'cd ~/Sync/videos'
     abbr cdv 'cd ~/Sync/videos'
 
     abbr kssh 'kitty +kitten ssh'

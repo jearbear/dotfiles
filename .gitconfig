@@ -93,7 +93,7 @@
     pr = !git ac || true && git mm && hub pull-request --edit --browse --push && :
     prd = !git ac || true && git mm && hub pull-request --draft --edit --browse --push && :
     prm = !git ac || true && git mm && hub pull-request --edit --browse --push && gh pr merge --auto --squash && :
-    open = !"gh pr view --web || open https://$(git remote get-url origin | sed 's/git@//; s/.git//; s/:/\\//')/pull/new/$(git branch-name)"
+    open = !"gh pr view --web || xdg-open https://$(git remote get-url origin | sed 's/git@//; s/.git//; s/:/\\//')/pull/new/$(git branch-name)"
 
 
 [branch]

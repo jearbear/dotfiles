@@ -119,13 +119,14 @@ end
 
 local colors = require("catppuccin.palettes").get_palette("mocha")
 for _, group in ipairs(vim.fn.getcompletion("@", "highlight")) do
-    set_hl(group, {})
+    set_hl(group, { fg = colors.text })
 end
 
 set_hl("Whitespace", { fg = colors.surface0 })
 set_hl("@comment", { fg = colors.overlay0 })
 
 set_hl("@string", { fg = colors.green })
+set_hl("@string.special", { fg = colors.peach })
 set_hl("@string.special.symbol", { fg = colors.lavender })
 
 set_hl("@keyword", { fg = colors.mauve })
@@ -147,6 +148,7 @@ set_hl("@keyword.type", { fg = colors.mauve })
 set_hl("@boolean", { fg = colors.peach })
 set_hl("@number", { fg = colors.peach })
 set_hl("@number.float", { fg = colors.peach })
+set_hl("@constant", { fg = colors.peach })
 set_hl("@constant.builtin", { fg = colors.peach })
 set_hl("@operator", { fg = colors.red })
 

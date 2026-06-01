@@ -40,20 +40,46 @@ for name, config in pairs({
         cmd = { "ruff", "server" },
         filetypes = { "python" },
     },
-    elixirls = {
-        cmd = { "elixir-ls" },
+    -- elixirls = {
+    --     cmd = { "elixir-ls" },
+    --     filetypes = { "elixir" },
+    --     settings = {
+    --         dialyzerEnabled = false,
+    --         incrementalDialyzer = false,
+    --         mcpEnabled = false,
+    --         autoBuild = false,
+    --     },
+    -- },
+    expert = {
+        cmd = { "expert", "--stdio" },
         filetypes = { "elixir" },
+    },
+    ols = {
+        cmd = { "ols" },
+        filetypes = { "odin" },
         settings = {
-            dialyzerEnabled = false,
-            incrementalDialyzer = false,
-            mcpEnabled = false,
-            autoBuild = false,
+            -- For some reason this isn't automatically set by the binary.
+            odin_root_override = vim.fs.joinpath(vim.fs.dirname(vim.fs.dirname(vim.fn.exepath("odin"))), "share"),
+            enable_snippets = true,
         },
     },
-    -- expert = {
-    --     cmd = { "expert", "--stdio" },
-    --     filetypes = { "elixir" },
-    -- },
+    gopls = {
+        cmd = { "gopls" },
+        filetypes = { "go", "gomod" },
+        settings = {
+            gopls = {
+                gofumpt = true,
+            },
+        },
+    },
+    jsonls = {
+        cmd = { "vscode-json-languageserver", "--stdio" },
+        filetypes = { "json" },
+    },
+    cssls = {
+        cmd = { "vscode-css-languageserver", "--stdio" },
+        filetypes = { "css" },
+    },
     marksman = {
         cmd = { "marksman" },
         filetypes = { "markdown" },

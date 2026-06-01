@@ -1,12 +1,16 @@
 {
   config,
   pkgs,
+  nixpkgs-master,
   ...
-}: {
+}: let
+  pkgs-master = import nixpkgs-master {
+    system = "x86_64-linux";
+  };
+in {
   # Installed packages
   environment.systemPackages = with pkgs; [
     linux-firmware
-    networkmanagerapplet
 
     git
     delta
@@ -14,7 +18,6 @@
     helix
     wget
     firefox
-    librewolf
     chromium
     kitty
     jujutsu
@@ -24,18 +27,18 @@
     ripgrep
     watchexec
     mpv
-    stow
     just
     tree
     jq
-    foot
     wl-clipboard
     dash
     nnn
+    unzip
     yt-dlp
     wireguard-tools
     zathura # pdf viewer
     feh # image viewer
+    gh
 
     kakoune
     kakoune-lsp
@@ -43,27 +46,28 @@
 
     python3
 
-    aichat
-
     catppuccin-cursors
     bibata-cursors
     spotify
 
-    # gcc11 # for nvim treesitter parser installs
-    # lsps and formatters
     # lsps
     fish-lsp
     marksman # markdown
-    nodePackages.vscode-json-languageserver
-    shellcheck # bash
+    vscode-json-languageserver
+    vscode-css-languageserver
     nil # nix
 
     # linters
+    shellcheck # bash
 
     # formatters
     stylua
     ruff
     alejandra # nix
+    shfmt
+    kdlfmt
+    prettierd
+    biome
 
     powertop
     btop
@@ -71,33 +75,36 @@
     fuzzel
     rofimoji
     (writeShellScriptBin "dmenu" ''exec ${fuzzel}/bin/fuzzel --dmenu "$@"'')
+    (writeShellScriptBin "dmenu-wl" ''exec ${fuzzel}/bin/fuzzel --dmenu "$@"'')
     mako
+    libnotify # programmatically send notifications
     xwayland-satellite
     waybar
     brightnessctl
-    tofi
     gammastep
     bluetui
-
-    keepassxc
+    playerctl # media control
+    wiremix # mixer
+    swayidle
+    swaylock
 
     # for 1password
     gnome-keyring
     seahorse
 
     libqalculate
-    grim
-    swayidle
-    swaylock
 
     # password manager
     (pass.withExtensions (exts: [exts.pass-otp]))
     paperkey # for physical backups
     qrencode # for exporting keys to qr codes
 
-    opencode
+    pkgs-master.pi-coding-agent
+    bubblewrap
 
     keyd # for application-specific mappings
+
+    pkgs-master.spotatui
   ];
 
   # Fixes the issue causing keyd socket to not be created with the appropriate group.
@@ -156,6 +163,10 @@
       dataDir = "/home/jerry";
     };
 
+    tailscale = {
+      enable = true;
+    };
+
     # Auto-derive location for gammastep
     geoclue2.enable = true;
 
@@ -182,6 +193,9 @@
         }
       ];
     };
+
+    # Auto-mounting of USB devices
+    udisks2.enable = true;
   };
 
   # Bootloader

@@ -10,18 +10,79 @@
     "modules-left": [
         "niri/workspaces",
     ],
+    "modules-center": [
+        "mpris",
+    ],
     "modules-right": [
+        "custom/wireguard",
+        "custom/sep",
+        "bluetooth",
+        "custom/sep",
         "pulseaudio",
+        "custom/sep",
         "battery",
+        "custom/sep",
+        "clock#date",
+        "custom/sep",
         "clock",
     ],
+    "custom/sep": {
+        "format": "·",
+        "tooltip": false
+    },
+    "custom/wireguard": {
+        "exec": "~/.config/waybar/scripts/wg-status.sh",
+        "interval": "once",
+        "signal": 8,
+        "format": "<span color='#f9e2af'>wg</span> {}",
+        "on-click": "~/.config/waybar/scripts/wg-toggle.sh",
+        "exec-on-event": true,
+        "tooltip": false
+    },
+    "mpris": {
+        "format": "<span color='#f9e2af'>{player_icon}</span> {dynamic}",
+        "format-paused": "<span color='#f9e2af'>{player_icon}</span> {dynamic} (paused)",
+        "format-stopped": "",
+        "player-icons": {
+            "default": "play",
+            "spotify": "spotify",
+            "firefox": "firefox",
+            "mpv": "mpv"
+        },
+        "dynamic-order": ["title", "artist"],
+        "dynamic-len": 50,
+        "on-click": "",
+        "on-click-right": "",
+        "on-click-middle": "",
+        "on-scroll-up": "",
+        "on-scroll-down": ""
+    },
+    "clock#date": {
+        "format": "<span color='#f9e2af'>w</span>{0:%V} <span color='#f9e2af'>d</span>{0:%d}",
+        "tooltip": false
+    },
     "clock": {
-        "timezone": "America/Los_Angeles",
-        "format": "{:%I:%M}"
+        "format": "{:%I:%M %Z}",
+        "tooltip": false,
+        "timezones": ["America/Los_Angeles", "UTC"],
+        "actions": {
+            "on-click": "tz_up",
+            "on-click-right": "tz_down"
+        }
+    },
+    "bluetooth": {
+        "format": "<span color='#f9e2af'>bt</span> n/a",
+        "format-connected": "<span color='#f9e2af'>bt</span> {device_alias}",
+        "format-connected-battery": "<span color='#f9e2af'>bt</span> {device_alias} {device_battery_percentage}%",
+        "on-click": "~/.config/waybar/scripts/bt-toggle-airpods.sh"
     },
     "battery": {
-        "format": "{capacity}%",
-        "format-charging": "{capacity}%+",
+        "format": "<span color='#f9e2af'>bat</span> {capacity}%",
+        "format-charging": "<span color='#f9e2af'>bat</span> {capacity}%+",
         "format-icons": []
+    },
+    "pulseaudio": {
+        "format": "<span color='#f9e2af'>vol</span> {volume}%",
+        "format-muted": "<span color='#f9e2af'>vol</span> muted"
     },
 }

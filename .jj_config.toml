@@ -76,7 +76,8 @@ log = "present(@) | ancestors(immutable_heads().., 2) | present(trunk()) | bookm
 [revset-aliases]
 "no_desc()" = "description(exact:'')"
 "has_desc()" = "~no_desc()"
-"branch_head()" = "latest(main..@ & ~empty() & has_desc() & mutable())"
+"branch_head()" = "latest(trunk()..@ & ~empty() & has_desc() & mutable())"
+"branch_root()" = "latest(trunk()..@ & has_desc() & mutable())"
 
 [aliases]
 init = ["git", "init", "--colocate"]
@@ -86,36 +87,37 @@ ss = ["show"]
 d = ["diff"]
 ds = ["diff", "--summary"]
 e = ["edit"]
-dm = ["diff", "--from", "main"]
+dm = ["diff", "--from", "trunk()"]
 c = ["commit"]
-wip = ["commit", "--message", "wip"]
+cm = ["commit", "--message"]
 n = ["new"]
-r = ["rebase", "-r", "@"]
-pull = ["git", "fetch", "--branch", "main", "--branch", "glob:jerry/*"]
+r = ["rebase", "--revisions", "@"]
+pull = ["git", "fetch", "--branch", "main", "--branch", "master", "--branch", "glob:jerry/*"]
 # gp = ["git", "push", "--branch", "glob:jerry/*"]
 gp = ["git", "push"]
 re = ["rebase"]
 rd = ["desc", "@-"]
-rm = ["rebase", "--destination", "main"]
-lm = ["log", "-r", "..main", "-T", "builtin_log_compact"]
+rm = ["rebase", "--destination", "trunk()"]
+lm = ["log", "-r", "..trunk()", "-T", "builtin_log_compact"]
 ri = ["restore", "--interactive", "--from"]
-rim = ["restore", "--interactive", "--from", "main"]
+rim = ["restore", "--interactive", "--from", "trunk()"]
 rev = ["revert", "--before", "@", "--revisions"]
-nm = ["new", "main"]
+newm = ["new", "trunk()"]
 newb = ["new", "--before", "@"]
 dup = ["duplicate"]
 reconfig = ["config", "edit", "--user"]
 smash = ["squash"]
+smashb = ["squash", "--from", "branch_root()::@", "--into", "branch_root()"]
 del = ["abandon"]
 prune = [
   "abandon",
   "~@ & mutable() & ((empty() & visible_heads()) | ~mine() | (~(has_desc() & mutable())::))",
 ]
-restore-generated = ["restore", "common/cb/src/generated", "--from", "main"]
+restore-generated = ["restore", "common/cb/src/generated", "--from", "trunk()"]
 resolve-ours = ["resolve", "--tool", ":ours"]
 resolve-theirs = ["resolve", "--tool", ":theirs"]
 # Move parent bookmarks to point to the latest revision
-mb = ["bookmark", "move", "--to", "latest(main..@ & ~empty() & has_desc())"]
+mb = ["bookmark", "move", "main", "master", "--to", "latest(trunk()..@ & ~empty() & has_desc())"]
 
 
 get = ["util", "exec", "--", "bash", "-c", """
@@ -130,7 +132,7 @@ g = ["util", "exec", "--", "bash", "-c", """
 #!/usr/bin/env bash
 set -euox pipefail
 jj up
-jj new main
+jj new 'trunk()'
 jj commit
 """, ""]
 
@@ -154,7 +156,8 @@ set -euox pipefail
 jj smash
 jj up
 jj git push --change "branch_head()"
-hub pull-request --no-edit --browse --head "$(jj pr-bookmarks)" --message "$(jj branch-head-desc)"
+gh pr create --head "$(jj pr-bookmarks)" --title "$(jj branch-head-desc)" --body ""
+gh pr view "$(jj pr-bookmarks)" --web
 """,
   "",
 ]
@@ -184,7 +187,7 @@ fi
 changed = ["util", "exec", "--", "bash", "-c", """
 #!/usr/bin/env bash
 set -euox pipefail
-jj log --no-graph --patch --revisions "diff_lines(regex:'$@')"
+jj log --no-graph --patch --revisions "diff_contains(regex:'$@')"
 """, ""]
 
 # diff_lines_added/removed is an unreleased feature
