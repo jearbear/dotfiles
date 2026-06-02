@@ -187,9 +187,10 @@ vim.opt.showbreak = ".." -- indent wrapped lines with `..`
 
 vim.opt.fillchars:append({ diff = " " }) -- prettier filler characters for empty diff blocks
 
-vim.opt.foldenable = false -- default to open folds
+vim.opt.foldenable = false
+vim.opt.foldmethod = "marker"
 vim.opt.foldopen = { "hor", "jump", "mark", "quickfix", "search", "tag", "undo" } -- always open folds when navigated through
-vim.wo.foldnestmax = 1
+vim.opt.foldnestmax = 1
 vim.opt.fillchars:append({ fold = " " })
 
 vim.opt.conceallevel = 2 -- hide concealed text
@@ -266,7 +267,7 @@ vim.opt.shortmess:append("c") -- don't show messages when performing completion
 vim.opt.shortmess:append("I") -- don't show vim start screen
 
 vim.opt.completeopt = { "menu", "menuone", "nearest", "popup", "noselect" } -- when completing, show a menu even if there is only one result
-vim.opt.complete = { "o", ".", "w", "b" } -- source keyword and line completions from current buffer, open windows, other loaded buffers, and buffer names
+vim.opt.complete = { ".", "w", "b" } -- source completions from current buffer, open windows, and other loaded buffers
 vim.opt.autocomplete = true
 
 vim.opt.pumheight = 10 -- max number of visible completions
@@ -334,7 +335,7 @@ u.autocmd({ "BufReadPost" }, {
     pattern = "*",
     callback = function()
         local guide = string.rep(" ", vim.bo.shiftwidth - 1)
-        vim.opt_local.list = true
+        vim.wo.list = true
         -- repeat enough times to not have to rely on the built-in repeat which
         -- will look off by one
         vim.opt_local.listchars = {

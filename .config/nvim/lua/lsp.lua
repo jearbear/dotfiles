@@ -135,6 +135,7 @@ u.autocmd({ "LspAttach" }, {
     callback = function(args)
         -- Continue to use `gq` for line wrapping, not auto-formatting
         vim.bo.formatexpr = ""
+        vim.opt_local.complete:prepend("o")
 
         local function map(lhs, rhs)
             u.map("n", lhs, rhs, { buffer = args.buf })
