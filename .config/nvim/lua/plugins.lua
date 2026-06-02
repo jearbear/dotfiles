@@ -293,68 +293,6 @@ require("mini.align").setup({})
 -- })
 -- }}}
 
--- blink.cmp {{{
--- require("blink.cmp").setup({
---     keymap = {
---         preset = "default",
---         ["<C-space>"] = { "show", "select_and_accept" },
---         ["<C-b>"] = {},
---         ["<C-f>"] = {},
---         ["<C-k>"] = {},
---     },
---     completion = {
---         ghost_text = { enabled = false },
---         menu = {
---             auto_show = true,
---             -- auto_show_delay_ms = 100,
---             border = "none",
---             draw = {
---                 columns = {
---                     {
---                         "kind_icon",
---                         "label",
---                         "label_description",
---                         "source_name",
---                         gap = 1,
---                     },
---                 },
---                 components = {
---                     kind_icon = {
---                         text = function(ctx)
---                             local kind_icon, _, _ = require("mini.icons").get("lsp", ctx.kind)
---                             return kind_icon
---                         end,
---                         -- (optional) use highlights from mini.icons
---                         highlight = function(ctx)
---                             local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
---                             return hl
---                         end,
---                     },
---                     kind = {
---                         -- (optional) use highlights from mini.icons
---                         highlight = function(ctx)
---                             local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
---                             return hl
---                         end,
---                     },
---                 },
---             },
---         },
---         documentation = { auto_show = true },
---         list = {
---             selection = {
---                 preselect = true,
---             },
---         },
---     },
---     sources = {
---         default = { "lsp", "buffer" },
---     },
---     fuzzy = { implementation = "prefer_rust_with_warning" },
---     signature = { enabled = true, window = { show_documentation = false } },
--- })
--- }}}
-
 -- mini.icons {{{
 require("mini.icons").setup({
     style = "ascii",
@@ -377,35 +315,6 @@ require("mini.surround").setup({
 
 u.map("n", "mm", "mail", { remap = true })
 u.map("n", "M", "ma$", { remap = true })
--- }}}
-
--- nvim-surround {{{
--- Reasons I prefer this over mini.surround:
--- - supports tags really well
--- - has a mapping to affect the entire line
--- - supports modifying tags
--- require("nvim-surround").setup({
---     keymaps = {
---         normal = "ma",
---         normal_cur = "mm",
---         visual = "ma",
---         delete = "md",
---         change = "mc",
---     },
---     highlight = {
---         duration = 100,
---     },
---     move_cursor = false,
---     aliases = {
---         -- disable the variants that insert whitespace
---         ["{"] = "}",
---         ["<"] = ">",
---         ["("] = ")",
---         ["["] = "]",
---     },
--- })
-
--- u.map("n", "M", "ma$")
 -- }}}
 
 -- yanky.nvim {{{
@@ -535,8 +444,4 @@ require("oil").setup({
 })
 
 u.map_c("-", "Oil")
--- }}}
-
--- lualine.nvim {{{
-u.map("n", "<Leader>tr", ":LualineRenameTab ")
 -- }}}

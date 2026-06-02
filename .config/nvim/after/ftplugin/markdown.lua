@@ -1,6 +1,11 @@
 local u = require("utils")
 
-vim.opt_local.conceallevel = 0
+if vim.bo.buftype == "nofile" then
+    -- hide concealed text for hover windows
+    vim.wo.conceallevel = 2
+else
+    vim.wo.conceallevel = 0
+end
 vim.bo.shiftwidth = 2
 vim.bo.softtabstop = 2
 

@@ -1,9 +1,14 @@
 local u = require("utils")
 
-vim.cmd("packadd cfilter")
+vim.wo.statusline = table.concat({
+    "",
+    "%{w:quickfix_title}",
+    "%=", -- spacer
+    "%l/%L", -- line number
+    "",
+}, " ")
 
--- automaticaly move quickfix window to the bottom-most position of the
--- screen
+-- automaticaly move quickfix window to the bottom-most position of the screen
 vim.cmd("wincmd J")
 
 u.map("n", "dd", "`R", { buffer = 0, remap = true })

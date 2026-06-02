@@ -10,6 +10,7 @@ vim.g.maplocalleader = " "
 -- }}}
 
 -- PLUGINS {{{
+vim.cmd("packadd cfilter")
 vim.cmd("packadd nvim.undotree")
 vim.cmd("packadd nvim.difftool")
 
@@ -17,13 +18,13 @@ vim.pack.add({
     -- UI
     { src = "https://github.com/catppuccin/nvim", name = "catppuccin" }, -- theme
     "https://github.com/kevinhwang91/nvim-bqf", -- enhanced qflist (previews FZF integration)
-    "https://github.com/nvim-lualine/lualine.nvim", -- statusline
 
     -- tree-sitter
     "https://github.com/nvim-treesitter/nvim-treesitter",
     "https://github.com/nvim-treesitter/nvim-treesitter-textobjects", -- provides treesitter-powered text objects
     "https://github.com/nvim-treesitter/nvim-treesitter-context", -- provide context into where you are
     "https://github.com/windwp/nvim-ts-autotag", -- automatically close tags
+    -- TODO: This isn't currently working on 0.12
     "https://github.com/RRethy/nvim-treesitter-endwise", -- automatically close everything else
     "https://github.com/Wansmer/treesj", -- treesitter-powered splits and joins
 
@@ -41,9 +42,6 @@ vim.pack.add({
     -- linting + formatting
     "https://github.com/mfussenegger/nvim-lint", -- integrate linters that aren't provided by LSPs
     "https://github.com/stevearc/conform.nvim", -- integrate formatters that aren't provided by LSPs
-
-    -- language support for those not covered by tree-sitter
-    "https://github.com/fladson/vim-kitty",
 
     -- fzf
     "https://github.com/ibhagwan/fzf-lua",
@@ -100,6 +98,10 @@ local set_hl = function(group, options)
 end
 
 local colors = require("catppuccin.palettes").get_palette("mocha")
+
+set_hl("ModeMsg", { fg = colors.peach })
+
+-- Reset all treesitter colors
 for _, group in ipairs(vim.fn.getcompletion("@", "highlight")) do
     set_hl(group, { fg = colors.text })
 end
@@ -203,7 +205,35 @@ vim.opt.splitbelow = true -- default to opening splits below the current buffer
 vim.opt.splitright = true -- default to opening splits ot the right of the current buffer
 vim.opt.equalalways = true -- default to equalizing all windows when splits are created and closed
 
-vim.opt.showmode = false -- don't show the mode below the status line
+vim.opt.showmode = true -- show the mode below the status line
+vim.opt.statusline = table.concat({
+    "",
+    "%f", -- file path
+    "%m", -- dirty flag
+    "%=", -- spacer
+    "%{%v:lua.vim.diagnostic.status()%}",
+    "",
+    "%l/%L", -- line number
+    "",
+}, " ")
+_G.gen_tabline = function()
+    local segments = { "", "%=" }
+    local active_tab_num = vim.fn.tabpagenr()
+    for tab_num = 1, vim.fn.tabpagenr("$") do
+        local win_num = vim.fn.tabpagewinnr(tab_num)
+        local buflist = vim.fn.tabpagebuflist(tab_num)
+        local buf_num = buflist[win_num]
+        local path = vim.fs.basename(vim.fn.bufname(buf_num))
+        if path == "" then
+            path = "[No Name]"
+        end
+
+        local hl_group = tab_num == active_tab_num and "TabLineSel" or "TabLine"
+        table.insert(segments, "%#" .. hl_group .. "# " .. tab_num .. " " .. path .. " ")
+    end
+    return table.concat(segments)
+end
+vim.opt.tabline = "%{%v:lua.gen_tabline()%}"
 
 vim.opt.lazyredraw = true -- macros are really slow without this
 
@@ -236,12 +266,26 @@ vim.opt.shortmess:append("c") -- don't show messages when performing completion
 vim.opt.shortmess:append("I") -- don't show vim start screen
 
 vim.opt.completeopt = { "menu", "menuone", "nearest", "popup", "noselect" } -- when completing, show a menu even if there is only one result
-vim.opt.complete = { ".", "w", "b", "f", "o" } -- source keyword and line completions from current buffer, open windows, other loaded buffers, and buffer names
+vim.opt.complete = { "o", ".", "w", "b" } -- source keyword and line completions from current buffer, open windows, other loaded buffers, and buffer names
 vim.opt.autocomplete = true
 
 vim.opt.pumheight = 10 -- max number of visible completions
 vim.opt.pummaxwidth = 100
 vim.opt.pumborder = "single" -- show borders for completion menu items
+
+-- This is a hack to get borders on completion documentation windows
+u.autocmd("CompleteChanged", {
+    group = u.augroup("COMPLETION_DOCUMENTATION_BORDER"),
+    callback = function()
+        vim.schedule(function()
+            local info = vim.fn.complete_info({ "selected" })
+            local win_id = info.preview_winid
+            if win_id and vim.api.nvim_win_is_valid(win_id) then
+                vim.api.nvim_win_set_config(win_id, { border = "single" })
+            end
+        end)
+    end,
+})
 
 vim.opt.signcolumn = "yes"
 
@@ -321,21 +365,13 @@ u.autocmd({ "VimResized", "TabEnter" }, {
     command = "wincmd =",
 })
 
-local lualine = require("lualine")
-
 -- automatically write the file on focus lost
 u.autocmd({ "BufLeave", "FocusLost" }, {
     callback = function()
         if vim.bo.modified and not vim.bo.readonly and vim.fn.expand("%") ~= "" and vim.bo.buftype == "" then
             vim.cmd([[silent update]])
-            lualine.refresh()
         end
     end,
-})
-
-u.autocmd({ "BufWritePost" }, {
-    pattern = "*",
-    callback = lualine.refresh,
 })
 
 -- treat .json.tftpl files as json
@@ -630,8 +666,14 @@ u.map({ "x", "o" }, "<CR>", function()
         vim.lsp.buf.selection_range(vim.v.count1)
     end
 end)
+u.map({ "x", "o" }, "<S-CR>", function()
+    if vim.treesitter.get_parser(nil, nil, { error = false }) then
+        require("vim.treesitter._select").select_child(vim.v.count1)
+    else
+        vim.lsp.buf.selection_range(-vim.v.count1)
+    end
+end)
 -- }}}
 
-require("statusline")
 require("plugins")
 require("lsp")
