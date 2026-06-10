@@ -65,12 +65,13 @@ in {
 
     # formatters
     stylua
-    ruff
+    ruff # python
     alejandra # nix
     shfmt
     kdlfmt
-    prettierd
-    biome
+    prettierd # web stuff
+    biome # web stuff
+    pgformatter
 
     btop
 
@@ -140,6 +141,9 @@ in {
 
     # auto-typing service for use with pass
     ydotool.enable = true;
+
+    # shared clipboard
+    kdeconnect.enable = true;
   };
 
   # This leads to leads to awful rebuild performance

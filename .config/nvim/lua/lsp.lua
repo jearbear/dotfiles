@@ -50,6 +50,10 @@ for name, config in pairs({
     --         autoBuild = false,
     --     },
     -- },
+    -- dexter = {
+    --     cmd = { "dexter", "lsp" },
+    --     filetypes = { "elixir" },
+    -- },
     expert = {
         cmd = { "expert", "--stdio" },
         filetypes = { "elixir" },

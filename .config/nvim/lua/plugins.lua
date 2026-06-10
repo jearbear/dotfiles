@@ -408,6 +408,7 @@ conform.setup({
         kdl = { "kdlfmt" },
         lua = { "stylua" },
         sh = { "shfmt" },
+        sql = { "pg_format" },
         starlark = { "ruff_fix", "ruff_format" },
         terraform = { "terraform_fmt" },
         toml = { "taplo" },
@@ -416,11 +417,9 @@ conform.setup({
         yaml = { "prettierd" },
         nix = { "alejandra" },
     },
-    async = true,
-    format_on_save = {
+    format_after_save = {
         -- use `{}` to format using the lsp
         lsp_format = "fallback",
-        timeout_ms = 2000,
     },
 })
 -- }}}

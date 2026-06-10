@@ -187,8 +187,8 @@ vim.opt.showbreak = ".." -- indent wrapped lines with `..`
 
 vim.opt.fillchars:append({ diff = " " }) -- prettier filler characters for empty diff blocks
 
-vim.opt.foldenable = false
-vim.opt.foldmethod = "marker"
+vim.wo.foldenable = true
+vim.wo.foldmethod = "marker"
 vim.opt.foldopen = { "hor", "jump", "mark", "quickfix", "search", "tag", "undo" } -- always open folds when navigated through
 vim.opt.foldnestmax = 1
 vim.opt.fillchars:append({ fold = " " })
