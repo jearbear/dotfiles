@@ -14,6 +14,8 @@
         "mpris",
     ],
     "modules-right": [
+        "idle_inhibitor",
+        "custom/sep",
         "custom/wireguard",
         "custom/sep",
         "bluetooth",
@@ -26,6 +28,14 @@
         "custom/sep",
         "clock",
     ],
+    "idle_inhibitor": {
+        "format": "<span color='#f9e2af'>caf</span> {icon}",
+        "format-icons": {
+            "activated": "on",
+            "deactivated": "off"
+        },
+        "tooltip": false
+    },
     "custom/sep": {
         "format": "·",
         "tooltip": false

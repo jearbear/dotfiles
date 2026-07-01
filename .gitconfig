@@ -115,13 +115,16 @@
 [diff]
     algorithm = histogram
     indentheuristic = true
-    tool = difftastic
+    tool = nvimdiff
 
 [difftool]
     prompt = false
 
-[difftool "difftastic"]
-    cmd = difft "$LOCAL" "$REMOTE"
+; [difftool "difftastic"]
+;     cmd = difft "$LOCAL" "$REMOTE"
+
+[difftool "nvimdiff"]
+    cmd = nvim -d "$LOCAL" "$REMOTE"
 
 [merge]
     conflictstyle = zdiff3

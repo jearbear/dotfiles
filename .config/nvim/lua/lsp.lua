@@ -10,14 +10,14 @@ vim.diagnostic.config({
         float = { border = "single" },
         wrap = false,
     },
-    signs = {
-        text = {
-            [vim.diagnostic.severity.ERROR] = "●",
-            [vim.diagnostic.severity.WARN] = "●",
-            [vim.diagnostic.severity.INFO] = "●",
-            [vim.diagnostic.severity.HINT] = "●",
-        },
-    },
+    -- signs = {
+    --     text = {
+    --         [vim.diagnostic.severity.ERROR] = "●",
+    --         [vim.diagnostic.severity.WARN] = "●",
+    --         [vim.diagnostic.severity.INFO] = "●",
+    --         [vim.diagnostic.severity.HINT] = "●",
+    --     },
+    -- },
 })
 
 for name, config in pairs({
@@ -40,24 +40,24 @@ for name, config in pairs({
         cmd = { "ruff", "server" },
         filetypes = { "python" },
     },
-    -- elixirls = {
-    --     cmd = { "elixir-ls" },
-    --     filetypes = { "elixir" },
-    --     settings = {
-    --         dialyzerEnabled = false,
-    --         incrementalDialyzer = false,
-    --         mcpEnabled = false,
-    --         autoBuild = false,
-    --     },
-    -- },
+    elixirls = {
+        cmd = { "elixir-ls" },
+        filetypes = { "elixir" },
+        settings = {
+            dialyzerEnabled = false,
+            incrementalDialyzer = false,
+            mcpEnabled = false,
+            autoBuild = false,
+        },
+    },
     -- dexter = {
     --     cmd = { "dexter", "lsp" },
     --     filetypes = { "elixir" },
     -- },
-    expert = {
-        cmd = { "expert", "--stdio" },
-        filetypes = { "elixir" },
-    },
+    -- expert = {
+    --     cmd = { "expert", "--stdio" },
+    --     filetypes = { "elixir" },
+    -- },
     ols = {
         cmd = { "ols" },
         filetypes = { "odin" },
@@ -139,7 +139,8 @@ u.autocmd({ "LspAttach" }, {
     callback = function(args)
         -- Continue to use `gq` for line wrapping, not auto-formatting
         vim.bo.formatexpr = ""
-        vim.opt_local.complete:prepend("o")
+        -- See: https://github.com/neovim/neovim/issues/40346
+        -- vim.opt_local.complete:prepend("o")
 
         local function map(lhs, rhs)
             u.map("n", lhs, rhs, { buffer = args.buf })

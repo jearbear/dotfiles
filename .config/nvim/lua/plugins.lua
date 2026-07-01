@@ -1,4 +1,5 @@
 local u = require("utils")
+local theme = require("theme")
 
 -- nvim-treesitter {{{
 local ts = require("nvim-treesitter")
@@ -26,11 +27,10 @@ treesitter_context.setup({
     max_lines = 5,
     multiline_threshold = 1,
     trim_scope = "inner",
-    separator = "-",
+    separator = "─",
 })
 
-vim.cmd([[highlight TreesitterContext guibg=#313244]])
-vim.cmd([[highlight TreesitterContextBottom guibg=#313244 guisp=#51576d gui=underline]])
+vim.api.nvim_set_hl(0, "TreesitterContext", { bg = theme.colors.mantle })
 
 u.map("n", "[c", treesitter_context.go_to_context)
 -- }}}

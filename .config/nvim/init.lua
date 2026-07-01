@@ -12,7 +12,6 @@ vim.g.maplocalleader = " "
 -- PLUGINS {{{
 vim.cmd("packadd cfilter")
 vim.cmd("packadd nvim.undotree")
-vim.cmd("packadd nvim.difftool")
 
 vim.pack.add({
     -- UI
@@ -52,113 +51,7 @@ vim.pack.add({
 -- }}}
 
 -- THEME {{{
-vim.opt.termguicolors = true
-
-require("catppuccin").setup({
-    flavour = "mocha",
-    transparent_background = false,
-    default_integrations = false,
-    integrations = {
-        fzf = true,
-        blink_cmp = true,
-        nvim_surround = true,
-        treesitter = true,
-        gitsigns = true,
-        markdown = true,
-        mini = {
-            enabled = true,
-        },
-        native_lsp = {
-            enabled = true,
-            virtual_text = {
-                errors = { "italic" },
-                hints = { "italic" },
-                warnings = { "italic" },
-                information = { "italic" },
-                ok = { "italic" },
-            },
-            underlines = {
-                errors = { "undercurl" },
-                hints = { "undercurl" },
-                warnings = { "undercurl" },
-                information = { "undercurl" },
-            },
-            inlay_hints = {
-                background = true,
-            },
-        },
-        treesitter_context = true,
-    },
-})
-
-vim.cmd("colorscheme catppuccin")
-
-local set_hl = function(group, options)
-    vim.api.nvim_set_hl(0, group, options)
-end
-
-local colors = require("catppuccin.palettes").get_palette("mocha")
-
-set_hl("ModeMsg", { fg = colors.peach })
-
--- Reset all treesitter colors
-for _, group in ipairs(vim.fn.getcompletion("@", "highlight")) do
-    set_hl(group, { fg = colors.text })
-end
-
-set_hl("Whitespace", { fg = colors.surface0 })
-set_hl("@comment", { fg = colors.overlay0 })
-
-set_hl("@string", { fg = colors.green })
-set_hl("@string.special", { fg = colors.peach })
-set_hl("@string.special.symbol", { fg = colors.lavender })
-
-set_hl("@keyword", { fg = colors.mauve })
-set_hl("@keyword.conditional", { fg = colors.mauve })
-set_hl("@keyword.conditional.ternary", { fg = colors.mauve })
-set_hl("@keyword.coroutine", { fg = colors.mauve })
-set_hl("@keyword.debug", { fg = colors.mauve })
-set_hl("@keyword.directive", { fg = colors.mauve })
-set_hl("@keyword.directive.define", { fg = colors.mauve })
-set_hl("@keyword.exception", { fg = colors.mauve })
-set_hl("@keyword.function", { fg = colors.mauve })
-set_hl("@keyword.import", { fg = colors.mauve })
-set_hl("@keyword.modifier", { fg = colors.mauve })
-set_hl("@keyword.operator", { fg = colors.mauve })
-set_hl("@keyword.repeat", { fg = colors.mauve })
-set_hl("@keyword.return", { fg = colors.mauve })
-set_hl("@keyword.type", { fg = colors.mauve })
-
-set_hl("@boolean", { fg = colors.peach })
-set_hl("@number", { fg = colors.peach })
-set_hl("@number.float", { fg = colors.peach })
-set_hl("@constant", { fg = colors.peach })
-set_hl("@constant.builtin", { fg = colors.peach })
-set_hl("@operator", { fg = colors.red })
-
-set_hl("@function", { fg = colors.lavender })
-set_hl("@type.builtin", { fg = colors.lavender })
-set_hl("@type", { fg = colors.lavender })
-
-set_hl("@punctuation.delimiter", { fg = colors.overlay1 })
-set_hl("@punctuation.bracket", { fg = colors.overlay1 })
-set_hl("@punctuation.special", { fg = colors.peach })
-
-set_hl("@markup.strong", { bold = true })
-set_hl("@markup.italic", { italic = true })
-set_hl("@markup.strikethrough", { strikethrough = true })
-set_hl("@markup.underline", { underline = true })
-set_hl("@markup.heading.markdown", { bold = true })
-set_hl("@markup.heading.1.markdown", { fg = colors.red })
-set_hl("@markup.heading.2.markdown", { fg = colors.peach })
-set_hl("@markup.heading.3.markdown", { fg = colors.yellow })
-set_hl("@markup.heading.4.markdown", { fg = colors.mauve })
-set_hl("@markup.heading.5.markdown", { fg = colors.mauve })
-set_hl("@markup.heading.6.markdown", { fg = colors.mauve })
-set_hl("@markup.link", { fg = colors.blue })
-set_hl("@markup.list", { fg = colors.peach })
-set_hl("@markup.list.checked", { fg = colors.peach })
-set_hl("@markup.list.unchecked", { fg = colors.peach })
+require("theme").setup()
 -- }}}
 
 -- SETTINGS {{{
@@ -217,6 +110,7 @@ vim.opt.statusline = table.concat({
     "%l/%L", -- line number
     "",
 }, " ")
+
 _G.gen_tabline = function()
     local segments = { "", "%=" }
     local active_tab_num = vim.fn.tabpagenr()
@@ -268,6 +162,7 @@ vim.opt.shortmess:append("I") -- don't show vim start screen
 
 vim.opt.completeopt = { "menu", "menuone", "nearest", "popup", "noselect" } -- when completing, show a menu even if there is only one result
 vim.opt.complete = { ".", "w", "b" } -- source completions from current buffer, open windows, and other loaded buffers
+vim.opt.completeitemalign = { "kind", "abbr", "menu" }
 vim.opt.autocomplete = true
 
 vim.opt.pumheight = 10 -- max number of visible completions
@@ -288,9 +183,11 @@ u.autocmd("CompleteChanged", {
     end,
 })
 
+vim.opt.iskeyword:append("-") -- treat `-` as part of the word
+
 vim.opt.signcolumn = "yes"
 
-vim.opt.nrformats = "bin,hex,blank" -- make <C-a> treat integers as unsigned
+vim.opt.nrformats = { "bin", "hex", "blank" } -- make <C-a> treat integers as unsigned
 
 vim.opt.showtabline = 1 -- show tabline if there is 2+ tabs
 

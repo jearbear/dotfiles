@@ -31,13 +31,15 @@ in {
     jq
     wl-clipboard
     dash
-    nnn
     unzip
     yt-dlp
     wireguard-tools
     zathura # pdf viewer
     feh # image viewer
     gh
+
+    nnn
+    poppler-utils # pdf previews
 
     neovim
     tree-sitter # for installing tree-sitter parsers
@@ -72,7 +74,7 @@ in {
     prettierd # web stuff
     biome # web stuff
     pgformatter
-
+    taplo # toml
     btop
 
     fuzzel
@@ -102,7 +104,7 @@ in {
     paperkey # for physical backups
     qrencode # for exporting keys to qr codes
 
-    pkgs-master.pi-coding-agent
+    pi-coding-agent
     bubblewrap
 
     keyd # for application-specific mappings
@@ -151,10 +153,11 @@ in {
 
   xdg.mime.defaultApplications = {
     "application/pdf" = "org.pwmt.zathura.desktop";
-    "image/jpeg" = "mpv.desktop";
-    "image/png" = "mpv.desktop";
-    "image/gif" = "mpv.desktop";
-    "image/webp" = "mpv.desktop";
+    "application/json" = "vim.desktop";
+    "image/jpeg" = "feh.desktop";
+    "image/png" = "feh.desktop";
+    "image/gif" = "feh.desktop";
+    "image/webp" = "feh.desktop";
   };
 
   # Services
@@ -316,6 +319,20 @@ in {
     enable = true;
   };
 
+  # Niri has its own portals setup already for screen recording. This is
+  # setup to allow using a terminal application as the file picker.
+  xdg.portal = {
+    enable = true;
+
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-termfilechooser
+    ];
+
+    config.niri = {
+      "org.freedesktop.impl.portal.FileChooser" = ["termfilechooser"];
+    };
+  };
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.jerry = {
     isNormalUser = true;
@@ -356,9 +373,6 @@ in {
       jetbrains-mono
       nerd-fonts.jetbrains-mono
     ];
-    fontconfig.subpixel.rgba = "none";
-    fontconfig.subpixel.lcdfilter = "default";
-    fontconfig.hinting.style = "full";
   };
 
   security.polkit.enable = true;

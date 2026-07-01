@@ -4,14 +4,16 @@
 backend = "none"
 
 [ui]
-pager = "delta"
 editor = "nvim"
-diff-editor = ":builtin"
-diff-formatter = ":git"
 default-command = ["log", "--no-pager", "--reversed"]
 
 [ui.graph]
 style = "curved"
+
+[merge-tools.nvimdiff]
+program = "nvim"
+diff-args = ["-c", "packadd nvim.difftool", "-d", "$left", "$right"]
+edit-args = ["-c", "packadd nvim.difftool", "-d", "$left", "$right"]
 
 [templates]
 log = "builtin_log_oneline"
@@ -88,12 +90,21 @@ d = ["diff"]
 ds = ["diff", "--summary"]
 e = ["edit"]
 dm = ["diff", "--from", "trunk()"]
+dms = ["diff", "--from", "trunk()", "--stat"]
 c = ["commit"]
 cm = ["commit", "--message"]
 n = ["new"]
 r = ["rebase", "--revisions", "@"]
-pull = ["git", "fetch", "--branch", "main", "--branch", "master", "--branch", "glob:jerry/*"]
-# gp = ["git", "push", "--branch", "glob:jerry/*"]
+pull = [
+  "git",
+  "fetch",
+  "--branch",
+  "main",
+  "--branch",
+  "master",
+  "--branch",
+  "glob:jerry/*",
+]
 gp = ["git", "push"]
 re = ["rebase"]
 rd = ["desc", "@-"]
@@ -117,7 +128,14 @@ restore-generated = ["restore", "common/cb/src/generated", "--from", "trunk()"]
 resolve-ours = ["resolve", "--tool", ":ours"]
 resolve-theirs = ["resolve", "--tool", ":theirs"]
 # Move parent bookmarks to point to the latest revision
-mb = ["bookmark", "move", "main", "master", "--to", "latest(trunk()..@ & ~empty() & has_desc())"]
+mb = [
+  "bookmark",
+  "move",
+  "main",
+  "master",
+  "--to",
+  "latest(trunk()..@ & ~empty() & has_desc())",
+]
 
 
 get = ["util", "exec", "--", "bash", "-c", """
@@ -131,9 +149,9 @@ jj bookmark track "$@"@origin
 g = ["util", "exec", "--", "bash", "-c", """
 #!/usr/bin/env bash
 set -euox pipefail
-jj up
 jj new 'trunk()'
 jj commit
+jj up 
 """, ""]
 
 up = ["util", "exec", "--", "bash", "-c", """
