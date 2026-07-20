@@ -31,6 +31,9 @@ treesitter_context.setup({
 })
 
 vim.api.nvim_set_hl(0, "TreesitterContext", { bg = theme.colors.mantle })
+vim.api.nvim_set_hl(0, "TreesitterContextSeparator", { sp = theme.colors.mantle })
+-- vim.cmd([[highlight TreesitterContext guibg=#313244]])
+-- vim.cmd([[highlight TreesitterContextBottom guibg=#313244 guisp=#51576d gui=underline]])
 
 u.map("n", "[c", treesitter_context.go_to_context)
 -- }}}

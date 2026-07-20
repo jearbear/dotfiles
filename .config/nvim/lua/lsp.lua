@@ -40,24 +40,24 @@ for name, config in pairs({
         cmd = { "ruff", "server" },
         filetypes = { "python" },
     },
-    elixirls = {
-        cmd = { "elixir-ls" },
-        filetypes = { "elixir" },
-        settings = {
-            dialyzerEnabled = false,
-            incrementalDialyzer = false,
-            mcpEnabled = false,
-            autoBuild = false,
-        },
-    },
+    -- elixirls = {
+    --     cmd = { "elixir-ls" },
+    --     filetypes = { "elixir" },
+    --     settings = {
+    --         dialyzerEnabled = false,
+    --         incrementalDialyzer = false,
+    --         mcpEnabled = false,
+    --         autoBuild = false,
+    --     },
+    -- },
     -- dexter = {
     --     cmd = { "dexter", "lsp" },
     --     filetypes = { "elixir" },
     -- },
-    -- expert = {
-    --     cmd = { "expert", "--stdio" },
-    --     filetypes = { "elixir" },
-    -- },
+    expert = {
+        cmd = { "expert", "--stdio" },
+        filetypes = { "elixir" },
+    },
     ols = {
         cmd = { "ols" },
         filetypes = { "odin" },
