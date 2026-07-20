@@ -4,13 +4,9 @@
   nixpkgs-master,
   neovim-nightly-overlay,
   ...
-}: let
-  pkgs-master = import nixpkgs-master {
-    system = "x86_64-linux";
-  };
-in {
-  # Use latest kernel
+}: {
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.loader.efi.canTouchEfiVariables = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

@@ -4,11 +4,7 @@
   nixpkgs-master,
   neovim-nightly-overlay,
   ...
-}: let
-  pkgs-master = import nixpkgs-master {
-    system = "x86_64-linux";
-  };
-in {
+}: {
   # Installed packages
   environment.systemPackages = with pkgs; [
     linux-firmware
@@ -114,8 +110,6 @@ in {
     bubblewrap
 
     keyd # for application-specific mappings
-
-    pkgs-master.spotatui
   ];
 
   # Fixes the issue causing keyd socket to not be created with the appropriate group.
@@ -215,7 +209,6 @@ in {
 
   # Bootloader
   boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
 
   # Enable hibernation
   # boot.kernelParams = [
@@ -248,7 +241,10 @@ in {
     hostName = "nixos";
     networkmanager = {
       enable = true;
-      wifi.powersave = false;
+      wifi = {
+        # powersave = false;
+        backend = "iwd";
+      };
     };
     firewall = {
       allowedUDPPorts = [

@@ -8,6 +8,7 @@
     # `nix flake update nixpkgs-master`
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
+    apple-silicon-support.url = "github:nix-community/nixos-apple-silicon/release-25.11";
   };
 
   outputs = {
@@ -17,16 +18,33 @@
     neovim-nightly-overlay,
     ...
   } @ inputs: {
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux:";
-      specialArgs = {
-        inherit nixpkgs-master;
-        inherit neovim-nightly-overlay;
+    nixosConfigurations = {
+      thinkpad = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux:";
+        specialArgs = {
+          inherit nixpkgs-master;
+          inherit neovim-nightly-overlay;
+        };
+        modules = [
+          ./common/configuration.nix
+          ./hosts/thinkpad/hardware-configuration.nix
+          ./hosts/thinkpad/configuration.nix
+        ];
       };
-      modules = [
-        ./hardware-configuration.nix
-        ./configuration.nix
-      ];
+
+      macbook = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux:";
+        specialArgs = {
+          inherit nixpkgs-master;
+          inherit neovim-nightly-overlay;
+        };
+        modules = [
+          inputs.apple-silicon-support.nixosModules.default
+          ./common/configuration.nix
+          ./hosts/macbook/hardware-configuration.nix
+          ./hosts/macbook/configuration.nix
+        ];
+      };
     };
   };
 }
