@@ -186,6 +186,18 @@
       polkitPolicyOwners = ["jerry"];
     };
 
+    dconf.profiles.user.databases = [
+      {
+        lockAll = true;
+        settings = {
+          "org/gnome/desktop/interface" = {
+            color-scheme = "prefer-dark";
+            gtk-key-theme = "Emacs";
+          };
+        };
+      }
+    ];
+
     gnupg.agent = {
       enable = true;
       pinentryPackage = pkgs.pinentry-curses;
