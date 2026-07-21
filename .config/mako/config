@@ -1,0 +1,12 @@
+default-timeout=10000
+anchor=bottom-right
+outer-margin=30,20
+border-radius=2
+
+background-color=#1e1e2e
+text-color=#cdd6f4
+border-color=#585b70
+progress-color=over #313244
+
+[urgency=high]
+border-color=#fab387
