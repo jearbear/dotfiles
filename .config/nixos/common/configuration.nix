@@ -40,6 +40,10 @@
     nnn
     poppler-utils # pdf previews
 
+    btop
+    powertop
+    linuxPackages.cpupower
+
     neovim
     # Using nightly until this fix gets released:
     # https://github.com/neovim/neovim/commit/9607e53cea4f352a7c51ffb75b3ef7f3175a3b13
@@ -77,7 +81,6 @@
     biome # web stuff
     pgformatter
     taplo # toml
-    btop
 
     fuzzel
     rofimoji
@@ -122,6 +125,53 @@
   programs = {
     niri.enable = true;
     fish.enable = true;
+
+    firefox = {
+      enable = true;
+      policies = {
+        AIControls = {
+          Default = {
+            Value = "blocked";
+            Locked = true;
+          };
+        };
+        AutofillAddressEnabled = false;
+        AutofillCreditCardEnabled = false;
+        DisableFirefoxStudies = true;
+        DisablePocket = true;
+        DisableTelemetry = true;
+        FirefoxHome = {
+          Search = false;
+          TopSites = false;
+          SponsoredTopSites = false;
+          Highlights = false;
+          Pocket = false;
+          Stories = false;
+          SponsoredPocket = false;
+          SponsoredStories = false;
+          Snippets = false;
+          Locked = false;
+        };
+        FirefoxSuggest = {
+          WebSuggestions = false;
+          SponsoredSuggestions = false;
+          ImproveSuggest = false;
+          Locked = true;
+        };
+        Homepage = {
+          StartPage = "none";
+          Locked = true;
+        };
+
+        NewTabPage = false;
+        NoDefaultBookmarks = true;
+        OfferToSaveLogins = false;
+        PasswordManagerEnabled = false;
+        SearchEngines = {Remove = ["Google" "Amazon.com" "Bing" "eBay" "Wikipedia (en)" "Perplexity"];};
+        SearchSuggestEnabled = false;
+        StartDownloadsInTempDirectory = false;
+      };
+    };
 
     # also takes care of installing nix-direnv
     direnv.enable = true;
@@ -210,19 +260,7 @@
   # Bootloader
   boot.loader.systemd-boot.enable = true;
 
-  # Enable hibernation
-  # boot.kernelParams = [
-  #   "resume=/"
-  #   "resume_offset=436224"
-  # ];
-  # boot.resumeDevice = "/dev/nvme0n1p2";
-
   hardware.bluetooth.enable = true;
-
-  # Setup auto-suspend and CPU frequency scaling
-  powerManagement.enable = true;
-  # powerManagement.powertop.enable = true;
-  services.auto-cpufreq.enable = true;
 
   systemd.services.fprintd = {
     wantedBy = ["multi-user.target"];
@@ -238,14 +276,11 @@
   services.logind.settings.Login.HandleLidSwitch = "suspend";
 
   networking = {
-    hostName = "nixos";
     networkmanager = {
       enable = true;
-      wifi = {
-        # powersave = false;
-        backend = "iwd";
-      };
+      wifi.backend = "iwd";
     };
+
     firewall = {
       allowedUDPPorts = [
         5353 # for Spotify device discovery
