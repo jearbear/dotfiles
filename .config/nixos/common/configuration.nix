@@ -167,6 +167,10 @@
         NoDefaultBookmarks = true;
         OfferToSaveLogins = false;
         PasswordManagerEnabled = false;
+        Preferences = {
+          "ui.key.accelKey" = 91;
+          "ui.key.menuAccessKey" = 99999;
+        };
         SearchEngines = {Remove = ["Google" "Amazon.com" "Bing" "eBay" "Wikipedia (en)" "Perplexity"];};
         SearchSuggestEnabled = false;
         StartDownloadsInTempDirectory = false;
