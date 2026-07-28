@@ -8,7 +8,6 @@
     # `nix flake update nixpkgs-master`
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
-    apple-silicon-support.url = "github:nix-community/nixos-apple-silicon/release-25.11";
   };
 
   outputs = {
@@ -39,7 +38,7 @@
           inherit neovim-nightly-overlay;
         };
         modules = [
-          inputs.apple-silicon-support.nixosModules.default
+          /etc/nixos/apple-silicon-support
           ./common/configuration.nix
           ./hosts/macbook/hardware-configuration.nix
           ./hosts/macbook/configuration.nix

@@ -7,4 +7,6 @@ if status is-interactive
     abbr ns 'nix search nixpkgs'
     abbr npi --set-cursor 'nix path-info nixpkgs#%'
     abbr c qalc
+    abbr --position anywhere copy wl-copy
+    abbr --position anywhere paste wl-paste
 end

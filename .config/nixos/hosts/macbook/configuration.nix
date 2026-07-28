@@ -5,9 +5,32 @@
   neovim-nightly-overlay,
   ...
 }: {
+  networking.hostName = "macbook";
+
   hardware.asahi.enable = true;
 
   boot.loader.efi.canTouchEfiVariables = false;
+  boot.kernelParams = ["appledrm.show_notch=1"];
+
+  # services.tlp = {
+  #   enable = false;
+  #   settings = {
+  #     CPU_SCALING_GOVERNOR_ON_AC = "schedutil";
+  #     CPU_SCALING_GOVERNOR_ON_BAT = "schedutil";
+  #     START_CHARGE_THRESH_BAT0 = 40;
+  #     STOP_CHARGE_THRESH_BAT0 = 80;
+  #   };
+  # };
+  # powerManagement.powertop.enable = false;
+
+  # Cap battery charge to 80%
+  systemd.services.battery-threshold = {
+    wantedBy = ["multi-user.target"];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "/bin/sh -c 'echo 80 > /sys/class/power_supply/macsmc-battery/charge_control_end_threshold'";
+    };
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

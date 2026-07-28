@@ -59,7 +59,7 @@
 
     catppuccin-cursors
     bibata-cursors
-    spotify
+    # spotify
 
     # lsps
     fish-lsp
@@ -238,10 +238,6 @@
       dataDir = "/home/jerry";
     };
 
-    tailscale = {
-      enable = true;
-    };
-
     # Auto-derive location for gammastep
     geoclue2.enable = true;
 
@@ -264,6 +260,7 @@
           name = "postgres";
           ensureClauses = {
             createdb = true;
+            password = "postgres";
           };
         }
       ];
@@ -342,6 +339,7 @@
 
     keyd = {
       enable = true;
+      # TODO: Specify this in the relevant host-specific configs
       keyboards = {
         internal = {
           ids = ["0001:0001:09b4e68d"];
@@ -350,6 +348,14 @@
               capslock = "overload(control, esc)";
               leftmeta = "leftalt";
               leftalt = "leftmeta";
+            };
+          };
+        };
+        macbook = {
+          ids = ["05ac:0342:89b7fedc"];
+          settings = {
+            main = {
+              capslock = "overload(control, esc)";
             };
           };
         };

@@ -8,6 +8,8 @@ set -gx BAT_THEME base16
 set -gx MANPAGER "nvim +Man!" # use neovim to read man pages
 set -gx ERL_AFLAGS "-kernel shell_history enabled" # enable history in iex sessions
 
+set -gx NIRI_CONFIG "$HOME/.config/niri/$(hostname).kdl"
+
 set -gx XCURSOR_THEME Breeze_Snow
 set -gx XCURSOR_SIZE 48
 
@@ -26,7 +28,7 @@ set -gx ESCDELAY 0 # for some cursed reason, FZF defaults to 100
 set -gx NNN_OPTS ACRaeoz
 set -gx NNN_ORDER "t:$HOME/Downloads"
 set -gx NNN_OPENER "$HOME/.config/nnn/plugins/nuke"
-set -gx NNN_BMS "d:$HOME/Downloads;s:$HOME/Sync;p:$HOME/Sync/screenshots"
+set -gx NNN_BMS "d:$HOME/Downloads;s:$HOME/Sync;p:$HOME/Sync/screenshots;v:/run/media/jerry"
 set -gx NNN_PLUG "p:preview-tui"
 
 set -gx KAKOUNE_POSIX_SHELL $(which dash)
@@ -61,12 +63,8 @@ if status is-interactive
 
     abbr cdg 'cd ~/Projects/giga'
     abbr cds 'cd ~/Projects/sugo'
-    abbr cdp 'cd ~/Projects/product'
-    abbr cdp2 'cd ~/Projects/product-2'
-    abbr cdpp 'cd ~/Projects/product/python'
-    abbr cdpt 'cd ~/Projects/product/typescript'
+    abbr cdp 'cd ~/Projects/performance_aware_programming'
     abbr cdn 'cd ~/Sync/PKM'
-    abbr cdv 'cd ~/Sync/videos'
     abbr cdv 'cd ~/Sync/videos'
 
     abbr kssh 'kitty +kitten ssh'

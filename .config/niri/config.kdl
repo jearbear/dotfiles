@@ -9,8 +9,10 @@ input {
     }
     mod-key "Super"
     touchpad {
-        tap
         natural-scroll
+        dwt
+        // accel-speed 0
+        scroll-factor 0.33
     }
     mouse {
         natural-scroll
@@ -48,6 +50,7 @@ layout {
         off
     }
     border {
+        on
         width 2
         active-color "#cba6f7"
         inactive-color "#313244"
@@ -64,30 +67,9 @@ prefer-no-csd
 // A ~ at the front will be expanded to the home directory.
 // The path is formatted with strftime(3) to give you the screenshot date and time.
 screenshot-path "~/Sync/screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
-// You can also set this to null to disable saving screenshots to disk.
-// screenshot-path null
-// Animation settings.
-// The wiki explains how to configure individual animations:
-// https://github.com/YaLTeR/niri/wiki/Configuration:-Animations
-animations {
- // Uncomment to turn off all animations.
-    // off
-
-    // Slow down all animations by this factor. Values below 1 speed them up instead.
-    // slowdown 0.5
-
-}
 window-rule {
     match app-id="Spotify"
     open-maximized true
-}
-window-rule {
-    match app-id="1password"
-    open-floating true
-    min-height 800
-    max-height 800
-    min-width 1000
-    max-width 1000
 }
 window-rule {
     geometry-corner-radius 2
@@ -107,7 +89,7 @@ binds {
         spawn "passmenu" "--type"
     }
     Mod+Shift+Ctrl+Q {
-        spawn "systemctl" "suspend-then-hibernate"
+        spawn "systemctl" "suspend"
     }
     XF86AudioPlay allow-when-locked=true {
         spawn "playerctl" "play-pause"
@@ -131,10 +113,10 @@ binds {
         spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"
     }
     XF86MonBrightnessDown allow-when-locked=true {
-        spawn "brightnessctl" "set" "10%-" "--min-value"
+        spawn "brightnessctl" "set" "5%-" "--min-value"
     }
     XF86MonBrightnessUp allow-when-locked=true {
-        spawn "brightnessctl" "set" "10%+"
+        spawn "brightnessctl" "set" "5%+"
     }
     Mod+Shift+O repeat=false {
         toggle-overview

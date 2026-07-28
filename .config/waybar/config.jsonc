@@ -1,6 +1,6 @@
 // -*- mode: jsonc -*-
 {
-    "layer": "bottom", 
+    "layer": "top", 
     "position": "top", 
     "height": 32, // Waybar height (to be removed for auto height)
     "spacing": 4, // Gaps between modules (4px)
@@ -11,7 +11,6 @@
         "niri/workspaces",
     ],
     "modules-center": [
-        "mpris",
     ],
     "modules-right": [
         "idle_inhibitor",

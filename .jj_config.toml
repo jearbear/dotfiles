@@ -95,17 +95,9 @@ c = ["commit"]
 cm = ["commit", "--message"]
 n = ["new"]
 r = ["rebase", "--revisions", "@"]
-pull = [
-  "git",
-  "fetch",
-  "--branch",
-  "main",
-  "--branch",
-  "master",
-  "--branch",
-  "glob:jerry/*",
-]
+pull = ["git", "fetch", "--branch", "main", "--branch", "glob:jerry/*"]
 gp = ["git", "push"]
+gpc = ["git", "push", "--change", "branch_head()"]
 re = ["rebase"]
 rd = ["desc", "@-"]
 rm = ["rebase", "--destination", "trunk()"]
@@ -132,7 +124,6 @@ mb = [
   "bookmark",
   "move",
   "main",
-  "master",
   "--to",
   "latest(trunk()..@ & ~empty() & has_desc())",
 ]
