@@ -5,6 +5,10 @@
   neovim-nightly-overlay,
   ...
 }: {
+  # Prevent errors when installing Spotify, which doesn't work on this
+  # platform. This is hack, but it's easier than filtering it out.
+  nixpkgs.config.allowUnsupportedSystem = true;
+
   networking.hostName = "macbook";
 
   hardware.asahi.enable = true;

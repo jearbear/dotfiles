@@ -59,7 +59,7 @@
 
     catppuccin-cursors
     bibata-cursors
-    # spotify
+    spotify
 
     # lsps
     fish-lsp
