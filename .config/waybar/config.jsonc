@@ -80,9 +80,8 @@
         }
     },
     "bluetooth": {
-        "format": "<span color='#f9e2af'>bt</span> n/a",
+        "format": "<span color='#f9e2af'>bt</span> off",
         "format-connected": "<span color='#f9e2af'>bt</span> {device_alias}",
-        "format-connected-battery": "<span color='#f9e2af'>bt</span> {device_alias} {device_battery_percentage}%",
         "on-click": "~/.config/waybar/scripts/bt-toggle-airpods.sh"
     },
     "battery": {

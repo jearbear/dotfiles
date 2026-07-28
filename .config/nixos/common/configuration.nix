@@ -43,6 +43,8 @@
     btop
     powertop
     linuxPackages.cpupower
+    pciutils
+    usbutils
 
     neovim
     # Using nightly until this fix gets released:
@@ -231,6 +233,8 @@
     connman = {
       enable = false;
     };
+
+    openssh.enable = false;
 
     syncthing = {
       enable = true;
