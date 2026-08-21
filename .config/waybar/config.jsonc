@@ -1,12 +1,8 @@
 // -*- mode: jsonc -*-
 {
     "layer": "top", 
-    "position": "top", 
-    "height": 32, // Waybar height (to be removed for auto height)
-    "spacing": 4, // Gaps between modules (4px)
-    "margin-left": 0,
-    "margin-right": 0,
-    "margin-bottom": 0,
+    "position": "bottom", 
+    "spacing": 4,
     "modules-left": [
         "niri/workspaces",
     ],
@@ -92,5 +88,5 @@
     "pulseaudio": {
         "format": "<span color='#f9e2af'>vol</span> {volume}%",
         "format-muted": "<span color='#f9e2af'>vol</span> muted"
-    },
+    }
 }

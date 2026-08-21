@@ -4,7 +4,12 @@
   nixpkgs-master,
   neovim-nightly-overlay,
   ...
-}: {
+}: let
+  pkgs-master = import nixpkgs-master {
+    system = pkgs.system;
+    config.allowUnfree = true;
+  };
+in {
   # Installed packages
   environment.systemPackages = with pkgs; [
     linux-firmware
@@ -29,7 +34,7 @@
     wl-clipboard
     dash
     unzip
-    yt-dlp
+    pkgs-master.yt-dlp
     wireguard-tools
     zathura # pdf viewer
     feh # image viewer
@@ -111,7 +116,7 @@
     paperkey # for physical backups
     qrencode # for exporting keys to qr codes
 
-    pi-coding-agent
+    pkgs-master.pi-coding-agent
     bubblewrap
 
     keyd # for application-specific mappings
@@ -214,6 +219,36 @@
 
     # shared clipboard
     kdeconnect.enable = true;
+  };
+
+  systemd.user = {
+    services.battery-alert = {
+      path = [pkgs.bash pkgs.libnotify];
+      script = "/home/jerry/.bin/battery-alert";
+    };
+    timers = {
+      battery-alert = {
+        wantedBy = ["timers.target"];
+        timerConfig = {
+          OnCalendar = "*:0/15";
+          Persistent = true;
+        };
+      };
+    };
+
+    services.bluetooth-off = {
+      path = [pkgs.bash pkgs.libnotify pkgs.bluez];
+      script = "/home/jerry/.bin/bluetooth-off";
+    };
+    timers = {
+      bluetooth-off = {
+        wantedBy = ["timers.target"];
+        timerConfig = {
+          OnCalendar = "*:0/15";
+          Persistent = true;
+        };
+      };
+    };
   };
 
   # This leads to leads to awful rebuild performance

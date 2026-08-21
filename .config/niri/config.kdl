@@ -11,8 +11,7 @@ input {
     touchpad {
         natural-scroll
         dwt
-        // accel-speed 0
-        scroll-factor 0.33
+        scroll-factor 0.8
     }
     mouse {
         natural-scroll
@@ -79,6 +78,9 @@ binds {
     Mod+Return {
         spawn "kitty" "--single-instance"
     }
+    Mod+Shift+Return {
+        spawn "firefox"
+    }
     Mod+Space {
         spawn-sh "XDG_DATA_DIRS=~/.local/share/applications fuzzel"
     }
@@ -88,7 +90,7 @@ binds {
     Mod+Shift+Space {
         spawn "passmenu" "--type"
     }
-    Mod+Shift+Ctrl+Q {
+    Mod+Shift+Ctrl+Q allow-when-locked=true {
         spawn "systemctl" "suspend"
     }
     XF86AudioPlay allow-when-locked=true {
@@ -115,8 +117,14 @@ binds {
     XF86MonBrightnessDown allow-when-locked=true {
         spawn "brightnessctl" "set" "5%-" "--min-value"
     }
+    Shift+XF86MonBrightnessDown allow-when-locked=true {
+        spawn "brightnessctl" "set" "100%-" "--min-value"
+    }
     XF86MonBrightnessUp allow-when-locked=true {
         spawn "brightnessctl" "set" "5%+"
+    }
+    Shift+XF86MonBrightnessUp allow-when-locked=true {
+        spawn "brightnessctl" "set" "100%+"
     }
     Mod+Shift+O repeat=false {
         toggle-overview
@@ -193,8 +201,14 @@ binds {
     Mod+Tab {
         focus-monitor-next
     }
+    Mod+Shift+Tab {
+        switch-focus-between-floating-and-tiling
+    }
     Mod+Grave {
         move-window-to-monitor-next
+    }
+    Mod+Shift+Grave {
+        toggle-window-floating
     }
 }
 cursor {
@@ -203,7 +217,7 @@ cursor {
     hide-when-typing
 }
 overview {
-    zoom 0.25
+    zoom 0.33
     backdrop-color "#11111b"
 }
 gestures {

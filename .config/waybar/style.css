@@ -3,13 +3,12 @@
 * {
   font-family: JetBrains Mono;
   font-size: 14px;
-  padding: 0px 4px;
+  padding: 1px 4px;
 }
 
 #waybar {
-  background: #000000;
+  background: @crust;
   color: @text;
-  margin: 5 5;
 }
 
 #workspaces button {

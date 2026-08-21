@@ -8,7 +8,7 @@ set -gx BAT_THEME base16
 set -gx MANPAGER "nvim +Man!" # use neovim to read man pages
 set -gx ERL_AFLAGS "-kernel shell_history enabled" # enable history in iex sessions
 
-set -gx NIRI_CONFIG "$HOME/.config/niri/$(hostname).kdl"
+# set -gx NIRI_CONFIG "$HOME/.config/niri/$(hostname).kdl"
 
 set -gx XCURSOR_THEME Breeze_Snow
 set -gx XCURSOR_SIZE 48

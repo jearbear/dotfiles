@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+set -euo pipefail
+
+battery="/sys/class/power_supply/BAT0"
+capacity=$(cat "$battery/capacity")
+status=$(cat "$battery/status")
+
+if [ "$status" = "Discharging" ] && [ "$capacity" -lt 20 ]; then
+    notify-send -u critical "Low battery" "Battery is at ${capacity}%."
+fi

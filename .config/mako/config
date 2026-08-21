@@ -1,3 +1,5 @@
+layer=overlay
+
 default-timeout=10000
 anchor=bottom-right
 outer-margin=30,20

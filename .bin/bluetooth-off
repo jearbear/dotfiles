@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+set -euo pipefail
+
+if ! bluetoothctl devices Connected | grep -q .; then
+    bluetoothctl power off
+fi

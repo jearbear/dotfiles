@@ -99,6 +99,13 @@ pull = ["git", "fetch", "--branch", "main", "--branch", "glob:jerry/*"]
 gp = ["git", "push"]
 gpc = ["git", "push", "--change", "branch_head()"]
 re = ["rebase"]
+remain = [
+  "rebase",
+  "--source",
+  "(..main)+ & ~(..main) & mutable()",
+  "--onto",
+  "main",
+]
 rd = ["desc", "@-"]
 rm = ["rebase", "--destination", "trunk()"]
 lm = ["log", "-r", "..trunk()", "-T", "builtin_log_compact"]
@@ -130,7 +137,6 @@ mb = [
 
 
 get = ["util", "exec", "--", "bash", "-c", """
-#!/usr/bin/env bash
 set -euox pipefail
 jj git fetch --branch "$@"
 jj new "$@"@origin
@@ -138,7 +144,6 @@ jj bookmark track "$@"@origin
 """, ""]
 
 g = ["util", "exec", "--", "bash", "-c", """
-#!/usr/bin/env bash
 set -euox pipefail
 jj new 'trunk()'
 jj commit
@@ -146,7 +151,6 @@ jj up
 """, ""]
 
 up = ["util", "exec", "--", "bash", "-c", """
-#!/usr/bin/env bash
 set -euox pipefail
 jj pull
 jj rm
@@ -159,7 +163,6 @@ pr = [
   "bash",
   "-c",
   """
-#!/usr/bin/env bash
 set -euox pipefail
 [ -n "${PRE_PR_COMMAND-}" ] && eval "$PRE_PR_COMMAND" || true
 jj smash
@@ -172,14 +175,12 @@ gh pr view "$(jj pr-bookmarks)" --web
 ]
 
 prm = ["util", "exec", "--", "bash", "-c", """
-#!/usr/bin/env bash
 set -euox pipefail
 jj pr
 gh pr merge --auto --squash "$(jj pr-bookmarks)"
 """, ""]
 
 rp = ["util", "exec", "--", "bash", "-c", """
-#!/usr/bin/env bash
 set -euox pipefail
 bookmarks=$(jj pr-bookmarks)
 if [ -n "$bookmarks" ]; then
@@ -193,11 +194,17 @@ else
 fi
 """, ""]
 
-changed = ["util", "exec", "--", "bash", "-c", """
-#!/usr/bin/env bash
+changed = ["util", "exec", "--", "dash", "-c", """
 set -euox pipefail
 jj log --no-graph --patch --revisions "diff_contains(regex:'$@')"
 """, ""]
+
+try = ["util", "exec", "--", "dash", "-c", """
+set -euox pipefail
+jj new
+jj desc
+""", ""]
+
 
 # diff_lines_added/removed is an unreleased feature
 # added = ["util", "exec", "--", "bash", "-c", """
