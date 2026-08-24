@@ -39,7 +39,8 @@ in {
     zathura # pdf viewer
     feh # image viewer
     gh
-    sqlite
+    sqlite-interactive
+    sqlite-rsync
     litecli
 
     nnn
@@ -245,6 +246,21 @@ in {
         wantedBy = ["timers.target"];
         timerConfig = {
           OnCalendar = "*:0/15";
+          Persistent = true;
+        };
+      };
+    };
+
+    # TODO: Do this on the server instead.
+    services.backup-papertrail = {
+      path = [pkgs.openssh pkgs.sqlite-rsync];
+      script = "sqlite3_rsync sugo:dbs/papertrail.db ~/Sync/dbs/papertrail.db";
+    };
+    timers = {
+      backup-papertrail = {
+        wantedBy = ["timers.target"];
+        timerConfig = {
+          OnCalendar = "daily";
           Persistent = true;
         };
       };

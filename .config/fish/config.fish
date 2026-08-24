@@ -61,6 +61,7 @@ if status is-interactive
     abbr w 'watch --color --interval 5'
     abbr yd yt-dlp
 
+    abbr cdb 'cd ~/Projects/blog'
     abbr cdg 'cd ~/Projects/giga'
     abbr cds 'cd ~/Projects/sugo'
     abbr cdp 'cd ~/Projects/performance_aware_programming'
