@@ -7,6 +7,7 @@
         "niri/workspaces",
     ],
     "modules-center": [
+        "custom/next-event",
     ],
     "modules-right": [
         "idle_inhibitor",
@@ -33,6 +34,17 @@
     },
     "custom/sep": {
         "format": "·",
+        "tooltip": false
+    },
+    "custom/next-event": {
+        "exec": "~/.config/waybar/scripts/next-event.py",
+        "interval": 300,
+        "return-type": "json",
+        "format": "{}",
+        "escape": false,
+        "hide-empty-text": true,
+        "on-click": "vdirsyncer sync",
+        "exec-on-event": true,
         "tooltip": false
     },
     "custom/wireguard": {

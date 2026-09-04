@@ -20,3 +20,6 @@
 /.config/kak/autoload/stdlib
 
 !/.local/share/applications
+
+
+*.pyc
