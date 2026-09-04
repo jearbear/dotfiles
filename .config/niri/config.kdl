@@ -210,6 +210,9 @@ binds {
     Mod+Shift+Grave {
         toggle-window-floating
     }
+    Mod+Shift+R {
+        spawn "rename-workspace"
+    }
 }
 cursor {
     xcursor-theme "Bibata-Original-Ice"

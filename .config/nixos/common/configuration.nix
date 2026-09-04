@@ -9,6 +9,13 @@
     system = pkgs.system;
     config.allowUnfree = true;
   };
+  kagi-cli-src = pkgs.fetchFromGitHub {
+    owner = "Microck";
+    repo = "kagi-cli";
+    rev = "v0.18.1";
+    hash = "sha256-Wc33KLs9DR4IfKHrq1zqdC+LfhysN3OXYKNSb7p10rY=";
+  };
+  kagi-cli = pkgs.callPackage "${kagi-cli-src}/nix/kagi.nix" {};
 in {
   # Installed packages
   environment.systemPackages = with pkgs; [
@@ -52,10 +59,18 @@ in {
     pciutils
     usbutils
 
-    neovim
-    # Using nightly until this fix gets released:
-    # https://github.com/neovim/neovim/commit/9607e53cea4f352a7c51ffb75b3ef7f3175a3b13
-    # neovim-nightly-overlay.packages.${system}.default
+    (wrapNeovim
+      (neovim-unwrapped.overrideAttrs (old: {
+        patches =
+          (old.patches or [])
+          ++ [
+            (fetchpatch {
+              url = "https://github.com/neovim/neovim/commit/9607e53cea4f352a7c51ffb75b3ef7f3175a3b13.patch";
+              hash = "sha256-imyp14M9ObumbWzBQNmurkLcUOuIGCiJkZpv+gwz8ZY=";
+            })
+          ];
+      }))
+      {})
     tree-sitter # for installing tree-sitter parsers
     clang # for installing tree-sitter parsers
 
@@ -118,6 +133,7 @@ in {
     qrencode # for exporting keys to qr codes
 
     pkgs-master.pi-coding-agent
+    kagi-cli
     bubblewrap
 
     keyd # for application-specific mappings

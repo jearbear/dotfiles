@@ -42,7 +42,8 @@ u.map("n", "[c", treesitter_context.go_to_context)
 -- this has a slight performance impact on macro execution
 require("nvim-ts-autotag").setup({
     opts = {
-        enable_close = true,
+        -- This is making the `>` character not work with dot repeats
+        enable_close = false,
         enable_rename = true,
         enable_close_on_slash = true,
     },

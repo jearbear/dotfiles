@@ -90,7 +90,7 @@ for name, config in pairs({
     },
     vtsls = {
         cmd = { "vtsls", "--stdio" },
-        filetypes = { "typescript", "typescriptreact" },
+        filetypes = { "javascript", "typescript", "typescriptreact" },
     },
     luals = {
         cmd = { "lua-language-server" },
@@ -139,8 +139,7 @@ u.autocmd({ "LspAttach" }, {
     callback = function(args)
         -- Continue to use `gq` for line wrapping, not auto-formatting
         vim.bo.formatexpr = ""
-        -- See: https://github.com/neovim/neovim/issues/40346
-        -- vim.opt_local.complete:prepend("o")
+        vim.opt_local.complete:prepend("o")
 
         local function map(lhs, rhs)
             u.map("n", lhs, rhs, { buffer = args.buf })
