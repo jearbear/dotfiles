@@ -240,6 +240,31 @@ M.open_url = function(url)
     end
 end
 
+M.get_lsp_snippets = function()
+    local params = vim.lsp.util.make_position_params(0, "utf-8")
+    params.context = { triggerKind = vim.lsp.protocol.CompletionTriggerKind.Invoked }
+
+    local responses = vim.lsp.buf_request_sync(bufnr, "textDocument/completion", params, 200)
+    if not responses then
+        return {}
+    end
+
+    local snippets = {}
+    for client_id, response in pairs(responses) do
+        if response and response.result and not response.err then
+            local completion = response.result
+            local items = completion.items or completion
+            for _, item in ipairs(items) do
+                if item.insertTextFormat == vim.lsp.protocol.InsertTextFormat.Snippet then
+                    table.insert(snippets, { prefix = item.filterText, body = item.textEdit.newText })
+                end
+            end
+        end
+    end
+
+    return snippets
+end
+
 M.expand_snippet = function()
     local ok, snippets = pcall(require, "snippets." .. vim.bo.filetype)
     if not ok then
@@ -249,18 +274,24 @@ M.expand_snippet = function()
         return #a.prefix > #b.prefix
     end)
 
-    global_snippets = require("snippets.global")
+    local global_snippets = require("snippets.global")
     table.sort(global_snippets, function(a, b)
         return #a.prefix > #b.prefix
     end)
     vim.list_extend(snippets, global_snippets)
+
+    local lsp_snippets = M.get_lsp_snippets()
+    table.sort(lsp_snippets, function(a, b)
+        return #a.prefix > #b.prefix
+    end)
+    vim.list_extend(snippets, lsp_snippets)
 
     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
     local line = vim.api.nvim_get_current_line()
     local line_start = line:sub(1, col)
     local line_end = line:sub(col + 1)
 
-    snippet = vim.iter(snippets):find(function(x)
+    local snippet = vim.iter(snippets):find(function(x)
         return vim.endswith(line_start, x.prefix)
     end)
     if not snippet then
