@@ -50,9 +50,6 @@ in {
     sqlite-rsync
     litecli
 
-    khal
-    vdirsyncer
-
     nnn
     poppler-utils # pdf previews
 
@@ -242,22 +239,6 @@ in {
   };
 
   systemd.user = {
-    services.vdirsyncer-calendar-sync = {
-      wants = ["network-online.target"];
-      after = ["network-online.target"];
-      serviceConfig = {
-        Type = "oneshot";
-        ExecStart = "${pkgs.vdirsyncer}/bin/vdirsyncer sync";
-      };
-    };
-    timers.vdirsyncer-calendar-sync = {
-      wantedBy = ["timers.target"];
-      timerConfig = {
-        OnCalendar = "*:0/5";
-        Persistent = true;
-      };
-    };
-
     services.battery-alert = {
       path = [pkgs.bash pkgs.libnotify];
       script = "/home/jerry/.bin/battery-alert";

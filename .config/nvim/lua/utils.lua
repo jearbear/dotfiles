@@ -256,10 +256,12 @@ M.expand_snippet = function()
     vim.list_extend(snippets, global_snippets)
 
     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-    local line = vim.api.nvim_get_current_line():sub(1, col)
+    local line = vim.api.nvim_get_current_line()
+    local line_start = line:sub(1, col)
+    local line_end = line:sub(col + 1)
 
     snippet = vim.iter(snippets):find(function(x)
-        return vim.endswith(line, x.prefix)
+        return vim.endswith(line_start, x.prefix)
     end)
     if not snippet then
         vim.notify("No snippets to expand at the current position", vim.log.levels.ERROR)
@@ -271,7 +273,7 @@ M.expand_snippet = function()
         :gsub("%$CURRENT_MONTH", os.date("%m"))
         :gsub("%$CURRENT_DATE", os.date("%d"))
 
-    vim.api.nvim_set_current_line(line:sub(1, col - #snippet.prefix) .. line:sub(col + 1))
+    vim.api.nvim_set_current_line(line_start:sub(1, col - #snippet.prefix) .. line_start:sub(col + 1) .. line_end)
     vim.api.nvim_win_set_cursor(0, { row, col - #snippet.prefix })
     vim.snippet.expand(snippet_body)
 end
